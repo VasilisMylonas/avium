@@ -1,0 +1,8 @@
+BasedOnStyle: Google
+PointerAlignment: Left
+ReflowComments: true
+SortIncludes: true
+AlignConsecutiveMacros: true
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+ColumnLimit: 100
