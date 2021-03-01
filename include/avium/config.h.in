@@ -1,0 +1,47 @@
+#ifndef AVIUM_CONFIG_H
+#define AVIUM_CONFIG_H
+
+// clang-format off
+#define AVM_VERSION_MAJOR @avium_VERSION_MAJOR@
+#define AVM_VERSION_MINOR @avium_VERSION_MINOR@
+#define AVM_VERSION_PATCH @avium_VERSION_PATCH@
+#define AVM_VERSION_BUILD 0
+// clang-format on
+
+#cmakedefine AVM_WIN32
+#cmakedefine AVM_LINUX
+#cmakedefine AVM_DARWIN
+
+#ifdef _MSC_VER
+#    define AVM_MSVC
+#else
+#    define AVM_GENERAL
+#endif  // _MSC_VER
+
+#ifdef AVM_MSVC
+#    ifdef AVM_EXPORT
+#        define AVMAPI extern __declspec(dllexport) _Check_return_
+#    else
+#        define AVMAPI extern __declspec(dllimport) _Check_return_
+#    endif
+#    ifndef alignof
+#        define alignof __alignof
+#    endif
+#    ifndef thread_local
+#        define thread_local __declspec(thread)
+#    endif
+#else
+#    define AVMAPI extern __attribute__((__warn_unused_result__))
+#    ifndef alignof
+#        define alignof _Alignof
+#    endif
+#    ifndef thread_local
+#        define thread_local _Thread_local
+#    endif
+#endif  // AVM_MSVC
+
+#ifdef __cplusplus
+#    error "Avium: C++ is not supported."
+#endif  // __cplusplus
+
+#endif  // AVIUM_CONFIG_H

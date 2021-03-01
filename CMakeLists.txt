@@ -34,6 +34,9 @@ set(AVM_INCLUDE_PATH include)
 include_directories(${CMAKE_SOURCE_DIR}/${AVM_INCLUDE_PATH})
 include_directories(${CMAKE_BINARY_DIR}/${AVM_INCLUDE_PATH})
 
+configure_file(${AVM_INCLUDE_PATH}/${CMAKE_PROJECT_NAME}/config.h.in
+               ${AVM_INCLUDE_PATH}/${CMAKE_PROJECT_NAME}/config.h @ONLY)
+
 if (MSVC)
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 add_compile_options(${AVM_MSVC_COMPILER_OPTIONS})
@@ -41,4 +44,5 @@ else()
 add_compile_options(${AVM_COMPILER_OPTIONS})
 endif()
 
+add_subdirectory(src)
 add_subdirectory(test)

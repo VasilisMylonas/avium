@@ -1,6 +1,3 @@
-#include <stdio.h>
+#include "avium.h"
 
-int main()
-{
-    puts("Hello World");
-}
+int main(void) { panic("Error!"); }
