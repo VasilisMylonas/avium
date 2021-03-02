@@ -18,3 +18,4 @@ cp -r ./build/include $DIST_DIR/linux
 cp -r ./include $DIST_DIR/linux
 
 rm $DIST_DIR/linux/include/avium/config.h.in
+rm $DIST_DIR/linux/include/avium/internal.h
