@@ -3,7 +3,7 @@
 #define AVM_VMT_SIZE 32
 
 struct Type {
-    function_t* vptr;
+    const function_t* vptr;
     const char8_t* name;
     size_t size;
 };
