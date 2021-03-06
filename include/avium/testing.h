@@ -1,6 +1,6 @@
 /*
- * File: avium/internal.h
- * Header file for internal use.
+ * File: avium/testing.h
+ * TAP format testing implementation.
  *
  * About: Author
  * Vasilis Mylonas <vasilismylonas@protonmail.com>
@@ -25,26 +25,12 @@
 
 #include "avium/core.h"
 
-#define AVM_VTABLE_SIZE 32
-
-struct Type {
-    const function_t* vptr;
-    const char8_t* name;
-    size_t size;
-};
-
-#define TYPE(T, vptr) \
-    { vptr, #T, sizeof(struct T), }
-
-enum {
-    FUNC_DTOR = 0,
-    FUNC_GET_LENGTH,
-    FUNC_GET_CAPACITY,
-    FUNC_TO_STRING,
-    FUNC_CLONE,
-    FUNC_EQ,
-    FUNC_READ,
-    FUNC_WRITE,
-    FUNC_READ_STRING,
-    FUNC_WRITE_STRING,
-};
+AVMAPI void Ok(bool expression, const char8_t* description);
+AVMAPI void Plan(size_t count);
+AVMAPI void Skip(size_t count);
+AVMAPI void Note(const char8_t* message);
+AVMAPI void BailOut(const char8_t* reason);
+AVMAPI void Pass(const char8_t* description);
+AVMAPI void Fail(const char8_t* description);
+AVMAPI void Todo(const char8_t* description);
+AVMAPI void AvmTestSetOutput(void* stream);
