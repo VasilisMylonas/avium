@@ -1,6 +1,6 @@
 #include "avium/core.h"
 
-#define AVM_VMT_SIZE 32
+#define AVM_VTABLE_SIZE 32
 
 struct Type {
     const function_t* vptr;

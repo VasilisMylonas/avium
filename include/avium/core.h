@@ -1,6 +1,26 @@
 /*
  * File: avium/core.h
  * Avium core utilities and types.
+ *
+ * About: Author
+ * Vasilis Mylonas <vasilismylonas@protonmail.com>
+ *
+ * Section: License
+ *
+ * Copyright (C) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef AVIUM_CORE_H
@@ -19,7 +39,7 @@
  * Macro: AVM_CONCAT
  * Concatenates two identifier.
  *
- * Parameters
+ * Parameters:
  * x - The first identifier.
  * y - The second identifier.
  */
@@ -29,12 +49,12 @@
  * Macro: AVM_STRINGIFY
  * Converts an identifier to a string.
  *
- * Parameters
+ * Parameters:
  * x - The identifier to stringify.
  */
 #define AVM_STRINGIFY(x) AVM_STRINGIFY_(x)
 
-#define AVM_DEFER(x)                                       \
+#define defer(x)                                           \
     for (size_t AVM_CONCAT(avmDeferCounter, __LINE__) = 0; \
          AVM_CONCAT(avmDeferCounter, __LINE__) < 1;        \
          AVM_CONCAT(avmDeferCounter, __LINE__)++, AvmDestroy(x))
