@@ -6,8 +6,7 @@
 
 #include "avium/internal.h"
 
-#define AVM_STRING_GROWTH_FACTOR 2
-#define AVM_STRING_SIZE          (sizeof(Type) + 2 * sizeof(size_t))
+#define AVM_STRING_SIZE (sizeof(Type) + 2 * sizeof(size_t))
 
 static const char8_t* const selfNullMsg = "Parameter `self` was `NULL`.";
 static const char8_t* const contentsNullMsg =
@@ -51,7 +50,7 @@ AvmString AvmStringFrom(const char8_t* contents) {
     }
 
     size_t length = strlen(contents);
-    AvmString s = AvmString(length);
+    AvmString s = AvmString(length * AVM_STRING_GROWTH_FACTOR);
     s->length = length;
     memcpy(s->buffer, contents, length + 1);
     return s;
@@ -178,7 +177,7 @@ size_t AvmStringFind(AvmString self, const char8_t* characters) {
         return AVM_STRING_NPOS;
     }
 
-    return (size_t)(self->buffer - c);
+    return (size_t)(c - self->buffer);
 }
 
 size_t AvmStringFindLast(AvmString self, const char8_t* characters) {
@@ -204,15 +203,16 @@ size_t AvmStringReplace(AvmString self, char8_t oldCharacter,
         panic(selfNullMsg);
     }
 
-    size_t i = 0;
+    size_t count = 0;
 
-    for (; i < self->length; i++) {
+    for (size_t i = 0; i < self->length; i++) {
         if (self->buffer[i] == oldCharacter) {
             self->buffer[i] = newCharacter;
+            count++;
         }
     }
 
-    return i;
+    return count;
 }
 
 void AvmStringToUpper(AvmString self) {

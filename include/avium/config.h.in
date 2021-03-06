@@ -20,9 +20,9 @@
 
 #ifdef AVM_MSVC
 #    ifdef AVM_EXPORT
-#        define AVMAPI extern __declspec(dllexport) _Check_return_
+#        define AVMAPI extern __declspec(dllexport)
 #    else
-#        define AVMAPI extern __declspec(dllimport) _Check_return_
+#        define AVMAPI extern __declspec(dllimport)
 #    endif
 #    ifndef alignof
 #        define alignof __alignof
@@ -31,7 +31,7 @@
 #        define thread_local __declspec(thread)
 #    endif
 #else
-#    define AVMAPI extern __attribute__((__warn_unused_result__))
+#    define AVMAPI extern
 #    ifndef alignof
 #        define alignof _Alignof
 #    endif
