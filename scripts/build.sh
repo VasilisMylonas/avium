@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cmake --build ./build
-mkdir -p ./build/html
-natural-docs ./docs/
+./scripts/gen-docs.sh
+./scripts/gen-tests.sh
