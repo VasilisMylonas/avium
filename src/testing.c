@@ -43,8 +43,10 @@ void Todo(const char8_t* description) {
 }
 
 static void EndPlan() {
-    fprintf(outputStream, "Failed %zu/%zu tests. %.2lf%% okay.\n", failedCount,
-            testCount, 100.0 - (double)failedCount / (double)testCount * 100);
+    // fprintf(outputStream, "Failed %zu/%zu tests. %.2lf%% okay.\n",
+    // failedCount,
+    //         testCount, 100.0 - (double)failedCount / (double)testCount *
+    //         100);
 
     currentTest = 0;
     testCount = 0;
@@ -71,8 +73,8 @@ void Ok(bool expression, const char8_t* description) {
     currentTest++;
 
     if (currentTest > testCount) {
-        fprintf(outputStream, "Unexpected test.\n");
-        exit(EXIT_FAILURE);
+        fprintf(outputStream, "# ERROR: Unexpected test.\n");
+        exit(255);
     }
 
     if (skipCount != 0) {
