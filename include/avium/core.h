@@ -411,7 +411,7 @@ inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
  * This function is inline.
  */
 inline bool AvmHasValue(AvmOptional optional) {
-    return optional == AVM_OPTIONAL_NONE;
+    return optional != AVM_OPTIONAL_NONE;
 }
 
 #endif  // AVIUM_CORE_H

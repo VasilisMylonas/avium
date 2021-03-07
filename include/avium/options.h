@@ -1,6 +1,6 @@
 /*
- * File: avium.h
- * Avium master include file.
+ * File: avium/options.h
+ * Functions for handling program arguments.
  *
  * About: Author
  * Vasilis Mylonas <vasilismylonas@protonmail.com>
@@ -23,11 +23,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AVIUM_H
-#define AVIUM_H
+#ifndef AVIUM_OPTIONS_H
+#define AVIUM_OPTIONS_H
 
 #include "avium/core.h"
-#include "avium/options.h"
-#include "avium/string.h"
 
-#endif  // AVIUM_H
+typedef struct {
+    const char8_t* longOption;
+    char8_t shortOption;
+} AvmOption;
+
+#define AvmOption(longOption, shortOption) \
+    (AvmOption) { longOption, shortOption }
+
+AVMAPI bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option);
+AVMAPI AvmOptional AvmGetOption(int32_t argc, const char8_t** argv,
+                                AvmOption option);
+
+#endif  // AVIUM_OPTIONS_H
