@@ -25,7 +25,9 @@
 
 #include "avium/core.h"
 
-#define AVM_VTABLE_SIZE 32
+static const char8_t* const SelfNullMsg = "Parameter `self` was `NULL`.";
+static const char8_t* const ContentsNullMsg =
+    "Parameter `contents` was `NULL`.";
 
 struct Type {
     const function_t* vptr;
@@ -37,6 +39,7 @@ struct Type {
     { vptr, #T, sizeof(struct T), }
 
 enum {
+    AVM_VTABLE_SIZE = 32,
     FUNC_DTOR = 0,
     FUNC_GET_LENGTH,
     FUNC_GET_CAPACITY,

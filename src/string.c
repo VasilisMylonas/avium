@@ -8,10 +8,6 @@
 
 #define AVM_STRING_SIZE (sizeof(Type) + 2 * sizeof(size_t))
 
-static const char8_t* const selfNullMsg = "Parameter `self` was `NULL`.";
-static const char8_t* const contentsNullMsg =
-    "Parameter `contents` was `NULL`.";
-
 struct AvmString {
     Type type;
     size_t capacity;
@@ -23,20 +19,30 @@ static AvmString AvmStringToString(AvmString self) {
     return AvmStringFrom(self->buffer);
 }
 
-static function_t AvmStringVTable[AVM_VTABLE_SIZE] = {
+static AvmString AvmStringClone(AvmString self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    AvmString s = AvmString(self->capacity);
+    memcpy(s, self, self->capacity + AVM_STRING_SIZE + 1);
+    return s;
+}
+
+static const function_t AvmStringVTable[AVM_VTABLE_SIZE] = {
     [FUNC_GET_LENGTH] = (function_t)AvmStringGetLength,
     [FUNC_GET_CAPACITY] = (function_t)AvmStringGetCapacity,
     [FUNC_TO_STRING] = (function_t)AvmStringToString,
     [FUNC_CLONE] = (function_t)AvmStringClone,
 };
 
-static struct Type AvmStringType = {
+static const struct Type AvmStringType = {
     .size = AVM_STRING_SIZE,
     .name = "AvmString",
     .vptr = AvmStringVTable,
 };
 
-AvmString AvmStringNew(size_t capacity) {
+AvmString AvmString_ctor(size_t capacity) {
     AvmString s = malloc(AVM_STRING_SIZE + capacity + 1);
     s->capacity = capacity;
     s->type = &AvmStringType;
@@ -46,7 +52,7 @@ AvmString AvmStringNew(size_t capacity) {
 
 AvmString AvmStringFrom(const char8_t* contents) {
     if (contents == NULL) {
-        panic(contentsNullMsg);
+        panic(ContentsNullMsg);
     }
 
     size_t length = strlen(contents);
@@ -58,7 +64,7 @@ AvmString AvmStringFrom(const char8_t* contents) {
 
 char8_t* AvmStringAsPtr(AvmString self) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     return self->buffer;
@@ -66,21 +72,21 @@ char8_t* AvmStringAsPtr(AvmString self) {
 
 size_t AvmStringGetLength(AvmString self) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
     return self->length;
 }
 
 size_t AvmStringGetCapacity(AvmString self) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
     return self->capacity;
 }
 
 AvmString AvmStringAppendChar(AvmString self, char8_t character) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     if (self->length == self->capacity) {
@@ -96,7 +102,7 @@ AvmString AvmStringAppendChar(AvmString self, char8_t character) {
 
 AvmString AvmStringAppend(AvmString self, const char8_t* characters) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     if (characters == NULL) {
@@ -118,7 +124,7 @@ AvmString AvmStringAppend(AvmString self, const char8_t* characters) {
 
 AvmString AvmStringConcat(AvmString self, AvmString other) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     if (other == NULL) {
@@ -140,7 +146,7 @@ AvmString AvmStringConcat(AvmString self, AvmString other) {
 
 size_t AvmStringIndexOf(AvmString self, char8_t character) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -154,7 +160,7 @@ size_t AvmStringIndexOf(AvmString self, char8_t character) {
 
 size_t AvmStringLastIndexOf(AvmString self, char8_t character) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     for (size_t i = self->length; i > 0; i--) {
@@ -168,7 +174,7 @@ size_t AvmStringLastIndexOf(AvmString self, char8_t character) {
 
 size_t AvmStringFind(AvmString self, const char8_t* characters) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     char8_t* c = strstr(self->buffer, characters);
@@ -182,7 +188,7 @@ size_t AvmStringFind(AvmString self, const char8_t* characters) {
 
 size_t AvmStringFindLast(AvmString self, const char8_t* characters) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     size_t length = strlen(characters);
@@ -200,7 +206,7 @@ size_t AvmStringFindLast(AvmString self, const char8_t* characters) {
 size_t AvmStringReplace(AvmString self, char8_t oldCharacter,
                         char8_t newCharacter) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     size_t count = 0;
@@ -217,7 +223,7 @@ size_t AvmStringReplace(AvmString self, char8_t oldCharacter,
 
 void AvmStringToUpper(AvmString self) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -227,7 +233,7 @@ void AvmStringToUpper(AvmString self) {
 
 void AvmStringToLower(AvmString self) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -235,19 +241,9 @@ void AvmStringToLower(AvmString self) {
     }
 }
 
-AvmString AvmStringClone(AvmString self) {
-    if (self == NULL) {
-        panic(selfNullMsg);
-    }
-
-    AvmString s = AvmString(self->capacity);
-    memcpy(s, self, self->capacity + AVM_STRING_SIZE + 1);
-    return s;
-}
-
 void AvmStringUnsafeSetLength(AvmString self, size_t length) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     self->length = length;
@@ -255,7 +251,7 @@ void AvmStringUnsafeSetLength(AvmString self, size_t length) {
 
 char8_t AvmStringCharAt(AvmString self, size_t index) {
     if (self == NULL) {
-        panic(selfNullMsg);
+        panic(SelfNullMsg);
     }
 
     if (index < self->length) {

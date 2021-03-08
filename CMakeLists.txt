@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(Avium VERSION 0.1.0 DESCRIPTION "An object oriented C utility runtime.")
+project(Avium VERSION 0.1.0 DESCRIPTION "An object oriented C utility runtime." LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -43,10 +43,10 @@ set(AVM_COMPILER_OPTIONS
 )
 else()
 set(AVM_COMPILER_OPTIONS
-    -Wall # Enable all warnings.
-    -Wextra  # Enable extra warnings.
-    -Wpedantic
-    -Werror # Treat warnings as errors.
+    -Wall      # Enable all warnings.
+    -Wextra    # Enable extra warnings.
+    -Wpedantic # No extensions.
+    -Werror    # Treat warnings as errors.
 )
 endif()
 
@@ -61,10 +61,14 @@ configure_file(Languages.txt.in Languages.txt @ONLY)
 file(MAKE_DIRECTORY ${AVM_IMAGES_DIR})
 file(MAKE_DIRECTORY ${AVM_DOCS_DIR})
 
-add_custom_target(gen-docs ALL COMMAND natural-docs ${CMAKE_BINARY_DIR})
-add_custom_target(gen-tests ALL COMMAND
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test --avm-tap-output=${CMAKE_BINARY_DIR}/test/results.tap &&
-    cat ${CMAKE_BINARY_DIR}/test/results.tap | tapview DEPENDS src test)
+find_program(AVM_DOC_PROGRAM natural-docs REQUIRED)
+find_program(AVM_TAP_PROGRAM tapview REQUIRED)
+
+set(AVM_TAP_FILE ${CMAKE_BINARY_DIR}/test/results.tap)
+
+add_custom_target(gen-docs ALL COMMAND ${AVM_DOC_PROGRAM} ${CMAKE_BINARY_DIR})
+add_custom_target(gen-tests ALL COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test --avm-tap-output=${AVM_TAP_FILE} &&
+    cat ${AVM_TAP_FILE} | ${AVM_TAP_PROGRAM} DEPENDS src test)
 
 add_custom_target(gen-dist ALL COMMAND mkdir -p ${AVM_DIST_DIR} &&
                                     cp -r ${AVM_DOCS_DIR} ${AVM_DIST_DIR} &&

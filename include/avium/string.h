@@ -38,12 +38,12 @@
 
 /*
  * Macro: AvmString
- * Shorthand for AvmStringNew
+ * Shorthand for AvmString_ctor
  */
-#define AvmString(capacity) AvmStringNew(capacity)
+#define AvmString(capacity) AvmString_ctor(capacity)
 
 /*
- * Function: AvmStringNew
+ * Function: AvmString_ctor
  * Creates an AvmString with a specified capacity.
  *
  * Parameters:
@@ -52,7 +52,7 @@
  * Returns:
  * AvmString - The created AvmString.
  */
-AVMAPI AvmString AvmStringNew(size_t capacity);
+AVMAPI AvmString AvmString_ctor(size_t capacity);
 
 /*
  * Function: AvmStringFrom
@@ -210,18 +210,6 @@ AVMAPI void AvmStringToUpper(AvmString self);
  * self - The AvmString.
  */
 AVMAPI void AvmStringToLower(AvmString self);
-
-/*
- * Function: AvmStringClone
- * Creates an exact copy of an AvmString.
- *
- * Parameters:
- * self - The AvmString.
- *
- * Returns:
- * AvmString - The cloned AvmString.
- */
-AVMAPI AvmString AvmStringClone(AvmString self);
 
 /*
  * Function: AvmStringUnsafeSetLength
