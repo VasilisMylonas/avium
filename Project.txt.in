@@ -8,12 +8,27 @@
 # Project Information
 # ------------------------------------------------------------------------
 
-Title: Avium
-Subtitle: An object oriented C utility runtime.
+Title: @CMAKE_PROJECT_NAME@
+Subtitle: @CMAKE_PROJECT_DESCRIPTION@
+Copyright: @AVM_PROJECT_COPYRIGHT@
+Timestamp: @AVM_TIMESTAMP_FORMAT@
 
-Copyright: Copyright © 2021 Vasilis Mylonas
-
-Timestamp: yyyy-mm-dd
+# This is where you specify general information about your project.
+#
+# Title: [text]
+#    The name of your project.  (R) and (TM) will be converted to their
+#    respective symbols.
+#
+# Subtitle: [text]
+#    A subtitle for your project.
+#
+# Copyright: [text]
+#    The copyright notice for your project.  (C) will be converted to the
+#    copyright symbol.
+#
+# Timestamp: [text]
+#    Text explaining when the documentation was generated.  The following
+#    substitutions are performed:
 #    m     - Single digit month, when possible.  January is "1".
 #    mm    - Always double digit month.  January is "01".
 #    mon   - Short month word.  January is "Jan".
@@ -24,9 +39,6 @@ Timestamp: yyyy-mm-dd
 #    yy    - Double digit year.  2020 is "20".
 #    yyyy  - Four digit year.  2020 is "2020".
 #    year  - Four digit year.  2020 is "2020".
-
-
-# This is where you specify general information about your project.
 #
 # Style: [style]
 #    The style to apply to the generated documentation.  It can be the name of
@@ -37,8 +49,8 @@ Timestamp: yyyy-mm-dd
 # Source Code
 # ------------------------------------------------------------------------
 
-Source Folder: ../include
-   Name: include
+Source Folder: @AVM_INCLUDE_DIR@
+    Name: include
 
 
 # This is where you specify what files and folders Natural Docs should be
@@ -81,8 +93,7 @@ Source Folder: ../include
 # Images
 # ------------------------------------------------------------------------
 
-Image Folder: images
-
+Image Folder: @AVM_IMAGES_DIR@
 
 # This is where you specify additional folders Natural Docs should look for
 # images in.  When you put something like (see diagram.jpg) in a comment
@@ -105,8 +116,7 @@ Image Folder: images
 # Generated Documentation
 # ------------------------------------------------------------------------
 
-HTML Output Folder: ../build/html
-
+HTML Output Folder: @AVM_DOCS_DIR@
 
 # This is where you specify what kind of documentation you want Natural Docs
 # to build and where it should be put.  If you use any of these options on the
@@ -130,12 +140,19 @@ HTML Output Folder: ../build/html
 # Global Settings
 # ------------------------------------------------------------------------
 
-Tab Width: 4
-
-Documented Only: Yes
-Auto Group: Yes
+Tab Width: @AVM_TAB_WIDTH@
+Documented Only: yes
+Auto Group: yes
 
 # Other settings that apply to your entire project.  Settings specified on the
 # command line override the settings here.
-
-
+#
+# Tab Width: [width]
+#    The number of spaces tabs should be expanded to.
+#
+# Documented Only: [yes|no]
+#    Whether only documented code elements should appear in the output.
+#    Defaults to no.
+#
+# Auto Group: [yes|no]
+#    Whether groups should automatically apply to you code.  Defaults to yes.
