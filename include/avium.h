@@ -27,6 +27,7 @@
 #define AVIUM_H
 
 #include "avium/core.h"
+#include "avium/fmt.h"
 #include "avium/options.h"
 #include "avium/string.h"
 

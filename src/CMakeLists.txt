@@ -1,4 +1,4 @@
-set(AVM_SOURCE_FILES core.c string.c options.c)
+set(AVM_SOURCE_FILES core.c string.c options.c fmt.c)
 
 add_library(avium SHARED ${AVM_SOURCE_FILES})
 add_library(avium-static STATIC ${AVM_SOURCE_FILES})
