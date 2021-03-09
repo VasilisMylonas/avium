@@ -45,7 +45,7 @@ static const struct Type AvmStringType = {
 AvmString AvmString_ctor(size_t capacity) {
     AvmString s = malloc(AVM_STRING_SIZE + capacity + 1);
     s->capacity = capacity;
-    s->type = &AvmStringType;
+    s->type = (Type)&AvmStringType;
     s->length = 0;
     return s;
 }
@@ -259,4 +259,19 @@ char8_t AvmStringCharAt(AvmString self, size_t index) {
     }
 
     panic("Parameter `index` was greater than the string's length.");
+}
+
+void AvmStringReverse(AvmString self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    char8_t* start = AvmStringAsPtr(self);
+    char8_t* end = AvmStringAsPtr(self) + self->length - 1;
+
+    for (char8_t temp = 0; start < end; start++, end--) {
+        temp = *start;
+        *start = *end;
+        *end = temp;
+    }
 }

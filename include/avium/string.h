@@ -193,6 +193,8 @@ AVMAPI size_t AvmStringFindLast(AvmString self, const char8_t* characters);
 
 AVMAPI char8_t AvmStringCharAt(AvmString self, size_t index);
 
+AVMAPI void AvmStringReverse(AvmString self);
+
 /*
  * Function: AvmStringToUpper
  * Converts all characters in an AvmString to uppercase.

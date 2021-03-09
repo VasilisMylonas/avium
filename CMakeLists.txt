@@ -52,6 +52,7 @@ endif()
 
 include_directories(${AVM_INCLUDE_DIR})
 include_directories(${AVM_INCLUDE_OUTPUT_DIR})
+add_compile_options(${AVM_COMPILER_OPTIONS})
 
 configure_file(${AVM_INCLUDE_DIR}/avium/config.h.in ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h @ONLY)
 configure_file(Project.txt.in Project.txt @ONLY)
