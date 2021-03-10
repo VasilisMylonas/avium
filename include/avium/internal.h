@@ -29,6 +29,15 @@ static const char8_t* const SelfNullMsg = "Parameter `self` was `NULL`.";
 static const char8_t* const ContentsNullMsg =
     "Parameter `contents` was `NULL`.";
 
+static const char8_t* const SourceNullMsg = "Parameter `source` was `NULL`.";
+static const char8_t* const DestNullMsg = "Parameter `destination` was `NULL`.";
+static const char8_t* const FormatNullMsg = "Parameter `format` was `NULL`.";
+static const char8_t* const ArgsNullMsg = "Parameter `args` was `NULL`.";
+static const char8_t* const HandleNullMsg = "Parameter `handle` was `NULL`.";
+static const char8_t* const BaseOutOfRangeMsg =
+    "Parameter `base` was out of range`.";
+static const char8_t* const StringNullMsg = "Parameter `string` was `NULL`.";
+
 struct Type {
     const function_t* vptr;
     const char8_t* name;

@@ -105,3 +105,17 @@ AVMAPI object_t AvmUnwrap(AvmResult self);
 AVMAPI AvmOptional AvmSome(object_t value);
 AVMAPI AvmOptional AvmNone();
 AVMAPI bool AvmHasValue(AvmOptional optional);
+
+void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
+                size_t size) {
+    if (source == NULL) {
+        panic(SourceNullMsg);
+    }
+
+    if (destination == NULL) {
+        panic(DestNullMsg);
+    }
+
+    size_t trueLength = length > size ? size : length;
+    memcpy(destination, source, trueLength);
+}

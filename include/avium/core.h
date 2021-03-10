@@ -415,4 +415,18 @@ inline bool AvmHasValue(AvmOptional optional) {
     return optional != AVM_OPTIONAL_NONE;
 }
 
+/*
+ * Function: AvmMemCopy
+ * Copies memory from one block to another. This will copy length bytes from
+ * source to destination, but not more than size.
+ *
+ * Parameters:
+ * source - The memory block to copy from.
+ * length - The length of the source buffer.
+ * destination - The memory block to copy to.
+ * size - The size of the destination buffer.
+ */
+AVMAPI void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
+                       size_t size);
+
 #endif  // AVIUM_CORE_H
