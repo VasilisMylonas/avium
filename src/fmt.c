@@ -5,13 +5,10 @@
 #include <string.h>
 #include <uchar.h>
 
+#include "avium/internal.h"
 #include "avium/string.h"
 
 #define AVM_FLOAT_BUFFER_SIZE 128
-
-static const char8_t* const FormatNullMsg = "Parameter `format` was `NULL`.";
-static const char8_t* const ArgsNullMsg = "Parameter `args` was `NULL`.";
-static const char8_t* const HandleNullMsg = "Parameter `handle` was `NULL`.";
 
 typedef union {
     float value;
@@ -56,7 +53,17 @@ AvmString AvmItoa(intmax_t value) {
     return s;
 }
 
-AvmString AvmUtoa(uintmax_t value, uint8_t base) {
+AvmString AvmUtoa(uintmax_t value, NumericBase base) {
+    switch (base) {
+        case NB_BINARY:
+        case NB_OCTAL:
+        case NB_DECIMAL:
+        case NB_HEX:
+            break;
+        default:
+            panic(BaseOutOfRangeMsg);
+    }
+
     const bool isNegative = value < 0;
     if (isNegative) {
         value = -value;
@@ -158,7 +165,7 @@ AvmString AvmFtoa(double value) {
     return s;
 }
 
-AvmString AvmVSnprintf(const char8_t* format, size_t length, va_list args) {
+AvmString AvmVSprintf(const char8_t* format, va_list args) {
     if (format == NULL) {
         panic(FormatNullMsg);
     }
@@ -169,7 +176,7 @@ AvmString AvmVSnprintf(const char8_t* format, size_t length, va_list args) {
 
     AvmString s = AvmString(8);
 
-    for (size_t i = 0; i < length; i++) {
+    for (size_t i = 0; format[i] != '\0'; i++) {
         if (format[i] != '%') {
             s = AvmStringAppendChar(s, format[i]);
             continue;
@@ -262,18 +269,6 @@ AvmString AvmVSnprintf(const char8_t* format, size_t length, va_list args) {
     return s;
 }
 
-AvmString AvmVSprintf(const char8_t* format, va_list args) {
-    if (format == NULL) {
-        panic(FormatNullMsg);
-    }
-
-    if (args == NULL) {
-        panic(ArgsNullMsg);
-    }
-
-    return AvmVSnprintf(format, strlen(format), args);
-}
-
 void AvmVFprintf(void* handle, const char8_t* format, va_list args) {
     if (handle == NULL) {
         panic(HandleNullMsg);
@@ -292,8 +287,127 @@ void AvmVErrorf(const char8_t* format, va_list args) {
     AvmVFprintf(stderr, format, args);
 }
 
-AVMAPI AvmString AvmSnprintf(const char8_t* format, size_t length, ...);
+AVMAPI void AvmScanf(const char8_t* format, ...);
+AVMAPI void AvmSscanf(AvmString string, const char8_t* format, ...);
 AVMAPI AvmString AvmSprintf(const char8_t* format, ...);
 AVMAPI void AvmFprintf(void* handle, const char8_t* format, ...);
 AVMAPI void AvmPrintf(const char8_t* format, ...);
 AVMAPI void AvmErrorf(const char8_t* format, ...);
+
+static void SkipWord(char8_t* buffer, size_t* index) {
+    while (buffer[*index] != ' ' && buffer[*index] != '\0') {
+        (*index)++;
+    }
+}
+
+#define UINT_CASE(base)          \
+    char8_t* start = &buffer[j]; \
+    SkipWord(buffer, &j);        \
+    char8_t* end = &buffer[j];   \
+    *((uint64_t*)va_arg(args, uint64_t*)) = strtoull(start, &end, base)
+
+void AvmVFscanf(void* handle, const char8_t* format, va_list args) {
+    if (handle == NULL) {
+        panic(HandleNullMsg);
+    }
+
+    if (format == NULL) {
+        panic(FormatNullMsg);
+    }
+
+    AvmString s = AvmString(128);
+
+    defer(s) {
+        fgets(AvmStringAsPtr(s), 128, handle);
+        AvmVSscanf(s, format, args);
+    }
+}
+
+void AvmVScanf(const char8_t* format, va_list args) {
+    if (format == NULL) {
+        panic(FormatNullMsg);
+    }
+
+    AvmVFscanf(stdin, format, args);
+}
+
+void AvmVSscanf(AvmString string, const char8_t* format, va_list args) {
+    if (string == NULL) {
+        panic(StringNullMsg);
+    }
+
+    if (format == NULL) {
+        panic(FormatNullMsg);
+    }
+
+    char8_t* buffer = AvmStringAsPtr(string);
+
+    for (size_t i = 0, j = 0; format[i] != '\0'; i++) {
+        if (format[i] != '%') {
+            continue;
+        }
+
+        i++;
+
+        switch (format[i]) {
+            case AVM_FMT_CHAR: {
+                char8_t* c = va_arg(args, char8_t*);
+                *c = buffer[j];
+                j++;
+                break;
+            }
+            case AVM_FMT_BOOL: {
+                *((bool*)va_arg(args, bool*)) =
+                    strncmp(&buffer[j], "true", 4) == 0;
+                SkipWord(buffer, &j);
+                break;
+            }
+            case AVM_FMT_INT_DECIMAL: {
+                char8_t* start = &buffer[j];
+                SkipWord(buffer, &j);
+                char8_t* end = &buffer[j];
+                *((int64_t*)va_arg(args, int64_t*)) = strtoll(start, &end, 10);
+                break;
+            }
+            case AVM_FMT_INT_BINARY: {
+                UINT_CASE(2);
+                break;
+            }
+            case AVM_FMT_INT_OCTAL: {
+                UINT_CASE(8);
+                break;
+            }
+            case AVM_FMT_INT_SIZE:
+            case AVM_FMT_INT_UNSIGNED: {
+                UINT_CASE(10);
+                break;
+            }
+            case AVM_FMT_POINTER:
+            case AVM_FMT_INT_HEX: {
+                UINT_CASE(16);
+                break;
+            }
+            case AVM_FMT_STRING: {
+                char8_t* s = va_arg(args, char8_t*);
+                size_t start = j;
+                SkipWord(buffer, &j);
+
+                size_t capacity = va_arg(args, size_t);
+                size_t length = j - start;
+
+                AvmMemCopy((uint8_t*)&buffer[start], length, (uint8_t*)s,
+                           capacity);
+
+                if (length < capacity) {
+                    s[length] = '\0';
+                } else {
+                    s[capacity - 1] = '\0';
+                }
+            }
+            default:
+                break;
+        }
+
+        j++;
+    }
+}
