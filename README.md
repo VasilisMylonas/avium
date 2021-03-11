@@ -1,8 +1,3 @@
----
-author: Vasilis Mylonas
-title: Avium README.md file
----
-
 ![Avium logo](images/avium-logo-transparent.png)
 ![License badge](https://img.shields.io/github/license/VasilisMylonas/avium) ![Commit activity badge](https://img.shields.io/github/commit-activity/m/VasilisMylonas/avium) ![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium) ![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium) ![Discord server badge](https://img.shields.io/discord/810959563469357057)
 
