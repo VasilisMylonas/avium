@@ -37,6 +37,7 @@ static const char8_t* const HandleNullMsg = "Parameter `handle` was `NULL`.";
 static const char8_t* const BaseOutOfRangeMsg =
     "Parameter `base` was out of range`.";
 static const char8_t* const StringNullMsg = "Parameter `string` was `NULL`.";
+static const char8_t* const OtherNullMsg = "Parameter `other` was `NULL`.";
 
 struct Type {
     const function_t* vptr;

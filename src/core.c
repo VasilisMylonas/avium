@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "avium/fmt.h"
 #include "avium/internal.h"
 
 Type AvmObjectType(object_t self) {
@@ -118,4 +119,78 @@ void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
 
     size_t trueLength = length > size ? size : length;
     memcpy(destination, source, trueLength);
+}
+
+struct AvmVersion {
+    Type type;
+    uint32_t major;
+    uint32_t minor;
+    uint32_t patch;
+    char8_t tag;
+};
+
+AvmString AvmVersionToString(AvmVersion self) {
+    return AvmSprintf("%i.%i.%i-%c", self->major, self->minor, self->patch,
+                      self->tag);
+}
+
+static const function_t AvmVersionVTable[AVM_VTABLE_SIZE] = {
+    [FUNC_TO_STRING] = (function_t)AvmVersionToString,
+};
+
+static const struct Type AvmVersionType = TYPE(AvmVersion, AvmVersionVTable);
+
+AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
+                           char8_t tag) {
+    AvmVersion version = malloc(sizeof(struct AvmVersion));
+    version->type = (Type)&AvmVersionType;
+    version->major = major;
+    version->minor = minor;
+    version->patch = patch;
+    version->tag = tag;
+    return version;
+}
+
+bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    if (other == NULL) {
+        panic(OtherNullMsg);
+    }
+
+    return self->major == other->major;
+}
+
+uint32_t AvmVersionGetMajor(AvmVersion self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->major;
+}
+
+uint32_t AvmVersionGetMinor(AvmVersion self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->minor;
+}
+
+uint32_t AvmVersionGetPatch(AvmVersion self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->patch;
+}
+
+char8_t AvmVersionGetTag(AvmVersion self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->tag;
 }

@@ -429,4 +429,17 @@ inline bool AvmHasValue(AvmOptional optional) {
 AVMAPI void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
                        size_t size);
 
+typedef struct AvmVersion* AvmVersion;
+
+#define AvmVersion(major, minor, patch, tag) \
+    AvmVersion_ctor(major, minor, patch, tag)
+
+AVMAPI AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor,
+                                  uint32_t patch, char8_t tag);
+AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
+AVMAPI uint32_t AvmVersionGetMajor(AvmVersion self);
+AVMAPI uint32_t AvmVersionGetMinor(AvmVersion self);
+AVMAPI uint32_t AvmVersionGetPatch(AvmVersion self);
+AVMAPI char8_t AvmVersionGetTag(AvmVersion self);
+
 #endif  // AVIUM_CORE_H

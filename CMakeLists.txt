@@ -13,6 +13,8 @@ set(AVM_INCLUDE_OUTPUT_DIR ${CMAKE_BINARY_DIR}/include)
 set(AVM_DOCS_DIR ${CMAKE_BINARY_DIR}/docs)
 set(AVM_IMAGES_DIR ${CMAKE_BINARY_DIR}/images)
 set(AVM_TAB_WIDTH 4)
+set(AVM_TAP_FILE ${CMAKE_BINARY_DIR}/test/results.tap)
+set(AVM_TESTS_FILE ${CMAKE_BINARY_DIR}/test/results.html)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 set(AVM_DIST_DIR ${CMAKE_SOURCE_DIR}/dist/linux)
@@ -64,12 +66,14 @@ file(MAKE_DIRECTORY ${AVM_DOCS_DIR})
 
 find_program(AVM_DOC_PROGRAM natural-docs REQUIRED)
 find_program(AVM_TAP_PROGRAM tapview REQUIRED)
-
-set(AVM_TAP_FILE ${CMAKE_BINARY_DIR}/test/results.tap)
+find_program(AVM_TAP2_PROGRAM pytap2 REQUIRED)
 
 add_custom_target(gen-docs ALL COMMAND ${AVM_DOC_PROGRAM} ${CMAKE_BINARY_DIR})
-add_custom_target(gen-tests ALL COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test --avm-tap-output=${AVM_TAP_FILE} &&
-    cat ${AVM_TAP_FILE} | ${AVM_TAP_PROGRAM} DEPENDS src test)
+add_custom_target(gen-tests ALL COMMAND
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test --avm-tap-output=${AVM_TAP_FILE} &&
+    cat ${AVM_TAP_FILE} | ${AVM_TAP_PROGRAM} &&
+    ${AVM_TAP2_PROGRAM} html ${AVM_TAP_FILE} > ${AVM_TESTS_FILE} &&
+    x-www-browser ${AVM_TESTS_FILE} DEPENDS src test)
 
 add_custom_target(gen-dist ALL COMMAND mkdir -p ${AVM_DIST_DIR} &&
                                     cp -r ${AVM_DOCS_DIR} ${AVM_DIST_DIR} &&
