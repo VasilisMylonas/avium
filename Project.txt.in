@@ -8,7 +8,7 @@
 # Project Information
 # ------------------------------------------------------------------------
 
-Title: @CMAKE_PROJECT_NAME@
+Title: Avium
 Subtitle: @CMAKE_PROJECT_DESCRIPTION@
 Copyright: @AVM_PROJECT_COPYRIGHT@
 Timestamp: @AVM_TIMESTAMP_FORMAT@
@@ -116,7 +116,7 @@ Image Folder: @AVM_IMAGES_DIR@
 # Generated Documentation
 # ------------------------------------------------------------------------
 
-HTML Output Folder: @AVM_DOCS_DIR@
+HTML Output Folder: @AVM_DOC_DIR@
 
 # This is where you specify what kind of documentation you want Natural Docs
 # to build and where it should be put.  If you use any of these options on the

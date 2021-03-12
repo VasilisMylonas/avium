@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "avium.h"
+#include "avium/avium.h"
 #include "avium/testing.h"
 
 static void AvmTestString() {
