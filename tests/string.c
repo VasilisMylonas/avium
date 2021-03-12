@@ -4,8 +4,9 @@
 #include "avium/avium.h"
 #include "avium/testing.h"
 
-static void AvmTestString() {
-    Plan(22);
+int main() {
+    AvmTestSetOutput(stdout);
+    Plan(25);
 
     AvmString s = AvmString(20);
     Ok(s != NULL, "Object not null.");
@@ -20,23 +21,28 @@ static void AvmTestString() {
     Ok(AvmStringGetCapacity(s) == AVM_STRING_GROWTH_FACTOR * 24,
        "Capacity is correct.");
     Ok(AvmStringGetLength(s) == 24, "Length is correct.");
-    Ok(AvmStringAsPtr(s)[0] == 'H' && AvmStringAsPtr(s)[23] == '!',
-       "Contents are correct.");
-    Ok(AvmStringIndexOf(s, 'W') == 6, "Correct first index returned.");
-    Ok(AvmStringLastIndexOf(s, 'W') == 18, "Correct last index returned.");
+    Ok(AvmStringAsPtr(s)[0] == 'H', "First char is 'H'.");
+    Ok(AvmStringAsPtr(s)[23] == '!', "Last char is '!'.");
+    Ok(AvmStringIndexOf(s, 'W') == 6, "First 'W' is at index 6.");
+    Ok(AvmStringLastIndexOf(s, 'W') == 18, "Last 'W' is at index 18.");
     Ok(AvmStringCharAt(s, 2) == 'l', "Correct char returned.");
-    Ok(AvmStringFind(s, "World") == 6,
-       "Correct first substring index returned.");
-    Ok(AvmStringFindLast(s, "World") == 18,
-       "Correct last substring index returned.");
-    Ok(AvmStringIndexOf(s, 'x') == AVM_STRING_NPOS &&
-           AvmStringLastIndexOf(s, 'x') == AVM_STRING_NPOS,
-       "Npos returned if char not found.");
-    Ok(AvmStringFind(s, "xxl") == AVM_STRING_NPOS &&
-           AvmStringFindLast(s, "xxl") == AVM_STRING_NPOS,
-       "Npos returned if substring not found.");
+    Ok(AvmStringFind(s, "World") == 6, "First 'World' is at index 6.");
+    Ok(AvmStringFindLast(s, "World") == 18, "Last 'World' is at index 18.");
+
+    Ok(AvmStringIndexOf(s, 'x') == AVM_STRING_NPOS,
+       "No first occurrence of 'x'.");
+
+    Ok(AvmStringLastIndexOf(s, 'x') == AVM_STRING_NPOS,
+       "No last occurrence of 'x'.");
+
+    Ok(AvmStringFind(s, "xxl") == AVM_STRING_NPOS,
+       "No first occurrence of 'xxl'.");
+
+    Ok(AvmStringFindLast(s, "xxl") == AVM_STRING_NPOS,
+       "No last occurrence of 'xxl'.");
 
     Ok(AvmStringReplace(s, 'o', 'a') == 4, "Correct number of chars replaced.");
+
     Ok(strcmp(AvmStringAsPtr(s), "Hella Warld Wardy Warld!") == 0,
        "All chars replaced.");
 
@@ -57,16 +63,4 @@ static void AvmTestString() {
 
     Todo("Concat works.");
     Todo("Cloned AvmString.");
-}
-
-int32_t main(int32_t argc, const char8_t** argv) {
-    AvmOption option = AvmOption("avm-tap-output", 0);
-    AvmOptional opt = AvmGetOption(argc, argv, option);
-
-    if (AvmHasValue(opt)) {
-        FILE* f = fopen((const char8_t*)opt, "w");
-        AvmTestSetOutput(f);
-        AvmTestString();
-        fclose(f);
-    }
 }
