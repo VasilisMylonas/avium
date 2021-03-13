@@ -1,3 +1,6 @@
+# Include files.
+
+# All include files to be distributed.
 set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
     ${AVM_INCLUDE_DIR}/avium/avium.h
@@ -7,26 +10,28 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_DIR}/avium/string.h
     ${AVM_INCLUDE_DIR}/avium/testing.h)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+# Platform definitions.
+if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
     set(AVM_LINUX ON)
-endif()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
     set(AVM_DARWIN ON)
-endif()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES Windows)
     set(AVM_WIN32 ON)
+else()
+    message(FATAL_ERROR "Unknown platform.")
 endif()
 
+# Compiler definitions.
 if(MSVC)
     set(AVM_MSVC ON)
 else()
     set(AVM_GNU ON)
 endif()
 
+# Process header config file.
 configure_file(${AVM_INCLUDE_DIR}/${CMAKE_PROJECT_NAME}/config.h.in
                ${AVM_INCLUDE_OUTPUT_DIR}/${CMAKE_PROJECT_NAME}/config.h @ONLY)
 
+# Installation.
 install(FILES ${AVM_INCLUDE_FILES}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME})

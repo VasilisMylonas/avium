@@ -17,8 +17,11 @@ set(AVM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(AVM_INCLUDE_OUTPUT_DIR ${CMAKE_BINARY_DIR}/include)
 
 if (MSVC)
-    add_compile_options(/Wall) # Enable all warnings.
-    add_compile_options(/WX) # Treat warnings as errors.
+    # Enable warnings for MSVC and treat them as errors.
+    add_compile_options(/Wall)
+    add_compile_options(/WX)
+
+    # Disable silly warnings.
     add_compile_options(/wd4710) # Function not inlined.
     add_compile_options(/wd4201) # Nameless struct/union.
     add_compile_options(/wd5045) # Spectre mitigation.
@@ -27,15 +30,18 @@ if (MSVC)
     add_compile_options(/wd4200) # Zero-sized array in struct/union.
     add_compile_options(/wd4063) # Invalid value for switch of enum.
 else()
+    # Enable warnings for GCC compatible compilers.
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUTPUT_DIR})
 
+# Include subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(docs)
 
+# Tests.
 if(${BUILD_TESTING})
     file(GLOB AVM_TEST_FILES tests/*.c)
     foreach(FILE ${AVM_TEST_FILES})
