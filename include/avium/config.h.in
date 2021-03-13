@@ -2,21 +2,17 @@
 #define AVIUM_CONFIG_H
 
 // clang-format off
-#define AVM_VERSION_MAJOR @Avium_VERSION_MAJOR@
-#define AVM_VERSION_MINOR @Avium_VERSION_MINOR@
-#define AVM_VERSION_PATCH @Avium_VERSION_PATCH@
+#define AVM_VERSION_MAJOR @avium_VERSION_MAJOR@
+#define AVM_VERSION_MINOR @avium_VERSION_MINOR@
+#define AVM_VERSION_PATCH @avium_VERSION_PATCH@
 #define AVM_VERSION_BUILD 0
 // clang-format on
 
 #cmakedefine AVM_WIN32
 #cmakedefine AVM_LINUX
 #cmakedefine AVM_DARWIN
-
-#ifdef _MSC_VER
-#    define AVM_MSVC
-#else
-#    define AVM_GENERAL
-#endif  // _MSC_VER
+#cmakedefine AVM_MSVC
+#cmakedefine AVM_GNU
 
 #ifdef AVM_MSVC
 #    ifdef AVM_EXPORT
