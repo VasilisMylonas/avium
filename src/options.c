@@ -34,8 +34,8 @@ static const char* OptionGetArgument(const char* arg, size_t length) {
     return arg + offset + length + 1;
 }
 
-bool AvmHasOption(int32_t argc, const char** argv, AvmOption option) {
-    for (int32_t i = 0; i < argc; i++) {
+bool AvmHasOption(int argc, const char** argv, AvmOption option) {
+    for (int i = 0; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             return true;
         }
@@ -44,10 +44,10 @@ bool AvmHasOption(int32_t argc, const char** argv, AvmOption option) {
     return false;
 }
 
-AvmOptional AvmGetOption(int32_t argc, const char** argv, AvmOption option) {
+AvmOptional AvmGetOption(int argc, const char** argv, AvmOption option) {
     const size_t length = strlen(option.longOption);
 
-    for (int32_t i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             if (OptionHasArgument(argv[i], length)) {
                 return AvmSome((object)OptionGetArgument(argv[i], length));
