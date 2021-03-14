@@ -10,11 +10,14 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_DIR}/avium/string.h)
 
 # Platform definitions.
-if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
+if (CMAKE_SYSTEM_NAME MATCHES Linux)
+    message("Building for Linux.")
     set(AVM_LINUX ON)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
+elseif(CMAKE_SYSTEM_NAME MATCHES Darwin)
+    message("Building for Darwin.")
     set(AVM_DARWIN ON)
-elseif (${CMAKE_SYSTEM_NAME} MATCHES Windows)
+elseif (CMAKE_SYSTEM_NAME MATCHES Windows)
+    message("Building for Win32.")
     set(AVM_WIN32 ON)
 else()
     message(FATAL_ERROR "Unknown platform.")

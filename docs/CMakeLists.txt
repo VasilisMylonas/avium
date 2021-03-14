@@ -13,11 +13,21 @@ set(AVM_TAB_WIDTH 4)
 # Additional files to be included in the documentation.
 set(AVM_DOC_FILES
     ${CMAKE_SOURCE_DIR}/README.md
+    ${CMAKE_SOURCE_DIR}/CONTRIBUTING.md
+    ${CMAKE_SOURCE_DIR}/INSTALL.md
+    ${CMAKE_SOURCE_DIR}/AUTHORS
     ${CMAKE_SOURCE_DIR}/COPYING
     ${CMAKE_SOURCE_DIR}/COPYING.LESSER)
 
 # We use NaturalDocs for documentation.
-find_program(AVM_DOC_PROGRAM natural-docs REQUIRED)
+find_program(AVM_DOC_PROGRAM natural-docs)
+
+if(AVM_DOC_PROGRAM MATCHES "AVM_DOC_PROGRAM-NOTFOUND")
+    message(WARNING "natural-docs not found.")
+else()
+    # Custom 'docs' target for documentation generation.
+    add_custom_target(docs ALL COMMAND ${AVM_DOC_PROGRAM} ${AVM_DOC_OUTPUT_DIR})
+endif()
 
 # Create required directories.
 file(MAKE_DIRECTORY ${AVM_DOC_OUTPUT_DIR})
@@ -33,6 +43,3 @@ configure_file(Languages.txt.in Languages.txt @ONLY)
 install(FILES ${AVM_DOC_FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(DIRECTORY ${AVM_HTML_OUTPUT_DIR} DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(DIRECTORY ${AVM_IMAGE_OUTPUT_DIR} DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-# Custom 'docs' target for documentation generation.
-add_custom_target(docs ALL COMMAND ${AVM_DOC_PROGRAM} ${AVM_DOC_OUTPUT_DIR})
