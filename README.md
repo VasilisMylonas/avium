@@ -9,15 +9,21 @@ An object oriented C utility runtime.
 
 Avium is a library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object oriented utility library, then Avium might be for you.
 
-## Note
+### Note
 
 The API is currently not stable and will be subject to change.
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Installation
+
+See [INSTALL.md](./INSTALL.md).
+
 ## Authors
 
--   Vasilis Mylonas
-
-_Feel free to expand this list._
+See [AUTHORS](./AUTHORS).
 
 ## License
 
