@@ -29,9 +29,29 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 
 #include "avium/config.h"
+
+#ifndef static_assert
+#    define static_assert _Static_assert
+#endif  // static_assert
+
+typedef AVM_PTR_TYPE ptr;
+typedef unsigned AVM_PTR_TYPE uptr;
+
+typedef AVM_LONG_TYPE _long;
+typedef unsigned AVM_LONG_TYPE ulong;
+
+typedef unsigned int uint;
+typedef unsigned short ushort;
+typedef unsigned char byte;
+
+typedef const char* str;
+
+static_assert(sizeof(ptr) == sizeof(void*), "");
+static_assert(sizeof(uptr) == sizeof(void*), "");
+static_assert(sizeof(_long) == 8, "");
+static_assert(sizeof(ulong) == 8, "");
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
@@ -61,16 +81,10 @@
          AVM_CONCAT(avmDeferCounter, __LINE__)++, AvmDestroy(x))
 
 /*
- * Type: char8_t
- * An 8 bit character type.
- */
-typedef char char8_t;
-
-/*
- * Type: function_t
+ * Type: AvmFunction
  * An unknown function type.
  */
-typedef void (*function_t)(void);
+typedef void (*AvmFunction)(void);
 
 #ifdef AVM_MSVC
 #    define never __declspec(noreturn) void
@@ -115,10 +129,10 @@ typedef struct _AvmType* AvmType;
 typedef struct _AvmString* AvmString;
 
 /*
- * Type: object_t
+ * Type: object
  * An unknown object type.
  */
-typedef void* object_t;
+typedef void* object;
 
 /*
  * Function: AvmObjectType
@@ -130,7 +144,7 @@ typedef void* object_t;
  * Returns:
  * AvmType - The type information of the object.
  */
-AVMAPI AvmType AvmObjectType(object_t self);
+AVMAPI AvmType AvmObjectType(object self);
 
 /*
  * Function: AvmObjectName
@@ -140,9 +154,9 @@ AVMAPI AvmType AvmObjectType(object_t self);
  * self - The object.
  *
  * Returns:
- * const char8_t* - The object's name.
+ * str - The object's name.
  */
-AVMAPI const char8_t* AvmObjectName(object_t self);
+AVMAPI str AvmObjectName(object self);
 
 /*
  * Function: AvmObjectSize
@@ -154,7 +168,7 @@ AVMAPI const char8_t* AvmObjectName(object_t self);
  * Returns:
  * size_t - The object's size.
  */
-AVMAPI size_t AvmObjectSize(object_t self);
+AVMAPI size_t AvmObjectSize(object self);
 
 /*
  * Function: AvmObjectEq
@@ -167,16 +181,16 @@ AVMAPI size_t AvmObjectSize(object_t self);
  * Returns:
  * bool - true if the two objects are equal, otherwise false.
  */
-AVMAPI bool AvmObjectEq(object_t lhs, object_t rhs);
+AVMAPI bool AvmObjectEq(object lhs, object rhs);
 
 /*
  * Function: AvmDestroy
  * Destroys and object and deallocates its memory.
  *
  * Parameters:
- * object - The object.
+ * self - The object.
  */
-AVMAPI void AvmDestroy(object_t object);
+AVMAPI void AvmDestroy(object self);
 
 /*
  * Function: AvmClone
@@ -186,45 +200,45 @@ AVMAPI void AvmDestroy(object_t object);
  * object - The object.
  *
  * Returns:
- * object_t - The cloned object.
+ * self - The cloned object.
  */
-AVMAPI object_t AvmClone(object_t object);
+AVMAPI object AvmClone(object self);
 
 /*
  * Function: AvmToString
  * Creates a string representation of an object.
  *
  * Parameters:
- * object - The object.
+ * self - The object.
  *
  * Returns:
  * AvmString - The string representation of the object.
  */
-AVMAPI AvmString AvmToString(object_t object);
+AVMAPI AvmString AvmToString(object self);
 
 /*
  * Function: AvmGetLength
  * Gets the length of a container.
  *
  * Parameters:
- * object - The container.
+ * self - The container.
  *
  * Returns:
  * size_t - The length of the container.
  */
-AVMAPI size_t AvmGetLength(object_t object);
+AVMAPI size_t AvmGetLength(object self);
 
 /*
  * Function: AvmGetCapacity
  * Gets the capacity of a container.
  *
  * Parameters:
- * object - The container.
+ * self - The container.
  *
  * Returns:
  * size_t - The capacity of the container.
  */
-AVMAPI size_t AvmGetCapacity(object_t object);
+AVMAPI size_t AvmGetCapacity(object self);
 
 /*
  * Function: AvmVirtualFunctionTrap
@@ -237,7 +251,7 @@ AVMAPI size_t AvmGetCapacity(object_t object);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, AvmType type);
+AVMAPI never AvmVirtualFunctionTrap(str function, AvmType type);
 
 /*
  * Function: AvmPanic
@@ -252,8 +266,7 @@ AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, AvmType type);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmPanic(const char8_t* message, const char8_t* function,
-                      const char8_t* file, uint32_t line);
+AVMAPI never AvmPanic(str message, str function, str file, uint line);
 
 /*
  * Macro: panic
@@ -274,7 +287,7 @@ AVMAPI never AvmPanic(const char8_t* message, const char8_t* function,
  */
 typedef union {
     AvmErrorKind kind;
-    object_t value;
+    object value;
 } AvmResult;
 
 /*
@@ -294,7 +307,7 @@ typedef union {
  * Note:
  * This function is inline.
  */
-inline AvmResult AvmSuccess(object_t value) {
+inline AvmResult AvmSuccess(object value) {
     return (AvmResult){.value = value};
 }
 
@@ -352,7 +365,7 @@ inline bool AvmIsFailure(AvmResult self) {
  * self - The AvmResult.
  *
  * Returns:
- * object_t - The object contained in the AvmResult.
+ * object - The object contained in the AvmResult.
  *
  * See also:
  * <AvmSuccess>
@@ -361,7 +374,7 @@ inline bool AvmIsFailure(AvmResult self) {
  * Note:
  * This function is inline.
  */
-inline object_t AvmUnwrap(AvmResult self) {
+inline object AvmUnwrap(AvmResult self) {
     if (AvmIsFailure(self)) {
         panic("Tried to unwrap a result describing failure.");
     }
@@ -373,7 +386,7 @@ inline object_t AvmUnwrap(AvmResult self) {
  * Struct: AvmOptional
  * A type which may contain a value.
  */
-typedef uintptr_t AvmOptional;
+typedef uptr AvmOptional;
 
 /*
  * Function: AvmSome
@@ -388,8 +401,8 @@ typedef uintptr_t AvmOptional;
  * Note:
  * This function is inline.
  */
-inline AvmOptional AvmSome(object_t value) {
-    if (((uintptr_t)value) == AVM_OPTIONAL_NONE) {
+inline AvmOptional AvmSome(object value) {
+    if (((uptr)value) == AVM_OPTIONAL_NONE) {
         panic("Tried to create an AvmOptional with an invalid value.");
     }
     return (AvmOptional)value;
@@ -432,7 +445,7 @@ inline bool AvmHasValue(AvmOptional optional) {
  * destination - The memory block to copy to.
  * size - The size of the destination buffer.
  */
-AVMAPI void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
+AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
 typedef struct _AvmVersion* AvmVersion;
@@ -440,12 +453,11 @@ typedef struct _AvmVersion* AvmVersion;
 #define AvmVersion(major, minor, patch, tag) \
     AvmVersion_ctor(major, minor, patch, tag)
 
-AVMAPI AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor,
-                                  uint32_t patch, char8_t tag);
+AVMAPI AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag);
 AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
-AVMAPI uint32_t AvmVersionGetMajor(AvmVersion self);
-AVMAPI uint32_t AvmVersionGetMinor(AvmVersion self);
-AVMAPI uint32_t AvmVersionGetPatch(AvmVersion self);
-AVMAPI char8_t AvmVersionGetTag(AvmVersion self);
+AVMAPI uint AvmVersionGetMajor(AvmVersion self);
+AVMAPI uint AvmVersionGetMinor(AvmVersion self);
+AVMAPI uint AvmVersionGetPatch(AvmVersion self);
+AVMAPI char AvmVersionGetTag(AvmVersion self);
 
 #endif  // AVIUM_CORE_H

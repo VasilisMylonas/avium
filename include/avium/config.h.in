@@ -6,6 +6,8 @@
 #define AVM_VERSION_MINOR @avium_VERSION_MINOR@
 #define AVM_VERSION_PATCH @avium_VERSION_PATCH@
 #define AVM_VERSION_BUILD 0
+#define AVM_PTR_TYPE @AVM_PTR_TYPE@
+#define AVM_LONG_TYPE @AVM_LONG_TYPE@
 // clang-format on
 
 #cmakedefine AVM_WIN32

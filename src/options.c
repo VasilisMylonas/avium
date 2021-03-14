@@ -2,16 +2,16 @@
 
 #include <string.h>
 
-static inline bool IsLongOption(const char8_t* arg) {
+static inline bool IsLongOption(str arg) {
     return arg[0] == '-' && arg[1] == '-' && arg[2] != '-';
 }
 
-static inline bool IsShortOption(const char8_t* arg) {
+static inline bool IsShortOption(str arg) {
     return arg[0] == '-' && arg[1] != '-';
 }
 
-static bool IsOption(const char8_t* arg, char8_t shortOption,
-                     const char8_t* longOption) {
+static bool IsOption(str arg, char shortOption,
+                     str longOption) {
     if (shortOption != 0 && IsShortOption(arg)) {
         return arg[1] == shortOption;
     }
@@ -23,19 +23,19 @@ static bool IsOption(const char8_t* arg, char8_t shortOption,
     return false;
 }
 
-static bool OptionHasArgument(const char8_t* arg, size_t length) {
+static bool OptionHasArgument(str arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
 
     return arg[offset + length] == '=' && arg[offset + length + 1] != '\0';
 }
 
-static const char8_t* OptionGetArgument(const char8_t* arg, size_t length) {
+static str OptionGetArgument(str arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
     return arg + offset + length + 1;
 }
 
-bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option) {
-    for (int32_t i = 0; i < argc; i++) {
+bool AvmHasOption(int argc, str* argv, AvmOption option) {
+    for (int i = 0; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             return true;
         }
@@ -44,13 +44,13 @@ bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option) {
     return false;
 }
 
-AvmOptional AvmGetOption(int32_t argc, const char8_t** argv, AvmOption option) {
+AvmOptional AvmGetOption(int argc, str* argv, AvmOption option) {
     const size_t length = strlen(option.longOption);
 
-    for (int32_t i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             if (OptionHasArgument(argv[i], length)) {
-                return AvmSome((object_t)OptionGetArgument(argv[i], length));
+                return AvmSome((object)OptionGetArgument(argv[i], length));
             }
         }
     }

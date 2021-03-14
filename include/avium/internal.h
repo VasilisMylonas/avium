@@ -25,31 +25,30 @@
 
 #include "avium/core.h"
 
-static const char8_t* const SelfNullMsg = "Parameter `self` was `NULL`.";
-static const char8_t* const ContentsNullMsg =
-    "Parameter `contents` was `NULL`.";
+static str const SelfNullMsg = "Parameter `self` was `NULL`.";
+static str const ContentsNullMsg = "Parameter `contents` was `NULL`.";
 
-static const char8_t* const SourceNullMsg = "Parameter `source` was `NULL`.";
-static const char8_t* const DestNullMsg = "Parameter `destination` was `NULL`.";
-static const char8_t* const FormatNullMsg = "Parameter `format` was `NULL`.";
-static const char8_t* const ArgsNullMsg = "Parameter `args` was `NULL`.";
-static const char8_t* const HandleNullMsg = "Parameter `handle` was `NULL`.";
-static const char8_t* const BaseOutOfRangeMsg =
+static str const SourceNullMsg = "Parameter `source` was `NULL`.";
+static str const DestNullMsg = "Parameter `destination` was `NULL`.";
+static str const FormatNullMsg = "Parameter `format` was `NULL`.";
+static str const ArgsNullMsg = "Parameter `args` was `NULL`.";
+static str const HandleNullMsg = "Parameter `handle` was `NULL`.";
+static str const BaseOutOfRangeMsg =
     "Parameter `base` was out of range`.";
-static const char8_t* const StringNullMsg = "Parameter `string` was `NULL`.";
-static const char8_t* const OtherNullMsg = "Parameter `other` was `NULL`.";
+static str const StringNullMsg = "Parameter `string` was `NULL`.";
+static str const OtherNullMsg = "Parameter `other` was `NULL`.";
 
 struct _AvmType {
-    const function_t* vptr;
-    const char8_t* name;
+    const AvmFunction* vptr;
+    str name;
     size_t size;
 };
 
-#define TYPE(T, ...)                                        \
-    static const struct _AvmType T##Type = {                \
-        .vptr = (function_t[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
-        .name = #T,                                         \
-        .size = sizeof(struct _##T),                        \
+#define TYPE(T, ...)                                         \
+    static const struct _AvmType T##Type = {                 \
+        .vptr = (AvmFunction[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
+        .name = #T,                                          \
+        .size = sizeof(struct _##T),                         \
     }
 
 #define GET_TYPE(T) (AvmType) & T##Type

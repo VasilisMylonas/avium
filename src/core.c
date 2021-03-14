@@ -7,7 +7,7 @@
 #include "avium/fmt.h"
 #include "avium/internal.h"
 
-AvmType AvmObjectType(object_t self) {
+AvmType AvmObjectType(object self) {
     if (self == NULL) {
         panic("Parameter `self` was `NULL`.");
     }
@@ -15,28 +15,26 @@ AvmType AvmObjectType(object_t self) {
     return *(AvmType*)self;
 }
 
-const char8_t* AvmObjectName(object_t self) {
-    return AvmObjectType(self)->name;
-}
+str AvmObjectName(object self) { return AvmObjectType(self)->name; }
 
-size_t AvmObjectSize(object_t self) { return AvmObjectType(self)->size; }
+size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
 
-never AvmPanic(const char8_t* message, const char8_t* function,
-               const char8_t* file, uint32_t line) {
+never AvmPanic(str message, str function, str file,
+               uint line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
 }
 
-never AvmVirtualFunctionTrap(const char8_t* function, AvmType type) {
+never AvmVirtualFunctionTrap(str function, AvmType type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
             function, type->name);
     panic("Unimplemented virtual function trap triggered.");
 }
 
-bool AvmObjectEq(object_t lhs, object_t rhs) {
-    function_t method = AvmObjectType(lhs)->vptr[FUNC_EQ];
+bool AvmObjectEq(object lhs, object rhs) {
+    AvmFunction method = AvmObjectType(lhs)->vptr[FUNC_EQ];
 
     size_t size = AvmObjectSize(lhs);
 
@@ -44,71 +42,70 @@ bool AvmObjectEq(object_t lhs, object_t rhs) {
         return memcmp(lhs, rhs, size) == 0;
     }
 
-    return ((bool (*)(object_t, object_t))method)(lhs, rhs);
+    return ((bool (*)(object, object))method)(lhs, rhs);
 }
 
-void AvmDestroy(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_DTOR];
+void AvmDestroy(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
-        free(object);
+        free(self);
         return;
     }
 
-    ((void (*)(object_t))method)(object);
+    ((void (*)(object))method)(self);
 }
 
-size_t AvmGetLength(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_GET_LENGTH];
+size_t AvmGetLength(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_LENGTH];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((size_t(*)(object_t))method)(object);
+    return ((size_t(*)(object))method)(self);
 }
 
-size_t AvmGetCapacity(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_GET_CAPACITY];
+size_t AvmGetCapacity(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_CAPACITY];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((size_t(*)(object_t))method)(object);
+    return ((size_t(*)(object))method)(self);
 }
 
-object_t AvmClone(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_CLONE];
+object AvmClone(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
-        size_t size = AvmObjectSize(object);
-        return memcpy(malloc(size), object, size);
+        size_t size = AvmObjectSize(self);
+        return memcpy(malloc(size), self, size);
     }
 
-    return ((object_t(*)(object_t))method)(object);
+    return ((object(*)(object))method)(self);
 }
 
-AvmString AvmToString(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_TO_STRING];
+AvmString AvmToString(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((object_t(*)(object_t))method)(object);
+    return ((object(*)(object))method)(self);
 }
 
-AVMAPI AvmResult AvmSuccess(object_t value);
+AVMAPI AvmResult AvmSuccess(object value);
 AVMAPI AvmResult AvmFailure(AvmErrorKind kind);
 AVMAPI bool AvmIsFailure(AvmResult self);
-AVMAPI object_t AvmUnwrap(AvmResult self);
-AVMAPI AvmOptional AvmSome(object_t value);
+AVMAPI object AvmUnwrap(AvmResult self);
+AVMAPI AvmOptional AvmSome(object value);
 AVMAPI AvmOptional AvmNone();
 AVMAPI bool AvmHasValue(AvmOptional optional);
 
-void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
-                size_t size) {
+void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     if (source == NULL) {
         panic(SourceNullMsg);
     }
@@ -123,10 +120,10 @@ void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
 
 struct _AvmVersion {
     AvmType type;
-    uint32_t major;
-    uint32_t minor;
-    uint32_t patch;
-    char8_t tag;
+    uint major;
+    uint minor;
+    uint patch;
+    char tag;
 };
 
 AvmString AvmVersionToString(AvmVersion self) {
@@ -134,10 +131,9 @@ AvmString AvmVersionToString(AvmVersion self) {
                       self->tag);
 }
 
-TYPE(AvmVersion, [FUNC_TO_STRING] = (function_t)AvmVersionToString);
+TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
 
-AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
-                           char8_t tag) {
+AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag) {
     AvmVersion version = malloc(sizeof(struct _AvmVersion));
     version->type = GET_TYPE(AvmVersion);
     version->major = major;
@@ -159,7 +155,7 @@ bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other) {
     return self->major == other->major;
 }
 
-uint32_t AvmVersionGetMajor(AvmVersion self) {
+uint AvmVersionGetMajor(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -167,7 +163,7 @@ uint32_t AvmVersionGetMajor(AvmVersion self) {
     return self->major;
 }
 
-uint32_t AvmVersionGetMinor(AvmVersion self) {
+uint AvmVersionGetMinor(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -175,7 +171,7 @@ uint32_t AvmVersionGetMinor(AvmVersion self) {
     return self->minor;
 }
 
-uint32_t AvmVersionGetPatch(AvmVersion self) {
+uint AvmVersionGetPatch(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -183,7 +179,7 @@ uint32_t AvmVersionGetPatch(AvmVersion self) {
     return self->patch;
 }
 
-char8_t AvmVersionGetTag(AvmVersion self) {
+char AvmVersionGetTag(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
