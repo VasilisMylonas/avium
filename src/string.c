@@ -29,10 +29,10 @@ static AvmString AvmStringClone(AvmString self) {
     return s;
 }
 
-TYPE(AvmString, [FUNC_GET_LENGTH] = (function_t)AvmStringGetLength,
-     [FUNC_GET_CAPACITY] = (function_t)AvmStringGetCapacity,
-     [FUNC_TO_STRING] = (function_t)AvmStringToString,
-     [FUNC_CLONE] = (function_t)AvmStringClone);
+TYPE(AvmString, [FUNC_GET_LENGTH] = (AvmFunction)AvmStringGetLength,
+     [FUNC_GET_CAPACITY] = (AvmFunction)AvmStringGetCapacity,
+     [FUNC_TO_STRING] = (AvmFunction)AvmStringToString,
+     [FUNC_CLONE] = (AvmFunction)AvmStringClone);
 
 AvmString AvmString_ctor(size_t capacity) {
     AvmString s = malloc(AVM_STRING_SIZE + capacity + 1);

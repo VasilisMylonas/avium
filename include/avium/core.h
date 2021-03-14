@@ -61,10 +61,10 @@
          AVM_CONCAT(avmDeferCounter, __LINE__)++, AvmDestroy(x))
 
 /*
- * Type: function_t
+ * Type: AvmFunction
  * An unknown function type.
  */
-typedef void (*function_t)(void);
+typedef void (*AvmFunction)(void);
 
 #ifdef AVM_MSVC
 #    define never __declspec(noreturn) void

@@ -36,7 +36,7 @@ never AvmVirtualFunctionTrap(const char* function, AvmType type) {
 }
 
 bool AvmObjectEq(object_t lhs, object_t rhs) {
-    function_t method = AvmObjectType(lhs)->vptr[FUNC_EQ];
+    AvmFunction method = AvmObjectType(lhs)->vptr[FUNC_EQ];
 
     size_t size = AvmObjectSize(lhs);
 
@@ -48,7 +48,7 @@ bool AvmObjectEq(object_t lhs, object_t rhs) {
 }
 
 void AvmDestroy(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_DTOR];
+    AvmFunction method = AvmObjectType(object)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
         free(object);
@@ -59,7 +59,7 @@ void AvmDestroy(object_t object) {
 }
 
 size_t AvmGetLength(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_GET_LENGTH];
+    AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_LENGTH];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
@@ -69,7 +69,7 @@ size_t AvmGetLength(object_t object) {
 }
 
 size_t AvmGetCapacity(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_GET_CAPACITY];
+    AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_CAPACITY];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
@@ -79,7 +79,7 @@ size_t AvmGetCapacity(object_t object) {
 }
 
 object_t AvmClone(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_CLONE];
+    AvmFunction method = AvmObjectType(object)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
         size_t size = AvmObjectSize(object);
@@ -90,7 +90,7 @@ object_t AvmClone(object_t object) {
 }
 
 AvmString AvmToString(object_t object) {
-    function_t method = AvmObjectType(object)->vptr[FUNC_TO_STRING];
+    AvmFunction method = AvmObjectType(object)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
@@ -134,7 +134,7 @@ AvmString AvmVersionToString(AvmVersion self) {
                       self->tag);
 }
 
-TYPE(AvmVersion, [FUNC_TO_STRING] = (function_t)AvmVersionToString);
+TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
 
 AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
                            char tag) {

@@ -26,8 +26,7 @@
 #include "avium/core.h"
 
 static const char* const SelfNullMsg = "Parameter `self` was `NULL`.";
-static const char* const ContentsNullMsg =
-    "Parameter `contents` was `NULL`.";
+static const char* const ContentsNullMsg = "Parameter `contents` was `NULL`.";
 
 static const char* const SourceNullMsg = "Parameter `source` was `NULL`.";
 static const char* const DestNullMsg = "Parameter `destination` was `NULL`.";
@@ -40,16 +39,16 @@ static const char* const StringNullMsg = "Parameter `string` was `NULL`.";
 static const char* const OtherNullMsg = "Parameter `other` was `NULL`.";
 
 struct _AvmType {
-    const function_t* vptr;
+    const AvmFunction* vptr;
     const char* name;
     size_t size;
 };
 
-#define TYPE(T, ...)                                        \
-    static const struct _AvmType T##Type = {                \
-        .vptr = (function_t[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
-        .name = #T,                                         \
-        .size = sizeof(struct _##T),                        \
+#define TYPE(T, ...)                                         \
+    static const struct _AvmType T##Type = {                 \
+        .vptr = (AvmFunction[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
+        .name = #T,                                          \
+        .size = sizeof(struct _##T),                         \
     }
 
 #define GET_TYPE(T) (AvmType) & T##Type
