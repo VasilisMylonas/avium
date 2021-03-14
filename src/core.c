@@ -7,12 +7,12 @@
 #include "avium/fmt.h"
 #include "avium/internal.h"
 
-Type AvmObjectType(object_t self) {
+AvmType AvmObjectType(object_t self) {
     if (self == NULL) {
         panic("Parameter `self` was `NULL`.");
     }
 
-    return *(Type*)self;
+    return *(AvmType*)self;
 }
 
 const char8_t* AvmObjectName(object_t self) {
@@ -28,7 +28,7 @@ never AvmPanic(const char8_t* message, const char8_t* function,
     abort();
 }
 
-never AvmVirtualFunctionTrap(const char8_t* function, Type type) {
+never AvmVirtualFunctionTrap(const char8_t* function, AvmType type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
             function, type->name);
@@ -121,8 +121,8 @@ void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
     memcpy(destination, source, trueLength);
 }
 
-struct AvmVersion {
-    Type type;
+struct _AvmVersion {
+    AvmType type;
     uint32_t major;
     uint32_t minor;
     uint32_t patch;
@@ -134,16 +134,12 @@ AvmString AvmVersionToString(AvmVersion self) {
                       self->tag);
 }
 
-static const function_t AvmVersionVTable[AVM_VTABLE_SIZE] = {
-    [FUNC_TO_STRING] = (function_t)AvmVersionToString,
-};
-
-static const struct Type AvmVersionType = TYPE(AvmVersion, AvmVersionVTable);
+TYPE(AvmVersion, [FUNC_TO_STRING] = (function_t)AvmVersionToString);
 
 AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
                            char8_t tag) {
-    AvmVersion version = malloc(sizeof(struct AvmVersion));
-    version->type = (Type)&AvmVersionType;
+    AvmVersion version = malloc(sizeof(struct _AvmVersion));
+    version->type = GET_TYPE(AvmVersion);
     version->major = major;
     version->minor = minor;
     version->patch = patch;

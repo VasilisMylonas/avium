@@ -6,10 +6,10 @@
 
 #include "avium/internal.h"
 
-#define AVM_STRING_SIZE (sizeof(Type) + 2 * sizeof(size_t))
+#define AVM_STRING_SIZE (sizeof(AvmType) + 2 * sizeof(size_t))
 
-struct AvmString {
-    Type type;
+struct _AvmString {
+    AvmType type;
     size_t capacity;
     size_t length;
     char8_t buffer[];
@@ -29,23 +29,15 @@ static AvmString AvmStringClone(AvmString self) {
     return s;
 }
 
-static const function_t AvmStringVTable[AVM_VTABLE_SIZE] = {
-    [FUNC_GET_LENGTH] = (function_t)AvmStringGetLength,
-    [FUNC_GET_CAPACITY] = (function_t)AvmStringGetCapacity,
-    [FUNC_TO_STRING] = (function_t)AvmStringToString,
-    [FUNC_CLONE] = (function_t)AvmStringClone,
-};
-
-static const struct Type AvmStringType = {
-    .size = AVM_STRING_SIZE,
-    .name = "AvmString",
-    .vptr = AvmStringVTable,
-};
+TYPE(AvmString, [FUNC_GET_LENGTH] = (function_t)AvmStringGetLength,
+     [FUNC_GET_CAPACITY] = (function_t)AvmStringGetCapacity,
+     [FUNC_TO_STRING] = (function_t)AvmStringToString,
+     [FUNC_CLONE] = (function_t)AvmStringClone);
 
 AvmString AvmString_ctor(size_t capacity) {
     AvmString s = malloc(AVM_STRING_SIZE + capacity + 1);
     s->capacity = capacity;
-    s->type = (Type)&AvmStringType;
+    s->type = GET_TYPE(AvmString);
     s->length = 0;
     return s;
 }

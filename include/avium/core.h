@@ -104,13 +104,13 @@ typedef enum {
  * Type: Type
  * A type containing information about an object.
  */
-typedef struct Type* Type;
+typedef struct _AvmType* AvmType;
 
 /*
  * Type: AvmString
  * A dynamic string.
  */
-typedef struct AvmString* AvmString;
+typedef struct _AvmString* AvmString;
 
 /*
  * Type: object_t
@@ -126,9 +126,9 @@ typedef void* object_t;
  * self - The object.
  *
  * Returns:
- * Type - The type information of the object.
+ * AvmType - The type information of the object.
  */
-AVMAPI Type AvmObjectType(object_t self);
+AVMAPI AvmType AvmObjectType(object_t self);
 
 /*
  * Function: AvmObjectName
@@ -235,7 +235,7 @@ AVMAPI size_t AvmGetCapacity(object_t object);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, Type type);
+AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, AvmType type);
 
 /*
  * Function: AvmPanic
@@ -429,7 +429,7 @@ inline bool AvmHasValue(AvmOptional optional) {
 AVMAPI void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
                        size_t size);
 
-typedef struct AvmVersion* AvmVersion;
+typedef struct _AvmVersion* AvmVersion;
 
 #define AvmVersion(major, minor, patch, tag) \
     AvmVersion_ctor(major, minor, patch, tag)

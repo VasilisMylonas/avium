@@ -39,14 +39,20 @@ static const char8_t* const BaseOutOfRangeMsg =
 static const char8_t* const StringNullMsg = "Parameter `string` was `NULL`.";
 static const char8_t* const OtherNullMsg = "Parameter `other` was `NULL`.";
 
-struct Type {
+struct _AvmType {
     const function_t* vptr;
     const char8_t* name;
     size_t size;
 };
 
-#define TYPE(T, vptr) \
-    { vptr, #T, sizeof(struct T), }
+#define TYPE(T, ...)                                        \
+    static const struct _AvmType T##Type = {                \
+        .vptr = (function_t[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
+        .name = #T,                                         \
+        .size = sizeof(struct _##T),                        \
+    }
+
+#define GET_TYPE(T) (AvmType) & T##Type
 
 enum {
     AVM_VTABLE_SIZE = 32,
