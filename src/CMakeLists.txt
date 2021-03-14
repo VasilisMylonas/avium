@@ -7,14 +7,9 @@ set(AVM_SOURCE_FILES core.c string.c options.c fmt.c)
 set(AVM_SHARED_NAME avm)
 set(AVM_STATIC_NAME avm-static)
 
-# Coverage.
-add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
-add_link_options(-fprofile-instr-generate -fcoverage-mapping)
-
 # Add the libraries.
 add_library(${AVM_SHARED_NAME} SHARED ${AVM_SOURCE_FILES})
 add_library(${AVM_STATIC_NAME} STATIC ${AVM_SOURCE_FILES})
-add_library(avmtest STATIC testing.c)
 
 # When building a shared library, export symbols.
 target_compile_definitions(${AVM_SHARED_NAME} PRIVATE AVM_EXPORT)

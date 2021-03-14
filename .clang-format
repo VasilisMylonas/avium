@@ -1,7 +1,7 @@
 BasedOnStyle: Google
 PointerAlignment: Left
 ReflowComments: true
-SortIncludes: true
+SortIncludes: false
 AlignConsecutiveMacros: true
 IndentPPDirectives: AfterHash
 IndentWidth: 4

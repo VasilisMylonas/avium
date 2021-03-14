@@ -7,8 +7,7 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_DIR}/avium/core.h
     ${AVM_INCLUDE_DIR}/avium/fmt.h
     ${AVM_INCLUDE_DIR}/avium/options.h
-    ${AVM_INCLUDE_DIR}/avium/string.h
-    ${AVM_INCLUDE_DIR}/avium/testing.h)
+    ${AVM_INCLUDE_DIR}/avium/string.h)
 
 # Platform definitions.
 if (${CMAKE_SYSTEM_NAME} MATCHES Linux)

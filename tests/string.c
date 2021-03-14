@@ -1,66 +1,74 @@
-#include <stdio.h>
-#include <string.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <cmocka.h>
 
-#include "avium/avium.h"
-#include "avium/testing.h"
+#include <avium/string.h>
 
-int main() {
-    AvmTestSetOutput(stdout);
-    Plan(25);
+static int setup(void** state) {
+    *state = AvmStringFrom("Hello World Wordy World!");
+    return 0;
+}
 
-    AvmString s = AvmString(20);
-    Ok(s != NULL, "Object not null.");
-    Ok(AvmStringGetCapacity(s) == 20, "Capacity is correct.");
-    Ok(AvmStringGetLength(s) == 0, "Length is 0.");
+static int teardown(void** state) {
+    AvmDestroy(*state);
+    return 0;
+}
 
-    AvmDestroy(s);
-    Pass("Destroyed successfully");
+static void avm_string_test_from(void** state) {
+    assert_non_null(*state);
+    assert_int_equal(AvmStringGetLength(*state), 24);
+    assert_int_equal(AvmStringGetCapacity(*state),
+                     AVM_STRING_GROWTH_FACTOR * 24);
+}
 
-    s = AvmStringFrom("Hello World Wordy World!");
-    Ok(s != NULL, "Object not null.");
-    Ok(AvmStringGetCapacity(s) == AVM_STRING_GROWTH_FACTOR * 24,
-       "Capacity is correct.");
-    Ok(AvmStringGetLength(s) == 24, "Length is correct.");
-    Ok(AvmStringAsPtr(s)[0] == 'H', "First char is 'H'.");
-    Ok(AvmStringAsPtr(s)[23] == '!', "Last char is '!'.");
-    Ok(AvmStringIndexOf(s, 'W') == 6, "First 'W' is at index 6.");
-    Ok(AvmStringLastIndexOf(s, 'W') == 18, "Last 'W' is at index 18.");
-    Ok(AvmStringCharAt(s, 2) == 'l', "Correct char returned.");
-    Ok(AvmStringFind(s, "World") == 6, "First 'World' is at index 6.");
-    Ok(AvmStringFindLast(s, "World") == 18, "Last 'World' is at index 18.");
+static void avm_string_test_contents(void** state) {
+    assert_string_equal(AvmStringAsPtr(*state), "Hello World Wordy World!");
+    assert_int_equal(AvmStringCharAt(*state, 2), 'l');
+}
 
-    Ok(AvmStringIndexOf(s, 'x') == AVM_STRING_NPOS,
-       "No first occurrence of 'x'.");
+static void avm_string_test_indexes(void** state) {
+    assert_int_equal(AvmStringIndexOf(*state, 'W'), 6);
+    assert_int_equal(AvmStringLastIndexOf(*state, 'W'), 18);
+    assert_int_equal(AvmStringFind(*state, "World"), 6);
+    assert_int_equal(AvmStringFindLast(*state, "World"), 18);
 
-    Ok(AvmStringLastIndexOf(s, 'x') == AVM_STRING_NPOS,
-       "No last occurrence of 'x'.");
+    assert_int_equal(AvmStringIndexOf(*state, 'x'), AVM_STRING_NPOS);
+    assert_int_equal(AvmStringLastIndexOf(*state, 'x'), AVM_STRING_NPOS);
+    assert_int_equal(AvmStringFind(*state, "xxl"), AVM_STRING_NPOS);
+    assert_int_equal(AvmStringFindLast(*state, "xxl"), AVM_STRING_NPOS);
+}
 
-    Ok(AvmStringFind(s, "xxl") == AVM_STRING_NPOS,
-       "No first occurrence of 'xxl'.");
+static void avm_string_test_replace(void** state) {
+    assert_int_equal(AvmStringReplace(*state, 'o', 'a'), 4);
+    assert_string_equal(AvmStringAsPtr(*state), "Hella Warld Wardy Warld!");
+}
 
-    Ok(AvmStringFindLast(s, "xxl") == AVM_STRING_NPOS,
-       "No last occurrence of 'xxl'.");
+static void avm_string_test_upper_lower(void** state) {
+    AvmStringToUpper(*state);
+    assert_string_equal(AvmStringAsPtr(*state), "HELLA WARLD WARDY WARLD!");
+    AvmStringToLower(*state);
+    assert_string_equal(AvmStringAsPtr(*state), "hella warld wardy warld!");
+}
 
-    Ok(AvmStringReplace(s, 'o', 'a') == 4, "Correct number of chars replaced.");
+static void avm_string_test_append(void** state) {
+    *state = AvmStringAppend(*state, ".com");
+    assert_string_equal(AvmStringAsPtr(*state), "hella warld wardy warld!.com");
+}
 
-    Ok(strcmp(AvmStringAsPtr(s), "Hella Warld Wardy Warld!") == 0,
-       "All chars replaced.");
+int main(void) {
+    cmocka_set_message_output(CM_OUTPUT_XML);
 
-    AvmStringToUpper(s);
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(avm_string_test_from),
+        cmocka_unit_test(avm_string_test_contents),
+        cmocka_unit_test(avm_string_test_indexes),
+        cmocka_unit_test(avm_string_test_replace),
+        cmocka_unit_test(avm_string_test_upper_lower),
+        cmocka_unit_test(avm_string_test_append),
+    };
 
-    Ok(strcmp(AvmStringAsPtr(s), "HELLA WARLD WARDY WARLD!") == 0,
-       "All chars are uppercase.");
-
-    AvmStringToLower(s);
-
-    Ok(strcmp(AvmStringAsPtr(s), "hella warld wardy warld!") == 0,
-       "All chars are lowercase.");
-
-    s = AvmStringAppend(s, ".com");
-
-    Ok(strcmp(AvmStringAsPtr(s), "hella warld wardy warld!.com") == 0,
-       "Chars appended correctly.");
-
-    Todo("Concat works.");
-    Todo("Cloned AvmString.");
+    return cmocka_run_group_tests(tests, setup, teardown);
 }
