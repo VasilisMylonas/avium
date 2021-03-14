@@ -35,31 +35,36 @@ To build avium you need the following installed on your system:
 
 ### Linux
 
-1. Go to where you cloned the github repo.
+1. Clone this repository.
 
     ```sh
-    cd avium-master
+    git clone https://github.com/VasilisMylonas/avium.git
     ```
 
-2. Create a directory named "build".
+2. Go to where you cloned the github repo.
+    ```sh
+    cd avium
+    ```
+
+3. Create a directory named "build".
 
     ```sh
     mkdir build
     ```
 
-3. Generate the build files using cmake.
+4. Generate the build files using cmake.
 
     ```sh
     cmake -S . -B ./build/
     ```
 
-4. Go to the "build" directory.
+5. Go to the "build" directory.
 
     ```sh
     cd build
     ```
 
-5. Build the library.
+6. Build the library.
 
     ```sh
     make
