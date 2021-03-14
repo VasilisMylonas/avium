@@ -61,3 +61,8 @@ set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
 set(CPACK_PACKGAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKGAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 include(CPack)
+
+configure_file(avium-descriptor.xml.in avium-descriptor.xml @ONLY)
+configure_file(scripts/api-sanity-check.sh.in scripts/api-sanity-check.sh @ONLY)
+
+add_custom_target(api-sanity-check ALL scripts/api-sanity-check.sh)

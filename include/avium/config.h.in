@@ -37,7 +37,8 @@
 #endif  // AVM_MSVC
 
 #ifdef __cplusplus
-#    error "Avium: C++ is not supported."
+#    warning \
+        "Avium: C++ is not supported, you may encounter errors during compilation."
 #endif  // __cplusplus
 
 #define AVM_OPTIONAL_NONE ((AvmOptional)-1)

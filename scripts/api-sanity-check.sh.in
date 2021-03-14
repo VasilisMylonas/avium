@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+api-sanity-checker -lib avm -d avium-descriptor.xml -gen -build -run > /dev/null
