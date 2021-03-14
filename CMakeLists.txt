@@ -23,7 +23,7 @@ ExternalProject_Add(cmocka
     PREFIX ${CMAKE_BINARY_DIR}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR})
 
-if (MSVC)
+if(MSVC)
     # Enable warnings for MSVC and treat them as errors.
     add_compile_options(/Wall)
     add_compile_options(/WX)
@@ -52,7 +52,7 @@ add_subdirectory(docs)
 option(AVM_RUN_TESTS "Run tests?" ON)
 
 # Tests.
-if(${AVM_RUN_TESTS})
+if(AVM_RUN_TESTS)
     add_subdirectory(tests)
 endif()
 
