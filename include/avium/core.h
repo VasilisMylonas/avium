@@ -376,7 +376,7 @@ inline object AvmUnwrap(AvmResult self) {
  * Struct: AvmOptional
  * A type which may contain a value.
  */
-typedef uintptr_t AvmOptional;
+typedef uptr AvmOptional;
 
 /*
  * Function: AvmSome
@@ -392,7 +392,7 @@ typedef uintptr_t AvmOptional;
  * This function is inline.
  */
 inline AvmOptional AvmSome(object value) {
-    if (((uintptr_t)value) == AVM_OPTIONAL_NONE) {
+    if (((uptr)value) == AVM_OPTIONAL_NONE) {
         panic("Tried to create an AvmOptional with an invalid value.");
     }
     return (AvmOptional)value;

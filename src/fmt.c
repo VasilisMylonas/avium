@@ -21,7 +21,7 @@ typedef union {
     };
 } Float;
 
-AvmString AvmItoa(intmax_t value) {
+AvmString AvmItoa(_long value) {
     if (value == INTMAX_MIN) {
         return AvmStringFrom("-9223372036854775808");
     }
@@ -53,7 +53,7 @@ AvmString AvmItoa(intmax_t value) {
     return s;
 }
 
-AvmString AvmUtoa(uintmax_t value, NumericBase base) {
+AvmString AvmUtoa(ulong value, NumericBase base) {
     switch (base) {
         case NB_BINARY:
         case NB_OCTAL:

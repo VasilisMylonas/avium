@@ -71,7 +71,7 @@ typedef enum {
  * Returns:
  * AvmString - The string representation.
  */
-AVMAPI AvmString AvmItoa(intmax_t value);
+AVMAPI AvmString AvmItoa(_long value);
 
 /*
  * Function: AvmUtoa
@@ -84,7 +84,7 @@ AVMAPI AvmString AvmItoa(intmax_t value);
  * Returns:
  * AvmString - The string representation.
  */
-AVMAPI AvmString AvmUtoa(uintmax_t value, NumericBase base);
+AVMAPI AvmString AvmUtoa(ulong value, NumericBase base);
 
 /*
  * Function: AvmFtoa
