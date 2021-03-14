@@ -50,7 +50,7 @@ AvmOptional AvmGetOption(int32_t argc, const char** argv, AvmOption option) {
     for (int32_t i = 1; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             if (OptionHasArgument(argv[i], length)) {
-                return AvmSome((object_t)OptionGetArgument(argv[i], length));
+                return AvmSome((object)OptionGetArgument(argv[i], length));
             }
         }
     }

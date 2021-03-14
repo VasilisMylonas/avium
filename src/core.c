@@ -7,7 +7,7 @@
 #include "avium/fmt.h"
 #include "avium/internal.h"
 
-AvmType AvmObjectType(object_t self) {
+AvmType AvmObjectType(object self) {
     if (self == NULL) {
         panic("Parameter `self` was `NULL`.");
     }
@@ -15,14 +15,12 @@ AvmType AvmObjectType(object_t self) {
     return *(AvmType*)self;
 }
 
-const char* AvmObjectName(object_t self) {
-    return AvmObjectType(self)->name;
-}
+const char* AvmObjectName(object self) { return AvmObjectType(self)->name; }
 
-size_t AvmObjectSize(object_t self) { return AvmObjectType(self)->size; }
+size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
 
-never AvmPanic(const char* message, const char* function,
-               const char* file, uint32_t line) {
+never AvmPanic(const char* message, const char* function, const char* file,
+               uint32_t line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
@@ -35,7 +33,7 @@ never AvmVirtualFunctionTrap(const char* function, AvmType type) {
     panic("Unimplemented virtual function trap triggered.");
 }
 
-bool AvmObjectEq(object_t lhs, object_t rhs) {
+bool AvmObjectEq(object lhs, object rhs) {
     AvmFunction method = AvmObjectType(lhs)->vptr[FUNC_EQ];
 
     size_t size = AvmObjectSize(lhs);
@@ -44,10 +42,10 @@ bool AvmObjectEq(object_t lhs, object_t rhs) {
         return memcmp(lhs, rhs, size) == 0;
     }
 
-    return ((bool (*)(object_t, object_t))method)(lhs, rhs);
+    return ((bool (*)(object, object))method)(lhs, rhs);
 }
 
-void AvmDestroy(object_t object) {
+void AvmDestroy(object object) {
     AvmFunction method = AvmObjectType(object)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
@@ -55,30 +53,30 @@ void AvmDestroy(object_t object) {
         return;
     }
 
-    ((void (*)(object_t))method)(object);
+    ((void (*)(object))method)(object);
 }
 
-size_t AvmGetLength(object_t object) {
+size_t AvmGetLength(object object) {
     AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_LENGTH];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
     }
 
-    return ((size_t(*)(object_t))method)(object);
+    return ((size_t(*)(object))method)(object);
 }
 
-size_t AvmGetCapacity(object_t object) {
+size_t AvmGetCapacity(object object) {
     AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_CAPACITY];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
     }
 
-    return ((size_t(*)(object_t))method)(object);
+    return ((size_t(*)(object))method)(object);
 }
 
-object_t AvmClone(object_t object) {
+object AvmClone(object object) {
     AvmFunction method = AvmObjectType(object)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
@@ -86,24 +84,24 @@ object_t AvmClone(object_t object) {
         return memcpy(malloc(size), object, size);
     }
 
-    return ((object_t(*)(object_t))method)(object);
+    return ((object(*)(object))method)(object);
 }
 
-AvmString AvmToString(object_t object) {
+AvmString AvmToString(object object) {
     AvmFunction method = AvmObjectType(object)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
     }
 
-    return ((object_t(*)(object_t))method)(object);
+    return ((object(*)(object))method)(object);
 }
 
-AVMAPI AvmResult AvmSuccess(object_t value);
+AVMAPI AvmResult AvmSuccess(object value);
 AVMAPI AvmResult AvmFailure(AvmErrorKind kind);
 AVMAPI bool AvmIsFailure(AvmResult self);
-AVMAPI object_t AvmUnwrap(AvmResult self);
-AVMAPI AvmOptional AvmSome(object_t value);
+AVMAPI object AvmUnwrap(AvmResult self);
+AVMAPI AvmOptional AvmSome(object value);
 AVMAPI AvmOptional AvmNone();
 AVMAPI bool AvmHasValue(AvmOptional optional);
 

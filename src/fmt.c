@@ -247,14 +247,14 @@ AvmString AvmVSprintf(const char* format, va_list args) {
                     s, (bool)va_arg(args, uint32_t) ? "true" : "false");
                 break;
             case AVM_FMT_TYPE:
-                s = AvmStringAppend(s, AvmObjectName(va_arg(args, object_t)));
+                s = AvmStringAppend(s, AvmObjectName(va_arg(args, object)));
                 break;
             case AVM_FMT_SIZE:
-                temp = AvmUtoa(AvmObjectSize(va_arg(args, object_t)), 10);
+                temp = AvmUtoa(AvmObjectSize(va_arg(args, object)), 10);
                 s = AvmStringConcat(s, temp);
                 break;
             case AVM_FMT_VALUE:
-                temp = AvmToString(va_arg(args, object_t));
+                temp = AvmToString(va_arg(args, object));
                 s = AvmStringAppend(s, AvmStringAsPtr(temp));
                 break;
             default:

@@ -109,10 +109,10 @@ typedef struct _AvmType* AvmType;
 typedef struct _AvmString* AvmString;
 
 /*
- * Type: object_t
+ * Type: object
  * An unknown object type.
  */
-typedef void* object_t;
+typedef void* object;
 
 /*
  * Function: AvmObjectType
@@ -124,7 +124,7 @@ typedef void* object_t;
  * Returns:
  * AvmType - The type information of the object.
  */
-AVMAPI AvmType AvmObjectType(object_t self);
+AVMAPI AvmType AvmObjectType(object self);
 
 /*
  * Function: AvmObjectName
@@ -136,7 +136,7 @@ AVMAPI AvmType AvmObjectType(object_t self);
  * Returns:
  * const char* - The object's name.
  */
-AVMAPI const char* AvmObjectName(object_t self);
+AVMAPI const char* AvmObjectName(object self);
 
 /*
  * Function: AvmObjectSize
@@ -148,7 +148,7 @@ AVMAPI const char* AvmObjectName(object_t self);
  * Returns:
  * size_t - The object's size.
  */
-AVMAPI size_t AvmObjectSize(object_t self);
+AVMAPI size_t AvmObjectSize(object self);
 
 /*
  * Function: AvmObjectEq
@@ -161,7 +161,7 @@ AVMAPI size_t AvmObjectSize(object_t self);
  * Returns:
  * bool - true if the two objects are equal, otherwise false.
  */
-AVMAPI bool AvmObjectEq(object_t lhs, object_t rhs);
+AVMAPI bool AvmObjectEq(object lhs, object rhs);
 
 /*
  * Function: AvmDestroy
@@ -170,7 +170,7 @@ AVMAPI bool AvmObjectEq(object_t lhs, object_t rhs);
  * Parameters:
  * object - The object.
  */
-AVMAPI void AvmDestroy(object_t object);
+AVMAPI void AvmDestroy(object object);
 
 /*
  * Function: AvmClone
@@ -180,9 +180,9 @@ AVMAPI void AvmDestroy(object_t object);
  * object - The object.
  *
  * Returns:
- * object_t - The cloned object.
+ * object - The cloned object.
  */
-AVMAPI object_t AvmClone(object_t object);
+AVMAPI object AvmClone(object object);
 
 /*
  * Function: AvmToString
@@ -194,7 +194,7 @@ AVMAPI object_t AvmClone(object_t object);
  * Returns:
  * AvmString - The string representation of the object.
  */
-AVMAPI AvmString AvmToString(object_t object);
+AVMAPI AvmString AvmToString(object object);
 
 /*
  * Function: AvmGetLength
@@ -206,7 +206,7 @@ AVMAPI AvmString AvmToString(object_t object);
  * Returns:
  * size_t - The length of the container.
  */
-AVMAPI size_t AvmGetLength(object_t object);
+AVMAPI size_t AvmGetLength(object object);
 
 /*
  * Function: AvmGetCapacity
@@ -218,7 +218,7 @@ AVMAPI size_t AvmGetLength(object_t object);
  * Returns:
  * size_t - The capacity of the container.
  */
-AVMAPI size_t AvmGetCapacity(object_t object);
+AVMAPI size_t AvmGetCapacity(object object);
 
 /*
  * Function: AvmVirtualFunctionTrap
@@ -268,7 +268,7 @@ AVMAPI never AvmPanic(const char* message, const char* function,
  */
 typedef union {
     AvmErrorKind kind;
-    object_t value;
+    object value;
 } AvmResult;
 
 /*
@@ -288,7 +288,7 @@ typedef union {
  * Note:
  * This function is inline.
  */
-inline AvmResult AvmSuccess(object_t value) {
+inline AvmResult AvmSuccess(object value) {
     return (AvmResult){.value = value};
 }
 
@@ -346,7 +346,7 @@ inline bool AvmIsFailure(AvmResult self) {
  * self - The AvmResult.
  *
  * Returns:
- * object_t - The object contained in the AvmResult.
+ * object - The object contained in the AvmResult.
  *
  * See also:
  * <AvmSuccess>
@@ -355,7 +355,7 @@ inline bool AvmIsFailure(AvmResult self) {
  * Note:
  * This function is inline.
  */
-inline object_t AvmUnwrap(AvmResult self) {
+inline object AvmUnwrap(AvmResult self) {
     if (AvmIsFailure(self)) {
         panic("Tried to unwrap a result describing failure.");
     }
@@ -382,7 +382,7 @@ typedef uintptr_t AvmOptional;
  * Note:
  * This function is inline.
  */
-inline AvmOptional AvmSome(object_t value) {
+inline AvmOptional AvmSome(object value) {
     if (((uintptr_t)value) == AVM_OPTIONAL_NONE) {
         panic("Tried to create an AvmOptional with an invalid value.");
     }
