@@ -26,4 +26,11 @@ if(AVM_XUNIT_VIEWER_PROGRAM MATCHES "AVM_XUNIT_VIEWER_PROGRAM-NOTFOUND")
     message(WARNING "xunit-viewer not found.")
 endif()
 
+configure_file(avium-descriptor.xml.in avium-descriptor.xml @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/scripts/api-sanity-check.sh.in
+               ${CMAKE_BINARY_DIR}/scripts/api-sanity-check.sh @ONLY)
+
+add_custom_target(api-sanity-check ${CMAKE_BINARY_DIR}/scripts/api-sanity-check.sh
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
 avm_add_test(string)

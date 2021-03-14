@@ -8,7 +8,7 @@
 </headers>
 
 <libs>
-    ./lib/libavm.so
+    @CMAKE_LIBRARY_OUTPUT_DIRECTORY@/libavm.so
 </libs>
 
 <gcc_options>
