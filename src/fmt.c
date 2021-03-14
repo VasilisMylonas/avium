@@ -64,11 +64,6 @@ AvmString AvmUtoa(uintmax_t value, NumericBase base) {
             panic(BaseOutOfRangeMsg);
     }
 
-    const bool isNegative = value < 0;
-    if (isNegative) {
-        value = -value;
-    }
-
     AvmString s = AvmString(8);
 
     size_t i = 0;
@@ -84,11 +79,6 @@ AvmString AvmUtoa(uintmax_t value, NumericBase base) {
 
     if (i == 0) {
         s = AvmStringAppendChar(s, '0');
-        i++;
-    }
-
-    if (isNegative) {
-        s = AvmStringAppendChar(s, '-');
         i++;
     }
 
