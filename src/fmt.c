@@ -167,7 +167,7 @@ AvmString AvmFtoa(double value) {
     return s;
 }
 
-AvmString AvmVSprintf(const char* format, va_list args) {
+AvmString AvmVSprintf(str format, va_list args) {
     if (format == NULL) {
         panic(FormatNullMsg);
     }
@@ -271,7 +271,7 @@ AvmString AvmVSprintf(const char* format, va_list args) {
     return s;
 }
 
-void AvmVFprintf(void* handle, const char* format, va_list args) {
+void AvmVFprintf(void* handle, str format, va_list args) {
     if (handle == NULL) {
         panic(HandleNullMsg);
     }
@@ -281,20 +281,20 @@ void AvmVFprintf(void* handle, const char* format, va_list args) {
     AvmDestroy(s);
 }
 
-void AvmVPrintf(const char* format, va_list args) {
+void AvmVPrintf(str format, va_list args) {
     AvmVFprintf(stdout, format, args);
 }
 
-void AvmVErrorf(const char* format, va_list args) {
+void AvmVErrorf(str format, va_list args) {
     AvmVFprintf(stderr, format, args);
 }
 
-AVMAPI void AvmScanf(const char* format, ...);
-AVMAPI void AvmSscanf(AvmString string, const char* format, ...);
-AVMAPI AvmString AvmSprintf(const char* format, ...);
-AVMAPI void AvmFprintf(void* handle, const char* format, ...);
-AVMAPI void AvmPrintf(const char* format, ...);
-AVMAPI void AvmErrorf(const char* format, ...);
+AVMAPI void AvmScanf(str format, ...);
+AVMAPI void AvmSscanf(AvmString string, str format, ...);
+AVMAPI AvmString AvmSprintf(str format, ...);
+AVMAPI void AvmFprintf(void* handle, str format, ...);
+AVMAPI void AvmPrintf(str format, ...);
+AVMAPI void AvmErrorf(str format, ...);
 
 static void SkipWord(char* buffer, size_t* index) {
     while (buffer[*index] != ' ' && buffer[*index] != '\0') {
@@ -308,7 +308,7 @@ static void SkipWord(char* buffer, size_t* index) {
     char* end = &buffer[j];   \
     *((u_long*)va_arg(args, u_long*)) = strtoull(start, &end, base)
 
-void AvmVFscanf(void* handle, const char* format, va_list args) {
+void AvmVFscanf(void* handle, str format, va_list args) {
     if (handle == NULL) {
         panic(HandleNullMsg);
     }
@@ -325,7 +325,7 @@ void AvmVFscanf(void* handle, const char* format, va_list args) {
     }
 }
 
-void AvmVScanf(const char* format, va_list args) {
+void AvmVScanf(str format, va_list args) {
     if (format == NULL) {
         panic(FormatNullMsg);
     }
@@ -333,7 +333,7 @@ void AvmVScanf(const char* format, va_list args) {
     AvmVFscanf(stdin, format, args);
 }
 
-void AvmVSscanf(AvmString string, const char* format, va_list args) {
+void AvmVSscanf(AvmString string, str format, va_list args) {
     if (string == NULL) {
         panic(StringNullMsg);
     }

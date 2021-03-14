@@ -2,16 +2,16 @@
 
 #include <string.h>
 
-static inline bool IsLongOption(const char* arg) {
+static inline bool IsLongOption(str arg) {
     return arg[0] == '-' && arg[1] == '-' && arg[2] != '-';
 }
 
-static inline bool IsShortOption(const char* arg) {
+static inline bool IsShortOption(str arg) {
     return arg[0] == '-' && arg[1] != '-';
 }
 
-static bool IsOption(const char* arg, char shortOption,
-                     const char* longOption) {
+static bool IsOption(str arg, char shortOption,
+                     str longOption) {
     if (shortOption != 0 && IsShortOption(arg)) {
         return arg[1] == shortOption;
     }
@@ -23,18 +23,18 @@ static bool IsOption(const char* arg, char shortOption,
     return false;
 }
 
-static bool OptionHasArgument(const char* arg, size_t length) {
+static bool OptionHasArgument(str arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
 
     return arg[offset + length] == '=' && arg[offset + length + 1] != '\0';
 }
 
-static const char* OptionGetArgument(const char* arg, size_t length) {
+static str OptionGetArgument(str arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
     return arg + offset + length + 1;
 }
 
-bool AvmHasOption(int argc, const char** argv, AvmOption option) {
+bool AvmHasOption(int argc, str* argv, AvmOption option) {
     for (int i = 0; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             return true;
@@ -44,7 +44,7 @@ bool AvmHasOption(int argc, const char** argv, AvmOption option) {
     return false;
 }
 
-AvmOptional AvmGetOption(int argc, const char** argv, AvmOption option) {
+AvmOptional AvmGetOption(int argc, str* argv, AvmOption option) {
     const size_t length = strlen(option.longOption);
 
     for (int i = 1; i < argc; i++) {

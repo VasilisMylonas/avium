@@ -46,6 +46,8 @@ typedef unsigned int uint;
 typedef unsigned short ushort;
 typedef unsigned char byte;
 
+typedef const char* str;
+
 static_assert(sizeof(ptr) == sizeof(void*), "");
 static_assert(sizeof(uptr) == sizeof(void*), "");
 static_assert(sizeof(_long) == 8, "");
@@ -152,9 +154,9 @@ AVMAPI AvmType AvmObjectType(object self);
  * self - The object.
  *
  * Returns:
- * const char* - The object's name.
+ * str - The object's name.
  */
-AVMAPI const char* AvmObjectName(object self);
+AVMAPI str AvmObjectName(object self);
 
 /*
  * Function: AvmObjectSize
@@ -249,7 +251,7 @@ AVMAPI size_t AvmGetCapacity(object self);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(const char* function, AvmType type);
+AVMAPI never AvmVirtualFunctionTrap(str function, AvmType type);
 
 /*
  * Function: AvmPanic
@@ -264,8 +266,7 @@ AVMAPI never AvmVirtualFunctionTrap(const char* function, AvmType type);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmPanic(const char* message, const char* function,
-                      const char* file, uint line);
+AVMAPI never AvmPanic(str message, str function, str file, uint line);
 
 /*
  * Macro: panic

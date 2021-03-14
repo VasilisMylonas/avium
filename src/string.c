@@ -42,7 +42,7 @@ AvmString AvmString_ctor(size_t capacity) {
     return s;
 }
 
-AvmString AvmStringFrom(const char* contents) {
+AvmString AvmStringFrom(str contents) {
     if (contents == NULL) {
         panic(ContentsNullMsg);
     }
@@ -92,7 +92,7 @@ AvmString AvmStringAppendChar(AvmString self, char character) {
     return self;
 }
 
-AvmString AvmStringAppend(AvmString self, const char* characters) {
+AvmString AvmStringAppend(AvmString self, str characters) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -164,7 +164,7 @@ size_t AvmStringLastIndexOf(AvmString self, char character) {
     return AVM_STRING_NPOS;
 }
 
-size_t AvmStringFind(AvmString self, const char* characters) {
+size_t AvmStringFind(AvmString self, str characters) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -178,7 +178,7 @@ size_t AvmStringFind(AvmString self, const char* characters) {
     return (size_t)(c - self->buffer);
 }
 
-size_t AvmStringFindLast(AvmString self, const char* characters) {
+size_t AvmStringFindLast(AvmString self, str characters) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }

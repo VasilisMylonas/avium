@@ -15,18 +15,18 @@ AvmType AvmObjectType(object self) {
     return *(AvmType*)self;
 }
 
-const char* AvmObjectName(object self) { return AvmObjectType(self)->name; }
+str AvmObjectName(object self) { return AvmObjectType(self)->name; }
 
 size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
 
-never AvmPanic(const char* message, const char* function, const char* file,
+never AvmPanic(str message, str function, str file,
                uint line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
 }
 
-never AvmVirtualFunctionTrap(const char* function, AvmType type) {
+never AvmVirtualFunctionTrap(str function, AvmType type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
             function, type->name);

@@ -25,22 +25,22 @@
 
 #include "avium/core.h"
 
-static const char* const SelfNullMsg = "Parameter `self` was `NULL`.";
-static const char* const ContentsNullMsg = "Parameter `contents` was `NULL`.";
+static str const SelfNullMsg = "Parameter `self` was `NULL`.";
+static str const ContentsNullMsg = "Parameter `contents` was `NULL`.";
 
-static const char* const SourceNullMsg = "Parameter `source` was `NULL`.";
-static const char* const DestNullMsg = "Parameter `destination` was `NULL`.";
-static const char* const FormatNullMsg = "Parameter `format` was `NULL`.";
-static const char* const ArgsNullMsg = "Parameter `args` was `NULL`.";
-static const char* const HandleNullMsg = "Parameter `handle` was `NULL`.";
-static const char* const BaseOutOfRangeMsg =
+static str const SourceNullMsg = "Parameter `source` was `NULL`.";
+static str const DestNullMsg = "Parameter `destination` was `NULL`.";
+static str const FormatNullMsg = "Parameter `format` was `NULL`.";
+static str const ArgsNullMsg = "Parameter `args` was `NULL`.";
+static str const HandleNullMsg = "Parameter `handle` was `NULL`.";
+static str const BaseOutOfRangeMsg =
     "Parameter `base` was out of range`.";
-static const char* const StringNullMsg = "Parameter `string` was `NULL`.";
-static const char* const OtherNullMsg = "Parameter `other` was `NULL`.";
+static str const StringNullMsg = "Parameter `string` was `NULL`.";
+static str const OtherNullMsg = "Parameter `other` was `NULL`.";
 
 struct _AvmType {
     const AvmFunction* vptr;
-    const char* name;
+    str name;
     size_t size;
 };
 
