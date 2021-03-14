@@ -91,13 +91,15 @@ typedef void (*function_t)(void);
  * EK_NOT_FOUND         - A required resource was unavailable.
  */
 typedef enum {
-    EK_ARGUMENT = 1,
+    _EK_MIN = 16,
+    EK_ARGUMENT,
     EK_OUT_OF_RANGE,
     EK_OUT_OF_MEMORY,
     EK_INVALID_OPERATION,
     EK_IO,
     EK_SYSTEM,
     EK_NOT_FOUND,
+    _EK_MAX = 64,
 } AvmErrorKind;
 
 /*
@@ -314,6 +316,10 @@ inline AvmResult AvmSuccess(object_t value) {
  * This function is inline.
  */
 inline AvmResult AvmFailure(AvmErrorKind kind) {
+    if (kind <= _EK_MIN || kind >= _EK_MAX) {
+        panic("Parameter `kind` was invalid. Do not use _EK_MIN and _EK_MAX.");
+    }
+
     return (AvmResult){.kind = kind};
 }
 
@@ -335,7 +341,7 @@ inline AvmResult AvmFailure(AvmErrorKind kind) {
  * This function is inline.
  */
 inline bool AvmIsFailure(AvmResult self) {
-    return ((uintptr_t)self.value) <= UINT8_MAX && self.value != NULL;
+    return self.kind > _EK_MIN && self.kind < _EK_MAX;
 }
 
 /*

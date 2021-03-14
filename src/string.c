@@ -185,6 +185,10 @@ size_t AvmStringFindLast(AvmString self, const char8_t* characters) {
 
     size_t length = strlen(characters);
 
+    if (length > self->length) {
+        return AVM_STRING_NPOS;
+    }
+
     for (char8_t* end = self->buffer + self->length - length;
          end != self->buffer; end--) {
         if (strncmp(end, characters, length) == 0) {

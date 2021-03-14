@@ -162,6 +162,7 @@ AvmString AvmFtoa(double value) {
     AvmString s = AvmString(length);
     char8_t* buffer = AvmStringAsPtr(s);
     snprintf(buffer, length + 1, "%lf", value);
+    AvmStringUnsafeSetLength(s, length);
     return s;
 }
 
