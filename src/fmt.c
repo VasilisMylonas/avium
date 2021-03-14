@@ -14,9 +14,9 @@ typedef union {
     float value;
 
     struct {
-        uint32_t mantissaLow : 16;
-        uint32_t mantissaHigh : 7;
-        uint32_t exponent : 8;
+        uint mantissaLow : 16;
+        uint mantissaHigh : 7;
+        uint exponent : 8;
         bool isNegative : 1;
     };
 } Float;
@@ -244,7 +244,7 @@ AvmString AvmVSprintf(const char* format, va_list args) {
                 break;
             case AVM_FMT_BOOL:
                 s = AvmStringAppend(
-                    s, (bool)va_arg(args, uint32_t) ? "true" : "false");
+                    s, (bool)va_arg(args, uint) ? "true" : "false");
                 break;
             case AVM_FMT_TYPE:
                 s = AvmStringAppend(s, AvmObjectName(va_arg(args, object)));

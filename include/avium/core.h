@@ -247,7 +247,7 @@ AVMAPI never AvmVirtualFunctionTrap(const char* function, AvmType type);
  * never - This function never returns.
  */
 AVMAPI never AvmPanic(const char* message, const char* function,
-                      const char* file, uint32_t line);
+                      const char* file, uint line);
 
 /*
  * Macro: panic
@@ -434,12 +434,11 @@ typedef struct _AvmVersion* AvmVersion;
 #define AvmVersion(major, minor, patch, tag) \
     AvmVersion_ctor(major, minor, patch, tag)
 
-AVMAPI AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor,
-                                  uint32_t patch, char tag);
+AVMAPI AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag);
 AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
-AVMAPI uint32_t AvmVersionGetMajor(AvmVersion self);
-AVMAPI uint32_t AvmVersionGetMinor(AvmVersion self);
-AVMAPI uint32_t AvmVersionGetPatch(AvmVersion self);
+AVMAPI uint AvmVersionGetMajor(AvmVersion self);
+AVMAPI uint AvmVersionGetMinor(AvmVersion self);
+AVMAPI uint AvmVersionGetPatch(AvmVersion self);
 AVMAPI char AvmVersionGetTag(AvmVersion self);
 
 #endif  // AVIUM_CORE_H

@@ -20,7 +20,7 @@ const char* AvmObjectName(object self) { return AvmObjectType(self)->name; }
 size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
 
 never AvmPanic(const char* message, const char* function, const char* file,
-               uint32_t line) {
+               uint line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
@@ -120,9 +120,9 @@ void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
 
 struct _AvmVersion {
     AvmType type;
-    uint32_t major;
-    uint32_t minor;
-    uint32_t patch;
+    uint major;
+    uint minor;
+    uint patch;
     char tag;
 };
 
@@ -133,8 +133,7 @@ AvmString AvmVersionToString(AvmVersion self) {
 
 TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
 
-AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
-                           char tag) {
+AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag) {
     AvmVersion version = malloc(sizeof(struct _AvmVersion));
     version->type = GET_TYPE(AvmVersion);
     version->major = major;
@@ -156,7 +155,7 @@ bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other) {
     return self->major == other->major;
 }
 
-uint32_t AvmVersionGetMajor(AvmVersion self) {
+uint AvmVersionGetMajor(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -164,7 +163,7 @@ uint32_t AvmVersionGetMajor(AvmVersion self) {
     return self->major;
 }
 
-uint32_t AvmVersionGetMinor(AvmVersion self) {
+uint AvmVersionGetMinor(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -172,7 +171,7 @@ uint32_t AvmVersionGetMinor(AvmVersion self) {
     return self->minor;
 }
 
-uint32_t AvmVersionGetPatch(AvmVersion self) {
+uint AvmVersionGetPatch(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
