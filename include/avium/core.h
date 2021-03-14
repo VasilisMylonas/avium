@@ -168,9 +168,9 @@ AVMAPI bool AvmObjectEq(object lhs, object rhs);
  * Destroys and object and deallocates its memory.
  *
  * Parameters:
- * object - The object.
+ * self - The object.
  */
-AVMAPI void AvmDestroy(object object);
+AVMAPI void AvmDestroy(object self);
 
 /*
  * Function: AvmClone
@@ -180,45 +180,45 @@ AVMAPI void AvmDestroy(object object);
  * object - The object.
  *
  * Returns:
- * object - The cloned object.
+ * self - The cloned object.
  */
-AVMAPI object AvmClone(object object);
+AVMAPI object AvmClone(object self);
 
 /*
  * Function: AvmToString
  * Creates a string representation of an object.
  *
  * Parameters:
- * object - The object.
+ * self - The object.
  *
  * Returns:
  * AvmString - The string representation of the object.
  */
-AVMAPI AvmString AvmToString(object object);
+AVMAPI AvmString AvmToString(object self);
 
 /*
  * Function: AvmGetLength
  * Gets the length of a container.
  *
  * Parameters:
- * object - The container.
+ * self - The container.
  *
  * Returns:
  * size_t - The length of the container.
  */
-AVMAPI size_t AvmGetLength(object object);
+AVMAPI size_t AvmGetLength(object self);
 
 /*
  * Function: AvmGetCapacity
  * Gets the capacity of a container.
  *
  * Parameters:
- * object - The container.
+ * self - The container.
  *
  * Returns:
  * size_t - The capacity of the container.
  */
-AVMAPI size_t AvmGetCapacity(object object);
+AVMAPI size_t AvmGetCapacity(object self);
 
 /*
  * Function: AvmVirtualFunctionTrap

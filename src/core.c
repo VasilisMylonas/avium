@@ -45,56 +45,56 @@ bool AvmObjectEq(object lhs, object rhs) {
     return ((bool (*)(object, object))method)(lhs, rhs);
 }
 
-void AvmDestroy(object object) {
-    AvmFunction method = AvmObjectType(object)->vptr[FUNC_DTOR];
+void AvmDestroy(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
-        free(object);
+        free(self);
         return;
     }
 
-    ((void (*)(object))method)(object);
+    ((void (*)(object))method)(self);
 }
 
-size_t AvmGetLength(object object) {
-    AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_LENGTH];
+size_t AvmGetLength(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_LENGTH];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((size_t(*)(object))method)(object);
+    return ((size_t(*)(object))method)(self);
 }
 
-size_t AvmGetCapacity(object object) {
-    AvmFunction method = AvmObjectType(object)->vptr[FUNC_GET_CAPACITY];
+size_t AvmGetCapacity(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_CAPACITY];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((size_t(*)(object))method)(object);
+    return ((size_t(*)(object))method)(self);
 }
 
-object AvmClone(object object) {
-    AvmFunction method = AvmObjectType(object)->vptr[FUNC_CLONE];
+object AvmClone(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
-        size_t size = AvmObjectSize(object);
-        return memcpy(malloc(size), object, size);
+        size_t size = AvmObjectSize(self);
+        return memcpy(malloc(size), self, size);
     }
 
-    return ((object(*)(object))method)(object);
+    return ((object(*)(object))method)(self);
 }
 
-AvmString AvmToString(object object) {
-    AvmFunction method = AvmObjectType(object)->vptr[FUNC_TO_STRING];
+AvmString AvmToString(object self) {
+    AvmFunction method = AvmObjectType(self)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(object));
+        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((object(*)(object))method)(object);
+    return ((object(*)(object))method)(self);
 }
 
 AVMAPI AvmResult AvmSuccess(object value);
