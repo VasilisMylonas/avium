@@ -64,7 +64,7 @@ AVMAPI AvmString AvmString_ctor(size_t capacity);
  * Returns:
  * AvmString - The created AvmString.
  */
-AVMAPI AvmString AvmStringFrom(const char* contents);
+AVMAPI AvmString AvmStringFrom(str contents);
 
 /*
  * Function: AvmStringAsPtr
@@ -126,7 +126,7 @@ AVMAPI AvmString AvmStringAppendChar(AvmString self, char character);
  * Returns:
  * AvmString - The new AvmString with the appended characters.
  */
-AVMAPI AvmString AvmStringAppend(AvmString self, const char* characters);
+AVMAPI AvmString AvmStringAppend(AvmString self, str characters);
 
 /*
  * Function: AvmStringConcat
@@ -188,8 +188,8 @@ AVMAPI size_t AvmStringLastIndexOf(AvmString self, char character);
 AVMAPI size_t AvmStringReplace(AvmString self, char oldCharacter,
                                char newCharacter);
 
-AVMAPI size_t AvmStringFind(AvmString self, const char* characters);
-AVMAPI size_t AvmStringFindLast(AvmString self, const char* characters);
+AVMAPI size_t AvmStringFind(AvmString self, str characters);
+AVMAPI size_t AvmStringFindLast(AvmString self, str characters);
 
 AVMAPI char AvmStringCharAt(AvmString self, size_t index);
 
