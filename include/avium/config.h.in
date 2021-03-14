@@ -6,6 +6,12 @@
 #define AVM_VERSION_MINOR @avium_VERSION_MINOR@
 #define AVM_VERSION_PATCH @avium_VERSION_PATCH@
 #define AVM_VERSION_BUILD 0
+typedef @AVM_LONG_TYPE@ _long;
+
+typedef unsigned @AVM_LONG_TYPE@ ulong;
+typedef unsigned int uint;
+typedef unsigned short ushort;
+typedef unsigned char byte;
 // clang-format on
 
 #cmakedefine AVM_WIN32

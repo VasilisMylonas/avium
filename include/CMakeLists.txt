@@ -27,6 +27,16 @@ else()
     set(AVM_GNU ON)
 endif()
 
+include(CheckTypeSize)
+
+check_type_size(long AVM_LONG_SIZE)
+
+if(${AVM_LONG_SIZE} EQUAL 8)
+    set(AVM_LONG_TYPE long)
+else()
+    set(AVM_LONG_TYPE long long)
+endif()
+
 # Process header config file.
 configure_file(${AVM_INCLUDE_DIR}/${CMAKE_PROJECT_NAME}/config.h.in
                ${AVM_INCLUDE_OUTPUT_DIR}/${CMAKE_PROJECT_NAME}/config.h @ONLY)
