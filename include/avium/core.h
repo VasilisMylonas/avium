@@ -33,6 +33,15 @@
 
 #include "avium/config.h"
 
+typedef AVM_PTR_TYPE ptr;
+typedef unsigned AVM_PTR_TYPE uptr;
+
+typedef AVM_LONG_TYPE _long;
+typedef unsigned AVM_LONG_TYPE ulong;
+typedef unsigned int uint;
+typedef unsigned short ushort;
+typedef unsigned char byte;
+
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
 
