@@ -61,12 +61,6 @@
          AVM_CONCAT(avmDeferCounter, __LINE__)++, AvmDestroy(x))
 
 /*
- * Type: char8_t
- * An 8 bit character type.
- */
-typedef char char8_t;
-
-/*
  * Type: function_t
  * An unknown function type.
  */
@@ -140,9 +134,9 @@ AVMAPI AvmType AvmObjectType(object_t self);
  * self - The object.
  *
  * Returns:
- * const char8_t* - The object's name.
+ * const char* - The object's name.
  */
-AVMAPI const char8_t* AvmObjectName(object_t self);
+AVMAPI const char* AvmObjectName(object_t self);
 
 /*
  * Function: AvmObjectSize
@@ -237,7 +231,7 @@ AVMAPI size_t AvmGetCapacity(object_t object);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, AvmType type);
+AVMAPI never AvmVirtualFunctionTrap(const char* function, AvmType type);
 
 /*
  * Function: AvmPanic
@@ -252,8 +246,8 @@ AVMAPI never AvmVirtualFunctionTrap(const char8_t* function, AvmType type);
  * Returns:
  * never - This function never returns.
  */
-AVMAPI never AvmPanic(const char8_t* message, const char8_t* function,
-                      const char8_t* file, uint32_t line);
+AVMAPI never AvmPanic(const char* message, const char* function,
+                      const char* file, uint32_t line);
 
 /*
  * Macro: panic
@@ -441,11 +435,11 @@ typedef struct _AvmVersion* AvmVersion;
     AvmVersion_ctor(major, minor, patch, tag)
 
 AVMAPI AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor,
-                                  uint32_t patch, char8_t tag);
+                                  uint32_t patch, char tag);
 AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
 AVMAPI uint32_t AvmVersionGetMajor(AvmVersion self);
 AVMAPI uint32_t AvmVersionGetMinor(AvmVersion self);
 AVMAPI uint32_t AvmVersionGetPatch(AvmVersion self);
-AVMAPI char8_t AvmVersionGetTag(AvmVersion self);
+AVMAPI char AvmVersionGetTag(AvmVersion self);
 
 #endif  // AVIUM_CORE_H

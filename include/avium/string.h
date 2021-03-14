@@ -64,7 +64,7 @@ AVMAPI AvmString AvmString_ctor(size_t capacity);
  * Returns:
  * AvmString - The created AvmString.
  */
-AVMAPI AvmString AvmStringFrom(const char8_t* contents);
+AVMAPI AvmString AvmStringFrom(const char* contents);
 
 /*
  * Function: AvmStringAsPtr
@@ -74,9 +74,9 @@ AVMAPI AvmString AvmStringFrom(const char8_t* contents);
  * self - The AvmString.
  *
  * Returns:
- * char8_t* - A pointer to the character array.
+ * char* - A pointer to the character array.
  */
-AVMAPI char8_t* AvmStringAsPtr(AvmString self);
+AVMAPI char* AvmStringAsPtr(AvmString self);
 
 /*
  * Function: AvmStringGetLength
@@ -113,7 +113,7 @@ AVMAPI size_t AvmStringGetCapacity(AvmString self);
  * Returns:
  * AvmString - The new AvmString with the appended character.
  */
-AVMAPI AvmString AvmStringAppendChar(AvmString self, char8_t character);
+AVMAPI AvmString AvmStringAppendChar(AvmString self, char character);
 
 /*
  * Function: AvmStringAppend
@@ -126,7 +126,7 @@ AVMAPI AvmString AvmStringAppendChar(AvmString self, char8_t character);
  * Returns:
  * AvmString - The new AvmString with the appended characters.
  */
-AVMAPI AvmString AvmStringAppend(AvmString self, const char8_t* characters);
+AVMAPI AvmString AvmStringAppend(AvmString self, const char* characters);
 
 /*
  * Function: AvmStringConcat
@@ -155,7 +155,7 @@ AVMAPI AvmString AvmStringConcat(AvmString self, AvmString other);
  * Failure:
  * If the character is not found in the string then AVM_STRING_NPOS is returned.
  */
-AVMAPI size_t AvmStringIndexOf(AvmString self, char8_t character);
+AVMAPI size_t AvmStringIndexOf(AvmString self, char character);
 
 /*
  * Function: AvmStringLastIndexOf
@@ -171,7 +171,7 @@ AVMAPI size_t AvmStringIndexOf(AvmString self, char8_t character);
  * Failure:
  * If the character is not found in the string then AVM_STRING_NPOS is returned.
  */
-AVMAPI size_t AvmStringLastIndexOf(AvmString self, char8_t character);
+AVMAPI size_t AvmStringLastIndexOf(AvmString self, char character);
 
 /*
  * Function: AvmStringReplace
@@ -185,13 +185,13 @@ AVMAPI size_t AvmStringLastIndexOf(AvmString self, char8_t character);
  * Returns:
  * size_t - The count of the total replaced characters.
  */
-AVMAPI size_t AvmStringReplace(AvmString self, char8_t oldCharacter,
-                               char8_t newCharacter);
+AVMAPI size_t AvmStringReplace(AvmString self, char oldCharacter,
+                               char newCharacter);
 
-AVMAPI size_t AvmStringFind(AvmString self, const char8_t* characters);
-AVMAPI size_t AvmStringFindLast(AvmString self, const char8_t* characters);
+AVMAPI size_t AvmStringFind(AvmString self, const char* characters);
+AVMAPI size_t AvmStringFindLast(AvmString self, const char* characters);
 
-AVMAPI char8_t AvmStringCharAt(AvmString self, size_t index);
+AVMAPI char AvmStringCharAt(AvmString self, size_t index);
 
 AVMAPI void AvmStringReverse(AvmString self);
 

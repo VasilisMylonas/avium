@@ -118,7 +118,7 @@ AVMAPI AvmString AvmFtoa2(float value);
  * format - The format string.
  * args - The va_list containing pointers to variables to read to.
  */
-AVMAPI void AvmVScanf(const char8_t* format, va_list args);
+AVMAPI void AvmVScanf(const char* format, va_list args);
 
 /*
  * Function: AvmScanf
@@ -131,7 +131,7 @@ AVMAPI void AvmVScanf(const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmScanf(const char8_t* format, ...) {
+inline void AvmScanf(const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVScanf(format, args);
@@ -147,7 +147,7 @@ inline void AvmScanf(const char8_t* format, ...) {
  * format - The format string.
  * args - The va_list containing pointers to variables to read to.
  */
-AVMAPI void AvmVSscanf(AvmString string, const char8_t* format, va_list args);
+AVMAPI void AvmVSscanf(AvmString string, const char* format, va_list args);
 
 /*
  * Function: AvmSscanf
@@ -161,7 +161,7 @@ AVMAPI void AvmVSscanf(AvmString string, const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmSscanf(AvmString string, const char8_t* format, ...) {
+inline void AvmSscanf(AvmString string, const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVSscanf(string, format, args);
@@ -177,7 +177,7 @@ inline void AvmSscanf(AvmString string, const char8_t* format, ...) {
  * format - The format string.
  * args - The va_list containing pointers to variables to read to.
  */
-AVMAPI void AvmVFscanf(void* handle, const char8_t* format, va_list args);
+AVMAPI void AvmVFscanf(void* handle, const char* format, va_list args);
 
 /*
  * Function: AvmFscanf
@@ -191,7 +191,7 @@ AVMAPI void AvmVFscanf(void* handle, const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmFscanf(void* handle, const char8_t* format, ...) {
+inline void AvmFscanf(void* handle, const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVFscanf(handle, format, args);
@@ -209,7 +209,7 @@ inline void AvmFscanf(void* handle, const char8_t* format, ...) {
  * Returns:
  * AvmString - The formatted string.
  */
-AVMAPI AvmString AvmVSprintf(const char8_t* format, va_list args);
+AVMAPI AvmString AvmVSprintf(const char* format, va_list args);
 
 /*
  * Function: AvmSprintf
@@ -225,7 +225,7 @@ AVMAPI AvmString AvmVSprintf(const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline AvmString AvmSprintf(const char8_t* format, ...) {
+inline AvmString AvmSprintf(const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmString s = AvmVSprintf(format, args);
@@ -242,7 +242,7 @@ inline AvmString AvmSprintf(const char8_t* format, ...) {
  * format - The format string.
  * args - The va_list containing the values to write.
  */
-AVMAPI void AvmVFprintf(void* handle, const char8_t* format, va_list args);
+AVMAPI void AvmVFprintf(void* handle, const char* format, va_list args);
 
 /*
  * Function: AvmFprintf
@@ -256,7 +256,7 @@ AVMAPI void AvmVFprintf(void* handle, const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmFprintf(void* handle, const char8_t* format, ...) {
+inline void AvmFprintf(void* handle, const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVFprintf(handle, format, args);
@@ -271,7 +271,7 @@ inline void AvmFprintf(void* handle, const char8_t* format, ...) {
  * format - The format string.
  * args - The va_list containing the values to write.
  */
-AVMAPI void AvmVPrintf(const char8_t* format, va_list args);
+AVMAPI void AvmVPrintf(const char* format, va_list args);
 
 /*
  * Function: AvmPrintf
@@ -284,7 +284,7 @@ AVMAPI void AvmVPrintf(const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmPrintf(const char8_t* format, ...) {
+inline void AvmPrintf(const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVPrintf(format, args);
@@ -299,7 +299,7 @@ inline void AvmPrintf(const char8_t* format, ...) {
  * format - The format string.
  * args - The va_list containing the values to write.
  */
-AVMAPI void AvmVErrorf(const char8_t* format, va_list args);
+AVMAPI void AvmVErrorf(const char* format, va_list args);
 
 /*
  * Function: AvmErrorf
@@ -312,7 +312,7 @@ AVMAPI void AvmVErrorf(const char8_t* format, va_list args);
  * Note:
  * This function is inline.
  */
-inline void AvmErrorf(const char8_t* format, ...) {
+inline void AvmErrorf(const char* format, ...) {
     va_list args;
     va_start(args, format);
     AvmVErrorf(format, args);

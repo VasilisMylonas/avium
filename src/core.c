@@ -15,20 +15,20 @@ AvmType AvmObjectType(object_t self) {
     return *(AvmType*)self;
 }
 
-const char8_t* AvmObjectName(object_t self) {
+const char* AvmObjectName(object_t self) {
     return AvmObjectType(self)->name;
 }
 
 size_t AvmObjectSize(object_t self) { return AvmObjectType(self)->size; }
 
-never AvmPanic(const char8_t* message, const char8_t* function,
-               const char8_t* file, uint32_t line) {
+never AvmPanic(const char* message, const char* function,
+               const char* file, uint32_t line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
 }
 
-never AvmVirtualFunctionTrap(const char8_t* function, AvmType type) {
+never AvmVirtualFunctionTrap(const char* function, AvmType type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
             function, type->name);
@@ -126,7 +126,7 @@ struct _AvmVersion {
     uint32_t major;
     uint32_t minor;
     uint32_t patch;
-    char8_t tag;
+    char tag;
 };
 
 AvmString AvmVersionToString(AvmVersion self) {
@@ -137,7 +137,7 @@ AvmString AvmVersionToString(AvmVersion self) {
 TYPE(AvmVersion, [FUNC_TO_STRING] = (function_t)AvmVersionToString);
 
 AvmVersion AvmVersion_ctor(uint32_t major, uint32_t minor, uint32_t patch,
-                           char8_t tag) {
+                           char tag) {
     AvmVersion version = malloc(sizeof(struct _AvmVersion));
     version->type = GET_TYPE(AvmVersion);
     version->major = major;
@@ -183,7 +183,7 @@ uint32_t AvmVersionGetPatch(AvmVersion self) {
     return self->patch;
 }
 
-char8_t AvmVersionGetTag(AvmVersion self) {
+char AvmVersionGetTag(AvmVersion self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }

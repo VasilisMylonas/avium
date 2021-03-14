@@ -2,16 +2,16 @@
 
 #include <string.h>
 
-static inline bool IsLongOption(const char8_t* arg) {
+static inline bool IsLongOption(const char* arg) {
     return arg[0] == '-' && arg[1] == '-' && arg[2] != '-';
 }
 
-static inline bool IsShortOption(const char8_t* arg) {
+static inline bool IsShortOption(const char* arg) {
     return arg[0] == '-' && arg[1] != '-';
 }
 
-static bool IsOption(const char8_t* arg, char8_t shortOption,
-                     const char8_t* longOption) {
+static bool IsOption(const char* arg, char shortOption,
+                     const char* longOption) {
     if (shortOption != 0 && IsShortOption(arg)) {
         return arg[1] == shortOption;
     }
@@ -23,18 +23,18 @@ static bool IsOption(const char8_t* arg, char8_t shortOption,
     return false;
 }
 
-static bool OptionHasArgument(const char8_t* arg, size_t length) {
+static bool OptionHasArgument(const char* arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
 
     return arg[offset + length] == '=' && arg[offset + length + 1] != '\0';
 }
 
-static const char8_t* OptionGetArgument(const char8_t* arg, size_t length) {
+static const char* OptionGetArgument(const char* arg, size_t length) {
     size_t offset = IsLongOption(arg) ? 2 : 1;
     return arg + offset + length + 1;
 }
 
-bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option) {
+bool AvmHasOption(int32_t argc, const char** argv, AvmOption option) {
     for (int32_t i = 0; i < argc; i++) {
         if (IsOption(argv[i], option.shortOption, option.longOption)) {
             return true;
@@ -44,7 +44,7 @@ bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option) {
     return false;
 }
 
-AvmOptional AvmGetOption(int32_t argc, const char8_t** argv, AvmOption option) {
+AvmOptional AvmGetOption(int32_t argc, const char** argv, AvmOption option) {
     const size_t length = strlen(option.longOption);
 
     for (int32_t i = 1; i < argc; i++) {

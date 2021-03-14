@@ -29,15 +29,15 @@
 #include "avium/core.h"
 
 typedef struct {
-    const char8_t* longOption;
-    char8_t shortOption;
+    const char* longOption;
+    char shortOption;
 } AvmOption;
 
 #define AvmOption(longOption, shortOption) \
     (AvmOption) { longOption, shortOption }
 
-AVMAPI bool AvmHasOption(int32_t argc, const char8_t** argv, AvmOption option);
-AVMAPI AvmOptional AvmGetOption(int32_t argc, const char8_t** argv,
+AVMAPI bool AvmHasOption(int32_t argc, const char** argv, AvmOption option);
+AVMAPI AvmOptional AvmGetOption(int32_t argc, const char** argv,
                                 AvmOption option);
 
 #endif  // AVIUM_OPTIONS_H
