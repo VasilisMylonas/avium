@@ -29,18 +29,27 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 
 #include "avium/config.h"
+
+#ifndef static_assert
+#    define static_assert _Static_assert
+#endif  // static_assert
 
 typedef AVM_PTR_TYPE ptr;
 typedef unsigned AVM_PTR_TYPE uptr;
 
 typedef AVM_LONG_TYPE _long;
 typedef unsigned AVM_LONG_TYPE ulong;
+
 typedef unsigned int uint;
 typedef unsigned short ushort;
 typedef unsigned char byte;
+
+static_assert(sizeof(ptr) == sizeof(void*), "");
+static_assert(sizeof(uptr) == sizeof(void*), "");
+static_assert(sizeof(_long) == 8, "");
+static_assert(sizeof(ulong) == 8, "");
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
