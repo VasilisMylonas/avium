@@ -309,7 +309,8 @@ void AvmVFscanf(void* handle, const char8_t* format, va_list args) {
     AvmString s = AvmString(128);
 
     defer(s) {
-        fgets(AvmStringAsPtr(s), 128, handle);
+        char* dummy = fgets(AvmStringAsPtr(s), 128, handle);
+        (void)dummy;
         AvmVSscanf(s, format, args);
     }
 }
