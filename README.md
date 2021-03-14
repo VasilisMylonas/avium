@@ -21,6 +21,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 See [INSTALL.md](./INSTALL.md).
 
+## Discord
+
+You may join us on [our Discord server](https://discord.gg/ntcjbMbVts). For more information about the project, questions etc. you can ask there!
+
 ## Authors
 
 See [AUTHORS](./AUTHORS).
