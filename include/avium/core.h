@@ -426,7 +426,7 @@ inline bool AvmHasValue(AvmOptional optional) {
  * destination - The memory block to copy to.
  * size - The size of the destination buffer.
  */
-AVMAPI void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
+AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
 typedef struct _AvmVersion* AvmVersion;

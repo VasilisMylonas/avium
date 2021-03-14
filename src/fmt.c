@@ -301,9 +301,9 @@ static void SkipWord(char* buffer, size_t* index) {
     }
 }
 
-#define UINT_CASE(base)          \
+#define UINT_CASE(base)       \
     char* start = &buffer[j]; \
-    SkipWord(buffer, &j);        \
+    SkipWord(buffer, &j);     \
     char* end = &buffer[j];   \
     *((uint64_t*)va_arg(args, uint64_t*)) = strtoull(start, &end, base)
 
@@ -396,8 +396,7 @@ void AvmVSscanf(AvmString string, const char* format, va_list args) {
                 size_t capacity = va_arg(args, size_t);
                 size_t length = j - start;
 
-                AvmMemCopy((uint8_t*)&buffer[start], length, (uint8_t*)s,
-                           capacity);
+                AvmMemCopy((byte*)&buffer[start], length, (byte*)s, capacity);
 
                 if (length < capacity) {
                     s[length] = '\0';

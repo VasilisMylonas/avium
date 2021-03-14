@@ -105,8 +105,7 @@ AVMAPI AvmOptional AvmSome(object value);
 AVMAPI AvmOptional AvmNone();
 AVMAPI bool AvmHasValue(AvmOptional optional);
 
-void AvmMemCopy(uint8_t* source, size_t length, uint8_t* destination,
-                size_t size) {
+void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     if (source == NULL) {
         panic(SourceNullMsg);
     }
