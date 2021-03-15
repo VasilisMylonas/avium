@@ -32,6 +32,10 @@
 
 #include "avium/config.h"
 
+/*
+ * Section: Globals
+ */
+
 #ifndef static_assert
 #    define static_assert _Static_assert
 #endif  // static_assert
@@ -101,7 +105,7 @@ static_assert(sizeof(byte) == 1, "");
 
 /*
  * Macro: AVM_CONCAT
- * Concatenates two identifier.
+ * Concatenates two identifiers.
  *
  * Parameters:
  * x - The first identifier.
@@ -118,10 +122,35 @@ static_assert(sizeof(byte) == 1, "");
  */
 #define AVM_STRINGIFY(x) AVM_STRINGIFY_(x)
 
-#define defer(x)                                           \
-    for (size_t AVM_CONCAT(avmDeferCounter, __LINE__) = 0; \
-         AVM_CONCAT(avmDeferCounter, __LINE__) < 1;        \
-         AVM_CONCAT(avmDeferCounter, __LINE__)++, AvmDestroy(x))
+/*
+ * Macro: defer
+ * Creates a scope in which an object will be available and be destroyed at
+ * scope exit.
+ *
+ * Example:
+ *
+ * --- Code
+ * defer(AvmString, s, AvmStringFrom("Hello World")) {
+ *     AvmPrintf("%v\n", s);
+ * } // <- 's' is destroyed here.
+ * ---
+ *
+ * Parameters:
+ * T - The type of the object.
+ * name - The name of the variable.
+ * init - The object initializer.
+ */
+#define defer(T, name, init) \
+    for (T name = init; name != NULL; AvmDestroy(x), name = NULL)
+
+/*
+ * Macro: panic
+ * Aborts execution, printing a message and location information.
+ *
+ * Parameters:
+ * message - The message to print.
+ */
+#define panic(message) AvmPanic(message, __func__, __FILE__, __LINE__)
 
 /*
  * Type: AvmFunction
@@ -129,9 +158,14 @@ static_assert(sizeof(byte) == 1, "");
  */
 typedef void (*AvmFunction)(void);
 
+/*
+ * Type: never
+ * A type signifying that a function never returns.
+ */
 #ifdef AVM_MSVC
 #    define never __declspec(noreturn) void
 #else
+
 #    define never _Noreturn void
 #endif  // AVM_MSVC
 
@@ -160,7 +194,7 @@ typedef enum {
 } AvmErrorKind;
 
 /*
- * Type: Type
+ * Type: AvmType
  * A type containing information about an object.
  */
 typedef struct _AvmType* AvmType;
@@ -217,6 +251,10 @@ AVMAPI size_t AvmObjectSize(object self);
  * Function: AvmObjectEq
  * Compares two objects for equality.
  *
+ * Description:
+ * This function tries to use the FUNC_EQ virtual function entry to compare
+ * for equality. If no such virtual function is available then memcmp is used.
+ *
  * Parameters:
  * lhs - The first object.
  * rhs - The second object.
@@ -228,7 +266,11 @@ AVMAPI bool AvmObjectEq(object lhs, object rhs);
 
 /*
  * Function: AvmDestroy
- * Destroys and object and deallocates its memory.
+ * Destroys an object and deallocates its memory.
+ *
+ * Description:
+ * This function tries to use the FUNC_DTOR virtual function entry to destroy
+ * the object. If no such virtual function is available then free is used.
  *
  * Parameters:
  * self - The object.
@@ -239,11 +281,16 @@ AVMAPI void AvmDestroy(object self);
  * Function: AvmClone
  * Clones an object, creating an exact copy.
  *
+ * Description:
+ * This function tries to use the FUNC_CLONE virtual function entry to clone
+ * the object. If no such virtual function is available then a combination of
+ * malloc and memcpy is used.
+ *
  * Parameters:
- * object - The object.
+ * self - The object.
  *
  * Returns:
- * self - The cloned object.
+ * object - The cloned object.
  */
 AVMAPI object AvmClone(object self);
 
@@ -251,11 +298,19 @@ AVMAPI object AvmClone(object self);
  * Function: AvmToString
  * Creates a string representation of an object.
  *
+ * Description:
+ * This function tries to use the FUNC_TO_STRING virtual function entry to
+ * create a string representation of the object. If no such virtual function
+ * is available then this function traps.
+ *
  * Parameters:
  * self - The object.
  *
  * Returns:
  * AvmString - The string representation of the object.
+ *
+ * See also:
+ * <AvmVirtualFunctionTrap>
  */
 AVMAPI AvmString AvmToString(object self);
 
@@ -263,11 +318,19 @@ AVMAPI AvmString AvmToString(object self);
  * Function: AvmGetLength
  * Gets the length of a container.
  *
+ * Description:
+ * This function tries to use the FUNC_GET_LENGTH virtual function entry to
+ * get the length of the container. If no such virtual function is available
+ * then this function traps.
+ *
  * Parameters:
  * self - The container.
  *
  * Returns:
  * size_t - The length of the container.
+ *
+ * See also:
+ * <AvmVirtualFunctionTrap>
  */
 AVMAPI size_t AvmGetLength(object self);
 
@@ -275,17 +338,25 @@ AVMAPI size_t AvmGetLength(object self);
  * Function: AvmGetCapacity
  * Gets the capacity of a container.
  *
+ * Description:
+ * This function tries to use the FUNC_GET_CAPACITY virtual function entry to
+ * get the capacity of the container. If no such virtual function is available
+ * then this function traps.
+ *
  * Parameters:
  * self - The container.
  *
  * Returns:
  * size_t - The capacity of the container.
+ *
+ * See also:
+ * <AvmVirtualFunctionTrap>
  */
 AVMAPI size_t AvmGetCapacity(object self);
 
 /*
  * Function: AvmVirtualFunctionTrap
- * A trap function called when a virtual function is not implemented.
+ * The trap function called when a virtual function is not implemented.
  *
  * Parameters:
  * function - The function name.
@@ -312,13 +383,18 @@ AVMAPI never AvmVirtualFunctionTrap(str function, AvmType type);
 AVMAPI never AvmPanic(str message, str function, str file, uint line);
 
 /*
- * Macro: panic
- * Aborts execution, printing a message and location information.
+ * Function: AvmMemCopy
+ * Copies memory from one block to another. This will copy length bytes from
+ * source to destination, but not more than size.
  *
  * Parameters:
- * message - The message to print.
+ * source - The memory block to copy from.
+ * length - The length of the source buffer.
+ * destination - The memory block to copy to.
+ * size - The size of the destination buffer.
  */
-#define panic(message) AvmPanic(message, __func__, __FILE__, __LINE__)
+AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
+                       size_t size);
 
 /*
  * Struct: AvmResult
@@ -478,29 +554,94 @@ inline bool AvmHasValue(AvmOptional optional) {
 }
 
 /*
- * Function: AvmMemCopy
- * Copies memory from one block to another. This will copy length bytes from
- * source to destination, but not more than size.
- *
- * Parameters:
- * source - The memory block to copy from.
- * length - The length of the source buffer.
- * destination - The memory block to copy to.
- * size - The size of the destination buffer.
+ * Struct: AvmVersion
+ * A type representing a software version in the format:
+ * <major>.<minor>.<patch>-<tag>
  */
-AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
-                       size_t size);
-
 typedef struct _AvmVersion* AvmVersion;
 
+/*
+ * Macro: AvmVersion
+ * Shorthand for AvmVersion_ctor.
+ */
 #define AvmVersion(major, minor, patch, tag) \
     AvmVersion_ctor(major, minor, patch, tag)
 
+/*
+ * Function: AvmVersion_ctor
+ * Creates a new AvmVersion instance.
+ *
+ * Parameters:
+ * major - The version major number (incremented at breaking changes).
+ * minor - The version minor number (incremented at non-breaking changes).
+ * patch - The version patch number (incremented at bug fixes).
+ * tag - The version tag (a, b, etc).
+ *
+ * Returns:
+ * AvmVersion - The created AvmVersion.
+ */
 AVMAPI AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag);
+
+/*
+ * Function: AvmVersionIsCompatible
+ * Determines whether 2 AvmVersion instances are compatible (whether the 2
+ * major numbers are equal).
+ *
+ * Parameters:
+ * self - The first AvmVersion instance.
+ * other - The second AvmVersion instance.
+ *
+ * Returns:
+ * bool - true if the versions are compatible, otherwise false.
+ */
 AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
+
+/*
+ * Function: AvmVersionGetMajor
+ * Gets the major number of an AvmVersion instance.
+ *
+ * Parameters:
+ * self - The AvmVersion instance.
+ *
+ * Returns:
+ * uint - The major number.
+ */
 AVMAPI uint AvmVersionGetMajor(AvmVersion self);
+
+/*
+ * Function: AvmVersionGetMinor
+ * Gets the minor number of an AvmVersion instance.
+ *
+ * Parameters:
+ * self - The AvmVersion instance.
+ *
+ * Returns:
+ * uint - The minor number.
+ */
 AVMAPI uint AvmVersionGetMinor(AvmVersion self);
+
+/*
+ * Function: AvmVersionGetPatch
+ * Gets the patch number of an AvmVersion instance.
+ *
+ * Parameters:
+ * self - The AvmVersion instance.
+ *
+ * Returns:
+ * uint - The patch number.
+ */
 AVMAPI uint AvmVersionGetPatch(AvmVersion self);
+
+/*
+ * Function: AvmVersionGetTag
+ * Gets the version tag of an AvmVersion instance.
+ *
+ * Parameters:
+ * self - The AvmVersion instance.
+ *
+ * Returns:
+ * uint - The version tag number.
+ */
 AVMAPI char AvmVersionGetTag(AvmVersion self);
 
 #endif  // AVIUM_CORE_H
