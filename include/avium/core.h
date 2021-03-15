@@ -36,16 +36,52 @@
 #    define static_assert _Static_assert
 #endif  // static_assert
 
+/*
+ * Type: ptr
+ * Signed pointer-sized integer type.
+ */
 typedef AVM_PTR_TYPE ptr;
+
+/*
+ * Type: uptr
+ * Unsigned pointer-sized integer type.
+ */
 typedef unsigned AVM_PTR_TYPE uptr;
 
+/*
+ * Type: _long
+ * Signed 64-bit integer type.
+ */
 typedef AVM_LONG_TYPE _long;
+
+/*
+ * Type: ulong
+ * Unsigned 64-bit integer type.
+ */
 typedef unsigned AVM_LONG_TYPE ulong;
 
+/*
+ * Type: uint
+ * Unsigned 32-bit integer type.
+ */
 typedef unsigned int uint;
+
+/*
+ * Type: ushort
+ * Unsigned 16-bit integer type.
+ */
 typedef unsigned short ushort;
+
+/*
+ * Type: byte
+ * Unsigned 8-bit integer type.
+ */
 typedef unsigned char byte;
 
+/*
+ * Type: str
+ * Read-only string type.
+ */
 typedef const char* str;
 
 static_assert(sizeof(ptr) == sizeof(void*), "");
