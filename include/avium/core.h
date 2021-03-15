@@ -84,10 +84,17 @@ typedef unsigned char byte;
  */
 typedef const char* str;
 
+// Ensure correct type sizes.
 static_assert(sizeof(ptr) == sizeof(void*), "");
 static_assert(sizeof(uptr) == sizeof(void*), "");
 static_assert(sizeof(_long) == 8, "");
 static_assert(sizeof(ulong) == 8, "");
+static_assert(sizeof(int) == 4, "");
+static_assert(sizeof(uint) == 4, "");
+static_assert(sizeof(short) == 2, "");
+static_assert(sizeof(ushort) == 2, "");
+static_assert(sizeof(char) == 1, "");
+static_assert(sizeof(byte) == 1, "");
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
