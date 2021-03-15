@@ -141,7 +141,7 @@ static_assert(sizeof(byte) == 1, "");
  * init - The object initializer.
  */
 #define defer(T, name, init) \
-    for (T name = init; name != NULL; AvmDestroy(x), name = NULL)
+    for (T name = init; name != NULL; AvmDestroy(name), name = NULL)
 
 /*
  * Macro: panic

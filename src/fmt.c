@@ -271,13 +271,9 @@ void AvmVFprintf(void* handle, str format, va_list args) {
     AvmDestroy(s);
 }
 
-void AvmVPrintf(str format, va_list args) {
-    AvmVFprintf(stdout, format, args);
-}
+void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
 
-void AvmVErrorf(str format, va_list args) {
-    AvmVFprintf(stderr, format, args);
-}
+void AvmVErrorf(str format, va_list args) { AvmVFprintf(stderr, format, args); }
 
 AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmSscanf(AvmString string, str format, ...);
@@ -307,9 +303,7 @@ void AvmVFscanf(void* handle, str format, va_list args) {
         panic(FormatNullMsg);
     }
 
-    AvmString s = AvmString(128);
-
-    defer(s) {
+    defer(AvmString, s, AvmString(128)) {
         char* dummy = fgets(AvmStringAsPtr(s), 128, handle);
         (void)dummy;
         AvmVSscanf(s, format, args);
