@@ -19,5 +19,5 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. doxygenstruct:: cat
-   :members:
+.. doxygenfile :: options.h
+.. doxygenfile :: core.h

@@ -93,7 +93,7 @@ Source Folder: @AVM_INCLUDE_DIR@
 # Images
 # ------------------------------------------------------------------------
 
-Image Folder: @AVM_NATURAL_DOCS_OUTPUT_DIR@/images
+Image Folder: @AVM_DOC_OUTPUT_DIR@/images
 
 # This is where you specify additional folders Natural Docs should look for
 # images in.  When you put something like (see diagram.jpg) in a comment
@@ -116,7 +116,7 @@ Image Folder: @AVM_NATURAL_DOCS_OUTPUT_DIR@/images
 # Generated Documentation
 # ------------------------------------------------------------------------
 
-HTML Output Folder: @AVM_NATURAL_DOCS_OUTPUT_DIR@/html
+HTML Output Folder: @AVM_DOC_OUTPUT_DIR@/html
 
 # This is where you specify what kind of documentation you want Natural Docs
 # to build and where it should be put.  If you use any of these options on the
