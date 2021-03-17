@@ -7,6 +7,7 @@ project(avium
 include(GNUInstallDirs)
 include(CTest)
 include(ExternalProject)
+include(GenerateExportHeader)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -48,9 +49,14 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECT
 # Include subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(docs)
 
+option(AVM_GEN_DOCS "Generate docs?" ON)
 option(AVM_RUN_TESTS "Run tests?" ON)
+
+# Documentation
+if(AVM_GEN_DOCS)
+    add_subdirectory(docs)
+endif()
 
 # Tests.
 if(AVM_RUN_TESTS)

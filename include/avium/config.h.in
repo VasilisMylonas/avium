@@ -16,12 +16,11 @@
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
 
+#ifndef static_assert
+#    define static_assert _Static_assert
+#endif
+
 #ifdef AVM_MSVC
-#    ifdef AVM_EXPORT
-#        define AVMAPI extern __declspec(dllexport)
-#    else
-#        define AVMAPI extern __declspec(dllimport)
-#    endif
 #    ifndef alignof
 #        define alignof __alignof
 #    endif
@@ -29,7 +28,6 @@
 #        define thread_local __declspec(thread)
 #    endif
 #else
-#    define AVMAPI extern
 #    ifndef alignof
 #        define alignof _Alignof
 #    endif
@@ -39,8 +37,7 @@
 #endif  // AVM_MSVC
 
 #ifdef __cplusplus
-#    warning \
-        "Avium: C++ is not supported, you may encounter errors during compilation."
+#    warning "Avium: C++ is not supported, you may encounter errors."
 #endif  // __cplusplus
 
 #define AVM_OPTIONAL_NONE ((AvmOptional)-1)
