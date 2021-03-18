@@ -1,13 +1,11 @@
-/*
- * File: avium/string.h
- * Dynamic string implementation.
+/**
+ * @file avium/string.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Dynamic string implementation.
+ * @version 0.1
+ * @date 2021-03-18
  *
- * About: Author
- * Vasilis Mylonas <vasilismylonas@protonmail.com>
- *
- * Section: License
- *
- * Copyright (C) 2021 Vasilis Mylonas
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,11 +14,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef AVIUM_STRING_H
@@ -30,199 +28,174 @@
 
 #define AVM_STRING_GROWTH_FACTOR 2
 
-/*
- * Define: AVM_STRING_NPOS
- * An invalid index into an AvmString.
- */
+/// An invalid index into an AvmString.
 #define AVM_STRING_NPOS ((size_t)-1)
 
-/*
- * Macro: AvmString
- * Shorthand for AvmString_ctor
- */
+/// Shorthand for AvmString_ctor
 #define AvmString(capacity) AvmString_ctor(capacity)
 
-/*
- * Function: AvmString_ctor
- * Creates an AvmString with a specified capacity.
+/**
+ * @brief Creates an AvmString with a specified capacity.
  *
- * Parameters:
- * capacity - The capacity for the AvmString.
- *
- * Returns:
- * AvmString - The created AvmString.
+ * @param capacity The capacity for the AvmString.
+ * @return AvmString The created AvmString.
  */
 AVMAPI AvmString AvmString_ctor(size_t capacity);
 
-/*
- * Function: AvmStringFrom
- * Creates an AvmString from a character array.
+/**
+ * @brief Creates an AvmString from a character array.
  *
- * Parameters:
- * contents - The contents of the AvmString.
- *
- * Returns:
- * AvmString - The created AvmString.
+ * @param contents The contents of the AvmString.
+ * @return AvmString The created AvmString.
  */
 AVMAPI AvmString AvmStringFrom(str contents);
 
-/*
- * Function: AvmStringAsPtr
- * Gives access to the internal character array of an AvmString.
+/**
+ * @brief Gives access to the internal character array of an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- *
- * Returns:
- * char* - A pointer to the character array.
+ * @param self The AvmString.
+ * @return char* A pointer to the character array.
  */
 AVMAPI char* AvmStringAsPtr(AvmString self);
 
-/*
- * Function: AvmStringGetLength
- * Gets the length of an AvmString.
+/**
+ * @brief Gets the length of an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- *
- * Returns:
- * size_t - The AvmString length.
+ * @param self The AvmString.
+ * @return size_t The AvmString length.
  */
 AVMAPI size_t AvmStringGetLength(AvmString self);
 
-/*
- * Function: AvmStringGetCapacity
- * Gets the capacity of an AvmString.
+/**
+ * @brief Gets the capacity of an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- *
- * Returns:
- * size_t - The AvmString capacity.
+ * @param self The AvmString.
+ * @return size_t The AvmString capacity.
  */
 AVMAPI size_t AvmStringGetCapacity(AvmString self);
 
-/*
- * Function: AvmStringAppendChar
- * Appends a character to an AvmString.
+/**
+ * @brief Appends a character to an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- * character - The character to append.
+ * @param self The AvmString.
+ * @param character The character to append.
  *
- * Returns:
- * AvmString - The new AvmString with the appended character.
+ * @return AvmString The new AvmString with the appended character.
  */
 AVMAPI AvmString AvmStringAppendChar(AvmString self, char character);
 
-/*
- * Function: AvmStringAppend
- * Appends a character array to an AvmString.
+/**
+ * @brief Appends a character array to an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- * characters - The character array to append.
+ * @param self The AvmString.
+ * @param characters The character array to append.
  *
- * Returns:
- * AvmString - The new AvmString with the appended characters.
+ * @return AvmString The new AvmString with the appended characters.
  */
 AVMAPI AvmString AvmStringAppend(AvmString self, str characters);
 
-/*
- * Function: AvmStringConcat
- * Concatenates two AvmString instances.
+/**
+ * @brief Concatenates two AvmString instances.
  *
- * Parameters:
- * self - The first AvmString.
- * other - The second AvmString.
+ * @param self The first AvmString.
+ * @param other The second AvmString.
  *
- * Returns:
- * AvmString - The resulting AvmString.
+ * @return AvmString The resulting AvmString.
  */
 AVMAPI AvmString AvmStringConcat(AvmString self, AvmString other);
 
-/*
- * Function: AvmStringIndexOf
- * Gets the index of the first occurrence of a character in an AvmString.
+/**
+ * @brief Gets the index of the first occurrence of a character in an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- * character - The character to find.
+ * @param self The AvmString.
+ * @param character The character to find.
  *
- * Returns:
- * size_t - The index of the first occurrence of the character.
- *
- * Failure:
- * If the character is not found in the string then AVM_STRING_NPOS is returned.
+ * @return size_t The index of the first occurrence of the character.
+ * @return AVM_STRING_NPOS The character was not in the string.
  */
 AVMAPI size_t AvmStringIndexOf(AvmString self, char character);
 
-/*
- * Function: AvmStringLastIndexOf
- * Gets the index of the last occurrence of a characater in an AvmString.
+/**
+ * @brief Gets the index of the last occurrence of a character in an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- * character - The character to find.
+ * @param self The AvmString.
+ * @param character The character to find.
  *
- * Returns:
- * size_t - The index of the last occurrence of the character.
- *
- * Failure:
- * If the character is not found in the string then AVM_STRING_NPOS is returned.
+ * @return size_t The index of the last occurrence of the character.
+ * @return AVM_STRING_NPOS The character was not in the string.
  */
 AVMAPI size_t AvmStringLastIndexOf(AvmString self, char character);
 
-/*
- * Function: AvmStringReplace
- * Replaces all occurrences of a character in an AvmString with another.
+/**
+ * @brief Replaces all occurrences of a character in an AvmString with another.
  *
- * Parameters:
- * self - The AvmString.
- * oldCharacter - The character to be replace.
- * newCharacter - The character to replace with.
+ * @param self The AvmString.
+ * @param oldCharacter The character to be replace.
+ * @param newCharacter The character to replace with.
  *
- * Returns:
- * size_t - The count of the total replaced characters.
+ * @return size_t The count of the total replaced characters.
  */
 AVMAPI size_t AvmStringReplace(AvmString self, char oldCharacter,
                                char newCharacter);
 
+/**
+ * @brief Finds the first occurrence of a substring in an AvmString.
+ *
+ * @param self The AvmString.
+ * @param characters The substring to find.
+ * @return size_t The index of the first occurrence of the substring.
+ * @return AVM_STRING_NPOS The substring was not in the string.
+ */
 AVMAPI size_t AvmStringFind(AvmString self, str characters);
+
+/**
+ * @brief Finds the last occurrence of a substring in an AvmString.
+ *
+ * @param self The AvmString.
+ * @param characters The substring to find.
+ * @return size_t The index of the last occurrence of the substring.
+ * @return AVM_STRING_NPOS The substring was not in the string.
+ */
 AVMAPI size_t AvmStringFindLast(AvmString self, str characters);
 
+/**
+ * @brief Returns a character in an AvmString at a specified index.
+ *
+ * @param self The AvmString.
+ * @param index The index of the character to get.
+ *
+ * @return char The character.
+ */
 AVMAPI char AvmStringCharAt(AvmString self, size_t index);
 
+/**
+ * @brief Reverse an AvmString.
+ *
+ * @param self The AvmString.
+ */
 AVMAPI void AvmStringReverse(AvmString self);
 
-/*
- * Function: AvmStringToUpper
- * Converts all characters in an AvmString to uppercase.
+/**
+ * @brief Converts all characters in an AvmString to uppercase.
  *
- * Parameters:
- * self - The AvmString.
+ * @param self The AvmString.
  */
 AVMAPI void AvmStringToUpper(AvmString self);
 
-/*
- * Function: AvmStringToLower
+/**
  * Converts all characters in an AvmString to lowercase.
  *
- * Parameters:
- * self - The AvmString.
+ * @param self The AvmString.
  */
 AVMAPI void AvmStringToLower(AvmString self);
 
-/*
- * Function: AvmStringUnsafeSetLength
- * Changed the length value of an AvmString.
+/**
+ * @brief Changed the length value of an AvmString.
  *
- * Parameters:
- * self - The AvmString.
- * length - The new length value.
+ * @param self The AvmString.
+ * @param length The new length value.
  *
- * Warning:
- * This function can lead to undefined behavior if not used correctly.
+ * @warning This function can lead to undefined behavior if not used correctly.
  */
 AVMAPI void AvmStringUnsafeSetLength(AvmString self, size_t length);
 

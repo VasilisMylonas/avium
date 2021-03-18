@@ -5,7 +5,6 @@
 #define AVM_VERSION_MAJOR @avium_VERSION_MAJOR@
 #define AVM_VERSION_MINOR @avium_VERSION_MINOR@
 #define AVM_VERSION_PATCH @avium_VERSION_PATCH@
-#define AVM_VERSION_BUILD 0
 #define AVM_PTR_TYPE @AVM_PTR_TYPE@
 #define AVM_LONG_TYPE @AVM_LONG_TYPE@
 // clang-format on
@@ -16,12 +15,11 @@
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
 
+#ifndef static_assert
+#    define static_assert _Static_assert
+#endif
+
 #ifdef AVM_MSVC
-#    ifdef AVM_EXPORT
-#        define AVMAPI extern __declspec(dllexport)
-#    else
-#        define AVMAPI extern __declspec(dllimport)
-#    endif
 #    ifndef alignof
 #        define alignof __alignof
 #    endif
@@ -29,7 +27,6 @@
 #        define thread_local __declspec(thread)
 #    endif
 #else
-#    define AVMAPI extern
 #    ifndef alignof
 #        define alignof _Alignof
 #    endif
@@ -39,8 +36,7 @@
 #endif  // AVM_MSVC
 
 #ifdef __cplusplus
-#    warning \
-        "Avium: C++ is not supported, you may encounter errors during compilation."
+#    warning "Avium: C++ is not supported, you may encounter errors."
 #endif  // __cplusplus
 
 #define AVM_OPTIONAL_NONE ((AvmOptional)-1)

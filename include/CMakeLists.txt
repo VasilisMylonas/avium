@@ -3,11 +3,10 @@
 # All include files to be distributed.
 set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
-    ${AVM_INCLUDE_DIR}/avium/avium.h
-    ${AVM_INCLUDE_DIR}/avium/core.h
-    ${AVM_INCLUDE_DIR}/avium/fmt.h
-    ${AVM_INCLUDE_DIR}/avium/options.h
-    ${AVM_INCLUDE_DIR}/avium/string.h)
+    ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
+    avium/core.h
+    avium/fmt.h
+    avium/string.h)
 
 # Platform definitions.
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
@@ -48,9 +47,8 @@ else()
 endif()
 
 # Process header config file.
-configure_file(${AVM_INCLUDE_DIR}/${CMAKE_PROJECT_NAME}/config.h.in
-               ${AVM_INCLUDE_OUTPUT_DIR}/${CMAKE_PROJECT_NAME}/config.h @ONLY)
+configure_file(avium/config.h.in avium/config.h @ONLY)
 
 # Installation.
 install(FILES ${AVM_INCLUDE_FILES}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME})
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/avium)

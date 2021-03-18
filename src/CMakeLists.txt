@@ -1,7 +1,7 @@
 # Compilation
 
 # All source files to be compiled.
-set(AVM_SOURCE_FILES core.c string.c options.c fmt.c)
+set(AVM_SOURCE_FILES core.c string.c fmt.c)
 
 # Target names.
 set(AVM_SHARED_NAME avm)
@@ -11,8 +11,10 @@ set(AVM_STATIC_NAME avm-static)
 add_library(${AVM_SHARED_NAME} SHARED ${AVM_SOURCE_FILES})
 add_library(${AVM_STATIC_NAME} STATIC ${AVM_SOURCE_FILES})
 
-# When building a shared library, export symbols.
-target_compile_definitions(${AVM_SHARED_NAME} PRIVATE AVM_EXPORT)
+generate_export_header(${AVM_SHARED_NAME} BASE_NAME AVM
+                       EXPORT_MACRO_NAME AVMAPI
+                       INCLUDE_GUARD_NAME AVIUM_EXPORTS_H
+                       EXPORT_FILE_NAME ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h)
 
 if(MSVC)
     # Disable some MSVC warnings.
