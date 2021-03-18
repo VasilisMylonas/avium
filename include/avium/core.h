@@ -122,18 +122,7 @@ typedef void (*AvmFunction)(void);
 #    define never _Noreturn void
 #endif  // AVM_MSVC
 
-/*
- * Enum: AvmErrorKind
- * Describes the type of the error that occurred.
- *
- * EK_ARGUMENT          - An invalid argument was received by a function.
- * EK_OUT_OF_RANGE      - A provided index was out of range.
- * EK_OUT_OF_MEMORY     - There was not enough memory to handle an operation.
- * EK_INVALID_OPERATION - A function call was invalid for the current state.
- * EK_IO                - An IO error occurred.
- * EK_SYSTEM            - An unknown system error occurred.
- * EK_NOT_FOUND         - A required resource was unavailable.
- */
+/// Describes the type of the error that occurred.
 typedef enum {
     /// Internal constant, do not use.
     _EK_MIN = 16,
