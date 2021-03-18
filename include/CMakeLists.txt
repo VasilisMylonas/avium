@@ -6,7 +6,6 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
     avium/core.h
     avium/fmt.h
-    avium/options.h
     avium/string.h)
 
 # Platform definitions.
