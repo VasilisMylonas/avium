@@ -19,8 +19,7 @@ str AvmObjectName(object self) { return AvmObjectType(self)->name; }
 
 size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
 
-never AvmPanic(str message, str function, str file,
-               uint line) {
+never AvmPanic(str message, str function, str file, uint line) {
     fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
             function, message);
     abort();
@@ -118,7 +117,7 @@ void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     memcpy(destination, source, trueLength);
 }
 
-struct _AvmVersion {
+struct AvmVersion {
     AvmType type;
     uint major;
     uint minor;
@@ -134,7 +133,7 @@ AvmString AvmVersionToString(AvmVersion self) {
 TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
 
 AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag) {
-    AvmVersion version = malloc(sizeof(struct _AvmVersion));
+    AvmVersion version = malloc(sizeof(struct AvmVersion));
     version->type = GET_TYPE(AvmVersion);
     version->major = major;
     version->minor = minor;

@@ -8,7 +8,7 @@
 
 #define AVM_STRING_SIZE (sizeof(AvmType) + 2 * sizeof(size_t))
 
-struct _AvmString {
+struct AvmString {
     AvmType type;
     size_t capacity;
     size_t length;
@@ -189,8 +189,8 @@ size_t AvmStringFindLast(AvmString self, str characters) {
         return AVM_STRING_NPOS;
     }
 
-    for (char* end = self->buffer + self->length - length;
-         end != self->buffer; end--) {
+    for (char* end = self->buffer + self->length - length; end != self->buffer;
+         end--) {
         if (strncmp(end, characters, length) == 0) {
             return end - self->buffer;
         }
@@ -199,8 +199,7 @@ size_t AvmStringFindLast(AvmString self, str characters) {
     return AVM_STRING_NPOS;
 }
 
-size_t AvmStringReplace(AvmString self, char oldCharacter,
-                        char newCharacter) {
+size_t AvmStringReplace(AvmString self, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }

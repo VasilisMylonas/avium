@@ -33,22 +33,21 @@ static str const DestNullMsg = "Parameter `destination` was `NULL`.";
 static str const FormatNullMsg = "Parameter `format` was `NULL`.";
 static str const ArgsNullMsg = "Parameter `args` was `NULL`.";
 static str const HandleNullMsg = "Parameter `handle` was `NULL`.";
-static str const BaseOutOfRangeMsg =
-    "Parameter `base` was out of range`.";
+static str const BaseOutOfRangeMsg = "Parameter `base` was out of range`.";
 static str const StringNullMsg = "Parameter `string` was `NULL`.";
 static str const OtherNullMsg = "Parameter `other` was `NULL`.";
 
-struct _AvmType {
+struct AvmType {
     const AvmFunction* vptr;
     str name;
     size_t size;
 };
 
 #define TYPE(T, ...)                                         \
-    static const struct _AvmType T##Type = {                 \
+    static const struct AvmType T##Type = {                  \
         .vptr = (AvmFunction[AVM_VTABLE_SIZE]){__VA_ARGS__}, \
         .name = #T,                                          \
-        .size = sizeof(struct _##T),                         \
+        .size = sizeof(struct T),                            \
     }
 
 #define GET_TYPE(T) (AvmType) & T##Type
