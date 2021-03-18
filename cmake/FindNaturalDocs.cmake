@@ -1,4 +1,0 @@
-include(FindPackageHandleStandardArgs)
-
-find_program(NATURAL_DOCS_EXECUTABLE NAMES natural-docs)
-find_package_handle_standard_args(NATURAL_DOCS NATURAL_DOCS_EXECUTABLE)
