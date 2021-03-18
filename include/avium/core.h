@@ -192,7 +192,7 @@ AVMAPI str AvmObjectName(object self);
  * @brief Gets the size of an object.
  *
  * @param self The object.
- * @param size_t The object's size.
+ * @return size_t The object's size.
  */
 AVMAPI size_t AvmObjectSize(object self);
 
@@ -313,8 +313,7 @@ AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
 /**
  * @brief A type indicating successful or unsuccessful function execution.
  *
- * @see AvmSuccess
- * @see AvmFailure
+ * @see AvmSuccess AvmFailure
  */
 typedef union {
     /// The type of the error that occurred.
@@ -330,8 +329,7 @@ typedef union {
  * @param value The value to be returned along the AvmResult.
  * @return AvmResult An AvmResult indicating success.
  *
- * @see AvmFailure
- * @see AvmIsFailure
+ * @see AvmFailure AvmIsFailure
  *
  * @note This function is inline.
  */
@@ -345,8 +343,7 @@ inline AvmResult AvmSuccess(object value) {
  * @param kind The type of failure that occurred.
  * @return AvmResult An AvmResult indicating failure.
  *
- * @see AvmSuccess
- * @see AvmIsFailure
+ * @see AvmSuccess AvmIsFailure
  *
  * @note This function is inline.
  */
@@ -365,8 +362,7 @@ inline AvmResult AvmFailure(AvmErrorKind kind) {
  * @return true The AvmResult represents failure.
  * @return false The AvmResult contains a result.
  *
- * @see AvmSuccess
- * @see AvmFailure
+ * @see AvmSuccess AvmFailure
  *
  * @note This function is inline.
  */
@@ -381,8 +377,7 @@ inline bool AvmIsFailure(AvmResult self) {
  * @param self The AvmResult.
  * @return object The object contained in the AvmResult.
  *
- * @see AvmSuccess
- * @see AvmFailure
+ * @see AvmSuccess AvmFailure
  *
  * @note This function is inline.
  */
