@@ -3,9 +3,7 @@
 # Where to place documentation related build files.
 set(AVM_DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(AVM_SPHINX_OUTPUT_DIR ${AVM_DOC_OUTPUT_DIR}/sphinx)
-
-file(MAKE_DIRECTORY ${AVM_DOC_OUTPUT_DIR}/images)
-file(MAKE_DIRECTORY ${AVM_DOC_OUTPUT_DIR}/html)
+set(AVM_IMAGE_DIR ${CMAKE_SOURCE_DIR}/images)
 
 # Copyright notice, timestamp format and tab width.
 set(AVM_PROJECT_COPYRIGHT "Copyright (C) 2021 Vasilis Mylonas")
@@ -21,36 +19,23 @@ set(AVM_DOC_FILES
     ${CMAKE_SOURCE_DIR}/COPYING
     ${CMAKE_SOURCE_DIR}/COPYING.LESSER)
 
-find_package(NaturalDocs REQUIRED)
-find_package(Doxygen REQUIRED)
-find_package(Sphinx REQUIRED)
+find_package(Doxygen)
+find_package(Sphinx)
 
-if(DOXYGEN_FOUND)
+if(DOXYGEN_FOUND AND SPHINX_FOUND)
     configure_file(Doxyfile.in Doxyfile @ONLY)
     add_custom_target(Doxygen COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile)
 
-    if(SPHINX_FOUND)
-        configure_file(conf.py.in xml/conf.py @ONLY)
-        configure_file(index.rst.in xml/index.rst @ONLY)
-        add_custom_target(Sphinx ALL DEPENDS Doxygen
-                        COMMAND ${SPHINX_EXECUTABLE} -q -b html
-                        ${AVM_DOC_OUTPUT_DIR}/xml ${AVM_SPHINX_OUTPUT_DIR})
-    else()
-        message(WARNING "Install Sphinx to generate documentation.")
-    endif()
+    configure_file(conf.py.in xml/conf.py @ONLY)
+    configure_file(index.rst.in xml/index.rst @ONLY)
+    add_custom_target(Sphinx ALL DEPENDS Doxygen
+                      COMMAND ${SPHINX_EXECUTABLE} -q -b html
+                      ${AVM_DOC_OUTPUT_DIR}/xml ${AVM_SPHINX_OUTPUT_DIR})
 else()
-    message(WARNING "Install Doxygen to generate documentation.")
-endif()
-
-if(NATURAL_DOCS_FOUND)
-    configure_file(Project.txt.in Project.txt @ONLY)
-    configure_file(Comments.txt.in Comments.txt @ONLY)
-    configure_file(Languages.txt.in Languages.txt @ONLY)
-    add_custom_target(NaturalDocs ALL COMMAND ${NATURAL_DOCS_EXECUTABLE} .)
-else()
-    message(WARNING "Install NaturalDocs to generate documentation.")
+    message(WARNING "Install Doxygen and Sphinx to generate documentation.")
 endif()
 
 # Installation
+install(DIRECTORY ${AVM_DOC_OUTPUT_DIR}/man/man3 DESTINATION ${CMAKE_INSTALL_MANDIR})
+install(DIRECTORY ${AVM_IMAGE_DIR} DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES ${AVM_DOC_FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})
-install(DIRECTORY ${AVM_NATURAL_DOCS_OUTPUT_DIR} DESTINATION ${CMAKE_INSTALL_DOCDIR})

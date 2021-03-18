@@ -15,20 +15,30 @@ To build avium you need the following installed on your system:
     process.exit(0)
     ```
 
-- [NaturalDocs](https://www.naturaldocs.org/) **NOTE: a script named "natural-docs" should exist in your path.** The contents should be:
+- [Doxygen](https://www.doxygen.nl)
 
     ```sh
-    #!/usr/bin/env bash
-
-    mono [insert path to NaturalDocs.exe here] $@
-
+        sudo apt install doxygen
     ```
 
-    Also make sure it is executable:
+- [Sphinx](https://www.sphinx-doc.org)
 
     ```sh
-    chmod +x [insert path to the script here]
+        sudo pip3 install sphinx
     ```
+
+- [Breathe](https://breathe.readthedocs.io)
+
+    ```sh
+        sudo pip3 install breathe
+    ```
+
+- ReadTheDocs theme for Sphinx
+
+    ```sh
+        sudo pip3 install sphinx-rtd-theme
+    ```
+
 
 
 ## Building
@@ -42,6 +52,7 @@ To build avium you need the following installed on your system:
     ```
 
 2. Go to where you cloned the github repo.
+
     ```sh
     cd avium
     ```
