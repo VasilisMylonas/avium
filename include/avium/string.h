@@ -24,7 +24,10 @@
 #ifndef AVIUM_STRING_H
 #define AVIUM_STRING_H
 
-#include "avium/core.h"
+#include "avium/prologue.h"
+
+/// A dynamic string.
+typedef struct AvmString* AvmString;
 
 #define AVM_STRING_GROWTH_FACTOR 2
 

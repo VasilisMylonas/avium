@@ -24,7 +24,8 @@
 #ifndef AVIUM_FMT_H
 #define AVIUM_FMT_H
 
-#include "avium/core.h"
+#include "avium/prologue.h"
+#include "avium/string.h"
 
 #define AVM_FMT_INT_DECIMAL  'i'
 #define AVM_FMT_INT_HEX      'x'

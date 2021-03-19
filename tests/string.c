@@ -6,6 +6,7 @@
 #include <cmocka.h>
 
 #include <avium/string.h>
+#include <avium/object.h>
 
 static int setup(void** state) {
     *state = AvmStringFrom("Hello World Wordy World!");

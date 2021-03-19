@@ -6,8 +6,8 @@
 #include <stdint.h>
 #include <uchar.h>
 
+#include "avium/object.h"
 #include "avium/internal.h"
-#include "avium/string.h"
 
 #define AVM_FLOAT_BUFFER_SIZE 128
 
