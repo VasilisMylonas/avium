@@ -108,13 +108,13 @@ AvmString AvmFtoa2(float value) {
         s = AvmStringAppendChar(s, '-');
     }
 
-    u_long mantissa = f.mantissaLow;
-    mantissa += ((u_long)f.mantissaHigh << 16);
+    ulong mantissa = f.mantissaLow;
+    mantissa += ((ulong)f.mantissaHigh << 16);
     mantissa += 0x00800000;
 
     AvmString intPart = AvmItoa(mantissa >> (23 - exponent));
     s = AvmStringConcat(s, intPart);
-    AvmDestroy(intPart);
+    AvmObjectDestroy(intPart);
 
     s = AvmStringAppendChar(s, '.');
 
@@ -189,18 +189,18 @@ AvmString AvmVSprintf(str format, va_list args) {
                 s = AvmStringConcat(s, temp);
                 break;
             case AVM_FMT_INT_OCTAL:
-                temp = AvmUtoa(va_arg(args, u_long), 8);
+                temp = AvmUtoa(va_arg(args, ulong), 8);
                 s = AvmStringAppend(s, "0o");
                 s = AvmStringConcat(s, temp);
                 break;
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX:
-                temp = AvmUtoa(va_arg(args, u_long), 16);
+                temp = AvmUtoa(va_arg(args, ulong), 16);
                 s = AvmStringAppend(s, "0x");
                 s = AvmStringConcat(s, temp);
                 break;
             case AVM_FMT_INT_BINARY:
-                temp = AvmUtoa(va_arg(args, u_long), 2);
+                temp = AvmUtoa(va_arg(args, ulong), 2);
                 s = AvmStringAppend(s, "0b");
                 s = AvmStringConcat(s, temp);
                 break;
@@ -224,7 +224,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_INT_SIZE:
             case AVM_FMT_INT_UNSIGNED:
-                temp = AvmUtoa(va_arg(args, u_long), 10);
+                temp = AvmUtoa(va_arg(args, ulong), 10);
                 s = AvmStringConcat(s, temp);
                 break;
             case AVM_FMT_CHAR:
@@ -237,15 +237,19 @@ AvmString AvmVSprintf(str format, va_list args) {
                 s = AvmStringAppend(
                     s, (bool)va_arg(args, uint) ? "true" : "false");
                 break;
-            case AVM_FMT_TYPE:
-                s = AvmStringAppend(s, AvmObjectName(va_arg(args, object)));
+            case AVM_FMT_TYPE: {
+                AvmType type = AvmObjectType(va_arg(args, object));
+                s = AvmStringAppend(s, AvmTypeGetName(type));
                 break;
-            case AVM_FMT_SIZE:
-                temp = AvmUtoa(AvmObjectSize(va_arg(args, object)), 10);
+            }
+            case AVM_FMT_SIZE: {
+                AvmType type = AvmObjectType(va_arg(args, object));
+                temp = AvmUtoa(AvmTypeGetSize(type), 10);
                 s = AvmStringConcat(s, temp);
                 break;
+            }
             case AVM_FMT_VALUE:
-                temp = AvmToString(va_arg(args, object));
+                temp = AvmObjectToString(va_arg(args, object));
                 s = AvmStringAppend(s, AvmStringAsPtr(temp));
                 break;
             default:
@@ -254,7 +258,7 @@ AvmString AvmVSprintf(str format, va_list args) {
         }
 
         if (temp != NULL) {
-            AvmDestroy(temp);
+            AvmObjectDestroy(temp);
         }
     }
 
@@ -268,7 +272,7 @@ void AvmVFprintf(void* handle, str format, va_list args) {
 
     AvmString s = AvmVSprintf(format, args);
     fputs(AvmStringAsPtr(s), handle);
-    AvmDestroy(s);
+    AvmObjectDestroy(s);
 }
 
 void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
@@ -292,7 +296,7 @@ static void SkipWord(char* buffer, size_t* index) {
     char* start = &buffer[j]; \
     SkipWord(buffer, &j);     \
     char* end = &buffer[j];   \
-    *((u_long*)va_arg(args, u_long*)) = strtoull(start, &end, base)
+    *((ulong*)va_arg(args, ulong*)) = strtoull(start, &end, base)
 
 void AvmVFscanf(void* handle, str format, va_list args) {
     if (handle == NULL) {

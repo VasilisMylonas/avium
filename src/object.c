@@ -5,29 +5,37 @@
 #include <string.h>
 #include <stdlib.h>
 
+// AvmType struct definition is in internal.h
+
+str AvmTypeName(AvmType self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->name;
+}
+
+size_t AvmTypeSize(AvmType self) {
+    if (self == NULL) {
+        panic(SelfNullMsg);
+    }
+
+    return self->size;
+}
+
 AvmType AvmObjectType(object self) {
     if (self == NULL) {
-        panic("Parameter `self` was `NULL`.");
+        panic(SelfNullMsg);
     }
 
     return *(AvmType*)self;
 }
 
-str AvmObjectName(object self) { return AvmObjectType(self)->name; }
+bool AvmObjectEquals(object lhs, object rhs) {
+    AvmType type = AvmObjectType(lhs);
+    AvmFunction method = type->vptr[FUNC_EQ];
 
-size_t AvmObjectSize(object self) { return AvmObjectType(self)->size; }
-
-never AvmVirtualFunctionTrap(str function, AvmType type) {
-    fprintf(stderr,
-            "Attempted to call unimplemented virtual function: %s on type %s.",
-            function, type->name);
-    panic("Unimplemented virtual function trap triggered.");
-}
-
-bool AvmObjectEq(object lhs, object rhs) {
-    AvmFunction method = AvmObjectType(lhs)->vptr[FUNC_EQ];
-
-    size_t size = AvmObjectSize(lhs);
+    size_t size = type->size;
 
     if (method == NULL) {
         return memcmp(lhs, rhs, size) == 0;
@@ -36,7 +44,7 @@ bool AvmObjectEq(object lhs, object rhs) {
     return ((bool (*)(object, object))method)(lhs, rhs);
 }
 
-void AvmDestroy(object self) {
+void AvmObjectDestroy(object self) {
     AvmFunction method = AvmObjectType(self)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
@@ -47,45 +55,54 @@ void AvmDestroy(object self) {
     ((void (*)(object))method)(self);
 }
 
-size_t AvmGetLength(object self) {
-    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_LENGTH];
-
-    if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
-    }
-
-    return ((size_t(*)(object))method)(self);
-}
-
-size_t AvmGetCapacity(object self) {
-    AvmFunction method = AvmObjectType(self)->vptr[FUNC_GET_CAPACITY];
-
-    if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
-    }
-
-    return ((size_t(*)(object))method)(self);
-}
-
-object AvmClone(object self) {
+object AvmObjectClone(object self) {
     AvmFunction method = AvmObjectType(self)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
-        size_t size = AvmObjectSize(self);
+        size_t size = AvmTypeSize(AvmObjectType(self));
         return memcpy(malloc(size), self, size);
     }
 
     return ((object(*)(object))method)(self);
 }
 
-AvmString AvmToString(object self) {
+AvmString AvmObjectToString(object self) {
     AvmFunction method = AvmObjectType(self)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
     }
 
-    return ((object(*)(object))method)(self);
+    return ((void* (*)(object))method)(self);
+}
+
+size_t AvmCollectionGetLength(AvmCollection self) {
+    AvmType type = AvmObjectType(self);
+    AvmFunction method = type->vptr[FUNC_GET_LENGTH];
+
+    if (method == NULL) {
+        AvmVirtualFunctionTrap(__func__, type);
+    }
+
+    return ((size_t(*)(AvmCollection))method)(self);
+}
+
+size_t AvmCollectionGetCapacity(AvmCollection self) {
+    AvmType type = AvmObjectType(self);
+    AvmFunction method = type->vptr[FUNC_GET_CAPACITY];
+
+    if (method == NULL) {
+        AvmVirtualFunctionTrap(__func__, type);
+    }
+
+    return ((size_t(*)(AvmCollection))method)(self);
+}
+
+never AvmVirtualFunctionTrap(str function, AvmType type) {
+    fprintf(stderr,
+            "Attempted to call unimplemented virtual function: %s on type %s.",
+            function, type->name);
+    panic("Unimplemented virtual function trap triggered.");
 }
 
 void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {

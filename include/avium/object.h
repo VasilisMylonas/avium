@@ -13,10 +13,26 @@
  * @param init The object initializer.
  */
 #define defer(T, name, init) \
-    for (T name = init; name != NULL; AvmDestroy(name), name = NULL)
+    for (T name = init; name != NULL; AvmObjectDestroy(name), name = NULL)
 
 /// A type containing information about an object.
 typedef struct AvmType* AvmType;
+
+/**
+ * @brief Gets the name of a type.
+ *
+ * @param self The type.
+ * @return str The type's name.
+ */
+AVMAPI str AvmTypeGetName(AvmType self);
+
+/**
+ * @brief Gets the size of a type.
+ *
+ * @param self The type.
+ * @return size_t The type's size.
+ */
+AVMAPI size_t AvmTypeGetSize(AvmType self);
 
 /**
  * @brief Gets information about the type of an object.
@@ -25,22 +41,6 @@ typedef struct AvmType* AvmType;
  * @return AvmType The type information of the object.
  */
 AVMAPI AvmType AvmObjectType(object self);
-
-/**
- * @brief Gets the name of an object.
- *
- * @param self The object.
- * @return str The object's name.
- */
-AVMAPI str AvmObjectName(object self);
-
-/**
- * @brief Gets the size of an object.
- *
- * @param self The object.
- * @return size_t The object's size.
- */
-AVMAPI size_t AvmObjectSize(object self);
 
 /**
  * @brief Compares two objects for equality.
@@ -54,7 +54,7 @@ AVMAPI size_t AvmObjectSize(object self);
  * @return true The two objects are equal.
  * @return false The two objects are not equal.
  */
-AVMAPI bool AvmObjectEq(object lhs, object rhs);
+AVMAPI bool AvmObjectEquals(object lhs, object rhs);
 
 /**
  * @brief Destroys an object and deallocates its memory.
@@ -64,7 +64,7 @@ AVMAPI bool AvmObjectEq(object lhs, object rhs);
  *
  * @param self The object.
  */
-AVMAPI void AvmDestroy(object self);
+AVMAPI void AvmObjectDestroy(object self);
 
 /**
  * @brief Clones an object, creating an exact copy.
@@ -76,7 +76,7 @@ AVMAPI void AvmDestroy(object self);
  * @param self The object.
  * @return object The cloned object.
  */
-AVMAPI object AvmClone(object self);
+AVMAPI object AvmObjectClone(object self);
 
 /**
  * @brief Creates a string representation of an object.
@@ -90,35 +90,37 @@ AVMAPI object AvmClone(object self);
  *
  * @see AvmVirtualFunctionTrap
  */
-AVMAPI AvmString AvmToString(object self);
+AVMAPI AvmString AvmObjectToString(object self);
+
+typedef object AvmCollection;
 
 /**
- * @brief Gets the length of a container.
+ * @brief Gets the length of a collection.
  *
  * This function tries to use the FUNC_GET_LENGTH virtual function entry to
- * get the length of the container. If no such virtual function is available
+ * get the length of the collection. If no such virtual function is available
  * then this function traps.
  *
- * @param self The container.
- * @return size_t The length of the container.
+ * @param self The collection.
+ * @return size_t The length of the collection.
  *
  * @see AvmVirtualFunctionTrap
  */
-AVMAPI size_t AvmGetLength(object self);
+AVMAPI size_t AvmCollectionGetLength(AvmCollection self);
 
 /**
- * @brief Gets the capacity of a container.
+ * @brief Gets the capacity of a collection.
  *
  * This function tries to use the FUNC_GET_CAPACITY virtual function entry to
- * get the capacity of the container. If no such virtual function is available
+ * get the capacity of the collection. If no such virtual function is available
  * then this function traps.
  *
- * @param self The container.
- * @return size_t The capacity of the container.
+ * @param self The collection.
+ * @return size_t The capacity of the collection.
  *
  * @see AvmVirtualFunctionTrap
  */
-AVMAPI size_t AvmGetCapacity(object self);
+AVMAPI size_t AvmCollectionGetCapacity(AvmCollection self);
 
 /**
  * @brief The trap function called when a virtual function is not implemented.
