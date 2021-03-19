@@ -9,10 +9,10 @@ never AvmPanic(str message, str function, str file, uint line) {
     abort();
 }
 
-AVMAPI AvmResult AvmSuccess(object value);
-AVMAPI AvmResult AvmFailure(AvmErrorKind kind);
-AVMAPI bool AvmIsFailure(AvmResult self);
-AVMAPI object AvmUnwrap(AvmResult self);
-AVMAPI AvmOptional AvmSome(object value);
-AVMAPI AvmOptional AvmNone();
-AVMAPI bool AvmHasValue(AvmOptional optional);
+AvmResult AvmSuccess(object value);
+AvmResult AvmFailure(AvmErrorKind kind);
+bool AvmIsFailure(AvmResult self);
+object AvmUnwrap(AvmResult self);
+AvmOptional AvmSome(object value);
+AvmOptional AvmNone();
+bool AvmHasValue(AvmOptional optional);

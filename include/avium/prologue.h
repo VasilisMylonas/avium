@@ -163,7 +163,7 @@ typedef union {
  *
  * @note This function is inline.
  */
-inline AvmResult AvmSuccess(object value) {
+AVMAPI inline AvmResult AvmSuccess(object value) {
     return (AvmResult){.value = value};
 }
 
@@ -177,7 +177,7 @@ inline AvmResult AvmSuccess(object value) {
  *
  * @note This function is inline.
  */
-inline AvmResult AvmFailure(AvmErrorKind kind) {
+AVMAPI inline AvmResult AvmFailure(AvmErrorKind kind) {
     if (kind <= _EK_MIN || kind >= _EK_MAX) {
         panic("Parameter `kind` was invalid. Do not use _EK_MIN and _EK_MAX.");
     }
@@ -196,7 +196,7 @@ inline AvmResult AvmFailure(AvmErrorKind kind) {
  *
  * @note This function is inline.
  */
-inline bool AvmIsFailure(AvmResult self) {
+AVMAPI inline bool AvmIsFailure(AvmResult self) {
     return self.kind > _EK_MIN && self.kind < _EK_MAX;
 }
 
@@ -211,7 +211,7 @@ inline bool AvmIsFailure(AvmResult self) {
  *
  * @note This function is inline.
  */
-inline object AvmUnwrap(AvmResult self) {
+AVMAPI inline object AvmUnwrap(AvmResult self) {
     if (AvmIsFailure(self)) {
         panic("Tried to unwrap a result describing failure.");
     }
@@ -230,7 +230,7 @@ typedef uptr AvmOptional;
  *
  * @note This function is inline.
  */
-inline AvmOptional AvmSome(object value) {
+AVMAPI inline AvmOptional AvmSome(object value) {
     if (((uptr)value) == AVM_OPTIONAL_NONE) {
         panic("Tried to create an AvmOptional with an invalid value.");
     }
@@ -244,7 +244,7 @@ inline AvmOptional AvmSome(object value) {
  *
  * @note This function is inline.
  */
-inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
+AVMAPI inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
 
 /**
  * @brief Determines whether an AvmOptional contains a value.
@@ -253,7 +253,7 @@ inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
  *
  * @note This function is inline.
  */
-inline bool AvmHasValue(AvmOptional optional) {
+AVMAPI inline bool AvmHasValue(AvmOptional optional) {
     return optional != AVM_OPTIONAL_NONE;
 }
 

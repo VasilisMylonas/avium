@@ -275,12 +275,12 @@ void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
 
 void AvmVErrorf(str format, va_list args) { AvmVFprintf(stderr, format, args); }
 
-AVMAPI void AvmScanf(str format, ...);
-AVMAPI void AvmSscanf(AvmString string, str format, ...);
-AVMAPI AvmString AvmSprintf(str format, ...);
-AVMAPI void AvmFprintf(void* handle, str format, ...);
-AVMAPI void AvmPrintf(str format, ...);
-AVMAPI void AvmErrorf(str format, ...);
+void AvmScanf(str format, ...);
+void AvmSscanf(AvmString string, str format, ...);
+AvmString AvmSprintf(str format, ...);
+void AvmFprintf(void* handle, str format, ...);
+void AvmPrintf(str format, ...);
+void AvmErrorf(str format, ...);
 
 static void SkipWord(char* buffer, size_t* index) {
     while (buffer[*index] != ' ' && buffer[*index] != '\0') {
