@@ -32,7 +32,7 @@ AvmString AvmItoa(_long value) {
         value = -value;
     }
 
-    AvmString s = AvmString(8);
+    AvmString s = AvmStringNew(8);
 
     size_t i = 0;
     for (; value != 0; i++, value /= 10) {
@@ -65,7 +65,7 @@ AvmString AvmUtoa(ulong value, NumericBase base) {
             panic(BaseOutOfRangeMsg);
     }
 
-    AvmString s = AvmString(8);
+    AvmString s = AvmStringNew(8);
 
     size_t i = 0;
     for (; value != 0; i++, value /= base) {
@@ -102,7 +102,7 @@ AvmString AvmFtoa2(float value) {
         return AvmStringFrom("0");
     }
 
-    AvmString s = AvmString(8);
+    AvmString s = AvmStringNew(8);
 
     if (f.isNegative) {
         s = AvmStringAppendChar(s, '-');
@@ -150,7 +150,7 @@ AvmString AvmFtoa2(float value) {
 
 AvmString AvmFtoa(double value) {
     size_t length = snprintf(NULL, 0, "%lf", value);
-    AvmString s = AvmString(length);
+    AvmString s = AvmStringNew(length);
     char* buffer = AvmStringAsPtr(s);
     snprintf(buffer, length + 1, "%lf", value);
     AvmStringUnsafeSetLength(s, length);
@@ -166,7 +166,7 @@ AvmString AvmVSprintf(str format, va_list args) {
         panic(ArgsNullMsg);
     }
 
-    AvmString s = AvmString(8);
+    AvmString s = AvmStringNew(8);
 
     for (size_t i = 0; format[i] != '\0'; i++) {
         if (format[i] != '%') {
@@ -307,7 +307,7 @@ void AvmVFscanf(void* handle, str format, va_list args) {
         panic(FormatNullMsg);
     }
 
-    defer(AvmString, s, AvmString(128)) {
+    defer(AvmString, s, AvmStringNew(128)) {
         char* dummy = fgets(AvmStringAsPtr(s), 128, handle);
         (void)dummy;
         AvmVSscanf(s, format, args);

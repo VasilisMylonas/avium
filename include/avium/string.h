@@ -34,16 +34,13 @@ typedef struct AvmString* AvmString;
 /// An invalid index into an AvmString.
 #define AVM_STRING_NPOS ((size_t)-1)
 
-/// Shorthand for AvmString_ctor
-#define AvmString(capacity) AvmString_ctor(capacity)
-
 /**
  * @brief Creates an AvmString with a specified capacity.
  *
  * @param capacity The capacity for the AvmString.
  * @return AvmString The created AvmString.
  */
-AVMAPI AvmString AvmString_ctor(size_t capacity);
+AVMAPI AvmString AvmStringNew(size_t capacity);
 
 /**
  * @brief Creates an AvmString from a character array.
