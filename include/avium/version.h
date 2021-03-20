@@ -6,10 +6,6 @@
 // A type representing a software version in the format: major.minor.patch-tag
 typedef struct AvmVersion* AvmVersion;
 
-/// Shorthand for AvmVersion_ctor.
-#define AvmVersion(major, minor, patch, tag) \
-    AvmVersion_ctor(major, minor, patch, tag)
-
 /**
  * @brief Creates a new AvmVersion instance.
  *
@@ -20,7 +16,7 @@ typedef struct AvmVersion* AvmVersion;
  *
  * @return AvmVersion The created AvmVersion.
  */
-AVMAPI AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag);
+AVMAPI AvmVersion AvmVersionFrom(uint major, uint minor, uint patch, char tag);
 
 /**
  * @brief Determines whether 2 AvmVersion instances are compatible (whether the

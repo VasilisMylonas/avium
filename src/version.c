@@ -20,7 +20,7 @@ AvmString AvmVersionToString(AvmVersion self) {
 
 TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
 
-AvmVersion AvmVersion_ctor(uint major, uint minor, uint patch, char tag) {
+AvmVersion AvmVersionFrom(uint major, uint minor, uint patch, char tag) {
     AvmVersion version = malloc(sizeof(struct AvmVersion));
     version->type = GET_TYPE(AvmVersion);
     version->major = major;
