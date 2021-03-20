@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <uchar.h>
 
-#include "avium/object.h"
 #include "avium/internal.h"
 #include "avium/string.h"
 

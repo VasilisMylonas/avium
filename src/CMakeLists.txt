@@ -2,8 +2,8 @@
 
 # All source files to be compiled.
 set(AVM_SOURCE_FILES
+    collection.c
     fmt.c
-    object.c
     options.c
     prologue.c
     string.c

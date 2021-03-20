@@ -5,7 +5,7 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
     avium/fmt.h
-    avium/object.h
+    avium/collection.h
     avium/options.h
     avium/prologue.h
     avium/string.h

@@ -1,7 +1,6 @@
 #include "avium/version.h"
 #include "avium/internal.h"
 #include "avium/string.h"
-#include "avium/object.h"
 #include "avium/fmt.h"
 
 #include <stdlib.h>

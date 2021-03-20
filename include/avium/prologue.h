@@ -277,6 +277,33 @@ AVMAPI inline bool AvmOptionalHasValue(AvmOptional optional) {
 #define defer(T, name, init) \
     for (T name = init; name != NULL; AvmObjectDestroy(name), name = NULL)
 
+/// A type containing information about an object.
+typedef struct AvmType* AvmType;
+
+/**
+ * @brief Gets the name of a type.
+ *
+ * @param self The type.
+ * @return str The type's name.
+ */
+AVMAPI str AvmTypeGetName(AvmType self);
+
+/**
+ * @brief Gets the size of a type.
+ *
+ * @param self The type.
+ * @return size_t The type's size.
+ */
+AVMAPI size_t AvmTypeGetSize(AvmType self);
+
+/**
+ * @brief Gets information about the type of an object.
+ *
+ * @param self The object.
+ * @return AvmType The type information of the object.
+ */
+AVMAPI AvmType AvmObjectType(object self);
+
 /**
  * @brief Compares two objects for equality.
  *
@@ -326,6 +353,30 @@ AVMAPI object AvmObjectClone(object self);
  * @see AvmVirtualFunctionTrap
  */
 AVMAPI AvmString AvmObjectToString(object self);
+
+/**
+ * @brief The trap function called when a virtual function is not implemented.
+ *
+ * @param function The function name.
+ * @param type The object type.
+ *
+ * @return never This function never returns.
+ */
+AVMAPI never AvmVirtualFunctionTrap(str function, AvmType type);
+
+/**
+ * @brief Copies memory from one block to another.
+ *
+ * This will copy length bytes from source to destination, but not more than
+ * size.
+ *
+ * @param source The memory block to copy from.
+ * @param length The length of the source buffer.
+ * @param destination The memory block to copy to.
+ * @param size The size of the destination buffer.
+ */
+AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
+                       size_t size);
 
 // Ensure correct type sizes.
 static_assert(sizeof(ptr) == sizeof(void*), "");

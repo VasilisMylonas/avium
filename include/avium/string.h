@@ -25,6 +25,7 @@
 #define AVIUM_STRING_H
 
 #include "avium/prologue.h"
+#include "avium/collection.h"
 
 #define AVM_STRING_GROWTH_FACTOR 2
 

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "avium/object.h"
 #include "avium/internal.h"
 
 #define AVM_STRING_SIZE (sizeof(AvmType) + 2 * sizeof(size_t))
