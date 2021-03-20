@@ -1,4 +1,0 @@
-include(FindPackageHandleStandardArgs)
-
-find_program(XUNIT_VIEWER_EXECUTABLE NAMES xunit-viewer)
-find_package_handle_standard_args(XUnitViewer XUNIT_VIEWER_EXECUTABLE)
