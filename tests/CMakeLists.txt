@@ -9,7 +9,7 @@ function(avm_add_test TEST)
     add_executable(${TEST} ${TEST}.c)
     add_dependencies(${TEST} cmocka)
     target_link_libraries(${TEST} avm-static libcmocka.so)
-    if(XUNIT_VIEWER_FOUND)
+    if(XUNITVIEWER_FOUND)
         add_test(NAME ${TEST}
                  COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-test.sh
                          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST})
