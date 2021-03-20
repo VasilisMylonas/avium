@@ -39,6 +39,4 @@
 #    warning "Avium: C++ is not supported, you may encounter errors."
 #endif  // __cplusplus
 
-#define AVM_OPTIONAL_NONE ((AvmOptional)-1)
-
 #endif  // AVIUM_CONFIG_H

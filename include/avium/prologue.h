@@ -112,8 +112,8 @@ AVMAPI never AvmPanic(str message, str function, str file, uint line);
 
 /// Describes the type of the error that occurred.
 typedef enum {
-    /// Internal constant, do not use.
-    _EK_MIN = 16,
+    /// No error occurred.
+    EK_NONE = 0,
 
     /// An invalid argument was received by a function.
     EK_ARGUMENT,
@@ -135,22 +135,15 @@ typedef enum {
 
     /// A required resource was unavailable.
     EK_NOT_FOUND,
-
-    /// Internal constant, do not use.
-    _EK_MAX = 64,
 } AvmErrorKind;
 
-/**
- * @brief A type indicating successful or unsuccessful function execution.
- *
- * @see AvmSuccess AvmFailure
- */
-typedef union {
-    /// The type of the error that occurred.
-    AvmErrorKind kind;
-
-    /// The object result.
-    object value;
+/// A type indicating successful or unsuccessful function execution.
+typedef struct {
+    AvmErrorKind _kind;
+    union {
+        object _value;
+        str _error;
+    };
 } AvmResult;
 
 /**
@@ -159,30 +152,44 @@ typedef union {
  * @param value The value to be returned along the AvmResult.
  * @return AvmResult An AvmResult indicating success.
  *
- * @see AvmFailure AvmIsFailure
- *
  * @note This function is inline.
  */
 AVMAPI inline AvmResult AvmSuccess(object value) {
-    return (AvmResult){.value = value};
+    return (AvmResult){._kind = EK_NONE, ._value = value};
 }
 
 /**
  * @brief Creates an AvmResult indicating failure.
  *
  * @param kind The type of failure that occurred.
+ * @param error A string representing the error that occurred.
  * @return AvmResult An AvmResult indicating failure.
- *
- * @see AvmSuccess AvmIsFailure
  *
  * @note This function is inline.
  */
-AVMAPI inline AvmResult AvmFailure(AvmErrorKind kind) {
-    if (kind <= _EK_MIN || kind >= _EK_MAX) {
-        panic("Parameter `kind` was invalid. Do not use _EK_MIN and _EK_MAX.");
+AVMAPI inline AvmResult AvmFailure(AvmErrorKind kind, str error) {
+    if (kind == EK_NONE) {
+        panic(
+            "Tried to create an `AvmResult` using `EK_NONE`. To create an "
+            "`AvmResult` describing success, use `AvmSuccess` instead.");
     }
 
-    return (AvmResult){.kind = kind};
+    if (error == NULL) {
+        panic("Parameter `error` was `NULL`.");
+    }
+
+    return (AvmResult){._kind = kind, ._error = error};
+}
+
+AVMAPI inline str AvmResultGetError(AvmResult self) {
+    if (self._kind == EK_NONE) {
+        panic(
+            "Tried to get an error from an `AvmResult` describing success. "
+            "Check "
+            "with `AvmResultIsFailure` first.");
+    }
+
+    return self._error;
 }
 
 /**
@@ -192,12 +199,10 @@ AVMAPI inline AvmResult AvmFailure(AvmErrorKind kind) {
  * @return true The AvmResult represents failure.
  * @return false The AvmResult contains a result.
  *
- * @see AvmSuccess AvmFailure
- *
  * @note This function is inline.
  */
-AVMAPI inline bool AvmIsFailure(AvmResult self) {
-    return self.kind > _EK_MIN && self.kind < _EK_MAX;
+AVMAPI inline bool AvmResultIsFailure(AvmResult self) {
+    return self._kind != EK_NONE;
 }
 
 /**
@@ -207,20 +212,33 @@ AVMAPI inline bool AvmIsFailure(AvmResult self) {
  * @param self The AvmResult.
  * @return object The object contained in the AvmResult.
  *
- * @see AvmSuccess AvmFailure
- *
  * @note This function is inline.
  */
-AVMAPI inline object AvmUnwrap(AvmResult self) {
-    if (AvmIsFailure(self)) {
-        panic("Tried to unwrap a result describing failure.");
+AVMAPI inline object AvmResultUnwrap(AvmResult self) {
+    if (AvmResultIsFailure(self)) {
+        panic(
+            "Tried to unwrap an `AvmResult` describing failure. Check with "
+            "`AvmResultIsFailure` first.");
     }
 
-    return self.value;
+    return self._value;
 }
 
 /// A type which may contain a value.
-typedef uptr AvmOptional;
+typedef struct {
+    object _value;
+    bool _hasValue;
+} AvmOptional;
+
+/**
+ * @brief Creates an AvmOptional with the `none` value.
+ *
+ * @return AvmOptional The created AvmOptional.
+ * @note This function is inline.
+ */
+AVMAPI inline AvmOptional AvmNone() {
+    return (AvmOptional){._value = 0, ._hasValue = false};
+}
 
 /**
  * @brief Creates an AvmOptional with the specified value.
@@ -231,20 +249,8 @@ typedef uptr AvmOptional;
  * @note This function is inline.
  */
 AVMAPI inline AvmOptional AvmSome(object value) {
-    if (((uptr)value) == AVM_OPTIONAL_NONE) {
-        panic("Tried to create an AvmOptional with an invalid value.");
-    }
-    return (AvmOptional)value;
+    return (AvmOptional){._value = value, ._hasValue = true};
 }
-
-/**
- * @brief Creates an AvmOptional with the `none` value.
- *
- * @return AvmOptional The created AvmOptional.
- *
- * @note This function is inline.
- */
-AVMAPI inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
 
 /**
  * @brief Determines whether an AvmOptional contains a value.
@@ -253,8 +259,8 @@ AVMAPI inline AvmOptional AvmNone() { return (AvmOptional)AVM_OPTIONAL_NONE; }
  *
  * @note This function is inline.
  */
-AVMAPI inline bool AvmHasValue(AvmOptional optional) {
-    return optional != AVM_OPTIONAL_NONE;
+AVMAPI inline bool AvmOptionalHasValue(AvmOptional optional) {
+    return optional._hasValue;
 }
 
 // Ensure correct type sizes.
@@ -268,6 +274,9 @@ static_assert(sizeof(short) == 2, "");
 static_assert(sizeof(ushort) == 2, "");
 static_assert(sizeof(char) == 1, "");
 static_assert(sizeof(byte) == 1, "");
+
+static_assert(sizeof(AvmResult) == 16, "");
+static_assert(sizeof(AvmOptional) == 16, "");
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x

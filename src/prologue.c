@@ -10,9 +10,10 @@ never AvmPanic(str message, str function, str file, uint line) {
 }
 
 AvmResult AvmSuccess(object value);
-AvmResult AvmFailure(AvmErrorKind kind);
-bool AvmIsFailure(AvmResult self);
-object AvmUnwrap(AvmResult self);
+AvmResult AvmFailure(AvmErrorKind kind, str error);
+str AvmResultGetError(AvmResult self);
+bool AvmResultIsFailure(AvmResult self);
+object AvmResultUnwrap(AvmResult self);
 AvmOptional AvmSome(object value);
 AvmOptional AvmNone();
-bool AvmHasValue(AvmOptional optional);
+bool AvmOptionalHasValue(AvmOptional self);
