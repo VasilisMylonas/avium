@@ -24,7 +24,7 @@ static AvmString AvmStringClone(AvmString self) {
         panic(SelfNullMsg);
     }
 
-    AvmString s = AvmString(self->capacity);
+    AvmString s = AvmStringNew(self->capacity);
     memcpy(s, self, self->capacity + AVM_STRING_SIZE + 1);
     return s;
 }
@@ -34,7 +34,7 @@ TYPE(AvmString, [FUNC_GET_LENGTH] = (AvmFunction)AvmStringGetLength,
      [FUNC_TO_STRING] = (AvmFunction)AvmStringToString,
      [FUNC_CLONE] = (AvmFunction)AvmStringClone);
 
-AvmString AvmString_ctor(size_t capacity) {
+AvmString AvmStringNew(size_t capacity) {
     AvmString s = malloc(AVM_STRING_SIZE + capacity + 1);
     s->capacity = capacity;
     s->type = GET_TYPE(AvmString);
@@ -48,7 +48,7 @@ AvmString AvmStringFrom(str contents) {
     }
 
     size_t length = strlen(contents);
-    AvmString s = AvmString(length * AVM_STRING_GROWTH_FACTOR);
+    AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
     s->length = length;
     memcpy(s->buffer, contents, length + 1);
     return s;

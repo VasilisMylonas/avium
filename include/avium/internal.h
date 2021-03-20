@@ -1,4 +1,4 @@
-#include "avium/core.h"
+#include "avium/prologue.h"
 
 static const str SelfNullMsg = "Parameter `self` was `NULL`.";
 static const str ContentsNullMsg = "Parameter `contents` was `NULL`.";

@@ -24,7 +24,7 @@
 #ifndef AVIUM_FMT_H
 #define AVIUM_FMT_H
 
-#include "avium/core.h"
+#include "avium/prologue.h"
 
 #define AVM_FMT_INT_DECIMAL  'i'
 #define AVM_FMT_INT_HEX      'x'
@@ -109,7 +109,7 @@ AVMAPI void AvmVScanf(str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmScanf(str format, ...) {
+AVMAPI inline void AvmScanf(str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVScanf(format, args);
@@ -134,7 +134,7 @@ AVMAPI void AvmVSscanf(AvmString string, str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmSscanf(AvmString string, str format, ...) {
+AVMAPI inline void AvmSscanf(AvmString string, str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVSscanf(string, format, args);
@@ -159,7 +159,7 @@ AVMAPI void AvmVFscanf(void* handle, str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmFscanf(void* handle, str format, ...) {
+AVMAPI inline void AvmFscanf(void* handle, str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVFscanf(handle, format, args);
@@ -186,7 +186,7 @@ AVMAPI AvmString AvmVSprintf(str format, va_list args);
  *
  * @note This function is inline.
  */
-inline AvmString AvmSprintf(str format, ...) {
+AVMAPI inline AvmString AvmSprintf(str format, ...) {
     va_list args;
     va_start(args, format);
     AvmString s = AvmVSprintf(format, args);
@@ -212,7 +212,7 @@ AVMAPI void AvmVFprintf(void* handle, str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmFprintf(void* handle, str format, ...) {
+AVMAPI inline void AvmFprintf(void* handle, str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVFprintf(handle, format, args);
@@ -235,7 +235,7 @@ AVMAPI void AvmVPrintf(str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmPrintf(str format, ...) {
+AVMAPI inline void AvmPrintf(str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVPrintf(format, args);
@@ -258,7 +258,7 @@ AVMAPI void AvmVErrorf(str format, va_list args);
  *
  * @note This function is inline.
  */
-inline void AvmErrorf(str format, ...) {
+AVMAPI inline void AvmErrorf(str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVErrorf(format, args);

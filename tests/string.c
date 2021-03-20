@@ -13,7 +13,7 @@ static int setup(void** state) {
 }
 
 static int teardown(void** state) {
-    AvmDestroy(*state);
+    AvmObjectDestroy(*state);
     return 0;
 }
 

@@ -1,7 +1,13 @@
 # Compilation
 
 # All source files to be compiled.
-set(AVM_SOURCE_FILES core.c string.c fmt.c)
+set(AVM_SOURCE_FILES
+    collection.c
+    fmt.c
+    options.c
+    prologue.c
+    string.c
+    version.c)
 
 # Target names.
 set(AVM_SHARED_NAME avm)
