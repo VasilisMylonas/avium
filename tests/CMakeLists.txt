@@ -2,10 +2,11 @@
 
 function(add_avm_test TEST)
     set(RUNNER ${CMAKE_BINARY_DIR}/tests/${TEST}_runner.c)
+    set(TEST_FILE ${CMAKE_SOURCE_DIR}/tests/${TEST}.c)
 
     add_custom_command(OUTPUT ${RUNNER}
-                       COMMAND ${CMAKE_SOURCE_DIR}/testgen.py ${CMAKE_SOURCE_DIR}/tests/${TEST}.c -o ${RUNNER}
-                       MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/tests/${TEST}.c)
+                       COMMAND ${CMAKE_SOURCE_DIR}/testgen.py ${TEST_FILE} -o ${RUNNER}
+                       MAIN_DEPENDENCY ${TEST_FILE})
 
     set_source_files_properties(${RUNNER} PROPERTIES GENERATED TRUE)
 
