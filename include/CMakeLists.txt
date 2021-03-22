@@ -9,6 +9,7 @@ set(AVM_INCLUDE_FILES
     avium/options.h
     avium/prologue.h
     avium/string.h
+    avium/testing.h
     avium/version.h)
 
 # Platform definitions.

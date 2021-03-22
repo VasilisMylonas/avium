@@ -28,7 +28,7 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
 
     configure_file(conf.py.in xml/conf.py @ONLY)
     configure_file(index.rst.in xml/index.rst @ONLY)
-    add_custom_target(Sphinx ALL DEPENDS Doxygen
+    add_custom_target(Sphinx DEPENDS Doxygen
                       COMMAND ${SPHINX_EXECUTABLE} -q -b html
                       ${AVM_DOC_OUTPUT_DIR}/xml ${AVM_SPHINX_OUTPUT_DIR})
 else()
