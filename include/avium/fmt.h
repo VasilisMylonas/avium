@@ -123,7 +123,7 @@ AVMAPI inline void AvmScanf(str format, ...) {
  * @param format The format string.
  * @param args The va_list containing pointers to variables to read to.
  */
-AVMAPI void AvmVSscanf(AvmString string, str format, va_list args);
+AVMAPI void AvmVSscanf(AvmString* string, str format, va_list args);
 
 /**
  * @brief Reads formatted output from an AvmString.
@@ -134,7 +134,7 @@ AVMAPI void AvmVSscanf(AvmString string, str format, va_list args);
  *
  * @note This function is inline.
  */
-AVMAPI inline void AvmSscanf(AvmString string, str format, ...) {
+AVMAPI inline void AvmSscanf(AvmString* string, str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVSscanf(string, format, args);

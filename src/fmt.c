@@ -37,20 +37,20 @@ AvmString AvmItoa(_long value) {
     size_t i = 0;
     for (; value != 0; i++, value /= 10) {
         _long r = value % 10;
-        s = AvmStringAppendChar(s, '0' + r);
+        AvmStringPushChar(&s, '0' + r);
     }
 
     if (i == 0) {
-        s = AvmStringAppendChar(s, '0');
+        AvmStringPushChar(&s, '0');
         i++;
     }
 
     if (isNegative) {
-        s = AvmStringAppendChar(s, '-');
+        AvmStringPushChar(&s, '-');
         i++;
     }
 
-    AvmStringReverse(s);
+    AvmStringReverse(&s);
     return s;
 }
 
@@ -72,18 +72,18 @@ AvmString AvmUtoa(ulong value, NumericBase base) {
         _long r = value % base;
 
         if (r >= 10) {
-            s = AvmStringAppendChar(s, 'A' + (r - 10));
+            AvmStringPushChar(&s, 'A' + (r - 10));
         } else {
-            s = AvmStringAppendChar(s, '0' + r);
+            AvmStringPushChar(&s, '0' + r);
         }
     }
 
     if (i == 0) {
-        s = AvmStringAppendChar(s, '0');
+        AvmStringPushChar(&s, '0');
         i++;
     }
 
-    AvmStringReverse(s);
+    AvmStringReverse(&s);
     return s;
 }
 
@@ -105,7 +105,7 @@ AvmString AvmFtoa2(float value) {
     AvmString s = AvmStringNew(8);
 
     if (f.isNegative) {
-        s = AvmStringAppendChar(s, '-');
+        AvmStringPushChar(&s, '-');
     }
 
     ulong mantissa = f.mantissaLow;
@@ -113,35 +113,35 @@ AvmString AvmFtoa2(float value) {
     mantissa += 0x00800000;
 
     AvmString intPart = AvmItoa(mantissa >> (23 - exponent));
-    s = AvmStringConcat(s, intPart);
-    AvmObjectDestroy(intPart);
+    AvmStringPushString(&s, &intPart);
+    AvmObjectDestroy(&intPart);
 
-    s = AvmStringAppendChar(s, '.');
+    AvmStringPushChar(&s, '.');
 
     switch (0x7 & (mantissa >> (20 - exponent))) {
         case 0:
-            s = AvmStringAppend(s, "000");
+            AvmStringPushStr(&s, "000");
             break;
         case 1:
-            s = AvmStringAppend(s, "125");
+            AvmStringPushStr(&s, "125");
             break;
         case 2:
-            s = AvmStringAppend(s, "250");
+            AvmStringPushStr(&s, "250");
             break;
         case 3:
-            s = AvmStringAppend(s, "375");
+            AvmStringPushStr(&s, "375");
             break;
         case 4:
-            s = AvmStringAppend(s, "500");
+            AvmStringPushStr(&s, "500");
             break;
         case 5:
-            s = AvmStringAppend(s, "625");
+            AvmStringPushStr(&s, "625");
             break;
         case 6:
-            s = AvmStringAppend(s, "750");
+            AvmStringPushStr(&s, "750");
             break;
         case 7:
-            s = AvmStringAppend(s, "875");
+            AvmStringPushStr(&s, "875");
             break;
     }
 
@@ -151,9 +151,9 @@ AvmString AvmFtoa2(float value) {
 AvmString AvmFtoa(double value) {
     size_t length = snprintf(NULL, 0, "%lf", value);
     AvmString s = AvmStringNew(length);
-    char* buffer = AvmStringAsPtr(s);
+    char* buffer = AvmStringAsPtr(&s);
     snprintf(buffer, length + 1, "%lf", value);
-    AvmStringUnsafeSetLength(s, length);
+    AvmStringUnsafeSetLength(&s, length);
     return s;
 }
 
@@ -170,96 +170,94 @@ AvmString AvmVSprintf(str format, va_list args) {
 
     for (size_t i = 0; format[i] != '\0'; i++) {
         if (format[i] != '%') {
-            s = AvmStringAppendChar(s, format[i]);
+            AvmStringPushChar(&s, format[i]);
             continue;
         }
 
         i++;
 
-        AvmString temp = NULL;
+        AvmString temp = AvmStringNew(8);
 
         switch (format[i]) {
             case AVM_FMT_UNICODE:
                 temp = AvmUtoa(va_arg(args, char32_t), 16);
-                s = AvmStringAppend(s, "U+");
-                s = AvmStringConcat(s, temp);
+                AvmStringPushStr(&s, "U+");
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_DECIMAL:
                 temp = AvmItoa(va_arg(args, _long));
-                s = AvmStringConcat(s, temp);
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_OCTAL:
                 temp = AvmUtoa(va_arg(args, ulong), 8);
-                s = AvmStringAppend(s, "0o");
-                s = AvmStringConcat(s, temp);
+                AvmStringPushStr(&s, "0o");
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX:
                 temp = AvmUtoa(va_arg(args, ulong), 16);
-                s = AvmStringAppend(s, "0x");
-                s = AvmStringConcat(s, temp);
+                AvmStringPushStr(&s, "0x");
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_BINARY:
                 temp = AvmUtoa(va_arg(args, ulong), 2);
-                s = AvmStringAppend(s, "0b");
-                s = AvmStringConcat(s, temp);
+                AvmStringPushStr(&s, "0b");
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_FLOAT:
                 temp = AvmFtoa(va_arg(args, double));
-                s = AvmStringConcat(s, temp);
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_FLOAT_EXP: {
                 char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
                 snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le",
                          va_arg(args, double));
-                temp = AvmStringAppend(temp, buffer);
+                AvmStringPushStr(&temp, buffer);
                 break;
             }
             case AVM_FMT_FLOAT_AUTO: {
                 char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
                 snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg",
                          va_arg(args, double));
-                temp = AvmStringAppend(temp, buffer);
+                AvmStringPushStr(&temp, buffer);
                 break;
             }
             case AVM_FMT_INT_SIZE:
             case AVM_FMT_INT_UNSIGNED:
                 temp = AvmUtoa(va_arg(args, ulong), 10);
-                s = AvmStringConcat(s, temp);
+                AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_CHAR:
-                s = AvmStringAppendChar(s, (char)va_arg(args, int));
+                AvmStringPushChar(&s, (char)va_arg(args, int));
                 break;
             case AVM_FMT_STRING:
-                s = AvmStringAppend(s, va_arg(args, char*));
+                AvmStringPushStr(&s, va_arg(args, char*));
                 break;
             case AVM_FMT_BOOL:
-                s = AvmStringAppend(
-                    s, (bool)va_arg(args, uint) ? "true" : "false");
+                AvmStringPushStr(&s,
+                                 (bool)va_arg(args, uint) ? "true" : "false");
                 break;
             case AVM_FMT_TYPE: {
                 AvmType type = AvmObjectGetType(va_arg(args, object));
-                s = AvmStringAppend(s, AvmTypeGetName(type));
+                AvmStringPushStr(&s, AvmTypeGetName(type));
                 break;
             }
             case AVM_FMT_SIZE: {
                 AvmType type = AvmObjectGetType(va_arg(args, object));
                 temp = AvmUtoa(AvmTypeGetSize(type), 10);
-                s = AvmStringConcat(s, temp);
+                AvmStringPushString(&s, &temp);
                 break;
             }
             case AVM_FMT_VALUE:
                 temp = AvmObjectToString(va_arg(args, object));
-                s = AvmStringAppend(s, AvmStringAsPtr(temp));
+                AvmStringPushStr(&s, AvmStringAsPtr(&temp));
                 break;
             default:
-                s = AvmStringAppendChar(s, format[i]);
+                AvmStringPushChar(&s, format[i]);
                 break;
         }
 
-        if (temp != NULL) {
-            AvmObjectDestroy(temp);
-        }
+        AvmObjectDestroy(&temp);
     }
 
     return s;
@@ -271,8 +269,8 @@ void AvmVFprintf(void* handle, str format, va_list args) {
     }
 
     AvmString s = AvmVSprintf(format, args);
-    fputs(AvmStringAsPtr(s), handle);
-    AvmObjectDestroy(s);
+    fputs(AvmStringAsPtr(&s), handle);
+    AvmObjectDestroy(&s);
 }
 
 void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
@@ -280,7 +278,7 @@ void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
 void AvmVErrorf(str format, va_list args) { AvmVFprintf(stderr, format, args); }
 
 void AvmScanf(str format, ...);
-void AvmSscanf(AvmString string, str format, ...);
+void AvmSscanf(AvmString* string, str format, ...);
 AvmString AvmSprintf(str format, ...);
 void AvmFprintf(void* handle, str format, ...);
 void AvmPrintf(str format, ...);
@@ -307,11 +305,11 @@ void AvmVFscanf(void* handle, str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    defer(AvmString, s, AvmStringNew(128)) {
-        char* dummy = fgets(AvmStringAsPtr(s), 128, handle);
-        (void)dummy;
-        AvmVSscanf(s, format, args);
-    }
+    AvmString s = AvmStringNew(128);
+    char* dummy = fgets(AvmStringAsPtr(&s), 128, handle);
+    (void)dummy;
+    AvmVSscanf(&s, format, args);
+    AvmObjectDestroy(&s);
 }
 
 void AvmVScanf(str format, va_list args) {
@@ -322,7 +320,7 @@ void AvmVScanf(str format, va_list args) {
     AvmVFscanf(stdin, format, args);
 }
 
-void AvmVSscanf(AvmString string, str format, va_list args) {
+void AvmVSscanf(AvmString* string, str format, va_list args) {
     if (string == NULL) {
         AvmPanic(StringNullMsg);
     }
