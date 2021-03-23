@@ -32,11 +32,11 @@ AvmVersion AvmVersionFrom(uint major, uint minor, uint patch, char tag) {
 
 bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     if (other == NULL) {
-        panic(OtherNullMsg);
+        AvmPanic(OtherNullMsg);
     }
 
     return self->major == other->major;
@@ -44,7 +44,7 @@ bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other) {
 
 uint AvmVersionGetMajor(AvmVersion self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->major;
@@ -52,7 +52,7 @@ uint AvmVersionGetMajor(AvmVersion self) {
 
 uint AvmVersionGetMinor(AvmVersion self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->minor;
@@ -60,7 +60,7 @@ uint AvmVersionGetMinor(AvmVersion self) {
 
 uint AvmVersionGetPatch(AvmVersion self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->patch;
@@ -68,7 +68,7 @@ uint AvmVersionGetPatch(AvmVersion self) {
 
 char AvmVersionGetTag(AvmVersion self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->tag;

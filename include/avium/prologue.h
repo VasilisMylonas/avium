@@ -50,7 +50,7 @@
  *
  * @param message The message to print.
  */
-#define panic(message) AvmPanic(message, __func__, __FILE__, __LINE__)
+#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
 
 /**
  * @defgroup avm_core_types Core primitive types.
@@ -121,7 +121,7 @@ typedef struct AvmString* AvmString;
  *
  * @return never This function never returns.
  */
-AVMAPI never AvmPanic(str message, str function, str file, uint line);
+AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 
 /// Describes the type of the error that occurred.
 typedef enum {
@@ -192,7 +192,7 @@ typedef enum {
             return self->_value;                                             \
         }                                                                    \
                                                                              \
-        panic("Tried to unwrap a result describing failure.");               \
+        AvmPanic("Tried to unwrap a result describing failure.");            \
     }                                                                        \
                                                                              \
     static inline bool AvmIsFailure(T)(AvmResult(T) * self) {                \
@@ -227,7 +227,7 @@ typedef enum {
             return self->_value;                               \
         }                                                      \
                                                                \
-        panic("Tried to unwrap an empty optional.");           \
+        AvmPanic("Tried to unwrap an empty optional.");        \
     }
 
 /**
@@ -317,6 +317,8 @@ AVMAPI object AvmObjectClone(object self);
  * @see AvmVirtualFunctionTrap
  */
 AVMAPI AvmString AvmObjectToString(object self);
+
+AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
 
 /**
  * @brief The trap function called when a virtual function is not implemented.

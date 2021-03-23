@@ -4,17 +4,11 @@
 
 #include "avium/internal.h"
 
-never AvmPanic(str message, str function, str file, uint line) {
-    fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
-            function, message);
-    abort();
-}
-
 // AvmType struct definition is in internal.h
 
 str AvmTypeGetName(AvmType self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->name;
@@ -22,7 +16,7 @@ str AvmTypeGetName(AvmType self) {
 
 size_t AvmTypeGetSize(AvmType self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->size;
@@ -30,7 +24,7 @@ size_t AvmTypeGetSize(AvmType self) {
 
 AvmType AvmObjectGetType(object self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return *(AvmType*)self;
@@ -81,22 +75,41 @@ AvmString AvmObjectToString(object self) {
     return ((void* (*)(object))method)(self);
 }
 
+void AvmObjectCopy(object self, size_t size, byte buffer[]) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (buffer == NULL) {
+        AvmPanic("Parameter `buffer` is `NULL`.");
+    }
+
+    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(self));
+    AvmMemCopy(self, objectSize, buffer, size);
+}
+
 never AvmVirtualFunctionTrap(str function, AvmType type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
             function, type->name);
-    panic("Unimplemented virtual function trap triggered.");
+    AvmPanic("Unimplemented virtual function trap triggered.");
 }
 
 void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     if (source == NULL) {
-        panic(SourceNullMsg);
+        AvmPanic(SourceNullMsg);
     }
 
     if (destination == NULL) {
-        panic(DestNullMsg);
+        AvmPanic(DestNullMsg);
     }
 
     size_t trueLength = length > size ? size : length;
     memcpy(destination, source, trueLength);
+}
+
+never AvmPanicEx(str message, str function, str file, uint line) {
+    fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
+            function, message);
+    abort();
 }

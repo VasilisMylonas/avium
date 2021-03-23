@@ -21,7 +21,7 @@ static AvmString AvmStringToString(AvmString self) {
 
 static AvmString AvmStringClone(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     AvmString s = AvmStringNew(self->capacity);
@@ -44,7 +44,7 @@ AvmString AvmStringNew(size_t capacity) {
 
 AvmString AvmStringFrom(str contents) {
     if (contents == NULL) {
-        panic(ContentsNullMsg);
+        AvmPanic(ContentsNullMsg);
     }
 
     size_t length = strlen(contents);
@@ -56,7 +56,7 @@ AvmString AvmStringFrom(str contents) {
 
 char* AvmStringAsPtr(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     return self->buffer;
@@ -64,21 +64,21 @@ char* AvmStringAsPtr(AvmString self) {
 
 size_t AvmStringGetLength(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
     return self->length;
 }
 
 size_t AvmStringGetCapacity(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
     return self->capacity;
 }
 
 AvmString AvmStringAppendChar(AvmString self, char character) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     if (self->length == self->capacity) {
@@ -94,11 +94,11 @@ AvmString AvmStringAppendChar(AvmString self, char character) {
 
 AvmString AvmStringAppend(AvmString self, str characters) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     if (characters == NULL) {
-        panic("Parameter `characters` was `NULL`.");
+        AvmPanic("Parameter `characters` was `NULL`.");
     }
 
     size_t length = strlen(characters);
@@ -116,11 +116,11 @@ AvmString AvmStringAppend(AvmString self, str characters) {
 
 AvmString AvmStringConcat(AvmString self, AvmString other) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     if (other == NULL) {
-        panic("Parameter `other` was `NULL`.");
+        AvmPanic("Parameter `other` was `NULL`.");
     }
 
     size_t length = other->length;
@@ -138,7 +138,7 @@ AvmString AvmStringConcat(AvmString self, AvmString other) {
 
 size_t AvmStringIndexOf(AvmString self, char character) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -152,7 +152,7 @@ size_t AvmStringIndexOf(AvmString self, char character) {
 
 size_t AvmStringLastIndexOf(AvmString self, char character) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = self->length; i > 0; i--) {
@@ -166,7 +166,7 @@ size_t AvmStringLastIndexOf(AvmString self, char character) {
 
 size_t AvmStringFind(AvmString self, str characters) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     char* c = strstr(self->buffer, characters);
@@ -180,7 +180,7 @@ size_t AvmStringFind(AvmString self, str characters) {
 
 size_t AvmStringFindLast(AvmString self, str characters) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     size_t length = strlen(characters);
@@ -201,7 +201,7 @@ size_t AvmStringFindLast(AvmString self, str characters) {
 
 size_t AvmStringReplace(AvmString self, char oldCharacter, char newCharacter) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     size_t count = 0;
@@ -218,7 +218,7 @@ size_t AvmStringReplace(AvmString self, char oldCharacter, char newCharacter) {
 
 void AvmStringToUpper(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -228,7 +228,7 @@ void AvmStringToUpper(AvmString self) {
 
 void AvmStringToLower(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->length; i++) {
@@ -238,7 +238,7 @@ void AvmStringToLower(AvmString self) {
 
 void AvmStringUnsafeSetLength(AvmString self, size_t length) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     self->length = length;
@@ -246,19 +246,19 @@ void AvmStringUnsafeSetLength(AvmString self, size_t length) {
 
 char AvmStringCharAt(AvmString self, size_t index) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     if (index < self->length) {
         return self->buffer[index];
     }
 
-    panic("Parameter `index` was greater than the string's length.");
+    AvmPanic("Parameter `index` was greater than the string's length.");
 }
 
 void AvmStringReverse(AvmString self) {
     if (self == NULL) {
-        panic(SelfNullMsg);
+        AvmPanic(SelfNullMsg);
     }
 
     char* start = AvmStringAsPtr(self);

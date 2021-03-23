@@ -62,7 +62,7 @@ AvmString AvmUtoa(ulong value, NumericBase base) {
         case NB_HEX:
             break;
         default:
-            panic(BaseOutOfRangeMsg);
+            AvmPanic(BaseOutOfRangeMsg);
     }
 
     AvmString s = AvmStringNew(8);
@@ -159,11 +159,11 @@ AvmString AvmFtoa(double value) {
 
 AvmString AvmVSprintf(str format, va_list args) {
     if (format == NULL) {
-        panic(FormatNullMsg);
+        AvmPanic(FormatNullMsg);
     }
 
     if (args == NULL) {
-        panic(ArgsNullMsg);
+        AvmPanic(ArgsNullMsg);
     }
 
     AvmString s = AvmStringNew(8);
@@ -267,7 +267,7 @@ AvmString AvmVSprintf(str format, va_list args) {
 
 void AvmVFprintf(void* handle, str format, va_list args) {
     if (handle == NULL) {
-        panic(HandleNullMsg);
+        AvmPanic(HandleNullMsg);
     }
 
     AvmString s = AvmVSprintf(format, args);
@@ -300,11 +300,11 @@ static void SkipWord(char* buffer, size_t* index) {
 
 void AvmVFscanf(void* handle, str format, va_list args) {
     if (handle == NULL) {
-        panic(HandleNullMsg);
+        AvmPanic(HandleNullMsg);
     }
 
     if (format == NULL) {
-        panic(FormatNullMsg);
+        AvmPanic(FormatNullMsg);
     }
 
     defer(AvmString, s, AvmStringNew(128)) {
@@ -316,7 +316,7 @@ void AvmVFscanf(void* handle, str format, va_list args) {
 
 void AvmVScanf(str format, va_list args) {
     if (format == NULL) {
-        panic(FormatNullMsg);
+        AvmPanic(FormatNullMsg);
     }
 
     AvmVFscanf(stdin, format, args);
@@ -324,11 +324,11 @@ void AvmVScanf(str format, va_list args) {
 
 void AvmVSscanf(AvmString string, str format, va_list args) {
     if (string == NULL) {
-        panic(StringNullMsg);
+        AvmPanic(StringNullMsg);
     }
 
     if (format == NULL) {
-        panic(FormatNullMsg);
+        AvmPanic(FormatNullMsg);
     }
 
     char* buffer = AvmStringAsPtr(string);

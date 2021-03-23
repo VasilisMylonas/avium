@@ -4,10 +4,10 @@
 #include "avium/prologue.h"
 #include <string.h>
 
-#define AssertImpl(expression)                                        \
-    expression ? ((void)0)                                            \
-               : AvmPanic("Assertion failed: " #expression, __func__, \
-                          __FILE__, __LINE__);
+#define AssertImpl(expression)                                          \
+    expression ? ((void)0)                                              \
+               : AvmPanicEx("Assertion failed: " #expression, __func__, \
+                            __FILE__, __LINE__);
 
 #define Assert(x)                     AssertImpl(x)
 #define AssertNot(x)                  AssertImpl(!x)
