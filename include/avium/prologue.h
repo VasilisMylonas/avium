@@ -101,6 +101,16 @@ typedef struct AvmString* AvmString;
 
 /// @}
 
+#define AVM_CLASS(T, B, ...) \
+    typedef struct T* T;     \
+    struct T {               \
+        union {              \
+            AvmType _type;   \
+            object _base;    \
+        };                   \
+        struct __VA_ARGS__;  \
+    }
+
 /**
  * @brief Aborts execution, printing a message and location information.
  *
