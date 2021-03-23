@@ -12,7 +12,7 @@ never AvmPanic(str message, str function, str file, uint line) {
 
 // AvmType struct definition is in internal.h
 
-str AvmTypeName(AvmType self) {
+str AvmTypeGetName(AvmType self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -20,7 +20,7 @@ str AvmTypeName(AvmType self) {
     return self->name;
 }
 
-size_t AvmTypeSize(AvmType self) {
+size_t AvmTypeGetSize(AvmType self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -28,7 +28,7 @@ size_t AvmTypeSize(AvmType self) {
     return self->size;
 }
 
-AvmType AvmObjectType(object self) {
+AvmType AvmObjectGetType(object self) {
     if (self == NULL) {
         panic(SelfNullMsg);
     }
@@ -37,7 +37,7 @@ AvmType AvmObjectType(object self) {
 }
 
 bool AvmObjectEquals(object lhs, object rhs) {
-    AvmType type = AvmObjectType(lhs);
+    AvmType type = AvmObjectGetType(lhs);
     AvmFunction method = type->vptr[FUNC_EQ];
 
     size_t size = type->size;
@@ -50,7 +50,7 @@ bool AvmObjectEquals(object lhs, object rhs) {
 }
 
 void AvmObjectDestroy(object self) {
-    AvmFunction method = AvmObjectType(self)->vptr[FUNC_DTOR];
+    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_DTOR];
 
     if (method == NULL) {
         free(self);
@@ -61,10 +61,10 @@ void AvmObjectDestroy(object self) {
 }
 
 object AvmObjectClone(object self) {
-    AvmFunction method = AvmObjectType(self)->vptr[FUNC_CLONE];
+    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_CLONE];
 
     if (method == NULL) {
-        size_t size = AvmTypeSize(AvmObjectType(self));
+        size_t size = AvmTypeGetSize(AvmObjectGetType(self));
         return memcpy(malloc(size), self, size);
     }
 
@@ -72,10 +72,10 @@ object AvmObjectClone(object self) {
 }
 
 AvmString AvmObjectToString(object self) {
-    AvmFunction method = AvmObjectType(self)->vptr[FUNC_TO_STRING];
+    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectType(self));
+        AvmVirtualFunctionTrap(__func__, AvmObjectGetType(self));
     }
 
     return ((void* (*)(object))method)(self);

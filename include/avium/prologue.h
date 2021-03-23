@@ -161,8 +161,8 @@ typedef enum {
 #define AvmOptional(T) AVM_GENERIC(AvmOptional, T)
 #define AvmSome(T)     AVM_GENERIC(AvmSome, T)
 #define AvmNone(T)     AVM_GENERIC(AvmNone, T)
-#define AvmGetValue(T) AVM_GENERIC(AvmGetValue, T)
 #define AvmHasValue(T) AVM_GENERIC(AvmHasValue, T)
+#define AvmGetValue(T) AVM_GENERIC(AvmGetValue, T)
 
 #define AVM_RESULT_TYPE(T)                                                   \
     AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                           \
@@ -266,7 +266,7 @@ AVMAPI size_t AvmTypeGetSize(AvmType self);
  * @param self The object.
  * @return AvmType The type information of the object.
  */
-AVMAPI AvmType AvmObjectType(object self);
+AVMAPI AvmType AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.

@@ -238,12 +238,12 @@ AvmString AvmVSprintf(str format, va_list args) {
                     s, (bool)va_arg(args, uint) ? "true" : "false");
                 break;
             case AVM_FMT_TYPE: {
-                AvmType type = AvmObjectType(va_arg(args, object));
+                AvmType type = AvmObjectGetType(va_arg(args, object));
                 s = AvmStringAppend(s, AvmTypeGetName(type));
                 break;
             }
             case AVM_FMT_SIZE: {
-                AvmType type = AvmObjectType(va_arg(args, object));
+                AvmType type = AvmObjectGetType(va_arg(args, object));
                 temp = AvmUtoa(AvmTypeGetSize(type), 10);
                 s = AvmStringConcat(s, temp);
                 break;
