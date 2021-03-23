@@ -10,15 +10,6 @@ never AvmPanic(str message, str function, str file, uint line) {
     abort();
 }
 
-AvmResult AvmSuccess(object value);
-AvmResult AvmFailure(AvmErrorKind kind, str error);
-str AvmResultGetError(AvmResult self);
-bool AvmResultIsFailure(AvmResult self);
-object AvmResultUnwrap(AvmResult self);
-AvmOptional AvmSome(object value);
-AvmOptional AvmNone();
-bool AvmOptionalHasValue(AvmOptional self);
-
 // AvmType struct definition is in internal.h
 
 str AvmTypeName(AvmType self) {

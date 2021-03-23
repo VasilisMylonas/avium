@@ -102,11 +102,11 @@ typedef struct AvmString* AvmString;
 /// @}
 
 #define AVM_CLASS(T, B, ...) \
-    typedef struct T* T;     \
+    typedef struct T T;      \
     struct T {               \
         union {              \
             AvmType _type;   \
-            object _base;    \
+            B _base;         \
         };                   \
         struct __VA_ARGS__;  \
     }
@@ -126,155 +126,109 @@ AVMAPI never AvmPanic(str message, str function, str file, uint line);
 /// Describes the type of the error that occurred.
 typedef enum {
     /// No error occurred.
-    EK_NONE = 0,
+    ErrorKindNone = 0,
 
     /// An invalid argument was received by a function.
-    EK_ARGUMENT,
+    ErrorKindArg,
 
     /// A provided index was out of range.
-    EK_OUT_OF_RANGE,
+    ErrorKindRange,
 
     /// There was not enough memory to handle an operation.
-    EK_OUT_OF_MEMORY,
+    ErrorKindMem,
 
     /// A function call was invalid for the current state.
-    EK_INVALID_OPERATION,
+    ErrorKindInvalidOp,
 
     /// An IO error occurred.
-    EK_IO,
+    ErrorKindIO,
 
-    ///  An unknown system error occurred.
-    EK_SYSTEM,
+    /// An unknown system error occurred.
+    ErrorKindSys,
 
     /// A required resource was unavailable.
-    EK_NOT_FOUND,
+    ErrorKindNotFound,
 } AvmErrorKind;
 
-/// A type indicating successful or unsuccessful function execution.
-typedef struct {
-    AvmErrorKind _kind;
-    union {
-        object _value;
-        str _error;
-    };
-} AvmResult;
+#define AVM_GENERIC(name, T) name##_##T
 
-/**
- * @brief Creates an AvmResult indicating success.
- *
- * @param value The value to be returned along the AvmResult.
- * @return AvmResult An AvmResult indicating success.
- *
- * @note This function is inline.
- */
-AVMAPI inline AvmResult AvmSuccess(object value) {
-    return (AvmResult){._kind = EK_NONE, ._value = value};
-}
+#define AvmResult(T)    AVM_GENERIC(AvmResult, T)
+#define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
+#define AvmFailure(T)   AVM_GENERIC(AvmFailure, T)
+#define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
+#define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
 
-/**
- * @brief Creates an AvmResult indicating failure.
- *
- * @param kind The type of failure that occurred.
- * @param error A string representing the error that occurred.
- * @return AvmResult An AvmResult indicating failure.
- *
- * @note This function is inline.
- */
-AVMAPI inline AvmResult AvmFailure(AvmErrorKind kind, str error) {
-    if (kind == EK_NONE) {
-        panic(
-            "Tried to create an `AvmResult` using `EK_NONE`. To create an "
-            "`AvmResult` describing success, use `AvmSuccess` instead.");
+#define AvmOptional(T) AVM_GENERIC(AvmOptional, T)
+#define AvmSome(T)     AVM_GENERIC(AvmSome, T)
+#define AvmNone(T)     AVM_GENERIC(AvmNone, T)
+#define AvmGetValue(T) AVM_GENERIC(AvmGetValue, T)
+#define AvmHasValue(T) AVM_GENERIC(AvmHasValue, T)
+
+#define AVM_RESULT_TYPE(T)                                                   \
+    AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                           \
+        AvmErrorKind _kind;                                                  \
+        union {                                                              \
+            T _value;                                                        \
+            str _error;                                                      \
+        };                                                                   \
+    });                                                                      \
+                                                                             \
+    static inline AvmResult(T) AvmSuccess(T)(T value) {                      \
+        return (AvmResult(T)){                                               \
+            ._kind = ErrorKindNone,                                          \
+            ._value = value,                                                 \
+        };                                                                   \
+    }                                                                        \
+                                                                             \
+    static inline AvmResult(T) AvmFailure(T)(AvmErrorKind kind, str error) { \
+        return (AvmResult(T)){                                               \
+            ._kind = kind,                                                   \
+            ._error = error,                                                 \
+        };                                                                   \
+    }                                                                        \
+                                                                             \
+    static inline T AvmUnwrap(T)(AvmResult(T) * self) {                      \
+        if (self->_kind == ErrorKindNone) {                                  \
+            return self->_value;                                             \
+        }                                                                    \
+                                                                             \
+        panic("Tried to unwrap a result describing failure.");               \
+    }                                                                        \
+                                                                             \
+    static inline bool AvmIsFailure(T)(AvmResult(T) * self) {                \
+        return self->_kind != ErrorKindNone;                                 \
     }
 
-    if (error == NULL) {
-        panic("Parameter `error` was `NULL`.");
+#define AVM_OPTIONAL_TYPE(T)                                   \
+    AVM_CLASS(AVM_GENERIC(AvmOptional, T), object, {           \
+        T _value;                                              \
+        bool _hasValue;                                        \
+    });                                                        \
+                                                               \
+    static inline AvmOptional(T) AvmSome(T)(T value) {         \
+        return (AvmOptional(T)){                               \
+            ._hasValue = true,                                 \
+            ._value = value,                                   \
+        };                                                     \
+    }                                                          \
+                                                               \
+    static inline AvmOptional(T) AvmNone(T)(void) {            \
+        return (AvmOptional(T)){                               \
+            ._hasValue = false,                                \
+        };                                                     \
+    }                                                          \
+                                                               \
+    static inline bool AvmHasValue(T)(AvmOptional(T) * self) { \
+        return self->_hasValue;                                \
+    }                                                          \
+                                                               \
+    static inline T AvmGetValue(T)(AvmOptional(T) * self) {    \
+        if (self->_hasValue) {                                 \
+            return self->_value;                               \
+        }                                                      \
+                                                               \
+        panic("Tried to unwrap an empty optional.");           \
     }
-
-    return (AvmResult){._kind = kind, ._error = error};
-}
-
-AVMAPI inline str AvmResultGetError(AvmResult self) {
-    if (self._kind == EK_NONE) {
-        panic(
-            "Tried to get an error from an `AvmResult` describing success. "
-            "Check "
-            "with `AvmResultIsFailure` first.");
-    }
-
-    return self._error;
-}
-
-/**
- * @brief Determines whether an AvmResult describes a failure.
- *
- * @param self The AvmResult.
- * @return true The AvmResult represents failure.
- * @return false The AvmResult contains a result.
- *
- * @note This function is inline.
- */
-AVMAPI inline bool AvmResultIsFailure(AvmResult self) {
-    return self._kind != EK_NONE;
-}
-
-/**
- * @brief Retrieves the value from an AvmResult, panicking if it represents an
- * Error.
- *
- * @param self The AvmResult.
- * @return object The object contained in the AvmResult.
- *
- * @note This function is inline.
- */
-AVMAPI inline object AvmResultUnwrap(AvmResult self) {
-    if (AvmResultIsFailure(self)) {
-        panic(
-            "Tried to unwrap an `AvmResult` describing failure. Check with "
-            "`AvmResultIsFailure` first.");
-    }
-
-    return self._value;
-}
-
-/// A type which may contain a value.
-typedef struct {
-    object _value;
-    bool _hasValue;
-} AvmOptional;
-
-/**
- * @brief Creates an AvmOptional with the `none` value.
- *
- * @return AvmOptional The created AvmOptional.
- * @note This function is inline.
- */
-AVMAPI inline AvmOptional AvmNone() {
-    return (AvmOptional){._value = 0, ._hasValue = false};
-}
-
-/**
- * @brief Creates an AvmOptional with the specified value.
- *
- * @param value The object to be contained in the AvmOptional.
- * @return AvmOptional The created AvmOptional.
- *
- * @note This function is inline.
- */
-AVMAPI inline AvmOptional AvmSome(object value) {
-    return (AvmOptional){._value = value, ._hasValue = true};
-}
-
-/**
- * @brief Determines whether an AvmOptional contains a value.
- *
- * @return true if the optional contains a value, otherwise false.
- *
- * @note This function is inline.
- */
-AVMAPI inline bool AvmOptionalHasValue(AvmOptional optional) {
-    return optional._hasValue;
-}
 
 /**
  * @brief Creates a scope in which an object will be available and be destroyed
@@ -399,9 +353,6 @@ static_assert(sizeof(short) == 2, "");
 static_assert(sizeof(ushort) == 2, "");
 static_assert(sizeof(char) == 1, "");
 static_assert(sizeof(byte) == 1, "");
-
-static_assert(sizeof(AvmResult) == 16, "");
-static_assert(sizeof(AvmOptional) == 16, "");
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
