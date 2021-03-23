@@ -1,9 +1,13 @@
 #include <avium/testing.h>
 #include <avium/string.h>
 
-static object TestInit() { return AvmStringFrom("Hello World Wordy World!"); }
+static object TestInit() {
+    static AvmString s;
+    s = AvmStringFrom("Hello World Wordy World!");
+    return &s;
+}
 
-static void TestFini(object state) { AvmObjectDestroy(state); }
+static void TestFini(object state) { (void)state; }
 
 // TEST
 static void TestFrom(object state) {
@@ -46,7 +50,7 @@ static void TestUpperLower(object state) {
 }
 
 // TEST
-static void TestAppend(object state) {
-    state = AvmStringAppend(state, ".com");
+static void TestPush(object state) {
+    AvmStringPushStr(state, ".com");
     AssertStringEqual(AvmStringAsPtr(state), "hella warld wardy warld!.com");
 }
