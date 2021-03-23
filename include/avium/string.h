@@ -27,10 +27,10 @@
 #include "avium/prologue.h"
 #include "avium/collection.h"
 
-#define AVM_STRING_GROWTH_FACTOR 2
+// Type definition in prologue.h
 
-/// An invalid index into an AvmString.
-#define AVM_STRING_NPOS ((size_t)-1)
+#define AVM_STRING_GROWTH_FACTOR 2
+#define AVM_STRING_NPOS          ((size_t)-1)
 
 /**
  * @brief Creates an AvmString with a specified capacity.
@@ -54,7 +54,7 @@ AVMAPI AvmString AvmStringFrom(str contents);
  * @param self The AvmString.
  * @return char* A pointer to the character array.
  */
-AVMAPI char* AvmStringAsPtr(AvmString self);
+AVMAPI char* AvmStringAsPtr(AvmString* self);
 
 /**
  * @brief Gets the length of an AvmString.
@@ -62,7 +62,7 @@ AVMAPI char* AvmStringAsPtr(AvmString self);
  * @param self The AvmString.
  * @return size_t The AvmString length.
  */
-AVMAPI size_t AvmStringGetLength(AvmString self);
+AVMAPI size_t AvmStringGetLength(AvmString* self);
 
 /**
  * @brief Gets the capacity of an AvmString.
@@ -70,37 +70,33 @@ AVMAPI size_t AvmStringGetLength(AvmString self);
  * @param self The AvmString.
  * @return size_t The AvmString capacity.
  */
-AVMAPI size_t AvmStringGetCapacity(AvmString self);
+AVMAPI size_t AvmStringGetCapacity(AvmString* self);
 
 /**
- * @brief Appends a character to an AvmString.
+ * @brief Pushes a character to an AvmString.
  *
  * @param self The AvmString.
- * @param character The character to append.
- *
- * @return AvmString The new AvmString with the appended character.
+ * @param character The character to push.
  */
-AVMAPI AvmString AvmStringAppendChar(AvmString self, char character);
+AVMAPI void AvmStringPushChar(AvmString* self, char character);
 
 /**
- * @brief Appends a character array to an AvmString.
+ * @brief Pushes an str to an AvmString.
  *
  * @param self The AvmString.
- * @param characters The character array to append.
- *
- * @return AvmString The new AvmString with the appended characters.
+ * @param contents The str array to push.
  */
-AVMAPI AvmString AvmStringAppend(AvmString self, str characters);
+AVMAPI void AvmStringPushStr(AvmString* self, str contents);
 
 /**
- * @brief Concatenates two AvmString instances.
+ * @brief Pushes an AvmString to an AvmString.
  *
- * @param self The first AvmString.
- * @param other The second AvmString.
+ * @param self The AvmString.
+ * @param other The AvmString to push.
  *
  * @return AvmString The resulting AvmString.
  */
-AVMAPI AvmString AvmStringConcat(AvmString self, AvmString other);
+AVMAPI void AvmStringPushString(AvmString* self, AvmString* other);
 
 /**
  * @brief Gets the index of the first occurrence of a character in an AvmString.
@@ -111,7 +107,7 @@ AVMAPI AvmString AvmStringConcat(AvmString self, AvmString other);
  * @return size_t The index of the first occurrence of the character.
  * @return AVM_STRING_NPOS The character was not in the string.
  */
-AVMAPI size_t AvmStringIndexOf(AvmString self, char character);
+AVMAPI size_t AvmStringIndexOf(AvmString* self, char character);
 
 /**
  * @brief Gets the index of the last occurrence of a character in an AvmString.
@@ -122,7 +118,7 @@ AVMAPI size_t AvmStringIndexOf(AvmString self, char character);
  * @return size_t The index of the last occurrence of the character.
  * @return AVM_STRING_NPOS The character was not in the string.
  */
-AVMAPI size_t AvmStringLastIndexOf(AvmString self, char character);
+AVMAPI size_t AvmStringLastIndexOf(AvmString* self, char character);
 
 /**
  * @brief Replaces all occurrences of a character in an AvmString with another.
@@ -133,7 +129,7 @@ AVMAPI size_t AvmStringLastIndexOf(AvmString self, char character);
  *
  * @return size_t The count of the total replaced characters.
  */
-AVMAPI size_t AvmStringReplace(AvmString self, char oldCharacter,
+AVMAPI size_t AvmStringReplace(AvmString* self, char oldCharacter,
                                char newCharacter);
 
 /**
@@ -144,7 +140,7 @@ AVMAPI size_t AvmStringReplace(AvmString self, char oldCharacter,
  * @return size_t The index of the first occurrence of the substring.
  * @return AVM_STRING_NPOS The substring was not in the string.
  */
-AVMAPI size_t AvmStringFind(AvmString self, str characters);
+AVMAPI size_t AvmStringFind(AvmString* self, str characters);
 
 /**
  * @brief Finds the last occurrence of a substring in an AvmString.
@@ -154,7 +150,7 @@ AVMAPI size_t AvmStringFind(AvmString self, str characters);
  * @return size_t The index of the last occurrence of the substring.
  * @return AVM_STRING_NPOS The substring was not in the string.
  */
-AVMAPI size_t AvmStringFindLast(AvmString self, str characters);
+AVMAPI size_t AvmStringFindLast(AvmString* self, str characters);
 
 /**
  * @brief Returns a character in an AvmString at a specified index.
@@ -164,28 +160,28 @@ AVMAPI size_t AvmStringFindLast(AvmString self, str characters);
  *
  * @return char The character.
  */
-AVMAPI char AvmStringCharAt(AvmString self, size_t index);
+AVMAPI char AvmStringCharAt(AvmString* self, size_t index);
 
 /**
  * @brief Reverse an AvmString.
  *
  * @param self The AvmString.
  */
-AVMAPI void AvmStringReverse(AvmString self);
+AVMAPI void AvmStringReverse(AvmString* self);
 
 /**
  * @brief Converts all characters in an AvmString to uppercase.
  *
  * @param self The AvmString.
  */
-AVMAPI void AvmStringToUpper(AvmString self);
+AVMAPI void AvmStringToUpper(AvmString* self);
 
 /**
  * Converts all characters in an AvmString to lowercase.
  *
  * @param self The AvmString.
  */
-AVMAPI void AvmStringToLower(AvmString self);
+AVMAPI void AvmStringToLower(AvmString* self);
 
 /**
  * @brief Changed the length value of an AvmString.
@@ -195,6 +191,6 @@ AVMAPI void AvmStringToLower(AvmString self);
  *
  * @warning This function can lead to undefined behavior if not used correctly.
  */
-AVMAPI void AvmStringUnsafeSetLength(AvmString self, size_t length);
+AVMAPI void AvmStringUnsafeSetLength(AvmString* self, size_t length);
 
 #endif  // AVIUM_STRING_H

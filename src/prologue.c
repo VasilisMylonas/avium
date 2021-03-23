@@ -72,7 +72,7 @@ AvmString AvmObjectToString(object self) {
         AvmVirtualFunctionTrap(__func__, AvmObjectGetType(self));
     }
 
-    return ((void* (*)(object))method)(self);
+    return ((AvmString(*)(object))method)(self);
 }
 
 void AvmObjectCopy(object self, size_t size, byte buffer[]) {

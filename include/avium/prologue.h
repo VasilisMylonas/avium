@@ -88,9 +88,6 @@ typedef void* object;
 /// An unknown function type.
 typedef void (*AvmFunction)(void);
 
-/// A dynamic string.
-typedef struct AvmString* AvmString;
-
 #ifdef AVM_MSVC
 /// A type signifying that a function never returns.
 #    define never __declspec(noreturn) void
@@ -259,6 +256,13 @@ AVMAPI str AvmTypeGetName(AvmType self);
  * @return size_t The type's size.
  */
 AVMAPI size_t AvmTypeGetSize(AvmType self);
+
+/// A dynamic string.
+AVM_CLASS(AvmString, object, {
+    size_t _capacity;
+    size_t _length;
+    char* _buffer;
+});
 
 /**
  * @brief Gets information about the type of an object.
