@@ -359,6 +359,11 @@ static_assert(sizeof(short) == 2, "");
 static_assert(sizeof(ushort) == 2, "");
 static_assert(sizeof(char) == 1, "");
 static_assert(sizeof(byte) == 1, "");
+static_assert(sizeof(AvmString) == 32, "");
+
+AVM_RESULT_TYPE(char)
+AVM_OPTIONAL_TYPE(char)
+AVM_OPTIONAL_TYPE(size_t)
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x

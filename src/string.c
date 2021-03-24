@@ -142,49 +142,53 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
     memcpy(&self->_buffer[self->_length - length], other->_buffer, length + 1);
 }
 
-size_t AvmStringIndexOf(AvmString* self, char character) {
+AvmOptional(size_t) AvmStringIndexOf(AvmString* self, char character) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->_length; i++) {
         if (self->_buffer[i] == character) {
-            return i;
+            return AvmSome(size_t)(i);
         }
     }
 
-    return AVM_STRING_NPOS;
+    return AvmNone(size_t)();
 }
 
-size_t AvmStringLastIndexOf(AvmString* self, char character) {
+AvmOptional(size_t) AvmStringLastIndexOf(AvmString* self, char character) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = self->_length; i > 0; i--) {
         if (self->_buffer[i - 1] == character) {
-            return i - 1;
+            return AvmSome(size_t)(i - 1);
         }
     }
 
-    return AVM_STRING_NPOS;
+    return AvmNone(size_t)();
 }
 
-size_t AvmStringFind(AvmString* self, str characters) {
+AvmOptional(size_t) AvmStringFind(AvmString* self, str substring) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    char* c = strstr(self->_buffer, characters);
-
-    if (c == NULL) {
-        return AVM_STRING_NPOS;
+    if (substring == NULL) {
+        AvmPanic("Parameter `substring` was `NULL`.");
     }
 
-    return (size_t)(c - self->_buffer);
+    char* c = strstr(self->_buffer, substring);
+
+    if (c == NULL) {
+        return AvmNone(size_t)();
+    }
+
+    return AvmSome(size_t)((size_t)(c - self->_buffer));
 }
 
-size_t AvmStringFindLast(AvmString* self, str characters) {
+AvmOptional(size_t) AvmStringFindLast(AvmString* self, str characters) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -192,17 +196,17 @@ size_t AvmStringFindLast(AvmString* self, str characters) {
     size_t length = strlen(characters);
 
     if (length > self->_length) {
-        return AVM_STRING_NPOS;
+        return AvmNone(size_t)();
     }
 
     for (char* end = self->_buffer + self->_length - length;
          end != self->_buffer; end--) {
         if (strncmp(end, characters, length) == 0) {
-            return end - self->_buffer;
+            return AvmSome(size_t)(end - self->_buffer);
         }
     }
 
-    return AVM_STRING_NPOS;
+    return AvmNone(size_t)();
 }
 
 size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
@@ -230,16 +234,17 @@ void AvmStringUnsafeSetLength(AvmString* self, size_t length) {
     self->_length = length;
 }
 
-char AvmStringCharAt(AvmString* self, size_t index) {
+AvmResult(char) AvmStringCharAt(AvmString* self, size_t index) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     if (index < self->_length) {
-        return self->_buffer[index];
+        return AvmSuccess(char)(self->_buffer[index]);
     }
 
-    AvmPanic("Parameter `index` was greater than the string's length.");
+    return AvmFailure(char)(ErrorKindRange,
+                            "The specified index was out of range.");
 }
 
 void AvmStringReverse(AvmString* self) {
