@@ -3,8 +3,13 @@
 
 #include "avium/prologue.h"
 
-// A type representing a software version in the format: major.minor.patch-tag
-typedef struct AvmVersion* AvmVersion;
+/// A type representing a software version in the format: N.N.N-c
+AVM_CLASS(AvmVersion, object, {
+    ushort major;
+    ushort minor;
+    ushort patch;
+    char tag;
+});
 
 /**
  * @brief Creates a new AvmVersion instance.
@@ -14,9 +19,10 @@ typedef struct AvmVersion* AvmVersion;
  * @param patch The version patch number (incremented at bug fixes).
  * @param tag The version tag (a, b, etc).
  *
- * @return AvmVersion The created AvmVersion.
+ * @return The created instance.
  */
-AVMAPI AvmVersion AvmVersionFrom(uint major, uint minor, uint patch, char tag);
+AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
+                                 char tag);
 
 /**
  * @brief Determines whether 2 AvmVersion instances are compatible (whether the
@@ -28,38 +34,8 @@ AVMAPI AvmVersion AvmVersionFrom(uint major, uint minor, uint patch, char tag);
  * @return true The versions are compatible.
  * @return false The versions are not compatible.
  */
-AVMAPI bool AvmVersionIsCompatible(AvmVersion self, AvmVersion other);
+AVMAPI bool AvmVersionIsCompatible(AvmVersion* self, AvmVersion* other);
 
-/**
- * @brief Gets the major number of an AvmVersion instance.
- *
- * @param self The AvmVersion instance.
- * @return uint The major number.
- */
-AVMAPI uint AvmVersionGetMajor(AvmVersion self);
-
-/**
- * @brief Gets the minor number of an AvmVersion instance.
- *
- * @param self The AvmVersion instance.
- * @return uint The minor number.
- */
-AVMAPI uint AvmVersionGetMinor(AvmVersion self);
-
-/**
- * @brief Gets the patch number of an AvmVersion instance.
- *
- * @param self The AvmVersion instance.
- * @return uint The patch number.
- */
-AVMAPI uint AvmVersionGetPatch(AvmVersion self);
-
-/**
- * @brief Gets the version tag of an AvmVersion instance.
- *
- * @param self The AvmVersion instance.
- * @return char The version tag number.
- */
-AVMAPI char AvmVersionGetTag(AvmVersion self);
+static_assert(sizeof(AvmVersion) == 16, "");
 
 #endif  // AVIUM_VERSION_H
