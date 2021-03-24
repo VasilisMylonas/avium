@@ -108,8 +108,27 @@ void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     memcpy(destination, source, trueLength);
 }
 
+#ifdef AVM_LINUX
+#    include <execinfo.h>
+#endif
+
 never AvmPanicEx(str message, str function, str file, uint line) {
-    fprintf(stderr, "Panic in file %s:%u in function %s()\n%s\n", file, line,
+    fprintf(stderr, "Panic in file %s:%u in function %s()\n\n%s\n", file, line,
             function, message);
-    abort();
+
+#ifdef AVM_LINUX
+    object arr[128];
+
+    int length = backtrace(arr, 128);
+    char** s = backtrace_symbols(arr, length);
+
+    for (int i = length - 1; i >= 1; i--) {
+        *(strrchr(s[i], ')')) = '\0';
+        fprintf(stderr, "    at %s\n", strchr(s[i], '(') + 1);
+    }
+#else
+    fprintf(stderr, "No backtrace is available.\n");
+#endif
+
+    exit(1);
 }
