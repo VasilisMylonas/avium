@@ -318,7 +318,7 @@ AVMAPI bool AvmObjectEquals(object lhs, object rhs);
  * @brief Destroys an object and deallocates its memory.
  *
  * This function tries to use the FUNC_DTOR virtual function entry to destroy
- * the object. If no such virtual function is available then free is used.
+ * the object. If no such virtual function then this function does nothing.
  *
  * @param self The object.
  */

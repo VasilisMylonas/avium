@@ -46,12 +46,9 @@ bool AvmObjectEquals(object lhs, object rhs) {
 void AvmObjectDestroy(object self) {
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_DTOR];
 
-    if (method == NULL) {
-        free(self);
-        return;
+    if (method != NULL) {
+        ((void (*)(object))method)(self);
     }
-
-    ((void (*)(object))method)(self);
 }
 
 object AvmObjectClone(object self) {
