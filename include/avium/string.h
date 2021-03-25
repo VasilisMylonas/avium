@@ -24,12 +24,9 @@
 #ifndef AVIUM_STRING_H
 #define AVIUM_STRING_H
 
-#include "avium/prologue.h"
 #include "avium/collection.h"
 
 // Type definition in prologue.h
-
-#define AVM_STRING_GROWTH_FACTOR 2
 
 /**
  * @brief Creates an AvmString with a specified capacity.

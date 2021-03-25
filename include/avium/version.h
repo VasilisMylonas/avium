@@ -36,6 +36,6 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
  */
 AVMAPI bool AvmVersionIsCompatible(AvmVersion* self, AvmVersion* other);
 
-static_assert(sizeof(AvmVersion) == 16, "");
+static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 
 #endif  // AVIUM_VERSION_H

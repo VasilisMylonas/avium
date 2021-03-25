@@ -18,4 +18,4 @@ GENERATE_XML=YES
 GENERATE_MAN=YES
 MACRO_EXPANSION=YES
 EXPAND_ONLY_PREDEF=YES
-PREDEFINED=AVMAPI=extern static_assert=static_assert AVM_PTR_TYPE=long AVM_LONG_TYPE=long
+PREDEFINED=AVMAPI=extern static_assert=static_assert static_assert_s=static_assert AVM_PTR_TYPE=long AVM_LONG_TYPE=long

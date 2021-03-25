@@ -376,26 +376,26 @@ AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
 // Ensure correct type sizes.
-static_assert(sizeof(ptr) == sizeof(void*), "");
-static_assert(sizeof(uptr) == sizeof(void*), "");
-static_assert(sizeof(_long) == 8, "");
-static_assert(sizeof(ulong) == 8, "");
-static_assert(sizeof(int) == 4, "");
-static_assert(sizeof(uint) == 4, "");
-static_assert(sizeof(short) == 2, "");
-static_assert(sizeof(ushort) == 2, "");
-static_assert(sizeof(char) == 1, "");
-static_assert(sizeof(byte) == 1, "");
-static_assert(sizeof(AvmString) == 32, "");
+static_assert_s(sizeof(ptr) == sizeof(void*));
+static_assert_s(sizeof(uptr) == sizeof(void*));
+static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
+static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
+static_assert_s(sizeof(int) == AVM_INT_SIZE);
+static_assert_s(sizeof(uint) == AVM_INT_SIZE);
+static_assert_s(sizeof(short) == AVM_SHORT_SIZE);
+static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
+static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
+static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
+static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
 
-#define AVM_TYPE_(T, ...)                      \
-    static const AvmType _##T##Type = {        \
-        ._vptr = (AvmFunction[32])__VA_ARGS__, \
-        ._name = #T,                           \
-        ._size = sizeof(T),                    \
+#define AVM_TYPE_(T, ...)                                \
+    static const AvmType _##T##Type = {                  \
+        ._vptr = (AvmFunction[AVM_VFT_SIZE])__VA_ARGS__, \
+        ._name = #T,                                     \
+        ._size = sizeof(T),                              \
     }
 
 #define AVM_GET_TYPE_(T) &_##T##Type

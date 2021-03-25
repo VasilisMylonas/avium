@@ -26,24 +26,6 @@
 
 #include "avium/prologue.h"
 
-#define AVM_FMT_INT_DECIMAL  'i'
-#define AVM_FMT_INT_HEX      'x'
-#define AVM_FMT_INT_BINARY   'b'
-#define AVM_FMT_INT_OCTAL    'o'
-#define AVM_FMT_INT_UNSIGNED 'u'
-#define AVM_FMT_INT_SIZE     'z'
-#define AVM_FMT_CHAR         'c'
-#define AVM_FMT_UNICODE      'U'
-#define AVM_FMT_FLOAT        'f'
-#define AVM_FMT_FLOAT_EXP    'e'
-#define AVM_FMT_FLOAT_AUTO   'g'
-#define AVM_FMT_STRING       's'
-#define AVM_FMT_BOOL         't'
-#define AVM_FMT_POINTER      'p'
-#define AVM_FMT_VALUE        'v'
-#define AVM_FMT_TYPE         'T'
-#define AVM_FMT_SIZE         'Z'
-
 /// Represents the base in which a number is represented.
 typedef enum {
     /// Base 2 (00010000).

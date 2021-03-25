@@ -22,7 +22,7 @@ typedef union {
 
 AvmString AvmItoa(_long value) {
     if (value == INTMAX_MIN) {
-        return AvmStringFrom("-9223372036854775808");
+        return AvmStringFrom(LongMinRepr);
     }
 
     const bool isNegative = value < 0;
@@ -178,8 +178,8 @@ AvmString AvmVSprintf(str format, va_list args) {
 
         switch (format[i]) {
             case AVM_FMT_UNICODE:
-                temp = AvmUtoa(va_arg(args, char32_t), 16);
-                AvmStringPushStr(&s, "U+");
+                temp = AvmUtoa(va_arg(args, char32_t), NB_HEX);
+                AvmStringPushStr(&s, UnicodePrefix);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_DECIMAL:
@@ -187,19 +187,19 @@ AvmString AvmVSprintf(str format, va_list args) {
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_OCTAL:
-                temp = AvmUtoa(va_arg(args, ulong), 8);
-                AvmStringPushStr(&s, "0o");
+                temp = AvmUtoa(va_arg(args, ulong), NB_OCTAL);
+                AvmStringPushStr(&s, OctalPrefix);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX:
-                temp = AvmUtoa(va_arg(args, ulong), 16);
-                AvmStringPushStr(&s, "0x");
+                temp = AvmUtoa(va_arg(args, ulong), NB_HEX);
+                AvmStringPushStr(&s, HexPrefix);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_BINARY:
-                temp = AvmUtoa(va_arg(args, ulong), 2);
-                AvmStringPushStr(&s, "0b");
+                temp = AvmUtoa(va_arg(args, ulong), NB_BINARY);
+                AvmStringPushStr(&s, BinaryPrefix);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_FLOAT:
@@ -222,7 +222,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_INT_SIZE:
             case AVM_FMT_INT_UNSIGNED:
-                temp = AvmUtoa(va_arg(args, ulong), 10);
+                temp = AvmUtoa(va_arg(args, ulong), NB_DECIMAL);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_CHAR:
@@ -232,8 +232,8 @@ AvmString AvmVSprintf(str format, va_list args) {
                 AvmStringPushStr(&s, va_arg(args, char*));
                 break;
             case AVM_FMT_BOOL:
-                AvmStringPushStr(&s,
-                                 (bool)va_arg(args, uint) ? "true" : "false");
+                AvmStringPushStr(
+                    &s, (bool)va_arg(args, uint) ? TrueRepr : FalseRepr);
                 break;
             case AVM_FMT_TYPE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
@@ -242,7 +242,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_SIZE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                temp = AvmUtoa(AvmTypeGetSize(type), 10);
+                temp = AvmUtoa(AvmTypeGetSize(type), NB_DECIMAL);
                 AvmStringPushString(&s, &temp);
                 break;
             }
@@ -345,7 +345,7 @@ void AvmVSscanf(AvmString* string, str format, va_list args) {
             }
             case AVM_FMT_BOOL: {
                 *((bool*)va_arg(args, bool*)) =
-                    strncmp(&buffer[j], "true", 4) == 0;
+                    strncmp(&buffer[j], TrueRepr, 4) == 0;
                 SkipWord(buffer, &j);
                 break;
             }

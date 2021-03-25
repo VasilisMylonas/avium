@@ -3,8 +3,6 @@
 
 #include "avium/collection.h"
 
-#define AVM_ARRAY_LIST_GROWTH_FACTOR 2
-
 #define AvmArrayList(T)            AVM_GENERIC(AvmArrayList, T)
 #define AvmArrayListNew(T)         AVM_GENERIC(AvmArrayListNew, T)
 #define AvmArrayListFrom(T)        AVM_GENERIC(AvmArrayListFrom, T)
