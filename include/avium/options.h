@@ -13,29 +13,20 @@ typedef enum {
     OK_STRING,
 } AvmOptionKind;
 
-AVM_CLASS(AvmOption, object, {
-    str description;
-    str longOption;
-    AvmOptionKind kind;
-    char shortOption;
-});
-
-AVM_ARRAY_LIST_TYPE(AvmOption)
 AVM_ARRAY_LIST_TYPE(str)
 
-AVM_CLASS(AvmOptionParser, object, {
-    int argc;
-    str* argv;
-    AvmArrayList(AvmOption) options;
-});
+typedef struct AvmOptionParser AvmOptionParser;
 
-AVMAPI AvmOption AvmOptionFrom(str option, str description, AvmOptionKind kind);
-AVMAPI AvmOption AvmOptionFromEx(str option, char shortOption, str description,
-                                 AvmOptionKind kind);
-
-AVMAPI void AvmOptionParserInit(AvmOptionParser* self, int argc, str argv[]);
+AVMAPI AvmOptionParser* AvmOptionParserNew(int argc, str argv[]);
 AVMAPI void AvmOptionParserAddStandardOptions(AvmOptionParser* self);
-AVMAPI void AvmOptionParserAddOption(AvmOptionParser* self, AvmOption option);
+
+AVMAPI void AvmOptionParserAddOption(AvmOptionParser* self, str option,
+                                     str description, AvmOptionKind kind);
+
+AVMAPI void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
+                                       char shortOption, str description,
+                                       AvmOptionKind kind);
+
 AVMAPI void AvmOptionParserShowUsage(AvmOptionParser* self, str description);
 AVMAPI AvmArrayList(str) AvmOptionParserParse(AvmOptionParser* self);
 

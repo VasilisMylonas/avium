@@ -4,22 +4,20 @@
 
 #include <string.h>
 
-AVM_TYPE(AvmOption, {0});
+typedef struct {
+    str description;
+    str longOption;
+    AvmOptionKind kind;
+    char shortOption;
+} AvmOption;
 
-AvmOption AvmOptionFrom(str option, str description, AvmOptionKind kind) {
-    return AvmOptionFromEx(option, option[0], description, kind);
-}
+AVM_ARRAY_LIST_TYPE(AvmOption)
 
-AvmOption AvmOptionFromEx(str option, char shortOption, str description,
-                          AvmOptionKind kind) {
-    return (AvmOption){
-        ._type = AVM_GET_TYPE(AvmOption),
-        .longOption = option,
-        .shortOption = shortOption,
-        .description = description,
-        .kind = kind,
-    };
-}
+AVM_CLASS(AvmOptionParser, object, {
+    int argc;
+    str* argv;
+    AvmArrayList(AvmOption) options;
+});
 
 static void AvmOptionParserDestroy(AvmOptionParser* self) {
     AvmObjectDestroy(&self->options);
@@ -27,30 +25,40 @@ static void AvmOptionParserDestroy(AvmOptionParser* self) {
 
 AVM_TYPE(AvmOptionParser, {[FUNC_DTOR] = (AvmFunction)AvmOptionParserDestroy});
 
-void AvmOptionParserInit(AvmOptionParser* self, int argc, str argv[]) {
+AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
+    AvmOptionParser* self = malloc(sizeof(AvmOptionParser));
     self->_type = AVM_GET_TYPE(AvmOptionParser);
     self->argc = argc;
     self->argv = argv;
     self->options = AvmArrayListNew(AvmOption)(4);
+    return self;
 }
 
-void AvmOptionParserAddOption(AvmOptionParser* self, AvmOption option) {
-    AvmArrayListPush(AvmOption)(&self->options, option);
+void AvmOptionParserAddOption(AvmOptionParser* self, str option,
+                              str description, AvmOptionKind kind) {
+    AvmOptionParserAddOptionEx(self, option, option[0], description, kind);
+}
+
+void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
+                                char shortOption, str description,
+                                AvmOptionKind kind) {
+    AvmArrayListPush(AvmOption)(&self->options, (AvmOption){
+                                                    .description = description,
+                                                    .kind = kind,
+                                                    .longOption = option,
+                                                    .shortOption = shortOption,
+                                                });
 }
 
 void AvmOptionParserAddStandardOptions(AvmOptionParser* self) {
-    AvmOption options[] = {
-        AvmOptionFrom(
-            "verbose",
-            "Show extended information about what the program is doing.",
-            OK_FLAG),
-        AvmOptionFrom("help", "Show the help prompt.", OK_FLAG),
-        AvmOptionFromEx("version", 'V', "Show version information.", OK_FLAG),
-    };
+    AvmOptionParserAddOption(
+        self, "verbose",
+        "Show extended information about what the program is doing.", OK_FLAG);
 
-    AvmOptionParserAddOption(self, options[0]);
-    AvmOptionParserAddOption(self, options[1]);
-    AvmOptionParserAddOption(self, options[2]);
+    AvmOptionParserAddOption(self, "help", "Show the help prompt.", OK_FLAG);
+
+    AvmOptionParserAddOptionEx(self, "version", 'V',
+                               "Show version information.", OK_FLAG);
 }
 
 void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
@@ -63,7 +71,7 @@ void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
         AvmPrintf("[-%c", self->options._items[i].shortOption);
 
         if (self->options._items[i].kind != OK_FLAG) {
-            AvmPrintf(" %s", self->options._items[i].longOption);
+            AvmPrintf(" --%s", self->options._items[i].longOption);
         }
 
         AvmPrintf("] ");
@@ -87,15 +95,15 @@ void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
                 AvmString s = AvmStringFrom(self->options._items[i].longOption);
                 AvmStringToUpper(&s);
                 AvmPrintf("  -%c %v, --%s=%v - %s\n",
-                          self->options._items[i].shortOption, s,
-                          self->options._items[i].longOption, s,
+                          self->options._items[i].shortOption, &s,
+                          self->options._items[i].longOption, &s,
                           self->options._items[i].description);
                 AvmObjectDestroy(&s);
             } else {
                 AvmString s = AvmStringFrom(self->options._items[i].longOption);
                 AvmStringToUpper(&s);
                 AvmPrintf("  --%s=%v - %s\n",
-                          self->options._items[i].longOption, s,
+                          self->options._items[i].longOption, &s,
                           self->options._items[i].description);
                 AvmObjectDestroy(&s);
             }
