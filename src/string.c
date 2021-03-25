@@ -13,7 +13,7 @@ static AvmString AvmStringClone(AvmString* self) {
     return AvmStringFrom(self->_buffer);
 }
 
-static void AvmStringDestroy(AvmString self) { free(self._buffer); }
+static void AvmStringDestroy(AvmString* self) { free(self->_buffer); }
 
 AVM_TYPE(AvmString, {[FUNC_DTOR] = (AvmFunction)AvmStringDestroy,
                      [FUNC_CLONE] = (AvmFunction)AvmStringClone,
