@@ -2,32 +2,41 @@
 #define AVIUM_OPTIONS_H
 
 #include "avium/prologue.h"
+#include "avium/array-list.h"
 
-/**
- * @brief Determines whether the specified option is present.
- *
- * @param argc The argc parameter from main.
- * @param argv The argv parameter from main.
- * @param shortOption The short option in the form of -h, but without the -.
- * @param longOption The long option in the form of --help, but without the --.
- *
- * @return true The specified option was present.
- * @return false The specified option was not present.
- */
-AVMAPI bool AvmHasOption(int argc, str* argv, char shortOption, str longOption);
+#include <stdlib.h>
 
-/**
- * @brief Retrieves a command line option.
- *
- * @param argc The argc parameter from main.
- * @param argv The argv parameter from main.
- * @param shortOption The short option in the form of -h, but without the -.
- * @param longOption The long option in the form of --help, but without the --.
- *
- * @return AvmSome(str) The command line option value.
- * @return AvmNone The option was not present.
- */
-AVMAPI AvmOptional AvmGetOption(int argc, str* argv, char shortOption,
-                                str longOption);
+typedef enum {
+    OK_FLAG = 0,
+    OK_INT,
+    OK_FLOAT,
+    OK_STRING,
+} AvmOptionKind;
+
+AVM_CLASS(AvmOption, object, {
+    str description;
+    str longOption;
+    AvmOptionKind kind;
+    char shortOption;
+});
+
+AVM_ARRAY_LIST_TYPE(AvmOption)
+AVM_ARRAY_LIST_TYPE(str)
+
+AVM_CLASS(AvmOptionParser, object, {
+    int argc;
+    str* argv;
+    AvmArrayList(AvmOption) options;
+});
+
+AVMAPI AvmOption AvmOptionFrom(str option, str description, AvmOptionKind kind);
+AVMAPI AvmOption AvmOptionFromEx(str option, char shortOption, str description,
+                                 AvmOptionKind kind);
+
+AVMAPI void AvmOptionParserInit(AvmOptionParser* self, int argc, str argv[]);
+AVMAPI void AvmOptionParserAddStandardOptions(AvmOptionParser* self);
+AVMAPI void AvmOptionParserAddOption(AvmOptionParser* self, AvmOption option);
+AVMAPI void AvmOptionParserShowUsage(AvmOptionParser* self, str description);
+AVMAPI AvmArrayList(str) AvmOptionParserParse(AvmOptionParser* self);
 
 #endif  // AVIUM_OPTIONS_H
