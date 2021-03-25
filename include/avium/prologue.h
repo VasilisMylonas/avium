@@ -98,14 +98,8 @@ typedef void (*AvmFunction)(void);
 
 /// @}
 
-#define AVM_TYPE(T, ...)                       \
-    static const AvmType _##T##Type = {        \
-        ._vptr = (AvmFunction[32])__VA_ARGS__, \
-        ._name = #T,                           \
-        ._size = sizeof(T),                    \
-    }
-
-#define AVM_GET_TYPE(T) &_##T##Type
+#define AVM_GET_TYPE(T)  AVM_GET_TYPE_(T)
+#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
 
 enum {
     FUNC_DTOR = 0,
@@ -192,8 +186,11 @@ typedef enum {
         };                                                                   \
     });                                                                      \
                                                                              \
+    AVM_TYPE(AVM_GENERIC(AvmResult, T), {[FUNC_DTOR] = NULL});               \
+                                                                             \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                      \
         return (AvmResult(T)){                                               \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                \
             ._kind = ErrorKindNone,                                          \
             ._value = value,                                                 \
         };                                                                   \
@@ -201,6 +198,7 @@ typedef enum {
                                                                              \
     static inline AvmResult(T) AvmFailure(T)(AvmErrorKind kind, str error) { \
         return (AvmResult(T)){                                               \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                \
             ._kind = kind,                                                   \
             ._error = error,                                                 \
         };                                                                   \
@@ -218,35 +216,39 @@ typedef enum {
         return self->_kind != ErrorKindNone;                                 \
     }
 
-#define AVM_OPTIONAL_TYPE(T)                                   \
-    AVM_CLASS(AVM_GENERIC(AvmOptional, T), object, {           \
-        T _value;                                              \
-        bool _hasValue;                                        \
-    });                                                        \
-                                                               \
-    static inline AvmOptional(T) AvmSome(T)(T value) {         \
-        return (AvmOptional(T)){                               \
-            ._hasValue = true,                                 \
-            ._value = value,                                   \
-        };                                                     \
-    }                                                          \
-                                                               \
-    static inline AvmOptional(T) AvmNone(T)(void) {            \
-        return (AvmOptional(T)){                               \
-            ._hasValue = false,                                \
-        };                                                     \
-    }                                                          \
-                                                               \
-    static inline bool AvmHasValue(T)(AvmOptional(T) * self) { \
-        return self->_hasValue;                                \
-    }                                                          \
-                                                               \
-    static inline T AvmGetValue(T)(AvmOptional(T) * self) {    \
-        if (self->_hasValue) {                                 \
-            return self->_value;                               \
-        }                                                      \
-                                                               \
-        AvmPanic("Tried to unwrap an empty optional.");        \
+#define AVM_OPTIONAL_TYPE(T)                                     \
+    AVM_CLASS(AVM_GENERIC(AvmOptional, T), object, {             \
+        T _value;                                                \
+        bool _hasValue;                                          \
+    });                                                          \
+                                                                 \
+    AVM_TYPE(AVM_GENERIC(AvmOptional, T), {[FUNC_DTOR] = NULL}); \
+                                                                 \
+    static inline AvmOptional(T) AvmSome(T)(T value) {           \
+        return (AvmOptional(T)){                                 \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),  \
+            ._hasValue = true,                                   \
+            ._value = value,                                     \
+        };                                                       \
+    }                                                            \
+                                                                 \
+    static inline AvmOptional(T) AvmNone(T)(void) {              \
+        return (AvmOptional(T)){                                 \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),  \
+            ._hasValue = false,                                  \
+        };                                                       \
+    }                                                            \
+                                                                 \
+    static inline bool AvmHasValue(T)(AvmOptional(T) * self) {   \
+        return self->_hasValue;                                  \
+    }                                                            \
+                                                                 \
+    static inline T AvmGetValue(T)(AvmOptional(T) * self) {      \
+        if (self->_hasValue) {                                   \
+            return self->_value;                                 \
+        }                                                        \
+                                                                 \
+        AvmPanic("Tried to unwrap an empty optional.");          \
     }
 
 /**
@@ -389,11 +391,20 @@ static_assert(sizeof(char) == 1, "");
 static_assert(sizeof(byte) == 1, "");
 static_assert(sizeof(AvmString) == 32, "");
 
+#define AVM_CONCAT_(x, y) x##y
+#define AVM_STRINGIFY_(x) #x
+
+#define AVM_TYPE_(T, ...)                      \
+    static const AvmType _##T##Type = {        \
+        ._vptr = (AvmFunction[32])__VA_ARGS__, \
+        ._name = #T,                           \
+        ._size = sizeof(T),                    \
+    }
+
+#define AVM_GET_TYPE_(T) &_##T##Type
+
 AVM_RESULT_TYPE(char)
 AVM_OPTIONAL_TYPE(char)
 AVM_OPTIONAL_TYPE(size_t)
-
-#define AVM_CONCAT_(x, y) x##y
-#define AVM_STRINGIFY_(x) #x
 
 #endif  // AVIUM_PROLOGUE_H
