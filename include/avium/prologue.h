@@ -136,6 +136,9 @@ enum {
  */
 AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 
+AVMAPI void AvmEnableExceptions(void);
+AVMAPI void AvmDisableExceptions(void);
+
 /// Describes the type of the error that occurred.
 typedef enum {
     /// No error occurred.

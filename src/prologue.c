@@ -1,9 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 #include "avium/prologue.h"
 #include "avium/resources.h"
+
+static void ExceptionHandler(int exception) {
+    switch (exception) {
+        case SIGSEGV:
+            AvmPanic("Invalid pointer dereference.");
+            break;
+        case SIGILL:
+            AvmPanic("Illegal instruction.");
+            break;
+        case SIGFPE:
+            AvmPanic("Arithmetic exception.");
+            break;
+        case SIGINT:
+            AvmPanic("Received interrupt.");
+            break;
+        default:
+            break;
+    }
+}
+
+void AvmEnableExceptions(void) {
+    signal(SIGSEGV, ExceptionHandler);
+    signal(SIGILL, ExceptionHandler);
+    signal(SIGFPE, ExceptionHandler);
+    signal(SIGINT, ExceptionHandler);
+}
+
+void AvmDisableExceptions(void) {
+    signal(SIGSEGV, SIG_DFL);
+    signal(SIGILL, SIG_DFL);
+    signal(SIGFPE, SIG_DFL);
+    signal(SIGINT, SIG_DFL);
+}
 
 // AvmType struct definition is in internal.h
 
