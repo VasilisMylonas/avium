@@ -179,7 +179,7 @@ AvmString AvmVSprintf(str format, va_list args) {
         switch (format[i]) {
             case AVM_FMT_UNICODE:
                 temp = AvmUtoa(va_arg(args, char32_t), NB_HEX);
-                AvmStringPushStr(&s, UnicodePrefix);
+                AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_DECIMAL:
@@ -188,18 +188,18 @@ AvmString AvmVSprintf(str format, va_list args) {
                 break;
             case AVM_FMT_INT_OCTAL:
                 temp = AvmUtoa(va_arg(args, ulong), NB_OCTAL);
-                AvmStringPushStr(&s, OctalPrefix);
+                AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX:
                 temp = AvmUtoa(va_arg(args, ulong), NB_HEX);
-                AvmStringPushStr(&s, HexPrefix);
+                AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_BINARY:
                 temp = AvmUtoa(va_arg(args, ulong), NB_BINARY);
-                AvmStringPushStr(&s, BinaryPrefix);
+                AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_FLOAT:
@@ -232,8 +232,8 @@ AvmString AvmVSprintf(str format, va_list args) {
                 AvmStringPushStr(&s, va_arg(args, char*));
                 break;
             case AVM_FMT_BOOL:
-                AvmStringPushStr(
-                    &s, (bool)va_arg(args, uint) ? TrueRepr : FalseRepr);
+                AvmStringPushStr(&s, (bool)va_arg(args, uint) ? AVM_FMT_TRUE
+                                                              : AVM_FMT_FALSE);
                 break;
             case AVM_FMT_TYPE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
@@ -345,7 +345,7 @@ void AvmVSscanf(AvmString* string, str format, va_list args) {
             }
             case AVM_FMT_BOOL: {
                 *((bool*)va_arg(args, bool*)) =
-                    strncmp(&buffer[j], TrueRepr, 4) == 0;
+                    strncmp(&buffer[j], AVM_FMT_TRUE, 4) == 0;
                 SkipWord(buffer, &j);
                 break;
             }

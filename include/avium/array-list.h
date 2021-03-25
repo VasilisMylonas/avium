@@ -19,6 +19,8 @@
         T* _items;                                                             \
     });                                                                        \
                                                                                \
+    static_assert_s(sizeof(AvmArrayList(T)) == AVM_ARRAY_LIST_SIZE);           \
+                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {        \
         return (AvmArrayList(T)){                                              \
             ._length = 0,                                                      \
