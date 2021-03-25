@@ -16,15 +16,15 @@ static AvmString AvmStringClone(AvmString* self) {
 
 static void AvmStringDestroy(AvmString self) { free(self._buffer); }
 
-TYPE(AvmString, [FUNC_DTOR] = (AvmFunction)AvmStringDestroy,
-     [FUNC_CLONE] = (AvmFunction)AvmStringClone,
-     [FUNC_TO_STRING] = (AvmFunction)AvmStringToString,
-     [FUNC_GET_LENGTH] = (AvmFunction)AvmStringGetLength,
-     [FUNC_GET_CAPACITY] = (AvmFunction)AvmStringGetCapacity);
+AVM_TYPE(AvmString, {[FUNC_DTOR] = (AvmFunction)AvmStringDestroy,
+                     [FUNC_CLONE] = (AvmFunction)AvmStringClone,
+                     [FUNC_TO_STRING] = (AvmFunction)AvmStringToString,
+                     [FUNC_GET_LENGTH] = (AvmFunction)AvmStringGetLength,
+                     [FUNC_GET_CAPACITY] = (AvmFunction)AvmStringGetCapacity});
 
 AvmString AvmStringNew(size_t capacity) {
     return (AvmString){
-        ._type = GET_TYPE(AvmString),
+        ._type = AVM_GET_TYPE(AvmString),
         ._length = 0,
         ._capacity = capacity,
         ._buffer = capacity == 0 ? NULL : malloc(capacity),

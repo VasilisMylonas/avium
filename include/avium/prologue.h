@@ -98,14 +98,36 @@ typedef void (*AvmFunction)(void);
 
 /// @}
 
-#define AVM_CLASS(T, B, ...) \
-    typedef struct T T;      \
-    struct T {               \
-        union {              \
-            AvmType _type;   \
-            B _base;         \
-        };                   \
-        struct __VA_ARGS__;  \
+#define AVM_TYPE(T, ...)                       \
+    static const AvmType _##T##Type = {        \
+        ._vptr = (AvmFunction[32])__VA_ARGS__, \
+        ._name = #T,                           \
+        ._size = sizeof(T),                    \
+    }
+
+#define AVM_GET_TYPE(T) &_##T##Type
+
+enum {
+    FUNC_DTOR = 0,
+    FUNC_GET_LENGTH,
+    FUNC_GET_CAPACITY,
+    FUNC_TO_STRING,
+    FUNC_CLONE,
+    FUNC_EQ,
+    FUNC_READ,
+    FUNC_WRITE,
+    FUNC_READ_STRING,
+    FUNC_WRITE_STRING,
+};
+
+#define AVM_CLASS(T, B, ...)      \
+    typedef struct T T;           \
+    struct T {                    \
+        union {                   \
+            const AvmType* _type; \
+            B _base;              \
+        };                        \
+        struct __VA_ARGS__;       \
     }
 
 /**
@@ -239,7 +261,13 @@ typedef enum {
     for (T name = init; name != NULL; AvmObjectDestroy(name), name = NULL)
 
 /// A type containing information about an object.
-typedef struct AvmType* AvmType;
+typedef struct AvmType AvmType;
+
+struct AvmType {
+    const AvmFunction* _vptr;
+    str _name;
+    size_t _size;
+};
 
 /**
  * @brief Gets the name of a type.
@@ -247,7 +275,7 @@ typedef struct AvmType* AvmType;
  * @param self The type.
  * @return str The type's name.
  */
-AVMAPI str AvmTypeGetName(AvmType self);
+AVMAPI str AvmTypeGetName(const AvmType* self);
 
 /**
  * @brief Gets the size of a type.
@@ -255,7 +283,7 @@ AVMAPI str AvmTypeGetName(AvmType self);
  * @param self The type.
  * @return size_t The type's size.
  */
-AVMAPI size_t AvmTypeGetSize(AvmType self);
+AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
 /// A dynamic string.
 AVM_CLASS(AvmString, object, {
@@ -270,7 +298,7 @@ AVM_CLASS(AvmString, object, {
  * @param self The object.
  * @return AvmType The type information of the object.
  */
-AVMAPI AvmType AvmObjectGetType(object self);
+AVMAPI const AvmType* AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.
@@ -332,7 +360,7 @@ AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
  *
  * @return never This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(str function, AvmType type);
+AVMAPI never AvmVirtualFunctionTrap(str function, const AvmType* type);
 
 /**
  * @brief Copies memory from one block to another.

@@ -10,11 +10,11 @@ AvmString AvmVersionToString(AvmVersion* self) {
                       self->tag);
 }
 
-TYPE(AvmVersion, [FUNC_TO_STRING] = (AvmFunction)AvmVersionToString);
+AVM_TYPE(AvmVersion, {[FUNC_TO_STRING] = (AvmFunction)AvmVersionToString});
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch, char tag) {
     return (AvmVersion){
-        ._type = GET_TYPE(AvmVersion),
+        ._type = AVM_GET_TYPE(AvmVersion),
         .major = major,
         .minor = minor,
         .patch = patch,

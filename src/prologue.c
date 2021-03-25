@@ -6,35 +6,35 @@
 
 // AvmType struct definition is in internal.h
 
-str AvmTypeGetName(AvmType self) {
+str AvmTypeGetName(const AvmType* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    return self->name;
+    return self->_name;
 }
 
-size_t AvmTypeGetSize(AvmType self) {
+size_t AvmTypeGetSize(const AvmType* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    return self->size;
+    return self->_size;
 }
 
-AvmType AvmObjectGetType(object self) {
+const AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    return *(AvmType*)self;
+    return *(AvmType**)self;
 }
 
 bool AvmObjectEquals(object lhs, object rhs) {
-    AvmType type = AvmObjectGetType(lhs);
-    AvmFunction method = type->vptr[FUNC_EQ];
+    const AvmType* type = AvmObjectGetType(lhs);
+    AvmFunction method = type->_vptr[FUNC_EQ];
 
-    size_t size = type->size;
+    size_t size = type->_size;
 
     if (method == NULL) {
         return memcmp(lhs, rhs, size) == 0;
@@ -44,7 +44,7 @@ bool AvmObjectEquals(object lhs, object rhs) {
 }
 
 void AvmObjectDestroy(object self) {
-    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_DTOR];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_DTOR];
 
     if (method == NULL) {
         free(self);
@@ -55,7 +55,7 @@ void AvmObjectDestroy(object self) {
 }
 
 object AvmObjectClone(object self) {
-    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_CLONE];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_CLONE];
 
     if (method == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
@@ -66,7 +66,7 @@ object AvmObjectClone(object self) {
 }
 
 AvmString AvmObjectToString(object self) {
-    AvmFunction method = AvmObjectGetType(self)->vptr[FUNC_TO_STRING];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
         AvmVirtualFunctionTrap(__func__, AvmObjectGetType(self));
@@ -88,10 +88,10 @@ void AvmObjectCopy(object self, size_t size, byte buffer[]) {
     AvmMemCopy(self, objectSize, buffer, size);
 }
 
-never AvmVirtualFunctionTrap(str function, AvmType type) {
+never AvmVirtualFunctionTrap(str function, const AvmType* type) {
     fprintf(stderr,
             "Attempted to call unimplemented virtual function: %s on type %s.",
-            function, type->name);
+            function, type->_name);
     AvmPanic("Unimplemented virtual function trap triggered.");
 }
 
