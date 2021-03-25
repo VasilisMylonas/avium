@@ -1,12 +1,11 @@
 #include "avium/version.h"
-#include "avium/internal.h"
-#include "avium/string.h"
 #include "avium/fmt.h"
+#include "avium/resources.h"
 
 #include <stdlib.h>
 
 AvmString AvmVersionToString(AvmVersion* self) {
-    return AvmSprintf("%i.%i.%i-%c", self->major, self->minor, self->patch,
+    return AvmSprintf(VersionFormat, self->major, self->minor, self->patch,
                       self->tag);
 }
 

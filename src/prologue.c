@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "avium/internal.h"
+#include "avium/prologue.h"
+#include "avium/resources.h"
 
 // AvmType struct definition is in internal.h
 
@@ -44,6 +45,10 @@ bool AvmObjectEquals(object lhs, object rhs) {
 }
 
 void AvmObjectDestroy(object self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_DTOR];
 
     if (method != NULL) {
@@ -52,6 +57,10 @@ void AvmObjectDestroy(object self) {
 }
 
 object AvmObjectClone(object self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_CLONE];
 
     if (method == NULL) {
@@ -63,6 +72,10 @@ object AvmObjectClone(object self) {
 }
 
 AvmString AvmObjectToString(object self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
@@ -98,7 +111,7 @@ void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     }
 
     if (destination == NULL) {
-        AvmPanic(DestNullMsg);
+        AvmPanic(DestinationNullMsg);
     }
 
     size_t trueLength = length > size ? size : length;

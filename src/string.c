@@ -1,10 +1,9 @@
 #include "avium/string.h"
+#include "avium/resources.h"
 
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "avium/internal.h"
 
 static AvmString AvmStringToString(AvmString* self) {
     return AvmStringFrom(self->_buffer);
@@ -106,7 +105,7 @@ void AvmStringPushStr(AvmString* self, str contents) {
     }
 
     if (contents == NULL) {
-        AvmPanic("Parameter `contents` was `NULL`.");
+        AvmPanic(ContentsNullMsg);
     }
 
     size_t length = strlen(contents);
@@ -127,7 +126,7 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
     }
 
     if (other == NULL) {
-        AvmPanic("Parameter `other` was `NULL`.");
+        AvmPanic(OtherNullMsg);
     }
 
     size_t length = other->_length;
@@ -176,7 +175,7 @@ AvmOptional(size_t) AvmStringFind(AvmString* self, str substring) {
     }
 
     if (substring == NULL) {
-        AvmPanic("Parameter `substring` was `NULL`.");
+        AvmPanic(SubstringNullMsg);
     }
 
     char* c = strstr(self->_buffer, substring);
@@ -188,12 +187,16 @@ AvmOptional(size_t) AvmStringFind(AvmString* self, str substring) {
     return AvmSome(size_t)((size_t)(c - self->_buffer));
 }
 
-AvmOptional(size_t) AvmStringFindLast(AvmString* self, str characters) {
+AvmOptional(size_t) AvmStringFindLast(AvmString* self, str substring) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    size_t length = strlen(characters);
+    if (substring == NULL) {
+        AvmPanic(SubstringNullMsg);
+    }
+
+    size_t length = strlen(substring);
 
     if (length > self->_length) {
         return AvmNone(size_t)();
@@ -201,7 +204,7 @@ AvmOptional(size_t) AvmStringFindLast(AvmString* self, str characters) {
 
     for (char* end = self->_buffer + self->_length - length;
          end != self->_buffer; end--) {
-        if (strncmp(end, characters, length) == 0) {
+        if (strncmp(end, substring, length) == 0) {
             return AvmSome(size_t)(end - self->_buffer);
         }
     }
@@ -243,8 +246,7 @@ AvmResult(char) AvmStringCharAt(AvmString* self, size_t index) {
         return AvmSuccess(char)(self->_buffer[index]);
     }
 
-    return AvmFailure(char)(ErrorKindRange,
-                            "The specified index was out of range.");
+    return AvmFailure(char)(ErrorKindRange, IndexOutOfRange);
 }
 
 void AvmStringReverse(AvmString* self) {

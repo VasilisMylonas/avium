@@ -6,10 +6,8 @@
 #include <stdint.h>
 #include <uchar.h>
 
-#include "avium/internal.h"
 #include "avium/string.h"
-
-#define AVM_FLOAT_BUFFER_SIZE 128
+#include "avium/resources.h"
 
 typedef union {
     float value;

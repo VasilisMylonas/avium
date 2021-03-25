@@ -1,7 +1,11 @@
 #include "avium/collection.h"
-#include "avium/internal.h"
+#include "avium/resources.h"
 
 size_t AvmCollectionGetLength(AvmCollection self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
     const AvmType* type = AvmObjectGetType(self);
     AvmFunction method = type->_vptr[FUNC_GET_LENGTH];
 
@@ -13,6 +17,10 @@ size_t AvmCollectionGetLength(AvmCollection self) {
 }
 
 size_t AvmCollectionGetCapacity(AvmCollection self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
     const AvmType* type = AvmObjectGetType(self);
     AvmFunction method = type->_vptr[FUNC_GET_CAPACITY];
 
