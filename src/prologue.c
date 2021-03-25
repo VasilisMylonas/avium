@@ -79,7 +79,7 @@ AvmString AvmObjectToString(object self) {
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, AvmObjectGetType(self));
+        AvmVirtualFunctionTrap();
     }
 
     return ((AvmString(*)(object))method)(self);
@@ -91,19 +91,14 @@ void AvmObjectCopy(object self, size_t size, byte buffer[]) {
     }
 
     if (buffer == NULL) {
-        AvmPanic("Parameter `buffer` is `NULL`.");
+        AvmPanic(BufferNullMsg);
     }
 
     size_t objectSize = AvmTypeGetSize(AvmObjectGetType(self));
     AvmMemCopy(self, objectSize, buffer, size);
 }
 
-never AvmVirtualFunctionTrap(str function, const AvmType* type) {
-    fprintf(stderr,
-            "Attempted to call unimplemented virtual function: %s on type %s.",
-            function, type->_name);
-    AvmPanic("Unimplemented virtual function trap triggered.");
-}
+never AvmVirtualFunctionTrap(void) { AvmPanic(VirtualFuncTrapTriggered); }
 
 void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     if (source == NULL) {

@@ -357,12 +357,9 @@ AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
 /**
  * @brief The trap function called when a virtual function is not implemented.
  *
- * @param function The function name.
- * @param type The object type.
- *
  * @return never This function never returns.
  */
-AVMAPI never AvmVirtualFunctionTrap(str function, const AvmType* type);
+AVMAPI never AvmVirtualFunctionTrap(void);
 
 /**
  * @brief Copies memory from one block to another.
