@@ -7,7 +7,7 @@
 typedef struct {
     str description;
     str longOption;
-    AvmOptionKind kind;
+    AvmValueKind kind;
     char shortOption;
 } AvmOption;
 
@@ -35,13 +35,13 @@ AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
 }
 
 void AvmOptionParserAddOption(AvmOptionParser* self, str option,
-                              str description, AvmOptionKind kind) {
+                              str description, AvmValueKind kind) {
     AvmOptionParserAddOptionEx(self, option, option[0], description, kind);
 }
 
 void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
                                 char shortOption, str description,
-                                AvmOptionKind kind) {
+                                AvmValueKind kind) {
     AvmArrayListPush(AvmOption)(&self->options, (AvmOption){
                                                     .description = description,
                                                     .kind = kind,
@@ -53,12 +53,14 @@ void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
 void AvmOptionParserAddStandardOptions(AvmOptionParser* self) {
     AvmOptionParserAddOption(
         self, "verbose",
-        "Show extended information about what the program is doing.", OK_FLAG);
+        "Show extended information about what the program is doing.",
+        ValueKindBool);
 
-    AvmOptionParserAddOption(self, "help", "Show the help prompt.", OK_FLAG);
+    AvmOptionParserAddOption(self, "help", "Show the help prompt.",
+                             ValueKindBool);
 
     AvmOptionParserAddOptionEx(self, "version", 'V',
-                               "Show version information.", OK_FLAG);
+                               "Show version information.", ValueKindBool);
 }
 
 void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
@@ -70,7 +72,7 @@ void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
     for (size_t i = 0; i < length; i++) {
         AvmPrintf("[-%c", self->options._items[i].shortOption);
 
-        if (self->options._items[i].kind != OK_FLAG) {
+        if (self->options._items[i].kind != ValueKindBool) {
             AvmPrintf(" --%s", self->options._items[i].longOption);
         }
 
@@ -80,7 +82,7 @@ void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
     AvmPrintf("\n\n%s\n\nOptional Arguments:\n", description);
 
     for (size_t i = 0; i < length; i++) {
-        if (self->options._items[i].kind == OK_FLAG) {
+        if (self->options._items[i].kind == ValueKindBool) {
             if (self->options._items[i].shortOption != 0) {
                 AvmPrintf("  -%c, --%s - %s\n",
                           self->options._items[i].shortOption,
@@ -121,7 +123,7 @@ static bool IsLongOption(str arg, str longOption, size_t length) {
 }
 
 static str HandleShortOption(str current, str next, AvmOption* option) {
-    if (option->kind != OK_FLAG) {
+    if (option->kind != ValueKindBool) {
         if (current[2] != '\0') {
             return &current[2];  // -ofile.txt
         }
@@ -136,7 +138,7 @@ static str HandleShortOption(str current, str next, AvmOption* option) {
 
 static str HandleLongOption(str current, str next, AvmOption* option,
                             size_t optionLength) {
-    if (option->kind != OK_FLAG) {
+    if (option->kind != ValueKindBool) {
         if (current[optionLength + 2] == '=') {
             // --output=file.txt
             return &current[optionLength + 3];
@@ -168,7 +170,7 @@ static str AvmGetOption(size_t length, str args[], AvmOption* option) {
     return NULL;
 }
 
-AvmArrayList(str) AvmOptionParserParse(AvmOptionParser* self) {
+AvmArrayList(str) AvmOptionParserParseRaw(AvmOptionParser* self) {
     AvmArrayList(str) list =
         AvmArrayListNew(str)(AvmArrayListGetLength(AvmOption)(&self->options));
 
@@ -176,6 +178,43 @@ AvmArrayList(str) AvmOptionParserParse(AvmOptionParser* self) {
          i++) {
         AvmArrayListPush(str)(&list, AvmGetOption(self->argc, self->argv,
                                                   &self->options._items[i]));
+    }
+
+    return list;
+}
+
+AvmArrayList(AvmValue) AvmOptionParserParse(AvmOptionParser* self) {
+    AvmArrayList(AvmValue) list = AvmArrayListNew(AvmValue)(
+        AvmArrayListGetLength(AvmOption)(&self->options));
+
+    for (size_t i = 0; i < AvmArrayListGetLength(AvmOption)(&self->options);
+         i++) {
+        str option =
+            AvmGetOption(self->argc, self->argv, &self->options._items[i]);
+
+        switch (self->options._items[i].kind) {
+            case ValueKindFloat:
+                AvmArrayListPush(AvmValue)(&list,
+                                           AvmValueFromFloat(atof(option)));
+                break;
+            case ValueKindInt:
+                AvmArrayListPush(AvmValue)(&list,
+                                           AvmValueFromInt(atoll(option)));
+                break;
+            case ValueKindUInt:
+                // AvmArrayListPush(AvmValue)(&list,
+                //                            AvmValueFromUInt(ato ll(option)));
+                break;
+            case ValueKindStr:
+                AvmArrayListPush(AvmValue)(&list, AvmValueFromStr(option));
+                break;
+            case ValueKindChar:
+                AvmArrayListPush(AvmValue)(&list, AvmValueFromChar(option[0]));
+                break;
+            default:
+                AvmArrayListPush(AvmValue)(&list,
+                                           AvmValueFromBool(option != NULL));
+        }
     }
 
     return list;
