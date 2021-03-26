@@ -15,9 +15,9 @@ static AvmString AvmValueToString(AvmValue* value) {
         case ValueKindUInt:
             return AvmSprintf("%u", value->_asUInt);
         case ValueKindStr:
-            return AvmSprintf("%s", value->_asStr);
+            return AvmSprintf("%s", value->_asStr == NULL ? "" : value->_asStr);
         default:
-            return AvmStringFrom("");
+            AvmPanic("Invalid AvmValue kind.");
     }
 }
 
