@@ -26,24 +26,6 @@
 
 #include "avium/prologue.h"
 
-#define AVM_FMT_INT_DECIMAL  'i'
-#define AVM_FMT_INT_HEX      'x'
-#define AVM_FMT_INT_BINARY   'b'
-#define AVM_FMT_INT_OCTAL    'o'
-#define AVM_FMT_INT_UNSIGNED 'u'
-#define AVM_FMT_INT_SIZE     'z'
-#define AVM_FMT_CHAR         'c'
-#define AVM_FMT_UNICODE      'U'
-#define AVM_FMT_FLOAT        'f'
-#define AVM_FMT_FLOAT_EXP    'e'
-#define AVM_FMT_FLOAT_AUTO   'g'
-#define AVM_FMT_STRING       's'
-#define AVM_FMT_BOOL         't'
-#define AVM_FMT_POINTER      'p'
-#define AVM_FMT_VALUE        'v'
-#define AVM_FMT_TYPE         'T'
-#define AVM_FMT_SIZE         'Z'
-
 /// Represents the base in which a number is represented.
 typedef enum {
     /// Base 2 (00010000).
@@ -123,7 +105,7 @@ AVMAPI inline void AvmScanf(str format, ...) {
  * @param format The format string.
  * @param args The va_list containing pointers to variables to read to.
  */
-AVMAPI void AvmVSscanf(AvmString string, str format, va_list args);
+AVMAPI void AvmVSscanf(AvmString* string, str format, va_list args);
 
 /**
  * @brief Reads formatted output from an AvmString.
@@ -134,7 +116,7 @@ AVMAPI void AvmVSscanf(AvmString string, str format, va_list args);
  *
  * @note This function is inline.
  */
-AVMAPI inline void AvmSscanf(AvmString string, str format, ...) {
+AVMAPI inline void AvmSscanf(AvmString* string, str format, ...) {
     va_list args;
     va_start(args, format);
     AvmVSscanf(string, format, args);

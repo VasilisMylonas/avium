@@ -4,7 +4,7 @@
 set(AVM_SOURCE_FILES
     collection.c
     fmt.c
-    options.c
+    # options.c
     prologue.c
     string.c
     version.c)

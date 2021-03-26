@@ -1,23 +1,31 @@
 #include "avium/collection.h"
-#include "avium/internal.h"
+#include "avium/resources.h"
 
 size_t AvmCollectionGetLength(AvmCollection self) {
-    AvmType type = AvmObjectType(self);
-    AvmFunction method = type->vptr[FUNC_GET_LENGTH];
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    const AvmType* type = AvmObjectGetType(self);
+    AvmFunction method = type->_vptr[FUNC_GET_LENGTH];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, type);
+        AvmVirtualFunctionTrap();
     }
 
     return ((size_t(*)(AvmCollection))method)(self);
 }
 
 size_t AvmCollectionGetCapacity(AvmCollection self) {
-    AvmType type = AvmObjectType(self);
-    AvmFunction method = type->vptr[FUNC_GET_CAPACITY];
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    const AvmType* type = AvmObjectGetType(self);
+    AvmFunction method = type->_vptr[FUNC_GET_CAPACITY];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap(__func__, type);
+        AvmVirtualFunctionTrap();
     }
 
     return ((size_t(*)(AvmCollection))method)(self);

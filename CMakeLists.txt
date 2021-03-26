@@ -17,6 +17,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist)
 set(AVM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(AVM_INCLUDE_OUTPUT_DIR ${CMAKE_BINARY_DIR}/include)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+set(CMAKE_ENABLE_EXPORTS ON)
 
 if(MSVC)
     # Enable warnings for MSVC and treat them as errors.

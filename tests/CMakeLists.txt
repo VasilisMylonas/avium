@@ -16,3 +16,7 @@ function(add_avm_test TEST)
 endfunction(add_avm_test)
 
 add_avm_test(string)
+add_avm_test(result)
+add_avm_test(optional)
+add_avm_test(version)
+add_avm_test(array-list)

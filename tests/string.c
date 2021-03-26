@@ -1,9 +1,13 @@
 #include <avium/testing.h>
 #include <avium/string.h>
 
-static object TestInit() { return AvmStringFrom("Hello World Wordy World!"); }
+static object TestInit() {
+    static AvmString s;
+    s = AvmStringFrom("Hello World Wordy World!");
+    return &s;
+}
 
-static void TestFini(object state) { AvmObjectDestroy(state); }
+static void TestFini(object state) { (void)state; }
 
 // TEST
 static void TestFrom(object state) {
@@ -15,20 +19,37 @@ static void TestFrom(object state) {
 // TEST
 static void TestContents(object state) {
     AssertStringEqual(AvmStringAsPtr(state), "Hello World Wordy World!");
-    AssertEqual(AvmStringCharAt(state, 2), 'l');
+    AvmResult(char) res = AvmStringCharAt(state, 2);
+    AssertEqual(AvmUnwrap(char)(&res), 'l');
 }
 
 // TEST
 static void TestIndexes(object state) {
-    AssertEqual(AvmStringIndexOf(state, 'W'), 6);
-    AssertEqual(AvmStringLastIndexOf(state, 'W'), 18);
-    AssertEqual(AvmStringFind(state, "World"), 6);
-    AssertEqual(AvmStringFindLast(state, "World"), 18);
+    AvmOptional(size_t) index;
 
-    AssertEqual(AvmStringIndexOf(state, 'x'), AVM_STRING_NPOS);
-    AssertEqual(AvmStringLastIndexOf(state, 'x'), AVM_STRING_NPOS);
-    AssertEqual(AvmStringFind(state, "xxl"), AVM_STRING_NPOS);
-    AssertEqual(AvmStringFindLast(state, "xxl"), AVM_STRING_NPOS);
+    index = AvmStringIndexOf(state, 'W');
+    AssertEqual(AvmGetValue(size_t)(&index), 6);
+
+    index = AvmStringLastIndexOf(state, 'W');
+    AssertEqual(AvmGetValue(size_t)(&index), 18);
+
+    index = AvmStringFind(state, "World");
+    AssertEqual(AvmGetValue(size_t)(&index), 6);
+
+    index = AvmStringFindLast(state, "World");
+    AssertEqual(AvmGetValue(size_t)(&index), 18);
+
+    index = AvmStringIndexOf(state, 'x');
+    AssertNot(AvmHasValue(size_t)(&index));
+
+    index = AvmStringLastIndexOf(state, 'x');
+    AssertNot(AvmHasValue(size_t)(&index));
+
+    index = AvmStringFind(state, "xxl");
+    AssertNot(AvmHasValue(size_t)(&index));
+
+    index = AvmStringFindLast(state, "xxl");
+    AssertNot(AvmHasValue(size_t)(&index));
 }
 
 // TEST
@@ -46,7 +67,7 @@ static void TestUpperLower(object state) {
 }
 
 // TEST
-static void TestAppend(object state) {
-    state = AvmStringAppend(state, ".com");
+static void TestPush(object state) {
+    AvmStringPushStr(state, ".com");
     AssertStringEqual(AvmStringAsPtr(state), "hella warld wardy warld!.com");
 }
