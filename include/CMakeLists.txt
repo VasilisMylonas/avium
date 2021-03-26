@@ -5,12 +5,13 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
     avium/array-list.h
-    avium/fmt.h
     avium/collection.h
+    avium/fmt.h
     avium/options.h
     avium/prologue.h
     avium/string.h
     avium/testing.h
+    avium/value.h
     avium/version.h)
 
 # Platform definitions.
