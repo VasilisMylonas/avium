@@ -31,6 +31,6 @@ AVMAPI AvmValue AvmValueFromUInt(ulong value);
 AVMAPI AvmValue AvmValueFromInt(_long value);
 AVMAPI AvmValue AvmValueFromStr(str value);
 
-static_assert_s(sizeof(AvmValue) == 24)
+static_assert_s(sizeof(AvmValue) == 24);
 
 #endif  // AVIUM_VALUE_H
