@@ -45,9 +45,9 @@ runner_template = """// Auto-generated
 #include <avium/testing.h>
 @FILE@
 
-int main(void)
+int main(int argc, str argv[])
 {
-    object state = TestInit();
+    object state = TestInit(argc, argv);
 
 @TESTS@
     TestFini(state);

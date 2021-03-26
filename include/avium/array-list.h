@@ -11,6 +11,7 @@
 #define AvmArrayListPeek(T)        AVM_GENERIC(AvmArrayListPeek, T)
 #define AvmArrayListGetLength(T)   AVM_GENERIC(AvmArrayListGetLength, T)
 #define AvmArrayListGetCapacity(T) AVM_GENERIC(AvmArrayListGetCapacity, T)
+#define AvmArrayListDestroy(T)     AVM_GENERIC(AvmArrayListDestroy, T)
 
 #define AVM_ARRAY_LIST_TYPE(T)                                                 \
     AVM_CLASS(AVM_GENERIC(AvmArrayList, T), object, {                          \
@@ -21,8 +22,16 @@
                                                                                \
     static_assert_s(sizeof(AvmArrayList(T)) == AVM_ARRAY_LIST_SIZE);           \
                                                                                \
+    static inline void AvmArrayListDestroy(T)(AvmArrayList(T) * self) {        \
+        free(self->_items);                                                    \
+    }                                                                          \
+                                                                               \
+    AVM_TYPE(AvmArrayList(T),                                                  \
+             {[FUNC_DTOR] = (AvmFunction)AvmArrayListDestroy(T)});             \
+                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {        \
         return (AvmArrayList(T)){                                              \
+            ._type = AVM_GET_TYPE(AvmArrayList(T)),                            \
             ._length = 0,                                                      \
             ._capacity = capacity,                                             \
             ._items = capacity == 0 ? NULL : malloc(capacity * sizeof(T)),     \

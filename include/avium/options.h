@@ -2,32 +2,29 @@
 #define AVIUM_OPTIONS_H
 
 #include "avium/prologue.h"
+#include "avium/array-list.h"
+#include "avium/value.h"
 
-/**
- * @brief Determines whether the specified option is present.
- *
- * @param argc The argc parameter from main.
- * @param argv The argv parameter from main.
- * @param shortOption The short option in the form of -h, but without the -.
- * @param longOption The long option in the form of --help, but without the --.
- *
- * @return true The specified option was present.
- * @return false The specified option was not present.
- */
-AVMAPI bool AvmHasOption(int argc, str* argv, char shortOption, str longOption);
+#include <stdlib.h>
 
-/**
- * @brief Retrieves a command line option.
- *
- * @param argc The argc parameter from main.
- * @param argv The argv parameter from main.
- * @param shortOption The short option in the form of -h, but without the -.
- * @param longOption The long option in the form of --help, but without the --.
- *
- * @return AvmSome(str) The command line option value.
- * @return AvmNone The option was not present.
- */
-AVMAPI AvmOptional AvmGetOption(int argc, str* argv, char shortOption,
-                                str longOption);
+AVM_ARRAY_LIST_TYPE(str)
+AVM_ARRAY_LIST_TYPE(AvmValue)
+
+typedef struct AvmOptionParser AvmOptionParser;
+
+AVMAPI AvmOptionParser* AvmOptionParserNew(int argc, str argv[]);
+AVMAPI void AvmOptionParserAddStandardOptions(AvmOptionParser* self);
+
+AVMAPI void AvmOptionParserAddOption(AvmOptionParser* self, str option,
+                                     str description, AvmValueKind kind);
+
+AVMAPI void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
+                                       char shortOption, str description,
+                                       AvmValueKind kind);
+
+AVMAPI void AvmOptionParserShowUsage(AvmOptionParser* self, str description);
+
+AVMAPI AvmArrayList(str) AvmOptionParserParseRaw(AvmOptionParser* self);
+AVMAPI AvmArrayList(AvmValue) AvmOptionParserParse(AvmOptionParser* self);
 
 #endif  // AVIUM_OPTIONS_H
