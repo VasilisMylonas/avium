@@ -135,7 +135,7 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
     if (self->_length > self->_capacity) {
         self->_capacity *= AVM_STRING_GROWTH_FACTOR;
         self->_capacity += length;
-        self = realloc(self, self->_capacity + 1);
+        self->_buffer = realloc(self->_buffer, self->_capacity + 1);
     }
 
     memcpy(&self->_buffer[self->_length - length], other->_buffer, length + 1);
