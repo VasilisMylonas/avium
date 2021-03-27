@@ -18,7 +18,7 @@ static void TestFrom(object state) {
 
 // TEST
 static void TestContents(object state) {
-    AssertStringEqual(AvmStringAsPtr(state), "Hello World Wordy World!");
+    AssertStrEqual(AvmStringAsPtr(state), "Hello World Wordy World!");
     AvmResult(char) res = AvmStringCharAt(state, 2);
     AssertEqual(AvmUnwrap(char)(&res), 'l');
 }
@@ -55,19 +55,19 @@ static void TestIndexes(object state) {
 // TEST
 static void TestReplace(object state) {
     AssertEqual(AvmStringReplace(state, 'o', 'a'), 4);
-    AssertStringEqual(AvmStringAsPtr(state), "Hella Warld Wardy Warld!");
+    AssertStrEqual(AvmStringAsPtr(state), "Hella Warld Wardy Warld!");
 }
 
 // TEST
 static void TestUpperLower(object state) {
     AvmStringToUpper(state);
-    AssertStringEqual(AvmStringAsPtr(state), "HELLA WARLD WARDY WARLD!");
+    AssertStrEqual(AvmStringAsPtr(state), "HELLA WARLD WARDY WARLD!");
     AvmStringToLower(state);
-    AssertStringEqual(AvmStringAsPtr(state), "hella warld wardy warld!");
+    AssertStrEqual(AvmStringAsPtr(state), "hella warld wardy warld!");
 }
 
 // TEST
 static void TestPush(object state) {
     AvmStringPushStr(state, ".com");
-    AssertStringEqual(AvmStringAsPtr(state), "hella warld wardy warld!.com");
+    AssertStrEqual(AvmStringAsPtr(state), "hella warld wardy warld!.com");
 }

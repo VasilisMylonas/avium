@@ -54,10 +54,10 @@ AvmString AvmItoa(_long value) {
 
 AvmString AvmUtoa(ulong value, NumericBase base) {
     switch (base) {
-        case NB_BINARY:
-        case NB_OCTAL:
-        case NB_DECIMAL:
-        case NB_HEX:
+        case NumericBaseBinary:
+        case NumericBaseOctal:
+        case NumericBaseDecimal:
+        case NumericBaseHex:
             break;
         default:
             AvmPanic(BaseOutOfRangeMsg);
@@ -178,7 +178,7 @@ AvmString AvmVSprintf(str format, va_list args) {
 
         switch (format[i]) {
             case AVM_FMT_UNICODE:
-                temp = AvmUtoa(va_arg(args, char32_t), NB_HEX);
+                temp = AvmUtoa(va_arg(args, char32_t), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
@@ -187,18 +187,18 @@ AvmString AvmVSprintf(str format, va_list args) {
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_OCTAL:
-                temp = AvmUtoa(va_arg(args, ulong), NB_OCTAL);
+                temp = AvmUtoa(va_arg(args, ulong), NumericBaseOctal);
                 AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX:
-                temp = AvmUtoa(va_arg(args, ulong), NB_HEX);
+                temp = AvmUtoa(va_arg(args, ulong), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_INT_BINARY:
-                temp = AvmUtoa(va_arg(args, ulong), NB_BINARY);
+                temp = AvmUtoa(va_arg(args, ulong), NumericBaseBinary);
                 AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
                 AvmStringPushString(&s, &temp);
                 break;
@@ -222,7 +222,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_INT_SIZE:
             case AVM_FMT_INT_UNSIGNED:
-                temp = AvmUtoa(va_arg(args, ulong), NB_DECIMAL);
+                temp = AvmUtoa(va_arg(args, ulong), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
                 break;
             case AVM_FMT_CHAR:
@@ -242,7 +242,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_SIZE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                temp = AvmUtoa(AvmTypeGetSize(type), NB_DECIMAL);
+                temp = AvmUtoa(AvmTypeGetSize(type), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
                 break;
             }

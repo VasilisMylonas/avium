@@ -29,16 +29,16 @@
 /// Represents the base in which a number is represented.
 typedef enum {
     /// Base 2 (00010000).
-    NB_BINARY = 2,
+    NumericBaseBinary = 2,
 
     /// Base 8 (20).
-    NB_OCTAL = 8,
+    NumericBaseOctal = 8,
 
     /// Base 10 (16).
-    NB_DECIMAL = 10,
+    NumericBaseDecimal = 10,
 
     /// Base 16 (10).
-    NB_HEX = 16,
+    NumericBaseHex = 16,
 } NumericBase;
 
 /**
