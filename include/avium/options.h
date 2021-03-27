@@ -7,7 +7,6 @@
 
 #include <stdlib.h>
 
-AVM_ARRAY_LIST_TYPE(str)
 AVM_ARRAY_LIST_TYPE(AvmValue)
 
 typedef struct AvmOptionParser AvmOptionParser;

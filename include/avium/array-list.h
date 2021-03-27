@@ -77,4 +77,21 @@
         return self->_items[self->_length - 1];                                \
     }
 
+AVM_ARRAY_LIST_TYPE(char)
+AVM_ARRAY_LIST_TYPE(byte)
+AVM_ARRAY_LIST_TYPE(short)
+AVM_ARRAY_LIST_TYPE(ushort)
+AVM_ARRAY_LIST_TYPE(int)
+AVM_ARRAY_LIST_TYPE(uint)
+AVM_ARRAY_LIST_TYPE(_long)
+AVM_ARRAY_LIST_TYPE(ulong)
+AVM_ARRAY_LIST_TYPE(ptr)
+AVM_ARRAY_LIST_TYPE(uptr)
+AVM_ARRAY_LIST_TYPE(bool)
+AVM_ARRAY_LIST_TYPE(str)
+AVM_ARRAY_LIST_TYPE(object)
+AVM_ARRAY_LIST_TYPE(size_t)
+AVM_ARRAY_LIST_TYPE(AvmString)
+AVM_ARRAY_LIST_TYPE(AvmFunction)
+
 #endif  // AVIUM_ARRAY_LIST_H
