@@ -3,6 +3,7 @@
 #include "avium/string.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct {
     str description;

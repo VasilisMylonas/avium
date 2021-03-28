@@ -5,8 +5,6 @@
 #include "avium/array-list.h"
 #include "avium/value.h"
 
-#include <stdlib.h>
-
 AVM_ARRAY_LIST_TYPE(AvmValue)
 
 typedef struct AvmOptionParser AvmOptionParser;

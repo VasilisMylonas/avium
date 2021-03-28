@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-AVM_ARRAY_LIST_TYPE(int)
-
 static object TestInit() {
     static AvmArrayList(int) list;
 

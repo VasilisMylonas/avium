@@ -3,6 +3,10 @@
 
 #include "avium/collection.h"
 
+extern void free(void*);
+extern void* malloc(size_t);
+extern void* realloc(void*, size_t);
+
 #define AvmArrayList(T)            AVM_GENERIC(AvmArrayList, T)
 #define AvmArrayListNew(T)         AVM_GENERIC(AvmArrayListNew, T)
 #define AvmArrayListFrom(T)        AVM_GENERIC(AvmArrayListFrom, T)

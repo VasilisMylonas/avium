@@ -1,8 +1,6 @@
 #include <avium/testing.h>
 #include <avium/prologue.h>
 
-AVM_RESULT_TYPE(int)
-
 static object TestInit() {
     static AvmResult(int) success;
 

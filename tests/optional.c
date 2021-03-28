@@ -1,8 +1,6 @@
 #include <avium/testing.h>
 #include <avium/prologue.h>
 
-AVM_OPTIONAL_TYPE(int)
-
 static object TestInit() {
     static AvmOptional(int) optional;
 
