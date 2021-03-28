@@ -26,7 +26,7 @@ AvmString AvmStringNew(size_t capacity) {
         ._type = AVM_GET_TYPE(AvmString),
         ._length = 0,
         ._capacity = capacity,
-        ._buffer = capacity == 0 ? NULL : malloc(capacity),
+        ._buffer = capacity == 0 ? NULL : malloc(capacity + 1),
     };
 }
 
@@ -35,10 +35,22 @@ AvmString AvmStringFrom(str contents) {
         AvmPanic(ContentsNullMsg);
     }
 
-    size_t length = strlen(contents);
+    return AvmStringFromEx(strlen(contents), contents);
+}
+
+AvmString AvmStringFromEx(size_t length, str contents) {
+    if (length == 0) {
+        return AvmStringNew(0);
+    }
+
+    if (contents == NULL) {
+        AvmPanic(ContentsNullMsg);
+    }
+
     AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
     s._length = length;
-    memcpy(s._buffer, contents, length + 1);
+    memcpy(s._buffer, contents, length);
+    s._buffer[s._length] = '\0';
     return s;
 }
 
@@ -64,23 +76,45 @@ size_t AvmStringGetCapacity(AvmString* self) {
     return self->_capacity;
 }
 
-void AvmStringToUpper(AvmString* self) {
+void AvmStringForEach(AvmString* self, char (*function)(char)) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
+    if (self == NULL) {
+        AvmPanic("Parameter `function` was `NULL`.");
+    }
+
     for (size_t i = 0; i < self->_length; i++) {
-        self->_buffer[i] = (char)toupper(self->_buffer[i]);
+        self->_buffer[i] = function(self->_buffer[i]);
     }
 }
 
-void AvmStringToLower(AvmString* self) {
+void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t)) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
+    if (self == NULL) {
+        AvmPanic("Parameter `function` was `NULL`.");
+    }
+
     for (size_t i = 0; i < self->_length; i++) {
-        self->_buffer[i] = (char)tolower(self->_buffer[i]);
+        self->_buffer[i] = function(self->_buffer[i], i);
+    }
+}
+
+void AvmStringForEachCompat(AvmString* self, int (*function)(int)) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (self == NULL) {
+        AvmPanic("Parameter `function` was `NULL`.");
+    }
+
+    for (size_t i = 0; i < self->_length; i++) {
+        self->_buffer[i] = (char)function((int)self->_buffer[i]);
     }
 }
 
@@ -212,7 +246,76 @@ AvmOptional(size_t) AvmStringFindLast(AvmString* self, str substring) {
     return AvmNone(size_t)();
 }
 
-size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
+AvmOptional(size_t)
+    AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    for (size_t i = 0; i < self->_length; i++) {
+        if (self->_buffer[i] == oldCharacter) {
+            self->_buffer[i] = newCharacter;
+            return AvmSome(size_t)(i);
+        }
+    }
+
+    return AvmNone(size_t)();
+}
+
+size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
+                         char newCharacter) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    size_t realCount = 0;
+
+    for (size_t i = 0; i < self->_length && realCount < count; i++) {
+        if (self->_buffer[i] == oldCharacter) {
+            self->_buffer[i] = newCharacter;
+            realCount++;
+        }
+    }
+
+    return realCount;
+}
+
+size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
+                             char newCharacter) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    size_t realCount = 0;
+
+    for (size_t i = self->_length - 1; i + 1 > 0 && realCount < count; i--) {
+        if (self->_buffer[i] == oldCharacter) {
+            self->_buffer[i] = newCharacter;
+            realCount++;
+        }
+    }
+
+    return realCount;
+}
+
+AvmOptional(size_t) AvmStringReplaceLast(AvmString* self, char oldCharacter,
+                                         char newCharacter) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    for (size_t i = self->_length - 1; i + 1 > 0; i--) {
+        if (self->_buffer[i] == oldCharacter) {
+            self->_buffer[i] = newCharacter;
+            return AvmSome(size_t)(i);
+        }
+    }
+
+    return AvmNone(size_t)();
+}
+
+size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
+                           char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -262,4 +365,21 @@ void AvmStringReverse(AvmString* self) {
         *start = *end;
         *end = temp;
     }
+}
+
+void AvmStringToUpper(AvmString* self) {
+    AvmStringForEachCompat(self, toupper);
+}
+
+void AvmStringToLower(AvmString* self) {
+    AvmStringForEachCompat(self, tolower);
+}
+
+AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
+    return (AvmString){
+        ._buffer = buffer,
+        ._capacity = capacity,
+        ._length = length,
+        ._type = AVM_GET_TYPE(AvmString),
+    };
 }

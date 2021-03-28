@@ -54,7 +54,7 @@ static void TestIndexes(object state) {
 
 // TEST
 static void TestReplace(object state) {
-    AssertEqual(AvmStringReplace(state, 'o', 'a'), 4);
+    AssertEqual(AvmStringReplaceAll(state, 'o', 'a'), 4);
     AssertStrEqual(AvmStringAsPtr(state), "Hella Warld Wardy Warld!");
 }
 
