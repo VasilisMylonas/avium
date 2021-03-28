@@ -22,6 +22,6 @@ static void TestArrayContents(object state) {
 static void TestArrayToString(object state) {
     AvmArray(int, 5)* array = state;
     AvmString s = AvmObjectToString(array);
-    AssertStringEqual(s._buffer, "[ 0, 1, -2, 3, -4, ]");
+    AssertStrEqual(s._buffer, "[ 0, 1, -2, 3, -4, ]");
     AvmObjectDestroy(&s);
 }
