@@ -65,7 +65,11 @@ AVMAPI AvmString AvmStringFrom(str contents);
  * @param contents The contents of the AvmString.
  * @return The created instance.
  */
-AVMAPI AvmString AvmStringFromEx(size_t length, const char* contents);
+AVMAPI AvmString AvmStringFromChars(size_t length, const char* contents);
+
+AVMAPI AvmString AvmStringRepeat(str contents, size_t count);
+AVMAPI AvmString AvmStringRepeatChars(size_t length, const char* contents,
+                                      size_t count);
 
 /**
  * @brief Returns the length of an AvmString.
@@ -151,6 +155,23 @@ AVMAPI void AvmStringPushChar(AvmString* self, char character);
  * @param contents The str to push.
  */
 AVMAPI void AvmStringPushStr(AvmString* self, str contents);
+
+/**
+ * @brief Pushes an array of characters to the end an AvmString.
+ *
+ * If the AvmString's length is not sufficient to hold the str then the
+ * AvmString allocates new memory. The allocated memory may be larger than the
+ * length of the str, in order to reduce total reallocations.
+ *
+ * @pre Parameter @p self must be not NULL.
+ * @pre Parameter @p contents must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param length The length of the array.
+ * @param contents The array of characters.
+ */
+AVMAPI void AvmStringPushChars(AvmString* self, size_t length,
+                               const char* contents);
 
 /**
  * @brief Pushes an AvmString to the end an AvmString.
@@ -373,5 +394,32 @@ AVMAPI char* AvmStringAsPtr(AvmString* self);
  */
 AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
                                         char* buffer);
+
+AVMAPI void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity,
+                                    size_t* length, char** buffer);
+
+AVMAPI bool AvmStringIsEmpty(AvmString* self);
+AVMAPI void AvmStringClear(AvmString* self);
+AVMAPI void AvmStringErase(AvmString* self);
+
+AVMAPI bool AvmStringContainsChar(AvmString* self, char character);
+AVMAPI bool AvmStringContainsStr(AvmString* self, str contents);
+
+AVMAPI bool AvmStringStartsWithChar(AvmString* self, char character);
+AVMAPI bool AvmStringStartsWithChars(AvmString* self, size_t length,
+                                     const char* contents);
+AVMAPI bool AvmStringStartsWithStr(AvmString* self, str contents);
+AVMAPI bool AvmStringStartsWithString(AvmString* self, AvmString* contents);
+
+AVMAPI bool AvmStringEndsWithChar(AvmString* self, char character);
+AVMAPI bool AvmStringEndsWithStr(AvmString* self, str contents);
+AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
+                                   const char* contents);
+AVMAPI bool AvmStringEndsWithString(AvmString* self, AvmString* contents);
+
+// TODO
+AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
+                                   const char* contents);
+AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
 
 #endif  // AVIUM_STRING_H
