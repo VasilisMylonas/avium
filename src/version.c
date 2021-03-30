@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-AvmString AvmVersionToString(AvmVersion* self) {
+static AvmString AvmVersionToString(AvmVersion* self) {
     return AvmSprintf(VersionFormat, self->major, self->minor, self->patch,
                       self->tag);
 }
