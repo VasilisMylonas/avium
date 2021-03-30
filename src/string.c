@@ -26,7 +26,7 @@ AvmString AvmStringNew(size_t capacity) {
         ._type = AVM_GET_TYPE(AvmString),
         ._length = 0,
         ._capacity = capacity,
-        ._buffer = capacity == 0 ? NULL : malloc(capacity + 1),
+        ._buffer = capacity == 0 ? NULL : malloc(capacity),
     };
 }
 
@@ -50,7 +50,6 @@ AvmString AvmStringFromChars(size_t length, str contents) {
     AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
     s._length = length;
     memcpy(s._buffer, contents, length);
-    s._buffer[s._length] = '\0';
     return s;
 }
 
@@ -59,12 +58,24 @@ AvmString AvmStringRepeat(str contents, size_t count) {
         AvmPanic(ContentsNullMsg);
     }
 
+    if (count == 0) {
+        return AvmStringNew(0);
+    }
+
     return AvmStringRepeatChars(strlen(contents), contents, count);
 }
 
 AvmString AvmStringRepeatChars(size_t length, const char* contents,
                                size_t count) {
-    AvmString s = AvmStringNew(length);
+    if (contents == NULL) {
+        AvmPanic(ContentsNullMsg);
+    }
+
+    if (length == 0 || count == 0) {
+        return AvmStringNew(0);
+    }
+
+    AvmString s = AvmStringNew(length * count * AVM_STRING_GROWTH_FACTOR);
     for (size_t i = 0; i < count; i++) {
         AvmStringPushChars(&s, length, contents);
     }
@@ -99,7 +110,7 @@ void AvmStringForEach(AvmString* self, char (*function)(char)) {
     }
 
     if (self == NULL) {
-        AvmPanic("Parameter `function` was `NULL`.");
+        AvmPanic(FunctionNullMsg);
     }
 
     for (size_t i = 0; i < self->_length; i++) {
@@ -113,7 +124,7 @@ void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t)) {
     }
 
     if (self == NULL) {
-        AvmPanic("Parameter `function` was `NULL`.");
+        AvmPanic(FunctionNullMsg);
     }
 
     for (size_t i = 0; i < self->_length; i++) {
@@ -127,7 +138,7 @@ void AvmStringForEachCompat(AvmString* self, int (*function)(int)) {
     }
 
     if (self == NULL) {
-        AvmPanic("Parameter `function` was `NULL`.");
+        AvmPanic(FunctionNullMsg);
     }
 
     for (size_t i = 0; i < self->_length; i++) {
@@ -147,7 +158,6 @@ void AvmStringPushChar(AvmString* self, char character) {
 
     self->_buffer[self->_length] = character;
     self->_length++;
-    self->_buffer[self->_length] = '\0';
 }
 
 void AvmStringPushStr(AvmString* self, str contents) {

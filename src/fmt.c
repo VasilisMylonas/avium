@@ -248,7 +248,7 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_VALUE:
                 temp = AvmObjectToString(va_arg(args, object));
-                AvmStringPushStr(&s, AvmStringAsPtr(&temp));
+                AvmStringPushString(&s, &temp);
                 break;
             default:
                 AvmStringPushChar(&s, format[i]);
@@ -267,7 +267,8 @@ void AvmVFprintf(void* handle, str format, va_list args) {
     }
 
     AvmString s = AvmVSprintf(format, args);
-    fputs(AvmStringAsPtr(&s), handle);
+    fwrite(AvmStringAsPtr(&s), sizeof(char), AvmStringGetLength(&s), handle);
+    fflush(handle);
     AvmObjectDestroy(&s);
 }
 
@@ -303,8 +304,9 @@ void AvmVFscanf(void* handle, str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
+    // TODO
     AvmString s = AvmStringNew(128);
-    char* dummy = fgets(AvmStringAsPtr(&s), 128, handle);
+    char* dummy = fgets(AvmStringAsPtr(&s), AvmStringGetLength(&s), handle);
     (void)dummy;
     AvmVSscanf(&s, format, args);
     AvmObjectDestroy(&s);

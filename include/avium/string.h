@@ -67,7 +67,33 @@ AVMAPI AvmString AvmStringFrom(str contents);
  */
 AVMAPI AvmString AvmStringFromChars(size_t length, const char* contents);
 
+/**
+ * @brief Creates an AvmString by repeating a raw string.
+ *
+ * If @p count is 0 then the behavior is the same as AvmStringNew(0).
+ *
+ * @pre Parameter @p contents must be not NULL.
+ *
+ * @param contents The raw string to repeat.
+ * @param count The times to repeat.
+ * @return The created instance.
+ */
 AVMAPI AvmString AvmStringRepeat(str contents, size_t count);
+
+/**
+ * @brief Creates an AvmString by repeating a character array provided with its
+ * length.
+ *
+ * If @p count or @p length is 0 then the behavior is the same as
+ * AvmStringNew(0).
+ *
+ * @pre Parameter @p contents must be not NULL.
+ *
+ * @param length The length of the array.
+ * @param contents The character array to repeat.
+ * @param count The times to repeat.
+ * @return The created instance.
+ */
 AVMAPI AvmString AvmStringRepeatChars(size_t length, const char* contents,
                                       size_t count);
 

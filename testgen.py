@@ -4,64 +4,42 @@ import sys
 import os
 import argparse
 
-
-def remove_parentheses(s: str) -> str:
-    return s.replace("(", "").replace(")", "")
-
-
-def get_function_name(declaration: str) -> str:
-    parts = declaration.strip().split()
-
-    for i in range(0, len(parts)):
-        if parts[i].startswith("("):
-            return remove_parentheses(parts[i - 1])
-
-        if "(" in parts[i]:
-            index = parts[i].index("(")
-            return parts[i][0:index]
-
-    return ""
-
-
-def get_tests(lines: list) -> list:
-    tests = []
-    isTest = False
-
-    for line in lines:
-        if isTest:
-            name = get_function_name(line)
-            if name != "":
-                tests.append(name)
-            isTest = False
-            continue
-
-        if line.startswith("// TEST"):
-            isTest = True
-
-    return tests
-
-
 runner_template = """// Auto-generated
-#include <avium/testing.h>
 @FILE@
 
 int main(int argc, str argv[])
 {
-    object state = TestInit(argc, argv);
-
+    AvmEnableExceptions();
 @TESTS@
-    TestFini(state);
 }
 """
 
 
-def create_test_runner(tests: list, file_contents: str) -> str:
-    contents = ""
+def get_function_name(declaration: str) -> str:
+    if "__test " not in declaration:
+        return ""
 
-    for test in tests:
-        contents += f"    {test}(state);\n"
+    name: str = declaration[0:declaration.index("(")]
+    name: str = name[name.rindex(" ") + 1:]
+    return name
 
-    return runner_template.replace("@FILE@", file_contents).replace("@TESTS@", contents)
+
+def get_function_names(declarations: list) -> list:
+    result = []
+    for declaration in declarations:
+        name = get_function_name(declaration)
+        if name != "":
+            result.append(name)
+    return result
+
+
+def create_test_runner(names: list, contents: str) -> str:
+    calls: str = ""
+
+    for name in names:
+        calls += f"    {name}(TestInit(argc, argv));\n"
+
+    return runner_template.replace("@FILE@", contents).replace("@TESTS@", calls)
 
 
 def parse_args():
@@ -72,15 +50,15 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     ns = parse_args()
-    tests = []
-    contents = ""
+    contents: list = []
 
     with open(ns.file, "r") as f:
-        file_contents = f.read()
-        tests = get_tests(file_contents.split("\n"))
-        contents = create_test_runner(tests, file_contents)
+        contents = f.readlines()
+
+    contents = create_test_runner(
+        get_function_names(contents), "".join(contents))
 
     if ns.output == "stdout":
         print(contents, end="")
