@@ -9,8 +9,11 @@ static AvmString AvmStringToString(AvmString* self) {
     return AvmStringFrom(self->_buffer);
 }
 
-static AvmString AvmStringClone(AvmString* self) {
-    return AvmStringFrom(self->_buffer);
+static object AvmStringClone(AvmString* self) {
+    AvmString s = AvmStringFrom(self->_buffer);
+    AvmString* ret = malloc(sizeof(AvmString));
+    memcpy(ret, &s, sizeof(AvmString));
+    return ret;
 }
 
 static void AvmStringDestroy(AvmString* self) { free(self->_buffer); }
@@ -496,7 +499,7 @@ bool AvmStringStartsWithChars(AvmString* self, size_t length,
         return false;
     }
 
-    return strncmp(self->_buffer, contents, length);
+    return strncmp(self->_buffer, contents, length) == 0;
 }
 
 bool AvmStringStartsWithStr(AvmString* self, str contents) {
@@ -543,7 +546,7 @@ bool AvmStringEndsWithChars(AvmString* self, size_t length,
 
     size_t index = self->_length - length;
 
-    return strncmp(self->_buffer + index, contents, length);
+    return strncmp(self->_buffer + index, contents, length) == 0;
 }
 
 bool AvmStringEndsWithString(AvmString* self, AvmString* contents) {
