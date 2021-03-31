@@ -23,4 +23,4 @@ add_avm_test(version)
 # add_avm_test(options)
 # add_avm_test(array)
 
-add_custom_target(BuildCoverageHtml ALL COMMAND ${CMAKE_SOURCE_DIR}/scripts/gcovr.sh)
+add_custom_target(BuildCoverageHtml COMMAND ${CMAKE_SOURCE_DIR}/scripts/gcovr.sh)
