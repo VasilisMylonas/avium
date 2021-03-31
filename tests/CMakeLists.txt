@@ -5,7 +5,7 @@ function(add_avm_test TEST)
     set(TEST_FILE ${CMAKE_SOURCE_DIR}/tests/${TEST}.c)
 
     add_custom_command(OUTPUT ${RUNNER}
-                       COMMAND ${CMAKE_SOURCE_DIR}/testgen.py ${TEST_FILE} -o ${RUNNER}
+                       COMMAND ${CMAKE_SOURCE_DIR}/scripts/testgen.py ${TEST_FILE} -o ${RUNNER}
                        MAIN_DEPENDENCY ${TEST_FILE})
 
     set_source_files_properties(${RUNNER} PROPERTIES GENERATED TRUE)
@@ -16,9 +16,11 @@ function(add_avm_test TEST)
 endfunction(add_avm_test)
 
 add_avm_test(string)
-add_avm_test(result)
-add_avm_test(optional)
+# add_avm_test(result)
+# add_avm_test(optional)
 add_avm_test(version)
-add_avm_test(array-list)
-add_avm_test(options)
-add_avm_test(array)
+# add_avm_test(array-list)
+# add_avm_test(options)
+# add_avm_test(array)
+
+add_custom_target(BuildCoverageHtml COMMAND ${CMAKE_SOURCE_DIR}/scripts/gcovr.sh)

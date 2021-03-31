@@ -16,4 +16,5 @@ static const str StringNullMsg = "Parameter `string` was `NULL`.";
 static const str BufferNullMsg = "Parameter `buffer` was `NULL`.";
 static const str VirtualFuncTrapTriggered = "Virtual function trap triggered.";
 static const str IndexOutOfRange = "The specified index was out of range.";
+static const str FunctionNullMsg = "Parameter `function` was `NULL`.";
 static const str VersionFormat = "%i.%i.%i-%c";

@@ -6,7 +6,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "Avium"
+project = "@CMAKE_PROJECT_NAME@"
 copyright = "2021, Vasilis Mylonas"
 author = "Vasilis Mylonas"
 
