@@ -378,6 +378,34 @@ AVMAPI never AvmVirtualFunctionTrap(void);
 AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
+/// A type representing a software version in the format: N.N.N-c
+AVM_CLASS(AvmVersion, object, {
+    ushort Major;
+    ushort Minor;
+    ushort Patch;
+    char Tag;
+});
+
+/**
+ * @brief Creates a new AvmVersion instance.
+ *
+ * @param major The version major number (incremented at breaking changes).
+ * @param minor The version minor number (incremented at non-breaking changes).
+ * @param patch The version patch number (incremented at bug fixes).
+ * @param tag The version tag (a, b, etc).
+ *
+ * @return The created instance.
+ */
+AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
+                                 char tag);
+
+/**
+ * @brief Return an AvmVersion indicating the current runtime version.
+ *
+ * @return The current runtime version.
+ */
+AVMAPI AvmVersion AvmRuntimeGetVersion();
+
 // Ensure correct type sizes.
 static_assert_s(sizeof(ptr) == sizeof(void*));
 static_assert_s(sizeof(uptr) == sizeof(void*));
@@ -390,6 +418,7 @@ static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
+static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 
 #define AVM_CONCAT_(x, y) x##y
 #define AVM_STRINGIFY_(x) #x
@@ -419,6 +448,7 @@ AVM_RESULT_TYPE(object)
 AVM_RESULT_TYPE(size_t)
 AVM_RESULT_TYPE(AvmString)
 AVM_RESULT_TYPE(AvmFunction)
+AVM_RESULT_TYPE(AvmVersion)
 
 AVM_OPTIONAL_TYPE(char)
 AVM_OPTIONAL_TYPE(byte)
@@ -436,5 +466,6 @@ AVM_OPTIONAL_TYPE(object)
 AVM_OPTIONAL_TYPE(size_t)
 AVM_OPTIONAL_TYPE(AvmString)
 AVM_OPTIONAL_TYPE(AvmFunction)
+AVM_OPTIONAL_TYPE(AvmVersion)
 
 #endif  // AVIUM_PROLOGUE_H
