@@ -29,29 +29,29 @@ static AvmString AvmValueToString(AvmValue* value) {
 }
 
 AVM_TYPE(AvmValue, {
-                       [FUNC_DTOR] = NULL,
                        [FUNC_TO_STRING] = (AvmFunction)AvmValueToString,
-                       [FUNC_CLONE] = (AvmFunction)(AvmValueClone),
+                       [FUNC_CLONE] = (AvmFunction)AvmValueClone,
                    });
 
 AvmValue AvmValueFromBool(bool value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asBool = value,
         ._kind = ValueKindBool,
-        ._type = AVM_GET_TYPE(AvmValue),
     };
 }
 
 AvmValue AvmValueFromChar(char value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asChar = value,
         ._kind = ValueKindChar,
-        ._type = AVM_GET_TYPE(AvmValue),
     };
 }
 
 AvmValue AvmValueFromFloat(double value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asFloat = value,
         ._kind = ValueKindFloat,
     };
@@ -59,25 +59,25 @@ AvmValue AvmValueFromFloat(double value) {
 
 AvmValue AvmValueFromUInt(ulong value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asUInt = value,
         ._kind = ValueKindUInt,
-        ._type = AVM_GET_TYPE(AvmValue),
     };
 }
 
 AvmValue AvmValueFromInt(_long value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asInt = value,
         ._kind = ValueKindInt,
-        ._type = AVM_GET_TYPE(AvmValue),
     };
 }
 
 AvmValue AvmValueFromStr(str value) {
     return (AvmValue){
+        ._type = AVM_GET_TYPE(AvmValue),
         ._asStr = value,
         ._kind = ValueKindStr,
-        ._type = AVM_GET_TYPE(AvmValue),
     };
 }
 
