@@ -12,8 +12,7 @@ set(AVM_INCLUDE_FILES
     avium/prologue.h
     avium/string.h
     avium/testing.h
-    avium/value.h
-    avium/version.h)
+    avium/value.h)
 
 # Platform definitions.
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
