@@ -65,17 +65,24 @@ const AvmType* AvmObjectGetType(object self) {
     return *(AvmType**)self;
 }
 
-bool AvmObjectEquals(object lhs, object rhs) {
-    const AvmType* type = AvmObjectGetType(lhs);
-    AvmFunction method = type->_vptr[FUNC_EQ];
+bool AvmObjectEquals(object self, object other) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
 
+    if (other == NULL) {
+        AvmPanic(OtherNullMsg);
+    }
+
+    const AvmType* type = AvmObjectGetType(self);
+    AvmFunction method = type->_vptr[FUNC_EQUALS];
     size_t size = type->_size;
 
     if (method == NULL) {
-        return memcmp(lhs, rhs, size) == 0;
+        return memcmp(self, other, size) == 0;
     }
 
-    return ((bool (*)(object, object))method)(lhs, rhs);
+    return ((bool (*)(object, object))method)(self, other);
 }
 
 void AvmObjectDestroy(object self) {

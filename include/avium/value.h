@@ -2,8 +2,8 @@
  * @file avium/value.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Primitive variant type.
- * @version 0.1
- * @date 2021-04-01
+ * @version 0.2
+ * @date 2021-04-03
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -14,11 +14,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef AVIUM_VALUE_H
