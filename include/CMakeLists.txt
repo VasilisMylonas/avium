@@ -9,10 +9,13 @@ set(AVM_INCLUDE_FILES
     avium/collection.h
     avium/fmt.h
     avium/options.h
-    avium/prologue.h
+    avium/result.h
     avium/string.h
     avium/testing.h
-    avium/value.h)
+    avium/typeinfo.h
+    avium/types.h
+    avium/value.h
+    avium/version.h)
 
 # Platform definitions.
 if (CMAKE_SYSTEM_NAME MATCHES Linux)

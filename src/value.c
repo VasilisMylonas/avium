@@ -2,6 +2,7 @@
 
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For panic messages.
+#include "avium/typeinfo.h"   // For AVM_GET_TYPE and AVM_TYPE
 
 #include <stdlib.h>  // For malloc
 #include <string.h>  // For strcmp

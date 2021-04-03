@@ -1,4 +1,4 @@
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 #define AVM_FLOAT_BUFFER_SIZE 128
 static const str LongMinRepr = "-9223372036854775808";

@@ -1,7 +1,7 @@
 #ifndef AVIUM_OPTIONS_H
 #define AVIUM_OPTIONS_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 #include "avium/array-list.h"
 #include "avium/value.h"
 

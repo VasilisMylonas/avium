@@ -24,7 +24,7 @@
 #ifndef AVIUM_FMT_H
 #define AVIUM_FMT_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 /// Represents the base in which a number is represented.
 typedef enum {

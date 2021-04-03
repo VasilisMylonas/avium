@@ -1,7 +1,7 @@
 #ifndef AVIUM_COLLECTION_H
 #define AVIUM_COLLECTION_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 typedef object AvmCollection;
 

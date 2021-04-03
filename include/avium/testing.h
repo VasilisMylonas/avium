@@ -1,7 +1,7 @@
 #ifndef AVIUM_TESTING_H
 #define AVIUM_TESTING_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 #include <string.h>
 
 #define AVM_ASSERT_(expression)                                         \

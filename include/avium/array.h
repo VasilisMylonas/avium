@@ -2,6 +2,8 @@
 #define AVIUM_ARRAY_H
 
 #include "avium/collection.h"
+#include "avium/types.h"
+#include "avium/typeinfo.h"
 
 #include <stdlib.h>
 

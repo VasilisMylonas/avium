@@ -24,7 +24,7 @@
 #ifndef AVIUM_VALUE_H
 #define AVIUM_VALUE_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 /// Describes the type currently held by an AvmValue.
 typedef enum {

@@ -1,0 +1,198 @@
+#ifndef AVIUM_TYPES_H
+#define AVIUM_TYPES_H
+
+#include "avium/config.h"
+#include "avium/exports.h"
+
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+#define AVM_CLASS(T, B, ...)      \
+    typedef struct T T;           \
+    struct T {                    \
+        union {                   \
+            const AvmType* _type; \
+            B _base;              \
+        };                        \
+        struct __VA_ARGS__;       \
+    }
+
+#define AVM_GENERIC(name, T) name##_##T
+
+/// Signed pointer-sized integer type.
+typedef AVM_PTR_TYPE ptr;
+
+/// Unsigned pointer-sized integer type.
+typedef unsigned AVM_PTR_TYPE uptr;
+
+/// Signed 64-bit integer type.
+typedef AVM_LONG_TYPE _long;
+
+/// Unsigned 64-bit integer type.
+typedef unsigned AVM_LONG_TYPE ulong;
+
+/// Unsigned 32-bit integer type.
+typedef unsigned int uint;
+
+/// Unsigned 16-bit integer type.
+typedef unsigned short ushort;
+
+/// Unsigned 8-bit integer type.
+typedef unsigned char byte;
+
+/// Read-only string type.
+typedef const char* str;
+
+/// An unknown object type.
+typedef void* object;
+
+/// An unknown function type.
+typedef void (*AvmFunction)(void);
+
+#ifdef AVM_MSVC
+/// A type signifying that a function never returns.
+#    define never __declspec(noreturn) void
+#else
+/// A type signifying that a function never returns.
+#    define never _Noreturn void
+#endif  // AVM_MSVC
+
+/// A type containing information about an object.
+typedef struct AvmType AvmType;
+
+/// A dynamic string.
+AVM_CLASS(AvmString, object, {
+    size_t _capacity;
+    size_t _length;
+    char* _buffer;
+});
+
+/**
+ * @brief Gets information about the type of an object.
+ *
+ * @param self The object.
+ * @return AvmType The type information of the object.
+ */
+AVMAPI const AvmType* AvmObjectGetType(object self);
+
+/**
+ * @brief Compares two objects for equality.
+ *
+ * This function tries to use the FUNC_EQ virtual function entry to compare
+ * for equality. If no such virtual function is available then memcmp is used.
+ *
+ * @param self The first object.
+ * @param other The second object.
+ *
+ * @return true if the two objects are equal, otherwise false.
+ */
+AVMAPI bool AvmObjectEquals(object self, object other);
+
+/**
+ * @brief Destroys an object and deallocates its memory.
+ *
+ * This function tries to use the FUNC_DTOR virtual function entry to destroy
+ * the object. If no such virtual function then this function does nothing.
+ *
+ * @param self The object.
+ */
+AVMAPI void AvmObjectDestroy(object self);
+
+/**
+ * @brief Clones an object, creating an exact copy.
+ *
+ * This function tries to use the FUNC_CLONE virtual function entry to clone
+ * the object. If no such virtual function is available then a combination of
+ * malloc and memcpy is used.
+ *
+ * @param self The object.
+ * @return object The cloned object.
+ */
+AVMAPI object AvmObjectClone(object self);
+
+/**
+ * @brief Creates a string representation of an object.
+ *
+ * This function tries to use the FUNC_TO_STRING virtual function entry to
+ * create a string representation of the object. If no such virtual function
+ * is available then this function traps.
+ *
+ * @param self The object.
+ * @return AvmString The string representation of the object.
+ *
+ * @see AvmVirtualFunctionTrap
+ */
+AVMAPI AvmString AvmObjectToString(object self);
+
+AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
+
+static_assert_s(sizeof(ptr) == sizeof(void*));
+static_assert_s(sizeof(uptr) == sizeof(void*));
+static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
+static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
+static_assert_s(sizeof(int) == AVM_INT_SIZE);
+static_assert_s(sizeof(uint) == AVM_INT_SIZE);
+static_assert_s(sizeof(short) == AVM_SHORT_SIZE);
+static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
+static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
+static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
+static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
+
+/**
+ * @brief Aborts execution, printing a message and location information.
+ *
+ * @param message The message to print.
+ */
+#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
+
+enum {
+    FUNC_DTOR = 0,
+    FUNC_GET_LENGTH,
+    FUNC_GET_CAPACITY,
+    FUNC_TO_STRING,
+    FUNC_CLONE,
+    FUNC_EQUALS,
+    FUNC_READ,
+    FUNC_WRITE,
+    FUNC_READ_STRING,
+    FUNC_WRITE_STRING,
+};
+
+/**
+ * @brief Aborts execution, printing a message and location information.
+ *
+ * @param message The message to be printed.
+ * @param function The function name.
+ * @param file The file name.
+ * @param line The line number.
+ *
+ * @return never This function never returns.
+ */
+AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
+
+AVMAPI void AvmEnableExceptions(void);
+AVMAPI void AvmDisableExceptions(void);
+
+/**
+ * @brief The trap function called when a virtual function is not implemented.
+ *
+ * @return never This function never returns.
+ */
+AVMAPI never AvmVirtualFunctionTrap(void);
+
+/**
+ * @brief Copies memory from one block to another.
+ *
+ * This will copy length bytes from source to destination, but not more than
+ * size.
+ *
+ * @param source The memory block to copy from.
+ * @param length The length of the source buffer.
+ * @param destination The memory block to copy to.
+ * @param size The size of the destination buffer.
+ */
+AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
+                       size_t size);
+
+#endif  // AVIUM_TYPES_H

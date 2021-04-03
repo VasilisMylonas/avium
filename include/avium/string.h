@@ -25,6 +25,9 @@
 #define AVIUM_STRING_H
 
 #include "avium/collection.h"
+#include "avium/types.h"
+#include "avium/optional.h"
+#include "avium/result.h"
 
 // Type definition in prologue.h
 

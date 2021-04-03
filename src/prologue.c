@@ -3,8 +3,10 @@
 #include <string.h>
 #include <signal.h>
 
-#include "avium/prologue.h"
+#include "avium/types.h"
+#include "avium/typeinfo.h"
 #include "avium/resources.h"
+#include "avium/version.h"
 #include "avium/fmt.h"
 
 static void ExceptionHandler(int exception) {

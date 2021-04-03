@@ -1,5 +1,6 @@
 #include "avium/collection.h"
 #include "avium/resources.h"
+#include "avium/typeinfo.h"
 
 size_t AvmCollectionGetLength(AvmCollection self) {
     if (self == NULL) {
