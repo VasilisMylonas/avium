@@ -107,7 +107,7 @@ enum {
     FUNC_GET_CAPACITY,
     FUNC_TO_STRING,
     FUNC_CLONE,
-    FUNC_EQ,
+    FUNC_EQUALS,
     FUNC_READ,
     FUNC_WRITE,
     FUNC_READ_STRING,
@@ -311,13 +311,12 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
  * This function tries to use the FUNC_EQ virtual function entry to compare
  * for equality. If no such virtual function is available then memcmp is used.
  *
- * @param lhs The first object.
- * @param rhs The second object.
+ * @param self The first object.
+ * @param other The second object.
  *
- * @return true The two objects are equal.
- * @return false The two objects are not equal.
+ * @return true if the two objects are equal, otherwise false.
  */
-AVMAPI bool AvmObjectEquals(object lhs, object rhs);
+AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
  * @brief Destroys an object and deallocates its memory.
