@@ -2,9 +2,9 @@
 #define AVIUM_CONFIG_H
 
 // clang-format off
-#define AVM_VERSION_MAJOR @avium_VERSION_MAJOR@
-#define AVM_VERSION_MINOR @avium_VERSION_MINOR@
-#define AVM_VERSION_PATCH @avium_VERSION_PATCH@
+#define AVM_VERSION_MAJOR @Avium_VERSION_MAJOR@
+#define AVM_VERSION_MINOR @Avium_VERSION_MINOR@
+#define AVM_VERSION_PATCH @Avium_VERSION_PATCH@
 #define AVM_PTR_TYPE @AVM_PTR_TYPE@
 #define AVM_LONG_TYPE @AVM_LONG_TYPE@
 // clang-format on

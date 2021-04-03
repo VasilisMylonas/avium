@@ -8,7 +8,8 @@ set(AVM_SOURCE_FILES
     options.c
     prologue.c
     string.c
-    value.c)
+    value.c
+    version.c)
 
 # Target names.
 set(AVM_SHARED_NAME avm)

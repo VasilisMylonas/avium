@@ -181,20 +181,3 @@ never AvmPanicEx(str message, str function, str file, uint line) {
 
     exit(1);
 }
-
-static AvmString AvmVersionToString(AvmVersion* self) {
-    return AvmSprintf(VersionFormat, self->Major, self->Minor, self->Patch,
-                      self->Tag);
-}
-
-AVM_TYPE(AvmVersion, {[FUNC_TO_STRING] = (AvmFunction)AvmVersionToString});
-
-AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch, char tag) {
-    return (AvmVersion){
-        ._type = AVM_GET_TYPE(AvmVersion),
-        .Major = major,
-        .Minor = minor,
-        .Patch = patch,
-        .Tag = tag,
-    };
-}

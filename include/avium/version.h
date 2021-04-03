@@ -1,8 +1,30 @@
+/**
+ * @file avium/version.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Version information and type.
+ * @version 0.2
+ * @date 2021-04-04
+ *
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef AVIUM_VERSION_H
 #define AVIUM_VERSION_H
 
 #include "avium/types.h"
-#include "avium/exports.h"
 
 /// A type representing a software version in the format: N.N.N-c
 AVM_CLASS(AvmVersion, object, {
