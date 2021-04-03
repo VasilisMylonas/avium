@@ -1,13 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <stdio.h> // For fprintf
+#include <stdlib.h> // For exit
 
 #include "avium/types.h"
 #include "avium/typeinfo.h"
 #include "avium/resources.h"
-#include "avium/version.h"
-#include "avium/fmt.h"
 
 static void ExceptionHandler(int exception) {
     switch (exception) {
@@ -40,24 +38,6 @@ void AvmDisableExceptions(void) {
     signal(SIGILL, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
     signal(SIGINT, SIG_DFL);
-}
-
-// AvmType struct definition is in internal.h
-
-str AvmTypeGetName(const AvmType* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_name;
-}
-
-size_t AvmTypeGetSize(const AvmType* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_size;
 }
 
 const AvmType* AvmObjectGetType(object self) {

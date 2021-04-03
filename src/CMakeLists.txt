@@ -6,8 +6,9 @@ set(AVM_SOURCE_FILES
     collection.c
     fmt.c
     options.c
-    prologue.c
     string.c
+    typeinfo.c
+    types.c
     value.c
     version.c)
 
