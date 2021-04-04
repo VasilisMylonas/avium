@@ -1,7 +1,6 @@
 #ifndef AVIUM_OPTIONAL_H
 #define AVIUM_OPTIONAL_H
 
-#include "avium/config.h"
 #include "avium/types.h"
 #include "avium/typeinfo.h"
 

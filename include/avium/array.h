@@ -1,11 +1,12 @@
 #ifndef AVIUM_ARRAY_H
 #define AVIUM_ARRAY_H
 
-#include "avium/collection.h"
 #include "avium/types.h"
 #include "avium/typeinfo.h"
 
-#include <stdlib.h>
+extern void free(void*);
+extern void* malloc(size_t);
+extern void* realloc(void*, size_t);
 
 #define AvmArray(T, N)        AVM_GENERIC(AvmArray, T##_##N)
 #define AvmArrayFrom(T, N)    AVM_GENERIC(AvmArrayFrom, T##_##N)

@@ -1,8 +1,8 @@
 #ifndef AVIUM_RESULT_H
 #define AVIUM_RESULT_H
 
-#include "avium/config.h"
 #include "avium/types.h"
+#include "avium/typeinfo.h"
 
 #define AvmResult(T)    AVM_GENERIC(AvmResult, T)
 #define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
