@@ -4,6 +4,8 @@
 #include "avium/types.h"
 
 #define AVM_FLOAT_BUFFER_SIZE 128
+#define BACKTRACE_MAX_SYMBOLS 128
+
 static const str LongMinRepr = "-9223372036854775808";
 static const str SelfNullMsg = "Parameter `self` was `NULL`.";
 static const str ContentsNullMsg = "Parameter `contents` was `NULL`.";
@@ -22,5 +24,9 @@ static const str FunctionNullMsg = "Parameter `function` was `NULL`.";
 static const str VersionFormat = "%i.%i.%i-%c";
 static const str InvalidValueCastMsg = "Invalid AvmValue cast.";
 static const str InvalidValueKindMsg = "Invalid AvmValue kind.";
+static const str NoBacktraceMsg = "No backtrace is available.";
+static const str InvalidPtrDerefMsg = "Invalid pointer dereference.";
+static const str IllegalInstructionMsg = "Illegal instruction.";
+static const str ArithmeticExceptionMsg = "Arithmetic exception.";
 
 #endif  // AVIUM_RESOURCES_H

@@ -101,7 +101,7 @@ AVM_CLASS(AvmString, object, {
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI const AvmType* AvmObjectGetType(object self);
+AVMAPI AvmType* AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.

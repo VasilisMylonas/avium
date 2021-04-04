@@ -6,7 +6,7 @@
 #include "avium/resources.h"
 #include "avium/fmt.h"
 
-const AvmType* AvmObjectGetType(object self) {
+AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
