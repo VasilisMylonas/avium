@@ -7,7 +7,6 @@ set(AVM_SOURCE_FILES
     options.c
     runtime.c
     string.c
-    typeinfo.c
     types.c
     value.c
     version.c)

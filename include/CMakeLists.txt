@@ -7,12 +7,12 @@ set(AVM_INCLUDE_FILES
     avium/array-list.h
     avium/array.h
     avium/fmt.h
+    avium/optional.h
     avium/options.h
     avium/runtime.h
     avium/result.h
     avium/string.h
     avium/testing.h
-    avium/typeinfo.h
     avium/types.h
     avium/value.h
     avium/version.h)

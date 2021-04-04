@@ -2,7 +2,7 @@
 #define AVIUM_ARRAY_LIST_H
 
 #include "avium/types.h"
-#include "avium/typeinfo.h"
+#include "avium/runtime.h"
 
 extern void free(void*);
 extern void* malloc(size_t);

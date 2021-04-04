@@ -27,9 +27,9 @@
 #include "avium/config.h"
 #include "avium/exports.h"
 
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
+#include <stdarg.h>   // For va_list
+#include <stdbool.h>  // For bool, true, false
+#include <stddef.h>   // For NULL, size_t
 
 /**
  * @brief Creates an Avium class type.
@@ -96,8 +96,10 @@ AVM_CLASS(AvmString, object, {
 /**
  * @brief Gets information about the type of an object.
  *
- * @param self The object.
- * @return AvmType The type information of the object.
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The object instance.
+ * @return The type information of the object.
  */
 AVMAPI const AvmType* AvmObjectGetType(object self);
 
@@ -106,6 +108,9 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
  *
  * This function tries to use the FUNC_EQ virtual function entry to compare
  * for equality. If no such virtual function is available then memcmp is used.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p other must be not null.
  *
  * @param self The first object.
  * @param other The second object.
@@ -120,6 +125,8 @@ AVMAPI bool AvmObjectEquals(object self, object other);
  * This function tries to use the FUNC_DTOR virtual function entry to destroy
  * the object. If no such virtual function then this function does nothing.
  *
+ * @pre Parameter @p self must be not null.
+ *
  * @param self The object.
  */
 AVMAPI void AvmObjectDestroy(object self);
@@ -131,8 +138,10 @@ AVMAPI void AvmObjectDestroy(object self);
  * the object. If no such virtual function is available then a combination of
  * malloc and memcpy is used.
  *
+ * @pre Parameter @p self must be not null.
+ *
  * @param self The object.
- * @return object The cloned object.
+ * @return The cloned object.
  */
 AVMAPI object AvmObjectClone(object self);
 
@@ -141,12 +150,12 @@ AVMAPI object AvmObjectClone(object self);
  *
  * This function tries to use the FUNC_TO_STRING virtual function entry to
  * create a string representation of the object. If no such virtual function
- * is available then this function traps.
+ * is available then a default representation is returned.
+ *
+ * @pre Parameter @p self must be not null.
  *
  * @param self The object.
  * @return AvmString The string representation of the object.
- *
- * @see AvmVirtualFunctionTrap
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
@@ -160,38 +169,5 @@ static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
-
-/**
- * @brief Aborts execution, printing a message and location information.
- *
- * @param message The message to print.
- */
-#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
-
-/**
- * @brief Aborts execution, printing a message and location information.
- *
- * @param message The message to be printed.
- * @param function The function name.
- * @param file The file name.
- * @param line The line number.
- *
- * @return never This function never returns.
- */
-AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
-
-/**
- * @brief Copies memory from one block to another.
- *
- * This will copy length bytes from source to destination, but not more than
- * size.
- *
- * @param source The memory block to copy from.
- * @param length The length of the source buffer.
- * @param destination The memory block to copy to.
- * @param size The size of the destination buffer.
- */
-AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
-                       size_t size);
 
 #endif  // AVIUM_TYPES_H

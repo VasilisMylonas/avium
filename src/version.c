@@ -1,6 +1,6 @@
 #include "avium/version.h"
 
-#include "avium/typeinfo.h"   // For AVM_TYPE
+#include "avium/runtime.h"    // For AVM_TYPE
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For VersionFormat
 

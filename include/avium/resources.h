@@ -1,3 +1,6 @@
+#ifndef AVIUM_RESOURCES_H
+#define AVIUM_RESOURCES_H
+
 #include "avium/types.h"
 
 #define AVM_FLOAT_BUFFER_SIZE 128
@@ -14,9 +17,10 @@ static const str DestinationNullMsg = "Parameter `destination` was `NULL`.";
 static const str BaseOutOfRangeMsg = "Parameter `base` was out of range.";
 static const str StringNullMsg = "Parameter `string` was `NULL`.";
 static const str BufferNullMsg = "Parameter `buffer` was `NULL`.";
-static const str VirtualFuncTrapTriggered = "Virtual function trap triggered.";
 static const str IndexOutOfRange = "The specified index was out of range.";
 static const str FunctionNullMsg = "Parameter `function` was `NULL`.";
 static const str VersionFormat = "%i.%i.%i-%c";
 static const str InvalidValueCastMsg = "Invalid AvmValue cast.";
 static const str InvalidValueKindMsg = "Invalid AvmValue kind.";
+
+#endif  // AVIUM_RESOURCES_H

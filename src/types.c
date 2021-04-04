@@ -1,11 +1,10 @@
-#include <string.h>
-#include <stdio.h>   // For fprintf
-#include <stdlib.h>  // For exit
+#include <string.h>  // For memcmp, memcpy
+#include <stdlib.h>  // For malloc
 
 #include "avium/types.h"
-#include "avium/typeinfo.h"
-#include "avium/resources.h"
 #include "avium/runtime.h"
+#include "avium/resources.h"
+#include "avium/fmt.h"
 
 const AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
@@ -70,46 +69,8 @@ AvmString AvmObjectToString(object self) {
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmRuntimeVirtualFunctionTrap();
+        return AvmSprintf("object <%x>", self);
     }
 
     return ((AvmString(*)(object))method)(self);
-}
-
-void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
-    if (source == NULL) {
-        AvmPanic(SourceNullMsg);
-    }
-
-    if (destination == NULL) {
-        AvmPanic(DestinationNullMsg);
-    }
-
-    size_t trueLength = length > size ? size : length;
-    memcpy(destination, source, trueLength);
-}
-
-#ifdef AVM_LINUX
-#    include <execinfo.h>
-#endif
-
-never AvmPanicEx(str message, str function, str file, uint line) {
-    fprintf(stderr, "Panic in file %s:%u in function %s()\n\n%s\n", file, line,
-            function, message);
-
-#ifdef AVM_LINUX
-    object arr[128];
-
-    int length = backtrace(arr, 128);
-    char** s = backtrace_symbols(arr, length);
-
-    for (int i = length - 1; i >= 1; i--) {
-        *(strrchr(s[i], ')')) = '\0';
-        fprintf(stderr, "    at %s\n", strchr(s[i], '(') + 1);
-    }
-#else
-    fprintf(stderr, "No backtrace is available.\n");
-#endif
-
-    exit(1);
 }
