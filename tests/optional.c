@@ -1,5 +1,5 @@
 #include <avium/testing.h>
-#include <avium/prologue.h>
+#include <avium/optional.h>
 
 static object TestInit() {
     static AvmOptional(int) optional;
@@ -8,12 +8,5 @@ static object TestInit() {
     return &optional;
 }
 
-static void TestFini(object state) { (void)state; }
-
-// TEST
-static void TestHasValue(object state) { Assert(AvmHasValue(int)(state)); }
-
-// TEST
-static void TestGetValue(object state) {
-    AssertEqual(AvmGetValue(int)(state), 5);
-}
+__test TestHasValue(object state) { Assert(AvmHasValue(int)(state)); }
+__test TestGetValue(object state) { AssertEqual(AvmGetValue(int)(state), 5); }

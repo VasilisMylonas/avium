@@ -1,8 +1,6 @@
 #include <avium/testing.h>
 #include <avium/array-list.h>
 
-#include <stdlib.h>
-
 static object TestInit() {
     static AvmArrayList(int) list;
 
@@ -10,20 +8,17 @@ static object TestInit() {
     return &list;
 }
 
-static void TestFini(object state) { (void)state; }
+__test TestFini(object state) { (void)state; }
 
-// TEST
-static void TestGetCapacity(object state) {
+__test TestGetCapacity(object state) {
     AssertEqual(AvmArrayListGetCapacity(int)(state), 16);
 }
 
-// TEST
-static void TestGetLength(object state) {
+__test TestGetLength(object state) {
     AssertEqual(AvmArrayListGetLength(int)(state), 0);
 }
 
-// TEST
-static void TestPush(object state) {
+__test TestPush(object state) {
     AvmArrayListPush(int)(state, 0);
     AvmArrayListPush(int)(state, 1);
     AvmArrayListPush(int)(state, 2);
@@ -33,14 +28,12 @@ static void TestPush(object state) {
     AssertEqual(AvmArrayListGetLength(int)(state), 5);
 }
 
-// TEST
-static void TestPeek(object state) {
+__test TestPeek(object state) {
     AssertEqual(AvmArrayListPeek(int)(state), 4);
     AssertEqual(AvmArrayListGetLength(int)(state), 5);
 }
 
-// TEST
-static void TestPop(object state) {
+__test TestPop(object state) {
     AssertEqual(AvmArrayListPop(int)(state), 4);
     AssertEqual(AvmArrayListPop(int)(state), 3);
     AssertEqual(AvmArrayListPop(int)(state), 2);
