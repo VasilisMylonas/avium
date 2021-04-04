@@ -1,3 +1,26 @@
+/**
+ * @file avium/types.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Primitive Avium types.
+ * @version 0.2
+ * @date 2021-04-04
+ *
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef AVIUM_TYPES_H
 #define AVIUM_TYPES_H
 
@@ -19,12 +42,6 @@
     }
 
 #define AVM_GENERIC(name, T) name##_##T
-
-/// Signed pointer-sized integer type.
-typedef AVM_PTR_TYPE ptr;
-
-/// Unsigned pointer-sized integer type.
-typedef unsigned AVM_PTR_TYPE uptr;
 
 /// Signed 64-bit integer type.
 typedef AVM_LONG_TYPE _long;
@@ -127,8 +144,7 @@ AVMAPI AvmString AvmObjectToString(object self);
 
 AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
 
-static_assert_s(sizeof(ptr) == sizeof(void*));
-static_assert_s(sizeof(uptr) == sizeof(void*));
+// Ensure type size constraints.
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 static_assert_s(sizeof(int) == AVM_INT_SIZE);

@@ -41,18 +41,11 @@ endif()
 include(CheckTypeSize)
 
 check_type_size(long AVM_LONG_SIZE)
-check_type_size(void* AVM_PTR_SIZE)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE long)
 else()
     set(AVM_LONG_TYPE long long)
-endif()
-
-if(${AVM_PTR_SIZE} EQUAL 8)
-    set(AVM_PTR_TYPE ${AVM_LONG_TYPE})
-else()
-    set(AVM_PTR_TYPE int)
 endif()
 
 # Process header config file.
