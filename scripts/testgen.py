@@ -10,7 +10,7 @@ runner_template = """// Auto-generated
 
 int main(int argc, str argv[])
 {
-    AvmRuntimeEnableExceptions();
+    AvmEnableExceptions();
 @TESTS@
 }
 """

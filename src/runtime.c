@@ -22,13 +22,13 @@ static void ExceptionHandler(int exception) {
     }
 }
 
-void AvmRuntimeEnableExceptions(void) {
+void AvmEnableExceptions(void) {
     signal(SIGSEGV, ExceptionHandler);
     signal(SIGILL, ExceptionHandler);
     signal(SIGFPE, ExceptionHandler);
 }
 
-void AvmRuntimeDisableExceptions(void) {
+void AvmDisableExceptions(void) {
     signal(SIGSEGV, SIG_DFL);
     signal(SIGILL, SIG_DFL);
     signal(SIGFPE, SIG_DFL);

@@ -3,6 +3,7 @@
 
 #include "avium/types.h"
 
+/// Represents an entry on the virtual function entry.
 typedef enum {
     FUNC_DTOR = 0,
     FUNC_GET_LENGTH,
@@ -16,8 +17,11 @@ typedef enum {
     FUNC_WRITE_STRING,
 } AvmFunctionEntry;
 
-AVMAPI void AvmRuntimeEnableExceptions(void);
-AVMAPI void AvmRuntimeDisableExceptions(void);
+/// Enables signal catching.
+AVMAPI void AvmEnableExceptions(void);
+
+/// Disables signal catching.
+AVMAPI void AvmDisableExceptions(void);
 
 /**
  * @brief Aborts execution, printing a message and location information.
@@ -34,7 +38,7 @@ AVMAPI void AvmRuntimeDisableExceptions(void);
  * @param file The file name.
  * @param line The line number.
  *
- * @return never This function never returns.
+ * @return This function never returns.
  */
 AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 
