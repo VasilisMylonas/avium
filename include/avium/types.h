@@ -31,6 +31,13 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+/**
+ * @brief Creates an Avium class type.
+ *
+ * @param T The name of the type.
+ * @param B The base class of the type.
+ * @param ... Member declaration in braces ({ ... })
+ */
 #define AVM_CLASS(T, B, ...)      \
     typedef struct T T;           \
     struct T {                    \
@@ -41,6 +48,7 @@
         struct __VA_ARGS__;       \
     }
 
+/// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
 
 /// Signed 64-bit integer type.
@@ -141,8 +149,6 @@ AVMAPI object AvmObjectClone(object self);
  * @see AvmVirtualFunctionTrap
  */
 AVMAPI AvmString AvmObjectToString(object self);
-
-AVMAPI void AvmObjectCopy(object self, size_t size, byte buffer[]);
 
 // Ensure type size constraints.
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);

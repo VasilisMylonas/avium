@@ -28,7 +28,7 @@
 
 static object AvmValueClone(AvmValue* value) {
     AvmValue* copy = malloc(sizeof(AvmValue));
-    AvmObjectCopy(value, sizeof(AvmValue), (byte*)copy);
+    AvmMemCopy((byte*)value, sizeof(AvmValue), (byte*)copy, sizeof(AvmValue));
     return copy;
 }
 

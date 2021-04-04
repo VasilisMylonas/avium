@@ -1,7 +1,7 @@
 #include <string.h>
 #include <signal.h>
-#include <stdio.h> // For fprintf
-#include <stdlib.h> // For exit
+#include <stdio.h>   // For fprintf
+#include <stdlib.h>  // For exit
 
 #include "avium/types.h"
 #include "avium/typeinfo.h"
@@ -107,19 +107,6 @@ AvmString AvmObjectToString(object self) {
     }
 
     return ((AvmString(*)(object))method)(self);
-}
-
-void AvmObjectCopy(object self, size_t size, byte buffer[]) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (buffer == NULL) {
-        AvmPanic(BufferNullMsg);
-    }
-
-    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(self));
-    AvmMemCopy(self, objectSize, buffer, size);
 }
 
 never AvmVirtualFunctionTrap(void) { AvmPanic(VirtualFuncTrapTriggered); }
