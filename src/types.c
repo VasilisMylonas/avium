@@ -1,44 +1,11 @@
 #include <string.h>
-#include <signal.h>
 #include <stdio.h>   // For fprintf
 #include <stdlib.h>  // For exit
 
 #include "avium/types.h"
 #include "avium/typeinfo.h"
 #include "avium/resources.h"
-
-static void ExceptionHandler(int exception) {
-    switch (exception) {
-        case SIGSEGV:
-            AvmPanic("Invalid pointer dereference.");
-            break;
-        case SIGILL:
-            AvmPanic("Illegal instruction.");
-            break;
-        case SIGFPE:
-            AvmPanic("Arithmetic exception.");
-            break;
-        case SIGINT:
-            AvmPanic("Received interrupt.");
-            break;
-        default:
-            break;
-    }
-}
-
-void AvmEnableExceptions(void) {
-    signal(SIGSEGV, ExceptionHandler);
-    signal(SIGILL, ExceptionHandler);
-    signal(SIGFPE, ExceptionHandler);
-    signal(SIGINT, ExceptionHandler);
-}
-
-void AvmDisableExceptions(void) {
-    signal(SIGSEGV, SIG_DFL);
-    signal(SIGILL, SIG_DFL);
-    signal(SIGFPE, SIG_DFL);
-    signal(SIGINT, SIG_DFL);
-}
+#include "avium/runtime.h"
 
 const AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
@@ -103,13 +70,11 @@ AvmString AvmObjectToString(object self) {
     AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
 
     if (method == NULL) {
-        AvmVirtualFunctionTrap();
+        AvmRuntimeVirtualFunctionTrap();
     }
 
     return ((AvmString(*)(object))method)(self);
 }
-
-never AvmVirtualFunctionTrap(void) { AvmPanic(VirtualFuncTrapTriggered); }
 
 void AvmMemCopy(byte* source, size_t length, byte* destination, size_t size) {
     if (source == NULL) {

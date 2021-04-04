@@ -168,19 +168,6 @@ static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
  */
 #define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
 
-enum {
-    FUNC_DTOR = 0,
-    FUNC_GET_LENGTH,
-    FUNC_GET_CAPACITY,
-    FUNC_TO_STRING,
-    FUNC_CLONE,
-    FUNC_EQUALS,
-    FUNC_READ,
-    FUNC_WRITE,
-    FUNC_READ_STRING,
-    FUNC_WRITE_STRING,
-};
-
 /**
  * @brief Aborts execution, printing a message and location information.
  *
@@ -192,16 +179,6 @@ enum {
  * @return never This function never returns.
  */
 AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
-
-AVMAPI void AvmEnableExceptions(void);
-AVMAPI void AvmDisableExceptions(void);
-
-/**
- * @brief The trap function called when a virtual function is not implemented.
- *
- * @return never This function never returns.
- */
-AVMAPI never AvmVirtualFunctionTrap(void);
 
 /**
  * @brief Copies memory from one block to another.

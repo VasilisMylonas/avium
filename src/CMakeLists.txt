@@ -3,9 +3,9 @@
 # All source files to be compiled.
 set(AVM_SOURCE_FILES
     array.c
-    collection.c
     fmt.c
     options.c
+    runtime.c
     string.c
     typeinfo.c
     types.c

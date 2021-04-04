@@ -3,6 +3,19 @@
 
 #include "avium/types.h"
 
+enum {
+    FUNC_DTOR = 0,
+    FUNC_GET_LENGTH,
+    FUNC_GET_CAPACITY,
+    FUNC_TO_STRING,
+    FUNC_CLONE,
+    FUNC_EQUALS,
+    FUNC_READ,
+    FUNC_WRITE,
+    FUNC_READ_STRING,
+    FUNC_WRITE_STRING,
+};
+
 #define AVM_GET_TYPE(T)  AVM_GET_TYPE_(T)
 #define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
 
