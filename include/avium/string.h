@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Dynamic string implementation.
  * @version 0.2
- * @date 2021-03-24
+ * @date 2021-04-5
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -14,11 +14,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef AVIUM_STRING_H
@@ -28,7 +28,7 @@
 #include "avium/optional.h"
 #include "avium/result.h"
 
-// Type definition in prologue.h
+// Type definition in types.h
 
 /**
  * @brief Creates an AvmString with a specified capacity.
@@ -423,31 +423,178 @@ AVMAPI char* AvmStringAsPtr(AvmString* self);
 AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
                                         char* buffer);
 
+/**
+ * @brief Destructures an AvmString instance.
+ *
+ * NULL can be passed to the parameters, to ignore the output.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param[out] capacity The capacity.
+ * @param[out] length The length.
+ * @param[out] buffer The internal buffer.
+ */
 AVMAPI void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity,
                                     size_t* length, char** buffer);
 
+/**
+ * @brief Determines whether an AvmString is empty.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @return true if the string is empty, otherwise false.
+ */
 AVMAPI bool AvmStringIsEmpty(AvmString* self);
+
+/**
+ * @brief Clears the contents of an AvmString by setting its length to 0).
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
 AVMAPI void AvmStringClear(AvmString* self);
+
+/**
+ * @brief Erases the contents of an AvmString, by filling the string with
+ * zeroes.
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
 AVMAPI void AvmStringErase(AvmString* self);
 
+/**
+ * @brief Determines whether an AvmString contains a character.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param character The character to find.
+ * @return true if the character is found, otherwise false.
+ */
 AVMAPI bool AvmStringContainsChar(AvmString* self, char character);
+
+/**
+ * @brief Determines whether an AvmString contains a raw string.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param contents The string to find.
+ * @return true if the string is found, otherwise false.
+ */
 AVMAPI bool AvmStringContainsStr(AvmString* self, str contents);
 
+/**
+ * @brief Determines whether an AvmString starts with a character.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param character The character to find.
+ * @return true if the AvmString starts with the character, otherwise false.
+ */
 AVMAPI bool AvmStringStartsWithChar(AvmString* self, char character);
+
+/**
+ * @brief Determines whether an AvmString starts with a raw string provided with
+ * its length.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param length The length of the string.
+ * @param contents The string to find.
+ *
+ * @return true if the AvmString starts with the string, otherwise false.
+ */
 AVMAPI bool AvmStringStartsWithChars(AvmString* self, size_t length,
                                      const char* contents);
+
+/**
+ * @brief Determines whether an AvmString starts with a raw string.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param contents The string to find.
+ * @return true if the AvmString starts with the string, otherwise false.
+ */
 AVMAPI bool AvmStringStartsWithStr(AvmString* self, str contents);
+
+/**
+ * @brief Determines whether an AvmString starts with an AvmString.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param contents The string to find.
+ * @return true if the AvmString starts with the string, otherwise false.
+ */
 AVMAPI bool AvmStringStartsWithString(AvmString* self, AvmString* contents);
 
+/**
+ * @brief Determines whether an AvmString ends with a character.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param character The character to find.
+ * @return true if the AvmString ends with the character, otherwise false.
+ */
 AVMAPI bool AvmStringEndsWithChar(AvmString* self, char character);
+
+/**
+ * @brief Determines whether an AvmString ends with a raw string.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param contents The string to find.
+ * @return true if the AvmString ends with the string, otherwise false.
+ */
 AVMAPI bool AvmStringEndsWithStr(AvmString* self, str contents);
+
+/**
+ * @brief Determines whether an AvmString ends with a raw string provided with
+ * its length.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param length The length of the string.
+ * @param contents The string to find.
+ *
+ * @return true if the AvmString ends with the string, otherwise false.
+ */
 AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
                                    const char* contents);
+
+/**
+ * @brief Determines whether an AvmString ends with an AvmString.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p contents must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param contents The string to find.
+ * @return true if the AvmString ends with the string, otherwise false.
+ */
 AVMAPI bool AvmStringEndsWithString(AvmString* self, AvmString* contents);
 
 // TODO
 AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
                                    const char* contents);
+
+// TODO
 AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
 
 #endif  // AVIUM_STRING_H
