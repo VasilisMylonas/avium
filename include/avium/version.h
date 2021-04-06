@@ -54,6 +54,7 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
  */
 AVMAPI AvmVersion AvmRuntimeGetVersion();
 
+// Ensure type size constraint.
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 
 #endif  // AVIUM_VERSION_H

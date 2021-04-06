@@ -18,7 +18,7 @@
 #    define static_assert _Static_assert
 #endif
 
-#define static_assert_s(assertion) _Static_assert(assertion, "")
+#define static_assert_s(condition) _Static_assert(condition, "")
 
 #ifdef AVM_MSVC
 #    ifndef alignof
@@ -40,7 +40,7 @@
 #    warning "Avium: C++ is not supported, you may encounter errors."
 #endif  // __cplusplus
 
-// prologue.h
+// types.h
 #define AVM_BYTE_SIZE  1
 #define AVM_CHAR_SIZE  1
 #define AVM_SHORT_SIZE 2

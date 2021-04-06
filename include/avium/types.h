@@ -127,7 +127,7 @@ AVMAPI bool AvmObjectEquals(object self, object other);
  *
  * @pre Parameter @p self must be not null.
  *
- * @param self The object.
+ * @param self The object instance.
  */
 AVMAPI void AvmObjectDestroy(object self);
 
@@ -140,7 +140,7 @@ AVMAPI void AvmObjectDestroy(object self);
  *
  * @pre Parameter @p self must be not null.
  *
- * @param self The object.
+ * @param self The object instance.
  * @return The cloned object.
  */
 AVMAPI object AvmObjectClone(object self);
@@ -154,7 +154,7 @@ AVMAPI object AvmObjectClone(object self);
  *
  * @pre Parameter @p self must be not null.
  *
- * @param self The object.
+ * @param self The object instance.
  * @return AvmString The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
