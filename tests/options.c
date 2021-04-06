@@ -1,18 +1,11 @@
 #include <avium/testing.h>
 #include <avium/options.h>
-#include <avium/fmt.h>
 
 static object TestInit(int argc, str argv[]) {
     return AvmOptionParserNew(argc, argv);
 }
 
-static void TestFini(object state) {
-    AvmObjectDestroy(state);
-    free(state);
-}
-
-// TEST
-static void TestUsage(object state) {
+__test TestUsage(object state) {
     AvmOptionParserAddOption(state, "output", "Set the output file.",
                              ValueKindStr);
     AvmOptionParserAddOption(state, "help", "Show this help prompt.",

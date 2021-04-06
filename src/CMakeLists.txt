@@ -3,12 +3,13 @@
 # All source files to be compiled.
 set(AVM_SOURCE_FILES
     array.c
-    collection.c
     fmt.c
     options.c
-    prologue.c
+    runtime.c
     string.c
-    value.c)
+    types.c
+    value.c
+    version.c)
 
 # Target names.
 set(AVM_SHARED_NAME avm)

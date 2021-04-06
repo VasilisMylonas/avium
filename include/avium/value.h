@@ -24,15 +24,26 @@
 #ifndef AVIUM_VALUE_H
 #define AVIUM_VALUE_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 /// Describes the type currently held by an AvmValue.
 typedef enum {
+    /// The AvmValue holds a value of type bool.
     ValueKindBool = 0,
+
+    /// The AvmValue holds a value of type _long.
     ValueKindInt,
+
+    /// The AvmValue holds a value of type ulong.
     ValueKindUInt,
+
+    /// The AvmValue holds a value of type double.
     ValueKindFloat,
+
+    /// The AvmValue holds a value of type str.
     ValueKindStr,
+
+    /// The AvmValue holds a value of type char.
     ValueKindChar,
 } AvmValueKind;
 
@@ -167,6 +178,7 @@ AVMAPI str AvmValueAsStr(AvmValue* self);
  */
 AVMAPI AvmValueKind AvmValueGetKind(AvmValue* self);
 
+// Ensure type size constraint.
 static_assert_s(sizeof(AvmValue) == AVM_VALUE_SIZE);
 
 #endif  // AVIUM_VALUE_H

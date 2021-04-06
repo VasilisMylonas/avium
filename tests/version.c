@@ -1,5 +1,5 @@
 #include <avium/testing.h>
-#include <avium/prologue.h>
+#include <avium/version.h>
 #include <avium/string.h>
 
 static object TestInit() {

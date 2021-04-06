@@ -9,17 +9,13 @@ static object TestInit() {
     return &array;
 }
 
-static void TestFini(object state) { (void)state; }
-
-// TEST
-static void TestArrayContents(object state) {
+__test TestArrayContents(object state) {
     AvmArray(int, 5)* array = state;
     int expected[] = {0, 1, -2, 3, -4};
     AssertMemEqual(array->at, expected, 5 * sizeof(int));
 }
 
-// TEST
-static void TestArrayToString(object state) {
+__test TestArrayToString(object state) {
     AvmArray(int, 5)* array = state;
     AvmString s = AvmObjectToString(array);
     AssertStrEqual(s._buffer, "[ 0, 1, -2, 3, -4, ]");

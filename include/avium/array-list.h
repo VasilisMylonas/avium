@@ -1,7 +1,31 @@
+/**
+ * @file avium/array-list.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Generic dynamic array type implementation.
+ * @version 0.1
+ * @date 2021-04-06
+ *
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef AVIUM_ARRAY_LIST_H
 #define AVIUM_ARRAY_LIST_H
 
-#include "avium/collection.h"
+#include "avium/types.h"
+#include "avium/runtime.h"
 
 extern void free(void*);
 extern void* malloc(size_t);
@@ -89,8 +113,6 @@ AVM_ARRAY_LIST_TYPE(int)
 AVM_ARRAY_LIST_TYPE(uint)
 AVM_ARRAY_LIST_TYPE(_long)
 AVM_ARRAY_LIST_TYPE(ulong)
-AVM_ARRAY_LIST_TYPE(ptr)
-AVM_ARRAY_LIST_TYPE(uptr)
 AVM_ARRAY_LIST_TYPE(bool)
 AVM_ARRAY_LIST_TYPE(str)
 AVM_ARRAY_LIST_TYPE(object)
