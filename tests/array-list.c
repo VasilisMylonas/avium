@@ -27,18 +27,3 @@ __test TestPush(object state) {
 
     AssertEqual(AvmArrayListGetLength(int)(state), 5);
 }
-
-__test TestPeek(object state) {
-    AssertEqual(AvmArrayListPeek(int)(state), 4);
-    AssertEqual(AvmArrayListGetLength(int)(state), 5);
-}
-
-__test TestPop(object state) {
-    AssertEqual(AvmArrayListPop(int)(state), 4);
-    AssertEqual(AvmArrayListPop(int)(state), 3);
-    AssertEqual(AvmArrayListPop(int)(state), 2);
-    AssertEqual(AvmArrayListPop(int)(state), 1);
-    AssertEqual(AvmArrayListPop(int)(state), 0);
-
-    AssertEqual(AvmArrayListGetLength(int)(state), 0);
-}
