@@ -51,6 +51,10 @@ AVM_TYPE(AvmFileStream,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle) {
+    if (handle == NULL) {
+        AvmPanic(HandleNullMsg);
+    }
+
     AvmFileStream* stream = malloc(sizeof(AvmFileStream));
     stream->_handle = handle;
     stream->_type = AVM_GET_TYPE(AvmFileStream);
