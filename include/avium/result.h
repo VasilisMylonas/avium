@@ -91,4 +91,38 @@ AVM_RESULT_TYPE(size_t)
 AVM_RESULT_TYPE(AvmString)
 AVM_RESULT_TYPE(AvmFunction)
 
+AVM_CLASS(AVM_GENERIC(AvmResult, void), object, {
+    AvmErrorKind _kind;
+    str _error;
+});
+
+AVM_TYPE(AVM_GENERIC(AvmResult, void), {[FUNC_DTOR] = NULL});
+
+static inline AvmResult(void) AvmSuccess(void)() {
+    return (AvmResult(void)){
+        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._kind = ErrorKindNone,
+    };
+}
+
+static inline AvmResult(void) AvmFailure(void)(AvmErrorKind kind, str error) {
+    return (AvmResult(void)){
+        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._kind = kind,
+        ._error = error,
+    };
+}
+
+static inline void AvmUnwrap(void)(AvmResult(void) * self) {
+    if (self->_kind == ErrorKindNone) {
+        return;
+    }
+
+    AvmPanic("Tried to unwrap a result describing failure.");
+}
+
+static inline bool AvmIsFailure(void)(AvmResult(void) * self) {
+    return self->_kind != ErrorKindNone;
+}
+
 #endif  // AVIUM_RESULT_H

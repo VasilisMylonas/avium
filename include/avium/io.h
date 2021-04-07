@@ -2,6 +2,7 @@
 #define AVIUM_IO_H
 
 #include "avium/runtime.h"
+#include "avium/result.h"
 
 typedef void* AvmFileHandle;
 
@@ -40,20 +41,24 @@ AVMAPI AvmStream* AvmStreamFromMemory(size_t capacity);
 // TODO
 AVMAPI AvmStream* AvmStreamFromRaw(size_t length, byte array[]);
 
-AVMAPI void AvmStreamRead(AvmStream* self, size_t length, byte bytes[]);
-AVMAPI void AvmStreamWrite(AvmStream* self, size_t length, byte bytes[]);
+AVMAPI AvmResult(void)
+    AvmStreamRead(AvmStream* self, size_t length, byte bytes[]);
+
+AVMAPI AvmResult(void)
+    AvmStreamWrite(AvmStream* self, size_t length, byte bytes[]);
+
 AVMAPI void AvmStreamFlush(AvmStream* self);
 AVMAPI void AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin);
 AVMAPI size_t AvmStreamGetPosition(AvmStream* self);
 
-AVMAPI byte AvmStreamReadByte(AvmStream* self);
-AVMAPI void AvmStreamWriteByte(AvmStream* self, byte value);
+AVMAPI AvmResult(byte) AvmStreamReadByte(AvmStream* self);
+AVMAPI AvmResult(void) AvmStreamWriteByte(AvmStream* self, byte value);
 
-AVMAPI char AvmStreamReadChar(AvmStream* self);
-AVMAPI void AvmStreamWriteChar(AvmStream* self, char character);
+AVMAPI AvmResult(char) AvmStreamReadChar(AvmStream* self);
+AVMAPI AvmResult(void) AvmStreamWriteChar(AvmStream* self, char character);
 
-AVMAPI AvmString AvmStreamReadLine(AvmStream* self);
-AVMAPI void AvmStreamWriteLine(AvmStream* self, AvmString* string);
+AVMAPI AvmResult(AvmString) AvmStreamReadLine(AvmStream* self);
+AVMAPI AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string);
 
 // Ensure type size constraints.
 static_assert_s(sizeof(AvmStream) == AVM_STREAM_SIZE);

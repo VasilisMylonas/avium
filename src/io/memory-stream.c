@@ -14,20 +14,24 @@ static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
 static void AvmMemoryStreamFlush(AvmMemoryStream* self) { (void)self; }
 
-static void AvmMemoryStreamRead(AvmMemoryStream* self, size_t length,
-                                byte bytes[]) {
+static AvmResult(void)
+    AvmMemoryStreamRead(AvmMemoryStream* self, size_t length, byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
         bytes[i] = self->_list._items[self->_position];
         self->_position++;
     }
+
+    return AvmSuccess(void)();
 }
 
-static void AvmMemoryStreamWrite(AvmMemoryStream* self, size_t length,
-                                 byte bytes[]) {
+static AvmResult(void)
+    AvmMemoryStreamWrite(AvmMemoryStream* self, size_t length, byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
         AvmArrayListPush(byte)(&self->_list, bytes[i]);
         self->_position++;
     }
+
+    return AvmSuccess(void)();
 }
 
 static void AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,

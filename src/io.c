@@ -2,6 +2,13 @@
 #include "avium/resources.h"
 #include "avium/string.h"
 
+typedef AvmResult(void) (*ReadWriteFunc)(AvmStream*, size_t, byte[]);
+
+#define RESULT_CAST(result, TFrom, TTo)                      \
+    AvmIsFailure(TFrom)(result)                              \
+        ? AvmFailure(TTo)((result)->_kind, (result)->_error) \
+        : AvmSuccess(TTo)((TTo)(result)->_value)
+
 void AvmStreamFlush(AvmStream* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
@@ -29,43 +36,46 @@ size_t AvmStreamGetPosition(AvmStream* self) {
     return ((ulong(*)(AvmStream*))func)(self);
 }
 
-void AvmStreamRead(AvmStream* self, size_t length, byte bytes[]) {
+AvmResult(void) AvmStreamRead(AvmStream* self, size_t length, byte bytes[]) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
-    ((void (*)(AvmStream*, size_t, byte[]))func)(self, length, bytes);
+    return ((ReadWriteFunc)func)(self, length, bytes);
 }
 
-void AvmStreamWrite(AvmStream* self, size_t length, byte bytes[]) {
+AvmResult(void) AvmStreamWrite(AvmStream* self, size_t length, byte bytes[]) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_WRITE];
-    ((void (*)(AvmStream*, size_t, byte[]))func)(self, length, bytes);
+    return ((ReadWriteFunc)func)(self, length, bytes);
 }
 
-byte AvmStreamReadByte(AvmStream* self) {
+AvmResult(byte) AvmStreamReadByte(AvmStream* self) {
     byte temp;
     AvmStreamRead(self, 1, &temp);
-    return temp;
+    return AvmSuccess(byte)(temp);
 }
 
-void AvmStreamWriteByte(AvmStream* self, byte value) {
+AvmResult(void) AvmStreamWriteByte(AvmStream* self, byte value) {
     AvmStreamWrite(self, 1, &value);
+    return AvmSuccess(void)();
 }
 
-char AvmStreamReadChar(AvmStream* self) {
-    return (char)AvmStreamReadByte(self);
+AvmResult(char) AvmStreamReadChar(AvmStream* self) {
+    AvmResult(byte) result = AvmStreamReadByte(self);
+
+    return RESULT_CAST(&result, byte, char);
 }
 
-void AvmStreamWriteChar(AvmStream* self, char character) {
-    AvmStreamWriteByte(self, (byte)character);
+AvmResult(void) AvmStreamWriteChar(AvmStream* self, char character) {
+    return AvmStreamWriteByte(self, (byte)character);
 }
 
-void AvmStreamWriteLine(AvmStream* self, AvmString* string) {
+AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -76,20 +86,32 @@ void AvmStreamWriteLine(AvmStream* self, AvmString* string) {
 
     AvmStreamWrite(self, AvmStringGetLength(string),
                    (byte*)AvmStringAsPtr(string));
-    AvmStreamWrite(self, 1, (byte*)"\n");
+    return AvmStreamWriteChar(self, '\n');
 }
 
-AvmString AvmStreamReadLine(AvmStream* self) {
+AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     AvmString s = AvmStringNew(32);
+    char c;
+    AvmResult(char) result;
 
-    char c = '\0';
-    while (AvmStreamRead(self, 1, (byte*)&c), c != '\n') {
+    result = AvmStreamReadChar(self);
+    if (AvmIsFailure(char)(&result)) {
+        return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
+    }
+    c = AvmUnwrap(char)(&result);
+
+    while (c != '\n') {
         AvmStringPushChar(&s, c);
+        result = AvmStreamReadChar(self);
+        if (AvmIsFailure(char)(&result)) {
+            return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
+        }
+        c = AvmUnwrap(char)(&result);
     }
 
-    return s;
+    return AvmSuccess(AvmString)(s);
 }

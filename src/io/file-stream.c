@@ -8,16 +8,26 @@ AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
 
 static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
 
+#include <string.h>
+
 static void AvmFileStreamFlush(AvmFileStream* self) { fflush(self->_handle); }
 
-static void AvmFileStreamWrite(AvmFileStream* self, size_t length,
-                               byte bytes[]) {
-    fwrite(bytes, 1, length, self->_handle);
+static AvmResult(void)
+    AvmFileStreamWrite(AvmFileStream* self, size_t length, byte bytes[]) {
+    if (fwrite(bytes, 1, length, self->_handle) != length) {
+        return AvmFailure(void)(ErrorKindSys, strerror(ferror(self->_handle)));
+    }
+
+    return AvmSuccess(void)();
 }
 
-static void AvmFileStreamRead(AvmFileStream* self, size_t length,
-                              byte bytes[]) {
-    fread(bytes, 1, length, self->_handle);
+static AvmResult(void)
+    AvmFileStreamRead(AvmFileStream* self, size_t length, byte bytes[]) {
+    if (fread(bytes, 1, length, self->_handle) != length) {
+        return AvmFailure(void)(ErrorKindSys, strerror(ferror(self->_handle)));
+    }
+
+    return AvmSuccess(void)();
 }
 
 static void AvmFileStreamSeek(AvmFileStream* self, _long offset,
