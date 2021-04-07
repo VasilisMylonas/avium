@@ -87,4 +87,9 @@
 #define AVM_FMT_BINARY_PREFIX  "0b"
 #define AVM_FMT_UNICODE_PREFIX "U+"
 
+// io.h
+#define AVM_STREAM_SIZE        8
+#define AVM_FILE_STREAM_SIZE   16
+#define AVM_MEMORY_STREAM_SIZE 48
+
 #endif  // AVIUM_CONFIG_H

@@ -2,24 +2,16 @@
 #define AVIUM_IO_H
 
 #include "avium/runtime.h"
-#include "avium/array-list.h"
 
 typedef void* AvmFileHandle;
 
 typedef enum {
-    SeekOriginBegin,
+    SeekOriginBegin = 0,
     SeekOriginCurrent,
     SeekOriginEnd,
 } AvmSeekOrigin;
 
-AVM_CLASS(AvmStream, object, { size_t _position; });
-
-AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
-AVM_CLASS(AvmMemoryStream, AvmStream, { AvmArrayList(byte) _list; });
-
-static_assert_s(sizeof(AvmStream) == 16);
-static_assert_s(sizeof(AvmFileStream) == 24);
-static_assert_s(sizeof(AvmMemoryStream) == 48);
+AVM_INTERFACE(AvmStream);
 
 AVMAPI AvmStream* AvmStreamFromHandle(AvmFileHandle handle);
 AVMAPI AvmStream* AvmStreamFromMemory(size_t capacity);
@@ -39,5 +31,8 @@ AVMAPI void AvmStreamWriteChar(AvmStream* self, char character);
 
 AVMAPI AvmString AvmStreamReadLine(AvmStream* self);
 AVMAPI void AvmStreamWriteLine(AvmStream* self, AvmString* string);
+
+// Ensure type size constraints.
+static_assert_s(sizeof(AvmStream) == AVM_STREAM_SIZE);
 
 #endif  // AVIUM_IO_H

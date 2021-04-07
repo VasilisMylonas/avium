@@ -1,6 +1,12 @@
 #include "avium/io.h"
+#include "avium/resources.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+
+AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
+
+static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
 
 static void AvmFileStreamFlush(AvmFileStream* self) { fflush(self->_handle); }
 
@@ -16,7 +22,19 @@ static void AvmFileStreamRead(AvmFileStream* self, size_t length,
 
 static void AvmFileStreamSeek(AvmFileStream* self, _long offset,
                               AvmSeekOrigin origin) {
-    fseek(self->_handle, (long)offset, origin);
+    switch (origin) {
+        case SeekOriginCurrent:
+            fseek(self->_handle, (long)offset, SEEK_CUR);
+            break;
+        case SeekOriginBegin:
+            fseek(self->_handle, (long)offset, SEEK_SET);
+            break;
+        case SeekOriginEnd:
+            fseek(self->_handle, (long)offset, SEEK_END);
+            break;
+        default:
+            AvmPanic(InvalidOriginMsg);
+    }
 }
 
 static size_t AvmFileStreamGetPosition(AvmFileStream* self) {

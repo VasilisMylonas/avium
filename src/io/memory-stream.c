@@ -1,14 +1,24 @@
 #include "avium/io.h"
+#include "avium/resources.h"
+#include "avium/array-list.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+
+AVM_CLASS(AvmMemoryStream, AvmStream, {
+    size_t _position;
+    AvmArrayList(byte) _list;
+});
+
+static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
 static void AvmMemoryStreamFlush(AvmMemoryStream* self) { (void)self; }
 
 static void AvmMemoryStreamRead(AvmMemoryStream* self, size_t length,
                                 byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
-        bytes[i] = self->_list._items[self->_base._position];
-        self->_base._position++;
+        bytes[i] = self->_list._items[self->_position];
+        self->_position++;
     }
 }
 
@@ -16,7 +26,7 @@ static void AvmMemoryStreamWrite(AvmMemoryStream* self, size_t length,
                                  byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
         AvmArrayListPush(byte)(&self->_list, bytes[i]);
-        self->_base._position++;
+        self->_position++;
     }
 }
 
@@ -24,23 +34,22 @@ static void AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
                                 AvmSeekOrigin origin) {
     switch (origin) {
         case SeekOriginCurrent:
-            self->_base._position += offset;
+            self->_position += offset;
             break;
         case SeekOriginBegin:
-            self->_base._position = offset;
+            self->_position = offset;
             break;
         case SeekOriginEnd:
-            self->_base._position =
+            self->_position =
                 AvmArrayListGetLength(byte)(&self->_list) - offset;
             break;
         default:
-            // Error
-            break;
+            AvmPanic(InvalidOriginMsg);
     }
 }
 
 static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self) {
-    return self->_base._position;
+    return self->_position;
 }
 
 AVM_TYPE(AvmMemoryStream,
@@ -56,6 +65,6 @@ AvmStream* AvmStreamFromMemory(size_t capacity) {
     AvmMemoryStream* stream = malloc(sizeof(AvmMemoryStream));
     stream->_list = AvmArrayListNew(byte)(capacity);
     stream->_type = AVM_GET_TYPE(AvmMemoryStream);
-    stream->_base._position = 0;
+    stream->_position = 0;
     return (AvmStream*)stream;
 }
