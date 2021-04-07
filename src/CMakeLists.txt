@@ -4,6 +4,9 @@
 set(AVM_SOURCE_FILES
     array.c
     fmt.c
+    io.c
+    io/file-stream.c
+    io/memory-stream.c
     options.c
     runtime.c
     string.c
