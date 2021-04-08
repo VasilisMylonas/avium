@@ -3,12 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
 
 static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
-
-#include <string.h>
 
 static void AvmFileStreamFlush(AvmFileStream* self) { fflush(self->_handle); }
 
