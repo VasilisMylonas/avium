@@ -3,6 +3,7 @@
 # All source files to be compiled.
 set(AVM_SOURCE_FILES
     array.c
+    file.c
     fmt.c
     io.c
     io/file-stream.c

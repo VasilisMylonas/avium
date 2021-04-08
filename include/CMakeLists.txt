@@ -6,6 +6,7 @@ set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
     avium/array-list.h
     avium/array.h
+    avium/file.h
     avium/fmt.h
     avium/io.h
     avium/optional.h
