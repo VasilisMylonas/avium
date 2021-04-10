@@ -4,9 +4,9 @@
 set(AVM_SOURCE_FILES
     alloc.c
     array.c
-    error.c
     fmt.c
     options.c
+    result.c
     runtime.c
     string.c
     types.c

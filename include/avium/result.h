@@ -4,11 +4,10 @@
 #include "avium/types.h"
 #include "avium/runtime.h"
 
-#define AvmResult(T)    AVM_GENERIC(AvmResult, T)
-#define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
-#define AvmFailure(T)   AVM_GENERIC(AvmFailure, T)
-#define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
-#define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
+typedef struct AvmError AvmError;
+struct AvmError {
+    AvmType* _type;
+};
 
 /// Describes the type of the error that occurred.
 typedef enum {
@@ -36,6 +35,16 @@ typedef enum {
     /// A required resource was unavailable.
     ErrorKindNotFound,
 } AvmErrorKind;
+
+AVMAPI AvmError* AvmErrorGetLast(void);
+AVMAPI AvmError* AvmErrorNewOSError(int code);
+AVMAPI AvmError* AvmErrorNewSimpleError(AvmErrorKind kind);
+
+#define AvmResult(T)    AVM_GENERIC(AvmResult, T)
+#define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
+#define AvmFailure(T)   AVM_GENERIC(AvmFailure, T)
+#define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
+#define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
 
 #define AVM_RESULT_TYPE(T)                                                   \
     AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                           \
