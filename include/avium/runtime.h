@@ -13,6 +13,7 @@ typedef enum {
     FUNC_EQUALS,
 
     FUNC_GET_BACKTRACE = 16,
+    FUNC_GET_SOURCE,
 } AvmFunctionEntry;
 
 /// Enables signal catching.

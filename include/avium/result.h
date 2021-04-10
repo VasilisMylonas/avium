@@ -26,11 +26,8 @@
 
 #include "avium/runtime.h"
 
-typedef struct AvmError AvmError;
-struct AvmError {
-    AvmType* _type;
-    AvmError* _source;
-};
+/// A type representing an error.
+AVM_INTERFACE(AvmError);
 
 /// Describes the type of the error that occurred.
 typedef enum {
@@ -110,7 +107,11 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 #define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
 #define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
 
-/// Creates an AvmResult for a type.
+/**
+ * @brief Creates an AvmResult for a type.
+ *
+ * @param T The type.
+ */
 #define AVM_RESULT_TYPE(T)                                                     \
     AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                             \
         AvmError* _error;                                                      \

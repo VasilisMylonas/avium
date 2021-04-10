@@ -48,6 +48,17 @@
         struct __VA_ARGS__;       \
     }
 
+/**
+ * @brief Creates an Avium interface type.
+ *
+ * @param T The name of the type.
+ */
+#define AVM_INTERFACE(T)      \
+    typedef struct T T;       \
+    struct T {                \
+        const AvmType* _type; \
+    }
+
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
 

@@ -1,7 +1,6 @@
 #include "avium/result.h"
 
 #include "avium/alloc.h"
-#include "avium/runtime.h"
 #include "avium/string.h"
 #include "avium/resources.h"
 
@@ -62,11 +61,13 @@ AvmError* AvmErrorGetSource(AvmError* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    if (self->_source == NULL) {
-        return AvmErrorFromOSCode(0);
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_SOURCE];
+
+    if (func != NULL) {
+        return ((AvmError * (*)(AvmError*)) func)(self);
     }
 
-    return self->_source;
+    return AvmErrorFromOSCode(0);
 }
 
 AvmString AvmErrorGetBacktrace(AvmError* self) {
