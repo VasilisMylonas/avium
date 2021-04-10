@@ -49,43 +49,46 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 #define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
 #define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
 
-#define AVM_RESULT_TYPE(T)                                                   \
-    AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                           \
-        AvmErrorKind _kind;                                                  \
-        union {                                                              \
-            T _value;                                                        \
-            str _error;                                                      \
-        };                                                                   \
-    });                                                                      \
-                                                                             \
-    AVM_TYPE(AVM_GENERIC(AvmResult, T), {[FUNC_DTOR] = NULL});               \
-                                                                             \
-    static inline AvmResult(T) AvmSuccess(T)(T value) {                      \
-        return (AvmResult(T)){                                               \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                \
-            ._kind = ErrorKindNone,                                          \
-            ._value = value,                                                 \
-        };                                                                   \
-    }                                                                        \
-                                                                             \
-    static inline AvmResult(T) AvmFailure(T)(AvmErrorKind kind, str error) { \
-        return (AvmResult(T)){                                               \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                \
-            ._kind = kind,                                                   \
-            ._error = error,                                                 \
-        };                                                                   \
-    }                                                                        \
-                                                                             \
-    static inline T AvmUnwrap(T)(AvmResult(T) * self) {                      \
-        if (self->_kind == ErrorKindNone) {                                  \
-            return self->_value;                                             \
-        }                                                                    \
-                                                                             \
-        AvmPanic("Tried to unwrap a result describing failure.");            \
-    }                                                                        \
-                                                                             \
-    static inline bool AvmIsFailure(T)(AvmResult(T) * self) {                \
-        return self->_kind != ErrorKindNone;                                 \
+#define AVM_RESULT_TYPE(T)                                                     \
+    AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                             \
+        AvmError* _error;                                                      \
+        T _value;                                                              \
+    });                                                                        \
+                                                                               \
+    static inline void AVM_GENERIC(AvmResultDestroy, T)(AvmResult(T) * self) { \
+        if (self->_error != NULL) {                                            \
+            AvmObjectDestroy(self->_error);                                    \
+        }                                                                      \
+    }                                                                          \
+                                                                               \
+    AVM_TYPE(AVM_GENERIC(AvmResult, T),                                        \
+             {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});   \
+                                                                               \
+    static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
+        return (AvmResult(T)){                                                 \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                  \
+            ._error = NULL,                                                    \
+            ._value = value,                                                   \
+        };                                                                     \
+    }                                                                          \
+                                                                               \
+    static inline AvmResult(T) AvmFailure(T)(AvmError * error) {               \
+        return (AvmResult(T)){                                                 \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                  \
+            ._error = error,                                                   \
+        };                                                                     \
+    }                                                                          \
+                                                                               \
+    static inline T AvmUnwrap(T)(AvmResult(T) * self) {                        \
+        if (self->_error == NULL) {                                            \
+            return self->_value;                                               \
+        }                                                                      \
+                                                                               \
+        AvmPanic("Tried to unwrap a result describing failure.");              \
+    }                                                                          \
+                                                                               \
+    static inline bool AvmIsFailure(T)(AvmResult(T) * self) {                  \
+        return self->_error != NULL;                                           \
     }
 
 AVM_RESULT_TYPE(char)
