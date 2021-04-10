@@ -12,19 +12,16 @@ struct AvmError {
 
 /// Describes the type of the error that occurred.
 typedef enum {
-    /// No error occurred.
-    ErrorKindNone = 0,
-
-    /// An invalid argument was received by a function.
+    /// Received an invalid argument.
     ErrorKindArg,
 
-    /// A provided index was out of range.
+    /// The provided index was out of range.
     ErrorKindRange,
 
-    /// There was not enough memory to handle an operation.
+    /// There was not enough memory to handle the request.
     ErrorKindMem,
 
-    /// A function call was invalid for the current state.
+    /// The call was invalid for the current state.
     ErrorKindInvalidOp,
 
     /// An IO error occurred.

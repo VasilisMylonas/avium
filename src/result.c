@@ -17,19 +17,15 @@ static AvmString AvmOSErrorToString(AvmOSError* self) {
 
 static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
     switch (self->_kind) {
-        case ErrorKindNone:
-            return AvmStringFrom("No error occurred.");
         case ErrorKindArg:
-            return AvmStringFrom(
-                "An invalid argument was received by a function.");
+            return AvmStringFrom("Received an invalid argument.");
         case ErrorKindRange:
-            return AvmStringFrom("A provided index was out of range.");
+            return AvmStringFrom("The provided index was out of range.");
         case ErrorKindMem:
             return AvmStringFrom(
-                "There was not enough memory to handle an operation.");
+                "There was not enough memory to handle the request.");
         case ErrorKindInvalidOp:
-            return AvmStringFrom(
-                "A function call was invalid for the current state.");
+            return AvmStringFrom("The call was invalid for the current state.");
         case ErrorKindIO:
             return AvmStringFrom("An IO error occurred.");
         case ErrorKindSys:
