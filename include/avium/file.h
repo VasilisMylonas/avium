@@ -5,9 +5,11 @@
 #include "avium/io.h"
 
 typedef enum {
-    FileAccessRead,
-    FileAccessWrite,
-    FileAccessAppend,
+    FileAccessRead = 2,
+    FileAccessWrite = 4,
+    FileAccessAppend = 8,
+    FileAccessReadWrite = FileAccessRead | FileAccessWrite,
+    FileAccessReadAppend = FileAccessRead | FileAccessAppend,
 } AvmFileAccess;
 
 typedef void* AvmFileMetadata;
