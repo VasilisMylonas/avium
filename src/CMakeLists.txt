@@ -2,7 +2,9 @@
 
 # All source files to be compiled.
 set(AVM_SOURCE_FILES
+    alloc.c
     array.c
+    error.c
     fmt.c
     options.c
     runtime.c

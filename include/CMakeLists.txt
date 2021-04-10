@@ -4,8 +4,10 @@
 set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
+    avium/alloc.h
     avium/array-list.h
     avium/array.h
+    avium/error.h
     avium/fmt.h
     avium/optional.h
     avium/options.h
