@@ -56,6 +56,10 @@ static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self) {
     return self->_position;
 }
 
+static void AvmMemoryStreamDestroy(AvmMemoryStream* self) {
+    AvmObjectDestroy(&self->_list);
+}
+
 AVM_TYPE(AvmMemoryStream,
          {
              [FUNC_FLUSH] = (AvmFunction)AvmMemoryStreamFlush,
@@ -63,6 +67,7 @@ AVM_TYPE(AvmMemoryStream,
              [FUNC_WRITE] = (AvmFunction)AvmMemoryStreamWrite,
              [FUNC_SEEK] = (AvmFunction)AvmMemoryStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmMemoryStreamGetPosition,
+             [FUNC_DTOR] = (AvmFunction)AvmMemoryStreamDestroy,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity) {
