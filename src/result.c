@@ -1,8 +1,9 @@
 #include "avium/result.h"
-#include "avium/alloc.h"
 
+#include "avium/alloc.h"
 #include "avium/runtime.h"
 #include "avium/string.h"
+#include "avium/resources.h"
 
 #include <string.h>
 #include <errno.h>
@@ -16,7 +17,8 @@ static AvmString AvmOSErrorToString(AvmOSError* self) {
 
 static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
     (void)self;
-    return AvmStringFrom("");
+    // TODO: Error descriptions.
+    return AvmStringNew(0);
 }
 
 AVM_TYPE(AvmOSError, {[FUNC_TO_STRING] = (AvmFunction)AvmOSErrorToString});
@@ -37,4 +39,30 @@ AvmError* AvmErrorNewSimpleError(AvmErrorKind kind) {
                                          ._type = AVM_GET_TYPE(AvmSimpleError),
                                          ._kind = kind,
                                      });
+}
+
+AvmError* AvmErrorGetSource(AvmError* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (self->_source == NULL) {
+        return AvmErrorNewOSError(0);
+    }
+
+    return self->_source;
+}
+
+AvmString AvmErrorGetBacktrace(AvmError* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_BACKTRACE];
+
+    if (func != NULL) {
+        return ((AvmString(*)(AvmError*))func)(self);
+    }
+
+    return AvmStringNew(0);
 }

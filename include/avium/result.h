@@ -7,6 +7,7 @@
 typedef struct AvmError AvmError;
 struct AvmError {
     AvmType* _type;
+    AvmError* _source;
 };
 
 /// Describes the type of the error that occurred.
@@ -39,6 +40,8 @@ typedef enum {
 AVMAPI AvmError* AvmErrorGetLast(void);
 AVMAPI AvmError* AvmErrorNewOSError(int code);
 AVMAPI AvmError* AvmErrorNewSimpleError(AvmErrorKind kind);
+AVMAPI AvmError* AvmErrorGetSource(AvmError* self);
+AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 
 #define AvmResult(T)    AVM_GENERIC(AvmResult, T)
 #define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
