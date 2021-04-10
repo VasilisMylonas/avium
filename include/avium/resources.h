@@ -29,5 +29,6 @@ static const str InvalidPtrDerefMsg = "Invalid pointer dereference.";
 static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";
 static const str InvalidOriginMsg = "Parameter `origin` was invalid.";
+static const str PathNullMsg = "Parameter `path` was `NULL`.";
 
 #endif  // AVIUM_RESOURCES_H
