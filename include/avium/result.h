@@ -1,7 +1,29 @@
+/**
+ * @file avium/result.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Result and error types.
+ * @version 0.2
+ * @date 2021-04-10
+ *
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef AVIUM_RESULT_H
 #define AVIUM_RESULT_H
 
-#include "avium/types.h"
 #include "avium/runtime.h"
 
 typedef struct AvmError AvmError;
@@ -88,6 +110,7 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 #define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
 #define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
 
+/// Creates an AvmResult for a type.
 #define AVM_RESULT_TYPE(T)                                                     \
     AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                             \
         AvmError* _error;                                                      \
