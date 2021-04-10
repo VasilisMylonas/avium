@@ -16,9 +16,29 @@ static AvmString AvmOSErrorToString(AvmOSError* self) {
 }
 
 static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
-    (void)self;
-    // TODO: Error descriptions.
-    return AvmStringNew(0);
+    switch (self->_kind) {
+        case ErrorKindNone:
+            return AvmStringFrom("No error occurred.");
+        case ErrorKindArg:
+            return AvmStringFrom(
+                "An invalid argument was received by a function.");
+        case ErrorKindRange:
+            return AvmStringFrom("A provided index was out of range.");
+        case ErrorKindMem:
+            return AvmStringFrom(
+                "There was not enough memory to handle an operation.");
+        case ErrorKindInvalidOp:
+            return AvmStringFrom(
+                "A function call was invalid for the current state.");
+        case ErrorKindIO:
+            return AvmStringFrom("An IO error occurred.");
+        case ErrorKindSys:
+            return AvmStringFrom("An unknown system error occurred.");
+        case ErrorKindNotFound:
+            return AvmStringFrom("A required resource was unavailable.");
+        default:
+            return AvmStringNew(0);
+    }
 }
 
 AVM_TYPE(AvmOSError, {[FUNC_TO_STRING] = (AvmFunction)AvmOSErrorToString});
