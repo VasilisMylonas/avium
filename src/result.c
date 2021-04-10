@@ -41,16 +41,16 @@ AVM_TYPE(AvmOSError, {[FUNC_TO_STRING] = (AvmFunction)AvmOSErrorToString});
 AVM_TYPE(AvmSimpleError,
          {[FUNC_TO_STRING] = (AvmFunction)AvmSimpleErrorToString});
 
-AvmError* AvmErrorNewOSError(int code) {
+AvmError* AvmErrorFromOSCode(int code) {
     return heapalloc(AvmOSError, {
                                      ._type = AVM_GET_TYPE(AvmOSError),
                                      ._code = code,
                                  });
 }
 
-AvmError* AvmErrorGetLast(void) { return AvmErrorNewOSError(errno); }
+AvmError* AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
 
-AvmError* AvmErrorNewSimpleError(AvmErrorKind kind) {
+AvmError* AvmErrorOfKind(AvmErrorKind kind) {
     return heapalloc(AvmSimpleError, {
                                          ._type = AVM_GET_TYPE(AvmSimpleError),
                                          ._kind = kind,
@@ -63,7 +63,7 @@ AvmError* AvmErrorGetSource(AvmError* self) {
     }
 
     if (self->_source == NULL) {
-        return AvmErrorNewOSError(0);
+        return AvmErrorFromOSCode(0);
     }
 
     return self->_source;

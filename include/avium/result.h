@@ -34,10 +34,52 @@ typedef enum {
     ErrorKindNotFound,
 } AvmErrorKind;
 
+/**
+ * @brief Returns the last error that occurred.
+ *
+ * The error is created based on the errno value and may create a 'successful'
+ * error.
+ *
+ * @return A type that implements AvmError.
+ */
 AVMAPI AvmError* AvmErrorGetLast(void);
-AVMAPI AvmError* AvmErrorNewOSError(int code);
-AVMAPI AvmError* AvmErrorNewSimpleError(AvmErrorKind kind);
+
+/**
+ * @brief Creates an AvmError from an os code.
+ *
+ * If the code is 0 then a 'successful' error is created.
+ *
+ * @param code The error code.
+ * @return The created instance.
+ */
+AVMAPI AvmError* AvmErrorFromOSCode(int code);
+
+/**
+ * @brief Creates an AvmError of a specific kind.
+ *
+ * @param kind The error kind.
+ * @return The created instance.
+ */
+AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
+
+/**
+ * @brief Returns the AvmError responsible for this error.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmError instance.
+ * @return The source of the error.
+ */
 AVMAPI AvmError* AvmErrorGetSource(AvmError* self);
+
+/**
+ * @brief Gets a backtrace of the stack during the creation of an error.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmError instance.
+ * @return The backtrace.
+ */
 AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 
 #define AvmResult(T)    AVM_GENERIC(AvmResult, T)
