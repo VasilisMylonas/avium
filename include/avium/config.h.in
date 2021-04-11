@@ -13,6 +13,7 @@
 #cmakedefine AVM_DARWIN
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
+#cmakedefine AVM_USE_GC
 
 #ifndef static_assert
 #    define static_assert _Static_assert

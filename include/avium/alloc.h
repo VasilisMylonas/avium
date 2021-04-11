@@ -31,9 +31,7 @@ AVMAPI void* AvmRealloc(void* memory, size_t size);
 AVMAPI void AvmDealloc(void* memory);
 
 AVMAPI object AvmObjectAlloc(size_t size, object data);
-AVMAPI void AvmObjectDealloc(object self);
 
 #define heapalloc(T, ...) AvmObjectAlloc(sizeof(T), (T[1]){__VA_ARGS__})
-#define heapfree(object)  AvmObjectDealloc(object)
 
 #endif  // AVIUM_ALLOC_H
