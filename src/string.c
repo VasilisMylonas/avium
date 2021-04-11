@@ -1,7 +1,6 @@
 #include "avium/string.h"
 #include "avium/resources.h"
 #include "avium/runtime.h"
-#include "avium/alloc.h"
 
 #include <ctype.h>
 #include <string.h>

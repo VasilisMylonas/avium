@@ -1,6 +1,5 @@
 #include <string.h>  // For memcmp, memcpy
 
-#include "avium/alloc.h"
 #include "avium/types.h"
 #include "avium/runtime.h"
 #include "avium/resources.h"

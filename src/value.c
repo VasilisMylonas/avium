@@ -2,8 +2,7 @@
 
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For panic messages.
-#include "avium/runtime.h"    // For AVM_GET_TYPE, AVM_TYPE, AvmPanic
-#include "avium/alloc.h"      // For AvmAlloc
+#include "avium/runtime.h"    // For AVM_GET_TYPE, AVM_TYPE, AvmPanic, AvmAlloc
 
 #include <string.h>  // For strcmp
 

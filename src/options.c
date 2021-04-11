@@ -1,7 +1,6 @@
 #include "avium/options.h"
 #include "avium/fmt.h"
 #include "avium/string.h"
-#include "avium/alloc.h"
 
 #include <stdlib.h>
 #include <string.h>
