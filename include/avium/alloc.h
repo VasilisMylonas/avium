@@ -26,6 +26,10 @@
 
 #include "avium/types.h"
 
+AVMAPI void* AvmAlloc(size_t size);
+AVMAPI void* AvmRealloc(void* memory, size_t size);
+AVMAPI void AvmDealloc(void* memory);
+
 AVMAPI object AvmObjectAlloc(size_t size, object data);
 AVMAPI void AvmObjectDealloc(object self);
 

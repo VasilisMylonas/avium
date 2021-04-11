@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+void* AvmAlloc(size_t size) { return malloc(size); }
+void* AvmRealloc(void* memory, size_t size) { return realloc(memory, size); }
+void AvmDealloc(void* memory) { free(memory); }
+
 object AvmObjectAlloc(size_t size, object data) {
     object memory = malloc(size);
     if (data != NULL) {
