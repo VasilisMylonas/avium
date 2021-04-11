@@ -1,9 +1,9 @@
 #include "avium/string.h"
 #include "avium/resources.h"
 #include "avium/runtime.h"
+#include "avium/alloc.h"
 
 #include <ctype.h>
-#include <stdlib.h>
 #include <string.h>
 
 static AvmString AvmStringToString(AvmString* self) {
@@ -12,12 +12,12 @@ static AvmString AvmStringToString(AvmString* self) {
 
 static object AvmStringClone(AvmString* self) {
     AvmString s = AvmStringFrom(self->_buffer);
-    AvmString* ret = malloc(sizeof(AvmString));
+    AvmString* ret = AvmAlloc(sizeof(AvmString));
     memcpy(ret, &s, sizeof(AvmString));
     return ret;
 }
 
-static void AvmStringDestroy(AvmString* self) { free(self->_buffer); }
+static void AvmStringDestroy(AvmString* self) { AvmDealloc(self->_buffer); }
 
 AVM_TYPE(AvmString, {[FUNC_DTOR] = (AvmFunction)AvmStringDestroy,
                      [FUNC_CLONE] = (AvmFunction)AvmStringClone,
@@ -30,7 +30,7 @@ AvmString AvmStringNew(size_t capacity) {
         ._type = AVM_GET_TYPE(AvmString),
         ._length = 0,
         ._capacity = capacity,
-        ._buffer = capacity == 0 ? NULL : malloc(capacity),
+        ._buffer = capacity == 0 ? NULL : AvmAlloc(capacity),
     };
 }
 
@@ -157,7 +157,7 @@ void AvmStringPushChar(AvmString* self, char character) {
 
     if (self->_length == self->_capacity) {
         self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_buffer = realloc(self->_buffer, self->_capacity + 1);
+        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
     self->_buffer[self->_length] = character;
@@ -186,7 +186,7 @@ void AvmStringPushChars(AvmString* self, size_t length, const char* contents) {
     if (self->_length > self->_capacity) {
         self->_capacity *= AVM_STRING_GROWTH_FACTOR;
         self->_capacity += length;
-        self->_buffer = realloc(self->_buffer, self->_capacity + 1);
+        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
     memcpy(&self->_buffer[self->_length - length], contents, length + 1);
@@ -207,7 +207,7 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
     if (self->_length > self->_capacity) {
         self->_capacity *= AVM_STRING_GROWTH_FACTOR;
         self->_capacity += length;
-        self->_buffer = realloc(self->_buffer, self->_capacity + 1);
+        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
     memcpy(&self->_buffer[self->_length - length], other->_buffer, length + 1);
