@@ -6,9 +6,6 @@
 #include "avium/runtime.h"
 #include "avium/resources.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 #ifdef AVM_USE_GC
 #    include <gc/gc.h>
 #    define AVM_ALLOC   GC_malloc

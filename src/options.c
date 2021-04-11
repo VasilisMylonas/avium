@@ -1,9 +1,10 @@
 #include "avium/options.h"
+
+#include <stdlib.h>  // For atof, atoll
+#include <string.h>  // For strlen, strncmp, strrchr
+
 #include "avium/fmt.h"
 #include "avium/string.h"
-
-#include <stdlib.h>
-#include <string.h>
 
 typedef struct {
     str description;

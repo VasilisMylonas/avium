@@ -24,7 +24,6 @@
 #ifndef AVIUM_ARRAY_H
 #define AVIUM_ARRAY_H
 
-#include "avium/types.h"
 #include "avium/runtime.h"
 
 #define AvmArray(T, N)        AVM_GENERIC(AvmArray, T##_##N)

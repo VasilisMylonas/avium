@@ -1,6 +1,7 @@
+#include "avium/types.h"
+
 #include <string.h>  // For memcmp, memcpy
 
-#include "avium/types.h"
 #include "avium/runtime.h"
 #include "avium/resources.h"
 #include "avium/fmt.h"
