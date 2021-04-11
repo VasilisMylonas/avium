@@ -52,7 +52,7 @@ AvmString AvmItoa(_long value) {
     return s;
 }
 
-AvmString AvmUtoa(ulong value, NumericBase base) {
+AvmString AvmUtoa(ulong value, AvmNumericBase base) {
     switch (base) {
         case NumericBaseBinary:
         case NumericBaseOctal:

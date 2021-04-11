@@ -26,9 +26,8 @@
 
 #include "avium/runtime.h"
 
-#define AvmArray(T, N)        AVM_GENERIC(AvmArray, T##_##N)
-#define AvmArrayFrom(T, N)    AVM_GENERIC(AvmArrayFrom, T##_##N)
-#define AvmArrayDestroy(T, N) AVM_GENERIC(AvmArrayDestroy, T##_##N)
+#define AvmArray(T, N)     AVM_GENERIC(AvmArray, T##_##N)
+#define AvmArrayFrom(T, N) AVM_GENERIC(AvmArrayFrom, T##_##N)
 
 #define AVM_ARRAY_TYPE(T)   \
     AVM_ARRAY_TYPE_N(T, 1)  \
