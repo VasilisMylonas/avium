@@ -51,4 +51,4 @@ jobs:
 
     - name: Coveralls GitHub Action
       working-directory: ${{github.workspace}}/build
-      uses: coverallsapp/github-action@v1.1.2
+      uses: coverallsapp/github-action@master
