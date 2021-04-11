@@ -11,10 +11,9 @@ typedef enum {
     FUNC_TO_STRING,
     FUNC_CLONE,
     FUNC_EQUALS,
-    FUNC_READ,
-    FUNC_WRITE,
-    FUNC_READ_STRING,
-    FUNC_WRITE_STRING,
+
+    FUNC_GET_BACKTRACE = 16,
+    FUNC_GET_SOURCE,
 } AvmFunctionEntry;
 
 /// Enables signal catching.

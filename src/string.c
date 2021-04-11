@@ -387,7 +387,7 @@ AvmResult(char) AvmStringCharAt(AvmString* self, size_t index) {
         return AvmSuccess(char)(self->_buffer[index]);
     }
 
-    return AvmFailure(char)(ErrorKindRange, IndexOutOfRange);
+    return AvmFailure(char)(AvmErrorFromOSCode(ErrorKindRange));
 }
 
 void AvmStringReverse(AvmString* self) {
