@@ -147,7 +147,7 @@ AVMAPI void AvmObjectDestroy(object self);
  *
  * This function tries to use the FUNC_CLONE virtual function entry to clone
  * the object. If no such virtual function is available then a combination of
- * malloc and memcpy is used.
+ * AvmAlloc and memcpy is used.
  *
  * @pre Parameter @p self must be not null.
  *
