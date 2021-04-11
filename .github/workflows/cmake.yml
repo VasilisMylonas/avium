@@ -48,7 +48,7 @@ jobs:
     - name: Coverage
       working-directory: ${{github.workspace}}/build
       shell: bash
-      run: ../scripts/gcovr.sh
+      run: geninfo $(find tests/CMakeFiles/*.dir/*.gcda) $(find src/CMakeFiles/*.dir/*.gcda) -o coverage/lcov.info
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
