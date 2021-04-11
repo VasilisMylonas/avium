@@ -48,11 +48,6 @@ static void ExceptionHandler(int exception) {
     }
 }
 
-void AvmInit(int argc, str argv[]) {
-    (void)argc;
-    (void)argv;
-}
-
 void AvmEnableExceptions(void) {
     signal(SIGSEGV, ExceptionHandler);
     signal(SIGILL, ExceptionHandler);

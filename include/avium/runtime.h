@@ -16,8 +16,6 @@ typedef enum {
     FUNC_GET_SOURCE,
 } AvmFunctionEntry;
 
-AVMAPI void AvmInit(int argc, str argv[]);
-
 AVMAPI void* AvmAlloc(size_t size);
 AVMAPI void* AvmRealloc(void* memory, size_t size);
 AVMAPI void AvmDealloc(void* memory);
