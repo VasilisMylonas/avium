@@ -45,10 +45,13 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C $BUILD_TYPE
 
+    - name: Install LCov
+      shell: bash
+      run: sudo apt install lcov
+
     - name: Coverage
       working-directory: ${{github.workspace}}/build
       shell: bash
-      run: sudo apt install lcov
       run: geninfo $(find tests/CMakeFiles/*.dir/*.gcda) $(find src/CMakeFiles/*.dir/*.gcda) -o coverage/lcov.info
 
     - name: Coveralls
