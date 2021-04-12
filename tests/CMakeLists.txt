@@ -11,9 +11,11 @@ function(add_avm_test TEST)
     set_source_files_properties(${RUNNER} PROPERTIES GENERATED TRUE)
 
     add_executable(${TEST} ${RUNNER})
-    target_link_libraries(${TEST} avm-static)
+    target_link_libraries(${TEST} avm-static gcov)
     add_test(NAME ${TEST} COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST})
 endfunction(add_avm_test)
+
+make_directory(${CMAKE_BINARY_DIR}/coverage)
 
 add_avm_test(array-list)
 add_avm_test(array)

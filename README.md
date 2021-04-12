@@ -1,5 +1,5 @@
 ![Avium logo](images/avium-logo-transparent.png)
-![License badge](https://img.shields.io/github/license/VasilisMylonas/avium) ![Commit activity badge](https://img.shields.io/github/commit-activity/m/VasilisMylonas/avium) ![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium) ![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium) ![Discord server badge](https://img.shields.io/discord/810959563469357057)
+![License badge](https://img.shields.io/github/license/VasilisMylonas/avium) ![Commit activity badge](https://img.shields.io/github/commit-activity/m/VasilisMylonas/avium) ![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium) ![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium) ![Discord server badge](https://img.shields.io/discord/810959563469357057) [![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=feature/coveralls-support)](https://coveralls.io/github/VasilisMylonas/avium?branch=feature/coveralls-support)
 
 # Avium
 
