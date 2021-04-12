@@ -16,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Dependencies
-      shell: bash
-      working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/install-dependencies.sh
+    # - name: Install Dependencies
+    #   shell: bash
+    #   working-directory: $SRC_DIR
+    #   run: $SCRIPTS_DIR/install-dependencies.sh
 
     - name: Build
       shell: bash
