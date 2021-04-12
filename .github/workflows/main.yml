@@ -6,7 +6,7 @@ env:
   BUILD_TYPE: Release
   SRC_DIR: ${{github.workspace}}
   BUILD_DIR: ${{github.workspace}}/build
-  COVERAGE_FILE: $BUILD_DIR/coverage/cov.info
+  COVERAGE_FILE: ${{github.workspace}}/build/coverage/cov.info
 
 jobs:
   build:
