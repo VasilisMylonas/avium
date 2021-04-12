@@ -16,10 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Log
-      shell: bash
-      run: file $SCRIPTS_DIR/install-dependencies.sh
-
     - name: Install Dependencies
       shell: bash
       working-directory: $SRC_DIR
