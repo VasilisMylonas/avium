@@ -1,9 +1,10 @@
 #include "avium/options.h"
+
+#include <stdlib.h>  // For atof, atoll
+#include <string.h>  // For strlen, strncmp, strrchr
+
 #include "avium/fmt.h"
 #include "avium/string.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 typedef struct {
     str description;
@@ -27,7 +28,7 @@ static void AvmOptionParserDestroy(AvmOptionParser* self) {
 AVM_TYPE(AvmOptionParser, {[FUNC_DTOR] = (AvmFunction)AvmOptionParserDestroy});
 
 AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
-    AvmOptionParser* self = malloc(sizeof(AvmOptionParser));
+    AvmOptionParser* self = AvmAlloc(sizeof(AvmOptionParser));
     self->_type = AVM_GET_TYPE(AvmOptionParser);
     self->argc = argc;
     self->argv = argv;

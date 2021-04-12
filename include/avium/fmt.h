@@ -39,7 +39,7 @@ typedef enum {
 
     /// Base 16 (10).
     NumericBaseHex = 16,
-} NumericBase;
+} AvmNumericBase;
 
 /**
  * @brief Converts a signed integer to a string.
@@ -57,7 +57,7 @@ AVMAPI AvmString AvmItoa(_long value);
  *
  * @return The string representation.
  */
-AVMAPI AvmString AvmUtoa(ulong value, NumericBase base);
+AVMAPI AvmString AvmUtoa(ulong value, AvmNumericBase base);
 
 /**
  * @brief Converts a double to a string.

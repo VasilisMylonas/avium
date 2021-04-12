@@ -24,16 +24,10 @@
 #ifndef AVIUM_ARRAY_H
 #define AVIUM_ARRAY_H
 
-#include "avium/types.h"
 #include "avium/runtime.h"
 
-extern void free(void*);
-extern void* malloc(size_t);
-extern void* realloc(void*, size_t);
-
-#define AvmArray(T, N)        AVM_GENERIC(AvmArray, T##_##N)
-#define AvmArrayFrom(T, N)    AVM_GENERIC(AvmArrayFrom, T##_##N)
-#define AvmArrayDestroy(T, N) AVM_GENERIC(AvmArrayDestroy, T##_##N)
+#define AvmArray(T, N)     AVM_GENERIC(AvmArray, T##_##N)
+#define AvmArrayFrom(T, N) AVM_GENERIC(AvmArrayFrom, T##_##N)
 
 #define AVM_ARRAY_TYPE(T)   \
     AVM_ARRAY_TYPE_N(T, 1)  \
@@ -101,34 +95,29 @@ extern void* realloc(void*, size_t);
     AVM_ARRAY_TYPE_N(T, 63) \
     AVM_ARRAY_TYPE_N(T, 64)
 
-#define AVM_ARRAY_TYPE_N(T, N)                                        \
-    AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {               \
-        size_t length;                                                \
-        T at[N];                                                      \
-    });                                                               \
-                                                                      \
-    static inline void AvmArrayDestroy(T, N)(AvmArray(T, N) * self) { \
-        free(self->at);                                               \
-    }                                                                 \
-                                                                      \
-    AVM_TYPE(AvmArray(T, N),                                          \
-             {[FUNC_DTOR] = (AvmFunction)AvmArrayDestroy(T, N)});     \
-                                                                      \
-    static inline AvmArray(T, N) AvmArrayFrom(T, N)(T first, ...) {   \
-        AvmArray(T, N) array = {                                      \
-            ._type = AVM_GET_TYPE(AvmArray(T, N)),                    \
-            .length = N,                                              \
-        };                                                            \
-                                                                      \
-        va_list args;                                                 \
-        va_start(args, first);                                        \
-        array.at[0] = first;                                          \
-        for (size_t i = 1; i < N; i++) {                              \
-            array.at[i] = va_arg(args, T);                            \
-        }                                                             \
-        va_end(args);                                                 \
-                                                                      \
-        return array;                                                 \
+#define AVM_ARRAY_TYPE_N(T, N)                                      \
+    AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {             \
+        size_t length;                                              \
+        T at[N];                                                    \
+    });                                                             \
+                                                                    \
+    AVM_TYPE(AvmArray(T, N), {[FUNC_DTOR] = NULL});                 \
+                                                                    \
+    static inline AvmArray(T, N) AvmArrayFrom(T, N)(T first, ...) { \
+        AvmArray(T, N) array = {                                    \
+            ._type = AVM_GET_TYPE(AvmArray(T, N)),                  \
+            .length = N,                                            \
+        };                                                          \
+                                                                    \
+        va_list args;                                               \
+        va_start(args, first);                                      \
+        array.at[0] = first;                                        \
+        for (size_t i = 1; i < N; i++) {                            \
+            array.at[i] = va_arg(args, T);                          \
+        }                                                           \
+        va_end(args);                                               \
+                                                                    \
+        return array;                                               \
     }
 
 #define AVM_ARRAY_NATIVE_TYPE_N(T, N)                                 \
@@ -137,15 +126,10 @@ extern void* realloc(void*, size_t);
         T at[N];                                                      \
     });                                                               \
                                                                       \
-    static inline void AvmArrayDestroy(T, N)(AvmArray(T, N) * self) { \
-        free(self->at);                                               \
-    }                                                                 \
-                                                                      \
     AVMAPI AvmString AvmArrayToString_##T(AvmArray(T, 1) * array);    \
                                                                       \
     AVM_TYPE(AvmArray(T, N),                                          \
-             {[FUNC_DTOR] = (AvmFunction)AvmArrayDestroy(T, N),       \
-              [FUNC_TO_STRING] = (AvmFunction)AvmArrayToString_##T}); \
+             {[FUNC_TO_STRING] = (AvmFunction)AvmArrayToString_##T}); \
                                                                       \
     static inline AvmArray(T, N) AvmArrayFrom(T, N)(T first, ...) {   \
         AvmArray(T, N) array = {                                      \
