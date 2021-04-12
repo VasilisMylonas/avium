@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 sudo apt update &&
 sudo apt install -y cmake doxygen python3 python3-pip lcov &&
