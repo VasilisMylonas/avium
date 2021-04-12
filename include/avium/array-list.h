@@ -46,7 +46,7 @@
     static_assert_s(sizeof(AvmArrayList(T)) == AVM_ARRAY_LIST_SIZE);          \
                                                                               \
     static inline void AvmArrayListDestroy(T)(AvmArrayList(T) * self) {       \
-        AvmDealloc(self->_items);                                             \
+        AvmDealloc((void*)self->_items);                                      \
     }                                                                         \
                                                                               \
     AVM_TYPE(AvmArrayList(T),                                                 \
