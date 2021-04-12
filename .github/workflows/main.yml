@@ -17,22 +17,22 @@ jobs:
 
     - name: Install Dependencies
       shell: bash
-      working-directory: $SRC_DIR
+      working-directory: ${{env.SRC_DIR}}
       run: ./scripts/install-dependencies.sh
 
     - name: Build
       shell: bash
-      working-directory: $SRC_DIR
+      working-directory: ${{env.SRC_DIR}}
       run: ./scripts/build.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Test
       shell: bash
-      working-directory: $SRC_DIR
+      working-directory: ${{env.SRC_DIR}}s
       run: ./scripts/test.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Coverage
       shell: bash
-      working-directory: $SRC_DIR
+      working-directory: ${{env.SRC_DIR}}
       run: ./scripts/coverage.sh $BUILD_DIR $COVERAGE_FILE
 
     - name: Coveralls
