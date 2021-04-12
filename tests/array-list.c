@@ -1,7 +1,10 @@
 #include <avium/testing.h>
 #include <avium/array-list.h>
 
-static object TestInit(void) {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmArrayList(int) list;
 
     list = AvmArrayListNew(int)(16);

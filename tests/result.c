@@ -1,7 +1,10 @@
 #include <avium/testing.h>
 #include <avium/result.h>
 
-static object TestInit(void) {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmResult(int) success;
 
     success = AvmSuccess(int)(5);

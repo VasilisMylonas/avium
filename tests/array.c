@@ -2,7 +2,10 @@
 #include <avium/array.h>
 #include <avium/fmt.h>
 
-static object TestInit(void) {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmArray(int, 5) array;
 
     array = AvmArrayFrom(int, 5, 0, 1, -2, 3, -4);

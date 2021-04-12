@@ -6,7 +6,10 @@ static const str TestString4 =
     "Hello World!Hello World!Hello World!Hello World!";
 static const char TestArray[] = {'H', 'e', 'l', 'l', 'o', '!'};
 
-static object TestInit(void) {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmString s;
     s = AvmStringFrom(TestString);
     return &s;
