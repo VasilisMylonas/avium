@@ -47,7 +47,7 @@ check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE long)
 else()
-    set(AVM_LONG_TYPE long long)
+    set(AVM_LONG_TYPE "long long")
 endif()
 
 # Process header config file.
