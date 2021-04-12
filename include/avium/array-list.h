@@ -73,7 +73,7 @@
         if (self->_length >= self->_capacity) {                               \
             self->_capacity *= AVM_ARRAY_LIST_GROWTH_FACTOR;                  \
             self->_items =                                                    \
-                AvmRealloc(self->_items, self->_capacity * sizeof(T));        \
+                AvmRealloc((void*)self->_items, self->_capacity * sizeof(T)); \
         }                                                                     \
                                                                               \
         self->_items[self->_length++] = item;                                 \
@@ -138,7 +138,7 @@
         if (self->_length >= self->_capacity) {                               \
             self->_capacity *= AVM_ARRAY_LIST_GROWTH_FACTOR;                  \
             self->_items =                                                    \
-                AvmRealloc(self->_items, self->_capacity * sizeof(T));        \
+                AvmRealloc((void*)self->_items, self->_capacity * sizeof(T)); \
         }                                                                     \
                                                                               \
         self->_items[self->_length++] = item;                                 \
