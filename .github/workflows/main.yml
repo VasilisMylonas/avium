@@ -16,6 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Log
+      shell: bash
+      run: echo ${{github.workspace}}
+
     # - name: Install Dependencies
     #   shell: bash
     #   working-directory: $SRC_DIR
