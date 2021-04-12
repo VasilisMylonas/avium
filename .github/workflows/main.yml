@@ -23,22 +23,22 @@ jobs:
     - name: Install Dependencies
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/install-dependencies.sh
+      run: chmod +x $SCRIPTS_DIR/install-dependencies.sh && $SCRIPTS_DIR/install-dependencies.sh
 
     - name: Build
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/build.sh $BUILD_DIR $BUILD_TYPE
+      run: chmod +x $SCRIPTS_DIR/build.sh && $SCRIPTS_DIR/build.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Test
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/test.sh $BUILD_DIR $BUILD_TYPE
+      run: chmod +x $SCRIPTS_DIR/test.sh && $SCRIPTS_DIR/test.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Coverage
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/coverage.sh $BUILD_DIR $COVERAGE_FILE
+      run: chmod +x $SCRIPTS_DIR/coverage.sh && $SCRIPTS_DIR/coverage.sh $BUILD_DIR $COVERAGE_FILE
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
