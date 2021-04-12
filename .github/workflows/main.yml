@@ -27,7 +27,7 @@ jobs:
 
     - name: Test
       shell: bash
-      working-directory: ${{env.SRC_DIR}}s
+      working-directory: ${{env.SRC_DIR}}
       run: ./scripts/test.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Coverage
