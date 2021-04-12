@@ -16,6 +16,7 @@ typedef struct {
 // TODO: This is NOT a proper fix.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wvarargs"
+#pragma GCC diagnostic ignored "-Wunused-function"
 AVM_ARRAY_LIST_TYPE(AvmOption)
 #pragma GCC diagnostic pop
 
