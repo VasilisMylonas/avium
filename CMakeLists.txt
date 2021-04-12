@@ -19,7 +19,6 @@ include(GNUInstallDirs)
 include(CTest)
 include(GenerateExportHeader)
 
-
 if(MSVC)
     # Enable warnings for MSVC and treat them as errors.
     add_compile_options(/Wall)
