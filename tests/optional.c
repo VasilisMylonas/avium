@@ -1,7 +1,7 @@
 #include <avium/testing.h>
 #include <avium/optional.h>
 
-static object TestInit() {
+static object TestInit(void) {
     static AvmOptional(int) optional;
 
     optional = AvmSome(int)(5);

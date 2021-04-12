@@ -52,7 +52,7 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
  *
  * @return The current runtime version.
  */
-AVMAPI AvmVersion AvmRuntimeGetVersion();
+AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 // Ensure type size constraint.
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);

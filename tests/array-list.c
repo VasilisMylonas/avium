@@ -1,14 +1,12 @@
 #include <avium/testing.h>
 #include <avium/array-list.h>
 
-static object TestInit() {
+static object TestInit(void) {
     static AvmArrayList(int) list;
 
     list = AvmArrayListNew(int)(16);
     return &list;
 }
-
-__test TestFini(object state) { (void)state; }
 
 __test TestGetCapacity(object state) {
     AssertEqual(AvmArrayListGetCapacity(int)(state), 16);

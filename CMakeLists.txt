@@ -34,6 +34,9 @@ if(MSVC)
     add_compile_options(/wd4200) # Zero-sized array in struct/union.
     add_compile_options(/wd4063) # Invalid value for switch of enum.
     add_compile_options(/wd5105) # Macro expansion producing 'defined'...
+    add_compile_options(/wd4711) # Function not selected for inlining.
+    add_compile_options(/wd4242) # Conversion ... possible loss of data.
+
 else()
     # Enable warnings for GCC compatible compilers.
     add_compile_options(-fprofile-arcs -ftest-coverage)

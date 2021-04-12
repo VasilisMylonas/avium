@@ -2,7 +2,7 @@
 #include <avium/array.h>
 #include <avium/fmt.h>
 
-static object TestInit() {
+static object TestInit(void) {
     static AvmArray(int, 5) array;
 
     array = AvmArrayFrom(int, 5, 0, 1, -2, 3, -4);

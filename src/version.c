@@ -21,7 +21,7 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch, char tag) {
     };
 }
 
-AvmVersion AvmRuntimeGetVersion() {
+AvmVersion AvmRuntimeGetVersion(void) {
     return AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR,
                           AVM_VERSION_PATCH, 'd');
 }

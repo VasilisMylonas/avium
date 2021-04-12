@@ -1,7 +1,7 @@
 #include <avium/testing.h>
 #include <avium/value.h>
 
-static object TestInit() { return NULL; }
+static object TestInit(void) { return NULL; }
 
 __test TestBool(object state) {
     (void)state;
