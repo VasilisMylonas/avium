@@ -18,7 +18,7 @@ jobs:
 
     - name: Log
       shell: bash
-      run: pwd
+      run: file $SCRIPTS_DIR/install-dependencies.sh
 
     - name: Install Dependencies
       shell: bash
