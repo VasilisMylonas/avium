@@ -36,8 +36,8 @@ if(MSVC)
     add_compile_options(/wd5105) # Macro expansion producing 'defined'...
     add_compile_options(/wd4711) # Function not selected for inlining.
     add_compile_options(/wd4244) # Conversion ... possible loss of data.
-    add_compile_options(/wd4232) # address of dllimport ... is not static, identity not guaranteed.
-
+    add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
+    add_compile_options(/wd4273) # TODO: Temporary
 else()
     # Enable warnings for GCC compatible compilers.
     add_compile_options(-fprofile-arcs -ftest-coverage)
