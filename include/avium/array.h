@@ -184,8 +184,10 @@
     AVM_ARRAY_NATIVE_TYPE_N(T, 63) \
     AVM_ARRAY_NATIVE_TYPE_N(T, 64)
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#ifndef AVM_MSVC
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 AVM_ARRAY_NATIVE_TYPE(char)
 AVM_ARRAY_NATIVE_TYPE(byte)
@@ -197,7 +199,9 @@ AVM_ARRAY_NATIVE_TYPE(_long)
 AVM_ARRAY_NATIVE_TYPE(ulong)
 AVM_ARRAY_NATIVE_TYPE(str)
 
-#pragma GCC diagnostic pop
+#ifndef AVM_MSVC
+#    pragma GCC diagnostic pop
+#endif
 
 #undef AVM_ARRAY_NATIVE_TYPE_N
 #undef AVM_ARRAY_NATIVE_TYPE

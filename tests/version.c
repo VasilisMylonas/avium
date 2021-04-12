@@ -2,7 +2,10 @@
 #include <avium/version.h>
 #include <avium/string.h>
 
-static object TestInit() {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmVersion version;
     version = AvmVersionFrom(0, 9, 1, 'b');
     return &version;

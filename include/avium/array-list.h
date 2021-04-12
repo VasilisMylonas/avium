@@ -46,7 +46,7 @@
     static_assert_s(sizeof(AvmArrayList(T)) == AVM_ARRAY_LIST_SIZE);          \
                                                                               \
     static inline void AvmArrayListDestroy(T)(AvmArrayList(T) * self) {       \
-        AvmDealloc(self->_items);                                             \
+        AvmDealloc((void*)self->_items);                                      \
     }                                                                         \
                                                                               \
     AVM_TYPE(AvmArrayList(T),                                                 \
@@ -73,7 +73,7 @@
         if (self->_length >= self->_capacity) {                               \
             self->_capacity *= AVM_ARRAY_LIST_GROWTH_FACTOR;                  \
             self->_items =                                                    \
-                AvmRealloc(self->_items, self->_capacity * sizeof(T));        \
+                AvmRealloc((void*)self->_items, self->_capacity * sizeof(T)); \
         }                                                                     \
                                                                               \
         self->_items[self->_length++] = item;                                 \
@@ -111,7 +111,7 @@
     static_assert_s(sizeof(AvmArrayList(T)) == AVM_ARRAY_LIST_SIZE);          \
                                                                               \
     static inline void AvmArrayListDestroy(T)(AvmArrayList(T) * self) {       \
-        AvmDealloc(self->_items);                                             \
+        AvmDealloc((void*)self->_items);                                      \
     }                                                                         \
                                                                               \
     AVM_TYPE(AvmArrayList(T),                                                 \
@@ -138,7 +138,7 @@
         if (self->_length >= self->_capacity) {                               \
             self->_capacity *= AVM_ARRAY_LIST_GROWTH_FACTOR;                  \
             self->_items =                                                    \
-                AvmRealloc(self->_items, self->_capacity * sizeof(T));        \
+                AvmRealloc((void*)self->_items, self->_capacity * sizeof(T)); \
         }                                                                     \
                                                                               \
         self->_items[self->_length++] = item;                                 \
