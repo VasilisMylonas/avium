@@ -101,6 +101,10 @@
         return self->_items[self->_length - 1];                               \
     }
 
+// TODO: This is NOT a proper fix.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wvarargs"
+
 AVM_ARRAY_LIST_TYPE(char)
 AVM_ARRAY_LIST_TYPE(byte)
 AVM_ARRAY_LIST_TYPE(short)
@@ -115,5 +119,7 @@ AVM_ARRAY_LIST_TYPE(object)
 AVM_ARRAY_LIST_TYPE(size_t)
 AVM_ARRAY_LIST_TYPE(AvmString)
 AVM_ARRAY_LIST_TYPE(AvmFunction)
+
+#pragma GCC diagnostic pop
 
 #endif  // AVIUM_ARRAY_LIST_H
