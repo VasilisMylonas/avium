@@ -75,8 +75,7 @@ void AvmOptionParserAddStandardOptions(AvmOptionParser* self) {
 }
 
 void AvmOptionParserShowUsage(AvmOptionParser* self, str description) {
-    str s = strrchr(self->argv[0], '/') + 1;
-    AvmPrintf("usage: %s ", s);
+    AvmPrintf("usage: %s ", strrchr(self->argv[0], '/') + 1);
 
     const size_t length = AvmArrayListGetLength(AvmOption)(&self->options);
 
@@ -213,6 +212,7 @@ AvmArrayList(AvmValue) AvmOptionParserParse(AvmOptionParser* self) {
                                            AvmValueFromInt(atoll(option)));
                 break;
             case ValueKindUInt:
+                // TODO
                 // AvmArrayListPush(AvmValue)(&list,
                 //                            AvmValueFromUInt(ato ll(option)));
                 break;
@@ -222,7 +222,8 @@ AvmArrayList(AvmValue) AvmOptionParserParse(AvmOptionParser* self) {
             case ValueKindChar:
                 AvmArrayListPush(AvmValue)(&list, AvmValueFromChar(option[0]));
                 break;
-            default:
+            case ValueKindBool:
+            default:  // TODO: Error
                 AvmArrayListPush(AvmValue)(&list,
                                            AvmValueFromBool(option != NULL));
         }
