@@ -1,0 +1,33 @@
+name: CrossPlatform
+
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+  SRC_DIR: ${{github.workspace}}
+  BUILD_DIR: ${{github.workspace}}/build
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+        matrix:
+            os: [ubuntu-latest, macOS-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: cmake -E make_directory $BUILD_DIR
+
+    - name: Config
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: cmake -S . -B $BUILD_DIR -DAVM_GEN_DOCS=OFF -DAVM_RUN_TESTS=OFF -DAVM_USE_GC=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: cmake --build $BUILD_DIR --config $BUILD_TYPE

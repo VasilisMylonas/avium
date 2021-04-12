@@ -5,7 +5,7 @@
 static object TestInit() {
     static AvmArray(int, 5) array;
 
-    array = AvmArrayFrom(int, 5)(0, 1, -2, 3, -4);
+    array = AvmArrayFrom(int, 5, 0, 1, -2, 3, -4);
     return &array;
 }
 

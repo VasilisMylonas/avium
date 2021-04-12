@@ -14,6 +14,7 @@
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
 #cmakedefine AVM_USE_GC
+#cmakedefine AVM_HAVE_UCHAR_H
 
 #ifndef static_assert
 #    define static_assert _Static_assert
@@ -64,6 +65,10 @@
 #define AVM_VALUE_SIZE 24
 
 // fmt.h
+#ifdef AVM_HAVE_UCHAR_H
+#    define AVM_FMT_UNICODE 'U'
+#endif
+
 #define AVM_FMT_INT_DECIMAL    'i'
 #define AVM_FMT_INT_HEX        'x'
 #define AVM_FMT_INT_BINARY     'b'
@@ -71,7 +76,6 @@
 #define AVM_FMT_INT_UNSIGNED   'u'
 #define AVM_FMT_INT_SIZE       'z'
 #define AVM_FMT_CHAR           'c'
-#define AVM_FMT_UNICODE        'U'
 #define AVM_FMT_FLOAT          'f'
 #define AVM_FMT_FLOAT_EXP      'e'
 #define AVM_FMT_FLOAT_AUTO     'g'

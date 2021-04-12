@@ -30,6 +30,7 @@ if(MSVC)
     add_compile_options(/wd5045) # Spectre mitigation.
     add_compile_options(/wd4668) # <macro> not defined as preprocessor macro, replacing with 0.
     add_compile_options(/wd4324) # Struct padded due to alignment specifier.
+    add_compile_options(/wd4820) # 'x' bytes padding added after member...
     add_compile_options(/wd4200) # Zero-sized array in struct/union.
     add_compile_options(/wd4063) # Invalid value for switch of enum.
 else()
