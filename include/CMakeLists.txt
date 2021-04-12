@@ -1,5 +1,8 @@
 # Include files.
 
+include(CheckTypeSize)
+include(CheckIncludeFile)
+
 # All include files to be distributed.
 set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
@@ -38,9 +41,8 @@ else()
     set(AVM_GNU ON)
 endif()
 
-include(CheckTypeSize)
-
 check_type_size(long AVM_LONG_SIZE)
+check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE long)

@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <uchar.h>
+
+#ifdef AVM_HAVE_UCHAR_H
+#    include <uchar.h>
+#endif
 
 #include "avium/string.h"
 #include "avium/resources.h"
@@ -175,6 +178,7 @@ AvmString AvmVSprintf(str format, va_list args) {
         i++;
 
         switch (format[i]) {
+#ifdef AVM_HAVE_UCHAR_H
             case AVM_FMT_UNICODE: {
                 AvmString temp =
                     AvmUtoa(va_arg(args, char32_t), NumericBaseHex);
@@ -183,6 +187,7 @@ AvmString AvmVSprintf(str format, va_list args) {
                 AvmObjectDestroy(&temp);
                 break;
             }
+#endif
             case AVM_FMT_INT_DECIMAL: {
                 AvmString temp = AvmItoa(va_arg(args, _long));
                 AvmStringPushString(&s, &temp);
