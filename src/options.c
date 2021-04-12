@@ -13,7 +13,11 @@ typedef struct {
     char shortOption;
 } AvmOption;
 
+// TODO: This is NOT a proper fix.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wvarargs"
 AVM_ARRAY_LIST_TYPE(AvmOption)
+#pragma GCC diagnostic pop
 
 AVM_CLASS(AvmOptionParser, object, {
     int argc;
