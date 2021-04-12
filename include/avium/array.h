@@ -27,11 +27,10 @@
 #include "avium/runtime.h"
 
 #define AvmArray(T, N) AVM_GENERIC(AvmArray, T##_##N)
-#define AvmArrayFrom(T, N, ...)                                     \
-    (AvmArray(T, N)) {                                              \
-        ._type = AVM_GET_TYPE(AvmArray(T, N)), .length = N, .at = { \
-            __VA_ARGS__                                             \
-        }                                                           \
+#define AvmArrayFrom(T, N, ...)                             \
+    (AvmArray(T, N)) {                                      \
+        ._type = AVM_GET_TYPE(AvmArray(T, N)), .length = N, \
+        .at = {__VA_ARGS__},                                \
     }
 
 #define AVM_ARRAY_TYPE(T)   \
@@ -185,6 +184,9 @@
     AVM_ARRAY_NATIVE_TYPE_N(T, 63) \
     AVM_ARRAY_NATIVE_TYPE_N(T, 64)
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 AVM_ARRAY_NATIVE_TYPE(char)
 AVM_ARRAY_NATIVE_TYPE(byte)
 AVM_ARRAY_NATIVE_TYPE(short)
@@ -194,6 +196,8 @@ AVM_ARRAY_NATIVE_TYPE(uint)
 AVM_ARRAY_NATIVE_TYPE(_long)
 AVM_ARRAY_NATIVE_TYPE(ulong)
 AVM_ARRAY_NATIVE_TYPE(str)
+
+#pragma GCC diagnostic pop
 
 #undef AVM_ARRAY_NATIVE_TYPE_N
 #undef AVM_ARRAY_NATIVE_TYPE
