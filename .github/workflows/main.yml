@@ -6,7 +6,6 @@ env:
   BUILD_TYPE: Release
   SRC_DIR: ${{github.workspace}}
   BUILD_DIR: ${{github.workspace}}/build
-  SCRIPTS_DIR: ${{github.workspace}}/scripts
   COVERAGE_FILE: $BUILD_DIR/coverage/cov.info
 
 jobs:
@@ -18,22 +17,23 @@ jobs:
 
     - name: Install Dependencies
       shell: bash
-      run: $SCRIPTS_DIR/install-dependencies.sh
+      working-directory: $SRC_DIR
+      run: ./scripts/install-dependencies.sh
 
     - name: Build
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/build.sh $BUILD_DIR $BUILD_TYPE
+      run: ./scripts/build.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Test
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/test.sh $BUILD_DIR $BUILD_TYPE
+      run: ./scripts/test.sh $BUILD_DIR $BUILD_TYPE
 
     - name: Coverage
       shell: bash
       working-directory: $SRC_DIR
-      run: $SCRIPTS_DIR/coverage.sh $BUILD_DIR $COVERAGE_FILE
+      run: ./scripts/coverage.sh $BUILD_DIR $COVERAGE_FILE
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
