@@ -20,10 +20,9 @@ jobs:
       shell: bash
       run: echo ${{github.workspace}}
 
-    # - name: Install Dependencies
-    #   shell: bash
-    #   working-directory: $SRC_DIR
-    #   run: $SCRIPTS_DIR/install-dependencies.sh
+    - name: Install Dependencies
+      shell: bash
+      run: $SCRIPTS_DIR/install-dependencies.sh
 
     - name: Build
       shell: bash
