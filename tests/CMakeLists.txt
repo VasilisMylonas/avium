@@ -10,8 +10,13 @@ function(add_avm_test TEST)
 
     set_source_files_properties(${RUNNER} PROPERTIES GENERATED TRUE)
 
+    find_library(AVM_GCOV gcov)
+
     add_executable(${TEST} ${RUNNER})
-    target_link_libraries(${TEST} avm-static gcov)
+    if(AVM_GCOV)
+        target_link_libraries(${TEST} gcov)
+    endif()
+    target_link_libraries(${TEST} avm-static)
     add_test(NAME ${TEST} COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST})
 endfunction(add_avm_test)
 
