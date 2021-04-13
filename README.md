@@ -1,33 +1,105 @@
 ![Avium logo](images/avium-logo-transparent.png)
-![License badge](https://img.shields.io/github/license/VasilisMylonas/avium) ![Commit activity badge](https://img.shields.io/github/commit-activity/m/VasilisMylonas/avium) ![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium) ![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium) ![Discord server badge](https://img.shields.io/discord/810959563469357057) [![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=feature/coveralls-support)](https://coveralls.io/github/VasilisMylonas/avium?branch=feature/coveralls-support)
+
+<div align="center">
+![License badge](https://img.shields.io/github/license/VasilisMylonas/avium)
+![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium)
+![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium)
+![Discord server badge](https://img.shields.io/discord/810959563469357057)
+[![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=feature/coveralls-support)](https://coveralls.io/github/VasilisMylonas/avium?branch=feature/coveralls-support)
+</div>
 
 # Avium
 
-An object oriented C utility runtime.
+An object-oriented C utility library.
 
 ## Description
 
-Avium is a library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object oriented utility library, then Avium might be for you.
+Avium is a library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object-oriented utility library, then Avium might be for you.
 
-### Note
+## Key Features
 
-The API is currently not stable and will be subject to change.
+- Resizable, heap allocated strings.
+- Program argument parsing and help prompts.
+- Runtime type information.
+- Class and interface types, inheritance and virtual functions.
+- Generic result and optional types.
+- Fixed size generic arrays.
+- Testing utilities.
+- Intuitive formatted IO.
+- Garbage collecting (with support for libgc).
+
+And many more!
+
+## Prerequisites
+
+- A C11-compatible compiler such as Clang or GCC and MSVC for Windows.
+- [CMake](https://cmake.org/) version 3.5.0 or newer.
+- [Python 3](https://www.python.org/) with pip.
+- A Bash-compatible shell or Powershell on Windows.
+
+For building the documentation, the following dependencies are also needed:
+
+- Doxygen
+- sphinx
+- breathe
+- sphinx-rtd-theme
+
+## Building
+
+Clone the repository.
+
+```bash
+git clone https://github.com/VasilisMylonas/avium.git
+```
+
+### Unix-like
+
+Run the build script. Change 'Release' to 'Debug' for a debug build.
+
+```bash
+cd avium
+./scripts/build.sh ./build Release
+```
+
+You may optionally run the tests.
+
+```bash
+./scripts/test.sh ./build Release
+```
+
+### Windows
+
+Run the build script. Change 'Release' to 'Debug' for a debug build.
+
+```bash
+cd avium
+./scripts/build.ps1 ./build Release
+```
+
+You may optionally run the tests.
+
+```bash
+./scripts/test.ps1 ./build Release
+```
+
+## Supported Platforms
+
+Currently the following configurations are supported:
+
+| Architecture | Operating System | Compiler |
+| ------------ | ---------------- | -------- |
+| x86_64       | Ubuntu           | GCC      |
+| x86_64       | Ubuntu           | Clang    |
+| x86_64       | Windows          | MSVC     |
+| x86_64       | MacOS            | GCC      |
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+If you are interested in contributing, please take the time to read [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Installation
-
-See [INSTALL.md](./INSTALL.md).
-
-## Discord
+## Contact Us
 
 You may join us on [our Discord server](https://discord.gg/ntcjbMbVts). For more information about the project, questions etc. you can ask there!
-
-## Authors
-
-See [AUTHORS](./AUTHORS).
 
 ## License
 
