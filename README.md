@@ -1,14 +1,10 @@
 ![Avium logo](images/avium-logo-transparent.png)
 
-<div style="text-align: center;">
-
 ![License badge](https://img.shields.io/github/license/VasilisMylonas/avium)
 ![Code size badge](https://img.shields.io/github/languages/code-size/VasilisMylonas/avium)
 ![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium)
 ![Discord server badge](https://img.shields.io/discord/810959563469357057)
 [![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=feature/coveralls-support)](https://coveralls.io/github/VasilisMylonas/avium?branch=feature/coveralls-support)
-
-</div>
 
 # Avium
 
@@ -18,7 +14,7 @@ An object-oriented C utility library.
 
 Avium is a library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object-oriented utility library, then Avium might be for you.
 
-## Key Features
+## Key Features ⌨️
 
 - Resizable, heap allocated strings.
 - Program argument parsing and help prompts.
@@ -32,7 +28,7 @@ Avium is a library that aims to fill in many missing features in the C language 
 
 And many more!
 
-## Prerequisites
+## Prerequisites ⏳️
 
 - A C11-compatible compiler such as Clang or GCC and MSVC for Windows.
 - [CMake](https://cmake.org/) version 3.5.0 or newer.
@@ -41,14 +37,12 @@ And many more!
 
 For building the documentation, the following dependencies are also needed:
 
-- Doxygen
+- [Doxygen](https://doxygen.nl)
 - sphinx
 - breathe
 - sphinx-rtd-theme
 
-## Building
-
-### Unix-like
+## Building 🔨
 
 Run the build script. Change 'Release' to 'Debug' for a debug build.
 
@@ -68,9 +62,9 @@ $ ./scripts/test.sh ./build Release
 
 If on Windows, run the scripts with the .ps1 extension instead.
 
-## Supported Platforms
+## Supported Platforms 🏗️
 
-Currently the following configurations are supported:
+Currently the following configurations are supported ✅️:
 
 | Architecture | Operating System | Compiler |
 | ------------ | ---------------- | -------- |
@@ -79,14 +73,14 @@ Currently the following configurations are supported:
 | x86_64       | Windows          | MSVC     |
 | x86_64       | MacOS            | GCC      |
 
-## Contributing
+## Contributing 🤝
 
 If you are interested in contributing, please take the time to read [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Contact Us
+## Contact Us ❔️
 
 You may join us on [our Discord server](https://discord.gg/ntcjbMbVts). For more information about the project, questions etc. you can ask there!
 
-## License
+## License 📕
 
 Avium is licensed under version 3 of the GNU Lesser General Public License. See [COPYING](./COPYING) and [COPYING.LESSER](./COPYING.LESSER) for more information.

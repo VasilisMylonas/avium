@@ -6,7 +6,7 @@ Below is a set of guidelines for contributing to Avium. These are not strict rul
 
 ## Reporting bugs
 
-If you think you have found a bug then you can file up an issue. Please check if the bug has not already been reported or solved. It is preferred that you provide at least some info about the bug.
+If you think you have found a bug then you can file up an issue. Please check if the bug has not already been reported or fixed. It is preferred that you provide at least some info about the bug.
 
 The issue title should be:
 
@@ -22,7 +22,7 @@ If you would like to suggest a feature then feel free to do so! File up an issue
 
 - Clone the repo and create a branch named as so:
 
-> [insert your name here]/[feature | fix | chore]/[insert feature name here]
+> [feature | bug | chore]/[insert name here]
 
 - Write the code 👨‍💻.
 
@@ -32,8 +32,8 @@ If you would like to suggest a feature then feel free to do so! File up an issue
 
 - Make sure that the project builds correctly and that all tests pass ✅️.
 
-- Make a pull request.
+- Make a pull request 🚀.
 
 ## Documentation
 
-Avium documentation is written in the form of [NaturalDocs](https://www.naturaldocs.org/) documentation comments. It is really appreciated that you document your code 📝.
+Avium documentation is written in the form of [Doxygen](https://doxygen.nl) documentation comments. It is really appreciated that you document your code 📝.
