@@ -46,41 +46,25 @@ For building the documentation, the following dependencies are also needed:
 
 ## Building
 
-Clone the repository.
-
-```bash
-git clone https://github.com/VasilisMylonas/avium.git
-```
-
 ### Unix-like
 
 Run the build script. Change 'Release' to 'Debug' for a debug build.
 
-```bash
-cd avium
-./scripts/build.sh ./build Release
+``` bash
+# Clone this repository
+$ git clone https://github.com/VasilisMylonas/avium.git
+
+# Go into the repository
+$ cd avium
+
+# Build
+$ ./scripts/build.sh ./build Release
+
+# Run the tests
+$ ./scripts/test.sh ./build Release
 ```
 
-You may optionally run the tests.
-
-```bash
-./scripts/test.sh ./build Release
-```
-
-### Windows
-
-Run the build script. Change 'Release' to 'Debug' for a debug build.
-
-```bash
-cd avium
-./scripts/build.ps1 ./build Release
-```
-
-You may optionally run the tests.
-
-```bash
-./scripts/test.ps1 ./build Release
-```
+If on Windows, run the scripts with the .ps1 extension instead.
 
 ## Supported Platforms
 
