@@ -57,11 +57,7 @@ option(AVM_USE_GC "Use garbage collector?" ON)
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(tests)
-
-# Documentation
-if(AVM_GEN_DOCS)
-    add_subdirectory(docs)
-endif()
+add_subdirectory(docs)
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
