@@ -51,22 +51,13 @@ include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUTPUT_DIR})
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 option(AVM_GEN_DOCS "Generate docs?" ON)
-option(AVM_RUN_TESTS "Run tests?" ON)
 option(AVM_USE_GC "Use garbage collector?" ON)
 
 # Include subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
-
-# Documentation
-if(AVM_GEN_DOCS)
-    add_subdirectory(docs)
-endif()
-
-# Tests.
-if(AVM_RUN_TESTS)
-    add_subdirectory(tests)
-endif()
+add_subdirectory(tests)
+add_subdirectory(docs)
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)

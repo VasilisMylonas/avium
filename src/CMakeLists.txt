@@ -23,7 +23,7 @@ add_library(${AVM_STATIC_NAME} STATIC ${AVM_SOURCE_FILES})
 if(AVM_USE_GC)
 find_library(AVM_LIBGC gc)
 
-if(${AVM_LIBGC} STREQUAL "AVM_LIBGC-NOTFOUND")
+if(NOT AVM_LIBGC)
     message(FATAL_ERROR "libgc not installed!")
 endif()
 
