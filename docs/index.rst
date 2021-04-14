@@ -21,3 +21,14 @@ runtime.h
 =========
 
 .. doxygenfile :: runtime.h
+
+version.h
+=========
+
+.. doxygenfile :: version.h
+
+
+value.h
+=========
+
+.. doxygenfile :: value.h

@@ -47,6 +47,10 @@ typedef enum {
     ValueKindChar,
 } AvmValueKind;
 
+#ifdef DOXYGEN
+/// A type that can contain any primitive type.
+typedef struct AvmValue AvmValue;
+#else
 /// A type that can contain any primitive type.
 AVM_CLASS(AvmValue, object, {
     union {
@@ -59,6 +63,7 @@ AVM_CLASS(AvmValue, object, {
     };
     AvmValueKind _kind;
 });
+#endif  // DOXYGEN
 
 /**
  * @brief Creates an AvmValue containing a boolean.
@@ -185,6 +190,9 @@ AVMAPI str AvmValueAsStr(AvmValue* self);
 AVMAPI AvmValueKind AvmValueGetKind(AvmValue* self);
 
 // Ensure type size constraint.
+
+#ifndef DOXYGEN
 static_assert_s(sizeof(AvmValue) == AVM_VALUE_SIZE);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_VALUE_H

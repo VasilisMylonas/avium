@@ -26,6 +26,10 @@
 
 #include "avium/types.h"
 
+#ifdef DOXYGEN
+/// A type representing a software version in the format: N.N.N-c
+typedef struct AvmVersion AvmVersion;
+#else
 /// A type representing a software version in the format: N.N.N-c
 AVM_CLASS(AvmVersion, object, {
     /// The major version.
@@ -40,6 +44,7 @@ AVM_CLASS(AvmVersion, object, {
     /// The version tag.
     char Tag;
 });
+#endif  // DOXYGEN
 
 /**
  * @brief Creates a new AvmVersion instance.
@@ -62,6 +67,9 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
 AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 // Ensure type size constraint.
+
+#ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_VERSION_H
