@@ -87,7 +87,12 @@ AVMAPI void AvmDealloc(void* memory);
  */
 AVMAPI object AvmObjectAlloc(size_t size, object data);
 
-/// Convieniece macro for AvmObjectAlloc.
+/**
+ * @brief Shortcut for initializing a heap object.
+ *
+ * @param T The type of the object.
+ * @param ... The object initializer.
+ */
 #define heapalloc(T, ...) AvmObjectAlloc(sizeof(T), (T[1]){__VA_ARGS__})
 
 /// Enables signal catching.
@@ -135,7 +140,12 @@ AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
 /// Returns a pointer to the type info of type T.
 #define AVM_GET_TYPE(T) AVM_GET_TYPE_(T)
 
-/// Generates type info for type T.
+/**
+ * @brief Generates type info for a type.
+ *
+ * @param T The type for which to generate type info.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
 #define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
 
 /**
@@ -158,19 +168,21 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  */
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
-#define AVM_TYPE_(T, ...)         \
-    static AvmType _##T##Type = { \
-        ._vptr = __VA_ARGS__,     \
-        ._name = #T,              \
-        ._size = sizeof(T),       \
-    }
+#ifndef DOXYGEN
+#    define AVM_TYPE_(T, ...)         \
+        static AvmType _##T##Type = { \
+            ._vptr = __VA_ARGS__,     \
+            ._name = #T,              \
+            ._size = sizeof(T),       \
+        }
 
-#define AVM_GET_TYPE_(T) &_##T##Type
+#    define AVM_GET_TYPE_(T) &_##T##Type
 
 struct AvmType {
     const str _name;
     const size_t _size;
     AvmFunction _vptr[AVM_VFT_SIZE];
 };
+#endif  // DOXYGEN
 
 #endif  // AVIUM_RUNTIME_H

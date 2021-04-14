@@ -12,4 +12,12 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. doxygenfile :: prologue.h
+types.h
+=======
+
+.. doxygenfile :: types.h
+
+runtime.h
+=========
+
+.. doxygenfile :: runtime.h
