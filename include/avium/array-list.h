@@ -50,7 +50,7 @@
     }                                                                         \
                                                                               \
     AVM_TYPE(AvmArrayList(T),                                                 \
-             {[FUNC_DTOR] = (AvmFunction)AvmArrayListDestroy(T)});            \
+             {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});            \
                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {       \
         return (AvmArrayList(T)){                                             \
@@ -115,7 +115,7 @@
     }                                                                         \
                                                                               \
     AVM_TYPE(AvmArrayList(T),                                                 \
-             {[FUNC_DTOR] = (AvmFunction)AvmArrayListDestroy(T)});            \
+             {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});            \
                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {       \
         return (AvmArrayList(T)){                                             \

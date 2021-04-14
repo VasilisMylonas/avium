@@ -1,3 +1,26 @@
+/**
+ * @file avium/runtime.h
+ * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
+ * @brief Avium runtime utilities.
+ * @version 0.2
+ * @date 2021-04-14
+ *
+ * @copyright Copyright (c) 2021 Vasilis Mylonas
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef AVIUM_RUNTIME_H
 #define AVIUM_RUNTIME_H
 
@@ -5,16 +28,17 @@
 
 /// Represents an entry on the virtual function entry.
 typedef enum {
-    FUNC_DTOR = 0,
-    FUNC_GET_LENGTH,
-    FUNC_GET_CAPACITY,
-    FUNC_TO_STRING,
-    FUNC_CLONE,
-    FUNC_EQUALS,
+    FnEntryDtor = 0,
+    FnEntryToString,
+    FnEntryClone,
+    FnEntryEquals,
 
-    FUNC_GET_BACKTRACE = 16,
-    FUNC_GET_SOURCE,
-} AvmFunctionEntry;
+    FnEntryGetCapacity,
+    FnEntryGetLength,
+
+    FnEntryGetBacktrace = 16,
+    FnEntryGetSource,
+} AvmFnEntry;
 
 AVMAPI void* AvmAlloc(size_t size);
 AVMAPI void* AvmRealloc(void* memory, size_t size);

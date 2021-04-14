@@ -15,7 +15,7 @@
         bool _hasValue;                                          \
     });                                                          \
                                                                  \
-    AVM_TYPE(AVM_GENERIC(AvmOptional, T), {[FUNC_DTOR] = NULL}); \
+    AVM_TYPE(AVM_GENERIC(AvmOptional, T), {[FnEntryDtor] = NULL}); \
                                                                  \
     static inline AvmOptional(T) AvmSome(T)(T value) {           \
         return (AvmOptional(T)){                                 \

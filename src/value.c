@@ -71,9 +71,9 @@ static bool AvmValueEquals(AvmValue* self, AvmValue* other) {
 }
 
 AVM_TYPE(AvmValue, {
-                       [FUNC_TO_STRING] = (AvmFunction)AvmValueToString,
-                       [FUNC_CLONE] = (AvmFunction)AvmValueClone,
-                       [FUNC_EQUALS] = (AvmFunction)AvmValueEquals,
+                       [FnEntryToString] = (AvmFunction)AvmValueToString,
+                       [FnEntryClone] = (AvmFunction)AvmValueClone,
+                       [FnEntryEquals] = (AvmFunction)AvmValueEquals,
                    });
 
 AvmValue AvmValueFromBool(bool value) { VALUE_FROM(ValueKindBool, _asBool); }

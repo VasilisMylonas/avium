@@ -18,11 +18,11 @@ static object AvmStringClone(AvmString* self) {
 
 static void AvmStringDestroy(AvmString* self) { AvmDealloc(self->_buffer); }
 
-AVM_TYPE(AvmString, {[FUNC_DTOR] = (AvmFunction)AvmStringDestroy,
-                     [FUNC_CLONE] = (AvmFunction)AvmStringClone,
-                     [FUNC_TO_STRING] = (AvmFunction)AvmStringToString,
-                     [FUNC_GET_LENGTH] = (AvmFunction)AvmStringGetLength,
-                     [FUNC_GET_CAPACITY] = (AvmFunction)AvmStringGetCapacity});
+AVM_TYPE(AvmString, {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
+                     [FnEntryClone] = (AvmFunction)AvmStringClone,
+                     [FnEntryToString] = (AvmFunction)AvmStringToString,
+                     [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
+                     [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity});
 
 AvmString AvmStringNew(size_t capacity) {
     return (AvmString){

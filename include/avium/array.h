@@ -105,7 +105,7 @@
         T at[N];                                        \
     });                                                 \
                                                         \
-    AVM_TYPE(AvmArray(T, N), {[FUNC_DTOR] = NULL});
+    AVM_TYPE(AvmArray(T, N), {[FnEntryDtor] = NULL});
 
 #define AVM_ARRAY_NATIVE_TYPE_N(T, N)                              \
     AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {            \
@@ -116,7 +116,7 @@
     AVMAPI AvmString AvmArrayToString_##T(AvmArray(T, 1) * array); \
                                                                    \
     AVM_TYPE(AvmArray(T, N),                                       \
-             {[FUNC_TO_STRING] = (AvmFunction)AvmArrayToString_##T});
+             {[FnEntryToString] = (AvmFunction)AvmArrayToString_##T});
 
 #define AVM_ARRAY_NATIVE_TYPE(T)   \
     AVM_ARRAY_NATIVE_TYPE_N(T, 1)  \

@@ -125,7 +125,7 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
     }                                                                          \
                                                                                \
     AVM_TYPE(AVM_GENERIC(AvmResult, T),                                        \
-             {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});   \
+             {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});   \
                                                                                \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
         return (AvmResult(T)){                                                 \

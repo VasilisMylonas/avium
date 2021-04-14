@@ -117,9 +117,9 @@ AVMAPI AvmType* AvmObjectGetType(object self);
 /**
  * @brief Compares two objects for equality.
  *
- * This function tries to use the FUNC_EQ virtual function entry to compare
- * for equality. If no such virtual function is available then the objects are
- * compared byte-by-byte.
+ * This function tries to use the FnEntryEquals virtual function entry to
+ * compare for equality. If no such virtual function is available then the
+ * objects are compared byte-by-byte.
  *
  * @pre Parameter @p self must be not null.
  * @pre Parameter @p other must be not null.
@@ -134,7 +134,7 @@ AVMAPI bool AvmObjectEquals(object self, object other);
 /**
  * @brief Destroys an object and deallocates its memory.
  *
- * This function tries to use the FUNC_DTOR virtual function entry to destroy
+ * This function tries to use the FnEntryDtor virtual function entry to destroy
  * the object. If no such virtual function then this function does nothing.
  *
  * @pre Parameter @p self must be not null.
@@ -146,7 +146,7 @@ AVMAPI void AvmObjectDestroy(object self);
 /**
  * @brief Clones an object, creating an exact copy.
  *
- * This function tries to use the FUNC_CLONE virtual function entry to clone
+ * This function tries to use the FnEntryClone virtual function entry to clone
  * the object. If no such virtual function is available then a the object is
  * simple copied to heap memory.
  *
@@ -160,7 +160,7 @@ AVMAPI object AvmObjectClone(object self);
 /**
  * @brief Creates a string representation of an object.
  *
- * This function tries to use the FUNC_TO_STRING virtual function entry to
+ * This function tries to use the FnEntryToString virtual function entry to
  * create a string representation of the object. If no such virtual function
  * is available then a default representation is returned.
  *
