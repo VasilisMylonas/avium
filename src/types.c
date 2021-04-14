@@ -11,6 +11,8 @@ AvmType* AvmObjectGetType(object self) {
         AvmPanic(SelfNullMsg);
     }
 
+    // The first member of an object should be an AvmType*
+    // Look in types.h for AVM_CLASS
     return *(AvmType**)self;
 }
 

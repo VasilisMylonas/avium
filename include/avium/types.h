@@ -1,9 +1,9 @@
 /**
  * @file avium/types.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
- * @brief Primitive Avium types.
+ * @brief Primitive Avium types and related functions.
  * @version 0.2
- * @date 2021-04-04
+ * @date 2021-04-14
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -118,7 +118,8 @@ AVMAPI AvmType* AvmObjectGetType(object self);
  * @brief Compares two objects for equality.
  *
  * This function tries to use the FUNC_EQ virtual function entry to compare
- * for equality. If no such virtual function is available then memcmp is used.
+ * for equality. If no such virtual function is available then the objects are
+ * compared byte-by-byte.
  *
  * @pre Parameter @p self must be not null.
  * @pre Parameter @p other must be not null.
@@ -146,8 +147,8 @@ AVMAPI void AvmObjectDestroy(object self);
  * @brief Clones an object, creating an exact copy.
  *
  * This function tries to use the FUNC_CLONE virtual function entry to clone
- * the object. If no such virtual function is available then a combination of
- * AvmAlloc and memcpy is used.
+ * the object. If no such virtual function is available then a the object is
+ * simple copied to heap memory.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -166,7 +167,7 @@ AVMAPI object AvmObjectClone(object self);
  * @pre Parameter @p self must be not null.
  *
  * @param self The object instance.
- * @return AvmString The string representation of the object.
+ * @return The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
