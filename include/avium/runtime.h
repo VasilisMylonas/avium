@@ -26,26 +26,68 @@
 
 #include "avium/types.h"
 
-/// Represents an entry on the virtual function entry.
+/// Represents an entry on the virtual function table.
 typedef enum {
+    /// The VFT destructor entry.
     FnEntryDtor = 0,
+
+    /// The VFT AvmObjectToString entry.
     FnEntryToString,
+
+    /// The VFT AvmObjectClone entry.
     FnEntryClone,
+
+    /// The VFT AvmObjectEquals entry.
     FnEntryEquals,
 
+    /// Currently unused.
     FnEntryGetCapacity,
+
+    /// Currently unused.
     FnEntryGetLength,
 
+    /// The VFT AvmErrorGetBacktrace entry.
     FnEntryGetBacktrace = 16,
+
+    /// The VFT AvmErrorGetSource entry.
     FnEntryGetSource,
 } AvmFnEntry;
 
+/**
+ * @brief Allocates heap memory.
+ *
+ * @param size The size of the memory block in bytes.
+ * @return The allocated memory.
+ */
 AVMAPI void* AvmAlloc(size_t size);
+
+/**
+ * @brief Reallocates a heap memory block.
+ *
+ * @param memory The memory block to reallocate.
+ * @param size The new size of the memory block in bytes.
+ * @return The reallocated memory.
+ */
 AVMAPI void* AvmRealloc(void* memory, size_t size);
+
+/**
+ * @brief Deallocates heap memory.
+ *
+ * @param memory The memory block to deallocate.
+ */
 AVMAPI void AvmDealloc(void* memory);
 
+/**
+ * @brief Allocates an object on the heap, and initializes it with the provided
+ * data.
+ *
+ * @param size The size of the object.
+ * @param data The data to initialize the object with (can be NULL).
+ * @return The allocated object.
+ */
 AVMAPI object AvmObjectAlloc(size_t size, object data);
 
+/// Convieniece macro for AvmObjectAlloc.
 #define heapalloc(T, ...) AvmObjectAlloc(sizeof(T), (T[1]){__VA_ARGS__})
 
 /// Enables signal catching.
