@@ -1,6 +1,6 @@
 #include "avium/types.h"
 
-#include <string.h>  // For memcmp, memcpy
+#include <string.h>  // For memcmp
 
 #include "avium/runtime.h"
 #include "avium/resources.h"
@@ -57,7 +57,9 @@ object AvmObjectClone(object self) {
 
     if (method == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
-        return memcpy(AvmAlloc(size), self, size);
+        void* memory = AvmAlloc(size);
+        AvmMemCopy((byte*)self, size, (byte*)memory, size);
+        return memory;
     }
 
     return ((object(*)(object))method)(self);

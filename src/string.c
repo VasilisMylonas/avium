@@ -12,7 +12,7 @@ static AvmString AvmStringToString(AvmString* self) {
 static object AvmStringClone(AvmString* self) {
     AvmString s = AvmStringFrom(self->_buffer);
     AvmString* ret = AvmAlloc(sizeof(AvmString));
-    memcpy(ret, &s, sizeof(AvmString));
+    AvmMemCopy((byte*)&s, sizeof(AvmString), (byte*)ret, sizeof(AvmString));
     return ret;
 }
 
@@ -52,7 +52,7 @@ AvmString AvmStringFromChars(size_t length, str contents) {
 
     AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
     s._length = length;
-    memcpy(s._buffer, contents, length);
+    AvmMemCopy((byte*)contents, length, (byte*)s._buffer, length);
     return s;
 }
 
@@ -188,7 +188,8 @@ void AvmStringPushChars(AvmString* self, size_t length, const char* contents) {
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
-    memcpy(&self->_buffer[self->_length - length], contents, length + 1);
+    AvmMemCopy((byte*)contents, length + 1,
+               (byte*)&self->_buffer[self->_length - length], length + 1);
 }
 
 void AvmStringPushString(AvmString* self, AvmString* other) {
@@ -209,7 +210,8 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
-    memcpy(&self->_buffer[self->_length - length], other->_buffer, length + 1);
+    AvmMemCopy((byte*)other->_buffer, length + 1,
+               (byte*)&self->_buffer[self->_length - length], length + 1);
 }
 
 AvmOptional(size_t) AvmStringIndexOf(AvmString* self, char character) {
