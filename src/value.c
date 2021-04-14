@@ -1,4 +1,4 @@
-#include "avium/value.h"  // Public interface.
+#include "avium/value.h"
 
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For panic messages.
@@ -22,9 +22,6 @@
         ._type = AVM_GET_TYPE(AvmValue), .member = value, ._kind = kind, \
     }
 
-#define BUILD_FMT_STR(format) \
-    (const char[]) { '%', format, '\0' }
-
 static object AvmValueClone(AvmValue* value) {
     AvmValue* copy = AvmAlloc(sizeof(AvmValue));
     AvmMemCopy((byte*)value, sizeof(AvmValue), (byte*)copy, sizeof(AvmValue));
@@ -34,20 +31,17 @@ static object AvmValueClone(AvmValue* value) {
 static AvmString AvmValueToString(AvmValue* value) {
     switch (value->_kind) {
         case ValueKindBool:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_BOOL), value->_asBool);
+            return AvmSprintf("%t", value->_asBool);
         case ValueKindChar:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_CHAR), value->_asChar);
+            return AvmSprintf("%c", value->_asChar);
         case ValueKindFloat:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_FLOAT), value->_asFloat);
+            return AvmSprintf("%f", value->_asFloat);
         case ValueKindInt:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_INT_DECIMAL),
-                              value->_asInt);
+            return AvmSprintf("%i", value->_asInt);
         case ValueKindUInt:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_INT_UNSIGNED),
-                              value->_asUInt);
+            return AvmSprintf("%u", value->_asUInt);
         case ValueKindStr:
-            return AvmSprintf(BUILD_FMT_STR(AVM_FMT_STRING),
-                              value->_asStr == NULL ? "" : value->_asStr);
+            return AvmSprintf("%s", value->_asStr == NULL ? "" : value->_asStr);
         default:
             AvmPanic(InvalidValueKindMsg);
     }
