@@ -46,4 +46,13 @@ breathe_projects = {
     "avium": "@AVM_DOC_OUTPUT_DIR@/xml/",
 }
 
+breathe_projects_source = {
+    "avium": ("@CMAKE_SOURCE_DIR@/include/avium", [
+        "array-list.h", "array.h", "fmt.h",
+        "optional.h", "options.h", "result.h",
+        "runtime.h", "string.h", "testing.h",
+        "types.h", "value.h", "version.h"
+    ]),
+}
+
 breathe_default_project = "avium"
