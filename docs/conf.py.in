@@ -23,7 +23,7 @@ exclude_patterns = []
 html_theme = "sphinx_rtd_theme"
 
 breathe_projects = {
-    "avium": "@AVM_DOC_OUTPUT_DIR@/xml/",
+    "@CMAKE_PROJECT_NAME@": "@AVM_DOC_OUTPUT_DIR@/xml/",
 }
 
-breathe_default_project = "avium"
+breathe_default_project = "@CMAKE_PROJECT_NAME@"
