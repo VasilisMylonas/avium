@@ -2,9 +2,8 @@
 
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For panic messages.
-#include "avium/runtime.h"    // For AVM_GET_TYPE, AVM_TYPE, AvmPanic
+#include "avium/runtime.h"    // For AVM_GET_TYPE, AVM_TYPE, AvmPanic, AvmAlloc
 
-#include <stdlib.h>  // For malloc
 #include <string.h>  // For strcmp
 
 #define VALUE_AS(kind, member)         \
@@ -27,7 +26,7 @@
     (const char[]) { '%', format, '\0' }
 
 static object AvmValueClone(AvmValue* value) {
-    AvmValue* copy = malloc(sizeof(AvmValue));
+    AvmValue* copy = AvmAlloc(sizeof(AvmValue));
     AvmMemCopy((byte*)value, sizeof(AvmValue), (byte*)copy, sizeof(AvmValue));
     return copy;
 }

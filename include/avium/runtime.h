@@ -9,11 +9,15 @@ typedef enum {
     FUNC_TO_STRING,
     FUNC_CLONE,
     FUNC_EQUALS,
-
+    
+    // AvmError
+    FUNC_GET_BACKTRACE = 16,
+    FUNC_GET_SOURCE,
+  
     // AvmCollection
     FUNC_GET_LENGTH = 16,
     FUNC_GET_CAPACITY,
-
+  
     // AvmStream
     FUNC_READ = 16,
     FUNC_WRITE,
@@ -21,6 +25,14 @@ typedef enum {
     FUNC_FLUSH,
     FUNC_GET_POSITION
 } AvmFunctionEntry;
+
+AVMAPI void* AvmAlloc(size_t size);
+AVMAPI void* AvmRealloc(void* memory, size_t size);
+AVMAPI void AvmDealloc(void* memory);
+
+AVMAPI object AvmObjectAlloc(size_t size, object data);
+
+#define heapalloc(T, ...) AvmObjectAlloc(sizeof(T), (T[1]){__VA_ARGS__})
 
 /// Enables signal catching.
 AVMAPI void AvmEnableExceptions(void);

@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <uchar.h>
+
+#ifdef AVM_HAVE_UCHAR_H
+#    include <uchar.h>
+#endif
 
 #include "avium/string.h"
 #include "avium/resources.h"
@@ -52,7 +55,7 @@ AvmString AvmItoa(_long value) {
     return s;
 }
 
-AvmString AvmUtoa(ulong value, NumericBase base) {
+AvmString AvmUtoa(ulong value, AvmNumericBase base) {
     switch (base) {
         case NumericBaseBinary:
         case NumericBaseOctal:
@@ -174,57 +177,74 @@ AvmString AvmVSprintf(str format, va_list args) {
 
         i++;
 
-        AvmString temp = AvmStringNew(8);
-
         switch (format[i]) {
-            case AVM_FMT_UNICODE:
-                temp = AvmUtoa(va_arg(args, char32_t), NumericBaseHex);
+#ifdef AVM_HAVE_UCHAR_H
+            case AVM_FMT_UNICODE: {
+                AvmString temp =
+                    AvmUtoa(va_arg(args, char32_t), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
-            case AVM_FMT_INT_DECIMAL:
-                temp = AvmItoa(va_arg(args, _long));
+            }
+#endif
+            case AVM_FMT_INT_DECIMAL: {
+                AvmString temp = AvmItoa(va_arg(args, _long));
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
-            case AVM_FMT_INT_OCTAL:
-                temp = AvmUtoa(va_arg(args, ulong), NumericBaseOctal);
+            }
+            case AVM_FMT_INT_OCTAL: {
+                AvmString temp = AvmUtoa(va_arg(args, ulong), NumericBaseOctal);
                 AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
+            }
             case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX:
-                temp = AvmUtoa(va_arg(args, ulong), NumericBaseHex);
+            case AVM_FMT_INT_HEX: {
+                AvmString temp = AvmUtoa(va_arg(args, ulong), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
-            case AVM_FMT_INT_BINARY:
-                temp = AvmUtoa(va_arg(args, ulong), NumericBaseBinary);
+            }
+            case AVM_FMT_INT_BINARY: {
+                AvmString temp =
+                    AvmUtoa(va_arg(args, ulong), NumericBaseBinary);
                 AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
-            case AVM_FMT_FLOAT:
-                temp = AvmFtoa(va_arg(args, double));
+            }
+            case AVM_FMT_FLOAT: {
+                AvmString temp = AvmFtoa(va_arg(args, double));
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
+            }
             case AVM_FMT_FLOAT_EXP: {
                 char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
                 snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le",
                          va_arg(args, double));
-                AvmStringPushStr(&temp, buffer);
+                AvmStringPushStr(&s, buffer);
                 break;
             }
             case AVM_FMT_FLOAT_AUTO: {
                 char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
                 snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg",
                          va_arg(args, double));
-                AvmStringPushStr(&temp, buffer);
+                AvmStringPushStr(&s, buffer);
                 break;
             }
             case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED:
-                temp = AvmUtoa(va_arg(args, ulong), NumericBaseDecimal);
+            case AVM_FMT_INT_UNSIGNED: {
+                AvmString temp =
+                    AvmUtoa(va_arg(args, ulong), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
+            }
             case AVM_FMT_CHAR:
                 AvmStringPushChar(&s, (char)va_arg(args, int));
                 break;
@@ -242,20 +262,22 @@ AvmString AvmVSprintf(str format, va_list args) {
             }
             case AVM_FMT_SIZE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                temp = AvmUtoa(AvmTypeGetSize(type), NumericBaseDecimal);
+                AvmString temp =
+                    AvmUtoa(AvmTypeGetSize(type), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
             }
-            case AVM_FMT_VALUE:
-                temp = AvmObjectToString(va_arg(args, object));
+            case AVM_FMT_VALUE: {
+                AvmString temp = AvmObjectToString(va_arg(args, object));
                 AvmStringPushString(&s, &temp);
+                AvmObjectDestroy(&temp);
                 break;
+            }
             default:
                 AvmStringPushChar(&s, format[i]);
                 break;
         }
-
-        AvmObjectDestroy(&temp);
     }
 
     return s;

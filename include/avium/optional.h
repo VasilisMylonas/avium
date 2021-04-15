@@ -1,7 +1,6 @@
 #ifndef AVIUM_OPTIONAL_H
 #define AVIUM_OPTIONAL_H
 
-#include "avium/types.h"
 #include "avium/runtime.h"
 
 #define AvmOptional(T) AVM_GENERIC(AvmOptional, T)

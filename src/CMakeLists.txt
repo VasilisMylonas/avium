@@ -9,6 +9,7 @@ set(AVM_SOURCE_FILES
     io/file-stream.c
     io/memory-stream.c
     options.c
+    result.c
     runtime.c
     string.c
     types.c
@@ -22,6 +23,17 @@ set(AVM_STATIC_NAME avm-static)
 # Add the libraries.
 add_library(${AVM_SHARED_NAME} SHARED ${AVM_SOURCE_FILES})
 add_library(${AVM_STATIC_NAME} STATIC ${AVM_SOURCE_FILES})
+
+if(AVM_USE_GC)
+find_library(AVM_LIBGC gc)
+
+if(NOT AVM_LIBGC)
+    message(FATAL_ERROR "libgc not installed!")
+endif()
+
+target_link_libraries(${AVM_SHARED_NAME} ${AVM_LIBGC})
+target_link_libraries(${AVM_STATIC_NAME} ${AVM_LIBGC})
+endif()
 
 generate_export_header(${AVM_SHARED_NAME} BASE_NAME AVM
                        EXPORT_MACRO_NAME AVMAPI
