@@ -38,11 +38,10 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
 
     doxygen_add_docs(Doxygen ${AVM_INCLUDE_DIR})
 
-    configure_file(conf.py.in xml/conf.py @ONLY)
-    configure_file(index.rst xml/index.rst @ONLY)
+    configure_file(conf.py.in conf.py @ONLY)
     add_custom_target(Sphinx DEPENDS Doxygen
-                      COMMAND ${SPHINX_EXECUTABLE} -q -b html
-                      ${AVM_DOC_OUTPUT_DIR}/xml ${AVM_SPHINX_OUTPUT_DIR})
+                      COMMAND ${SPHINX_EXECUTABLE} -q -c ${AVM_DOC_OUTPUT_DIR}
+                      ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
 else()
     message(WARNING "Install Doxygen and Sphinx to generate documentation.")
 endif()
