@@ -171,6 +171,15 @@ AVM_RESULT_TYPE(AvmFunction)
 
 AVM_CLASS(AVM_GENERIC(AvmResult, void), object, { AvmError* _error; });
 
+static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
+    if (self->_error != NULL) {
+        AvmObjectDestroy(self->_error);
+    }
+}
+
+AVM_TYPE(AVM_GENERIC(AvmResult, void),
+         {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, void)});
+
 AVM_TYPE(AVM_GENERIC(AvmResult, void), {[FUNC_DTOR] = NULL});
 
 static inline AvmResult(void) AvmSuccess(void)() {
