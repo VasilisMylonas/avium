@@ -6,14 +6,24 @@
 /// Represents an entry on the virtual function entry.
 typedef enum {
     FUNC_DTOR = 0,
-    FUNC_GET_LENGTH,
-    FUNC_GET_CAPACITY,
     FUNC_TO_STRING,
     FUNC_CLONE,
     FUNC_EQUALS,
-
+    
+    // AvmError
     FUNC_GET_BACKTRACE = 16,
     FUNC_GET_SOURCE,
+  
+    // AvmCollection
+    FUNC_GET_LENGTH = 16,
+    FUNC_GET_CAPACITY,
+  
+    // AvmStream
+    FUNC_READ = 16,
+    FUNC_WRITE,
+    FUNC_SEEK,
+    FUNC_FLUSH,
+    FUNC_GET_POSITION
 } AvmFunctionEntry;
 
 AVMAPI void* AvmAlloc(size_t size);
