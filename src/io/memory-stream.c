@@ -71,7 +71,7 @@ AVM_TYPE(AvmMemoryStream,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity) {
-    AvmMemoryStream* stream = malloc(sizeof(AvmMemoryStream));
+    AvmMemoryStream* stream = AvmAlloc(sizeof(AvmMemoryStream));
     stream->_list = AvmArrayListNew(byte)(capacity);
     stream->_type = AVM_GET_TYPE(AvmMemoryStream);
     stream->_position = 0;
