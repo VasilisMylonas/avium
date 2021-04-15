@@ -21,7 +21,7 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
     set(DOXYGEN_GENERATE_HTML FALSE)
     set(DOXYGEN_GENERATE_LATEX FALSE)
     set(DOXYGEN_GENERATE_XML TRUE)
-    set(DOXYGEN_GENERATE_MAN TRUE)
+    set(DOXYGEN_GENERATE_MAN FALSE)
     set(DOXYGEN_TYPEDEF_HIDES_STRUCT TRUE)
     set(DOXYGEN_OUTPUT_DIRECTORY ${AVM_DOC_OUTPUT_DIR})
     set(WARN_NO_PARAMDOC TRUE)
@@ -39,8 +39,13 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
     doxygen_add_docs(Doxygen ${AVM_INCLUDE_DIR})
 
     configure_file(conf.py.in conf.py @ONLY)
-    add_custom_target(Sphinx DEPENDS Doxygen
+
+    add_custom_target(Sphinx-html DEPENDS Doxygen
                       COMMAND ${SPHINX_EXECUTABLE} -q -c ${AVM_DOC_OUTPUT_DIR}
+                      ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
+
+    add_custom_target(Sphinx-man DEPENDS Doxygen
+                      COMMAND ${SPHINX_EXECUTABLE} -q -b man -c ${AVM_DOC_OUTPUT_DIR}
                       ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
 else()
     message(WARNING "Install Doxygen and Sphinx to generate documentation.")
