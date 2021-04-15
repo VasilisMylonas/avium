@@ -18,6 +18,7 @@ typedef enum {
     SeekOriginEnd,
 } AvmSeekOrigin;
 
+/// An abstraction over a sequence of bytes.
 AVM_INTERFACE(AvmStream);
 
 /**

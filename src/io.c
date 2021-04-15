@@ -4,10 +4,9 @@
 
 typedef AvmResult(void) (*ReadWriteFunc)(AvmStream*, size_t, byte[]);
 
-#define RESULT_CAST(result, TFrom, TTo)                      \
-    AvmIsFailure(TFrom)(result)                              \
-        ? AvmFailure(TTo)((result)->_kind, (result)->_error) \
-        : AvmSuccess(TTo)((TTo)(result)->_value)
+#define RESULT_CAST(result, TFrom, TTo)                             \
+    AvmIsFailure(TFrom)(result) ? AvmFailure(TTo)((result)->_error) \
+                                : AvmSuccess(TTo)((TTo)(result)->_value)
 
 void AvmStreamFlush(AvmStream* self) {
     if (self == NULL) {
@@ -100,7 +99,9 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
 
     result = AvmStreamReadChar(self);
     if (AvmIsFailure(char)(&result)) {
-        return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
+        // TODO
+        AvmPanic("Could not read line.");
+        // return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
     }
     c = AvmUnwrap(char)(&result);
 
@@ -108,7 +109,10 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
         AvmStringPushChar(&s, c);
         result = AvmStreamReadChar(self);
         if (AvmIsFailure(char)(&result)) {
-            return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
+            // TODO
+            AvmPanic("Could not read line.");
+            // return AvmFailure(AvmString)(ErrorKindSys, "Could not read
+            // line.");
         }
         c = AvmUnwrap(char)(&result);
     }
