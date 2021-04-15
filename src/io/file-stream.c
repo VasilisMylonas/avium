@@ -14,7 +14,7 @@ static void AvmFileStreamFlush(AvmFileStream* self) { fflush(self->_handle); }
 static AvmResult(void)
     AvmFileStreamWrite(AvmFileStream* self, size_t length, byte bytes[]) {
     if (fwrite(bytes, 1, length, self->_handle) != length) {
-        return AvmFailure(void)(ErrorKindSys, strerror(ferror(self->_handle)));
+        return AvmFailure(void)(AvmErrorFromOSCode(ferror(self->_handle)));
     }
 
     return AvmSuccess(void)();
@@ -23,7 +23,7 @@ static AvmResult(void)
 static AvmResult(void)
     AvmFileStreamRead(AvmFileStream* self, size_t length, byte bytes[]) {
     if (fread(bytes, 1, length, self->_handle) != length) {
-        return AvmFailure(void)(ErrorKindSys, strerror(ferror(self->_handle)));
+        return AvmFailure(void)(AvmErrorFromOSCode(ferror(self->_handle)));
     }
 
     return AvmSuccess(void)();
