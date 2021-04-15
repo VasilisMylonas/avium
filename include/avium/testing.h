@@ -80,9 +80,11 @@
  */
 #define __test static void
 
-#define AVM_ASSERT_(expression)                                         \
-    expression ? ((void)0)                                              \
-               : AvmPanicEx("Assertion failed: " #expression, __func__, \
-                            __FILE__, __LINE__);
+#ifndef DOXYGEN
+#    define AVM_ASSERT_(expression)                                         \
+        expression ? ((void)0)                                              \
+                   : AvmPanicEx("Assertion failed: " #expression, __func__, \
+                                __FILE__, __LINE__);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_TESTING_H
