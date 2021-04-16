@@ -39,9 +39,9 @@ static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
     }
 }
 
-AVM_TYPE(AvmOSError, {[FUNC_TO_STRING] = (AvmFunction)AvmOSErrorToString});
+AVM_TYPE(AvmOSError, {[FnEntryToString] = (AvmFunction)AvmOSErrorToString});
 AVM_TYPE(AvmSimpleError,
-         {[FUNC_TO_STRING] = (AvmFunction)AvmSimpleErrorToString});
+         {[FnEntryToString] = (AvmFunction)AvmSimpleErrorToString});
 
 AvmError* AvmErrorFromOSCode(int code) {
     return heapalloc(AvmOSError, {
@@ -64,7 +64,7 @@ AvmError* AvmErrorGetSource(AvmError* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_SOURCE];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetSource];
 
     if (func != NULL) {
         return ((AvmError * (*)(AvmError*)) func)(self);
@@ -78,7 +78,7 @@ AvmString AvmErrorGetBacktrace(AvmError* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_BACKTRACE];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetBacktrace];
 
     if (func != NULL) {
         return ((AvmString(*)(AvmError*))func)(self);

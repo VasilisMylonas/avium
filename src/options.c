@@ -34,7 +34,7 @@ static void AvmOptionParserDestroy(AvmOptionParser* self) {
     AvmObjectDestroy(&self->options);
 }
 
-AVM_TYPE(AvmOptionParser, {[FUNC_DTOR] = (AvmFunction)AvmOptionParserDestroy});
+AVM_TYPE(AvmOptionParser, {[FnEntryDtor] = (AvmFunction)AvmOptionParserDestroy});
 
 AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
     AvmOptionParser* self = AvmAlloc(sizeof(AvmOptionParser));

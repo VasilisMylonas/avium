@@ -28,6 +28,13 @@ Avium is a library that aims to fill in many missing features in the C language 
 
 And many more!
 
+## Helpful links 🔗
+
+- [Code Quality Dashboard](https://www.codefactor.io/repository/github/vasilismylonas/avium)
+- [Coverage Dashboard](https://coveralls.io/github/VasilisMylonas/avium)
+- [Documentation](https://vasilismylonas.github.io/avium)
+
+
 ## Prerequisites ⏳️
 
 - A C11-compatible compiler such as Clang or GCC and MSVC for Windows.
@@ -75,7 +82,7 @@ Currently the following configurations are supported ✅️:
 
 ## Contributing 🤝
 
-If you are interested in contributing, please take the time to read [CONTRIBUTING.md](./CONTRIBUTING.md).
+If you are interested in contributing, please take the time to read [CONTRIBUTING.md](./CONTRIBUTING.md). You should also take a look at the [code of conduct](./CODE_OF_CONDUCT.md).
 
 ## Contact Us ❔️
 

@@ -107,11 +107,100 @@ AVMAPI AvmError* AvmErrorGetSource(AvmError* self);
  */
 AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
 
-#define AvmResult(T)    AVM_GENERIC(AvmResult, T)
-#define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
-#define AvmFailure(T)   AVM_GENERIC(AvmFailure, T)
-#define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
-#define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
+/**
+ * @brief A type which can contain either an AvmError or a T.
+ *
+ * @param T The type.
+ */
+#define AvmResult(T) AVM_GENERIC(AvmResult, T)
+
+#ifdef DOXYGEN
+/**
+ * @brief Returns an AvmResult indicating success and containing a value.
+ *
+ * @tparam T The type.
+ * @param value The value.
+ *
+ * @return The AvmResult
+ */
+template <T>
+AVMAPI AvmResult<T> AvmSuccess<T>(T value);
+
+/**
+ * @brief Returns an AvmResult indicating failure and containing a AvmError.
+ *
+ * @tparam T The type.
+ * @param error The error.
+ *
+ * @return The AvmResult
+ */
+template <T>
+AVMAPI AvmResult<T> AvmFailure<T>(AvmError* error);
+
+/**
+ * @brief Unwraps an AvmResult, returning either the contained value, or
+ * calling AvmPanic.
+ *
+ * @tparam T The type.
+ * @param self The AvmResult instance.
+ *
+ * @return The AvmResult value.
+ */
+template <T>
+AVMAPI T AvmUnwrap<T>(AvmResult<T>* self);
+
+/**
+ * @brief Determines whether an AvmResult indicates failure.
+ *
+ * @tparam T The type.
+ * @param self The AvmResult instance.
+ *
+ * @return true if the AvmResult represents failure, otherwise false.
+ */
+template <T>
+AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
+#else
+/**
+ * @brief Returns an AvmResult indicating success and containing a value.
+ *
+ * @tparam T The type.
+ * @param value The value.
+ *
+ * @return The AvmResult
+ */
+#    define AvmSuccess(T)   AVM_GENERIC(AvmSuccess, T)
+
+/**
+ * @brief Returns an AvmResult indicating failure and containing a AvmError.
+ *
+ * @param T The type.
+ * @param error The error.
+ *
+ * @return The AvmResult
+ */
+#    define AvmFailure(T)   AVM_GENERIC(AvmFailure, T)
+
+/**
+ * @brief Unwraps an AvmResult, returning either the contained value, or calling
+ * AvmPanic.
+ *
+ * @param T The type.
+ * @param self The AvmResult instance.
+ *
+ * @return The AvmResult value.
+ */
+#    define AvmUnwrap(T)    AVM_GENERIC(AvmUnwrap, T)
+
+/**
+ * @brief Determines whether an AvmResult indicates failure.
+ *
+ * @param T The type.
+ * @param self The AvmResult instance.
+ *
+ * @return true if the AvmResult represents failure, otherwise false.
+ */
+#    define AvmIsFailure(T) AVM_GENERIC(AvmIsFailure, T)
+#endif  // DOXYGEN
 
 /**
  * @brief Creates an AvmResult for a type.
@@ -131,7 +220,7 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
     }                                                                          \
                                                                                \
     AVM_TYPE(AVM_GENERIC(AvmResult, T),                                        \
-             {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});   \
+             {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)}); \
                                                                                \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
         return (AvmResult(T)){                                                 \

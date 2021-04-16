@@ -1,6 +1,6 @@
 #include "avium/types.h"
 
-#include <string.h>  // For memcmp, memcpy
+#include <string.h>  // For memcmp
 
 #include "avium/runtime.h"
 #include "avium/resources.h"
@@ -11,6 +11,8 @@ AvmType* AvmObjectGetType(object self) {
         AvmPanic(SelfNullMsg);
     }
 
+    // The first member of an object should be an AvmType*
+    // Look in types.h for AVM_CLASS
     return *(AvmType**)self;
 }
 
@@ -24,7 +26,7 @@ bool AvmObjectEquals(object self, object other) {
     }
 
     const AvmType* type = AvmObjectGetType(self);
-    AvmFunction method = type->_vptr[FUNC_EQUALS];
+    AvmFunction method = type->_vptr[FnEntryEquals];
     size_t size = type->_size;
 
     if (method == NULL) {
@@ -39,7 +41,7 @@ void AvmObjectDestroy(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_DTOR];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryDtor];
 
     if (method != NULL) {
         ((void (*)(object))method)(self);
@@ -51,11 +53,13 @@ object AvmObjectClone(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_CLONE];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryClone];
 
     if (method == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
-        return memcpy(AvmAlloc(size), self, size);
+        void* memory = AvmAlloc(size);
+        AvmMemCopy((byte*)self, size, (byte*)memory, size);
+        return memory;
     }
 
     return ((object(*)(object))method)(self);
@@ -66,7 +70,7 @@ AvmString AvmObjectToString(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FUNC_TO_STRING];
+    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryToString];
 
     if (method == NULL) {
         return AvmSprintf("object <%x>", self);

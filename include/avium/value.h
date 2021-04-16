@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Primitive variant type.
  * @version 0.2
- * @date 2021-04-03
+ * @date 2021-04-14
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -47,6 +47,10 @@ typedef enum {
     ValueKindChar,
 } AvmValueKind;
 
+#ifdef DOXYGEN
+/// A type that can contain any primitive type.
+typedef struct AvmValue AvmValue;
+#else
 /// A type that can contain any primitive type.
 AVM_CLASS(AvmValue, object, {
     union {
@@ -59,6 +63,7 @@ AVM_CLASS(AvmValue, object, {
     };
     AvmValueKind _kind;
 });
+#endif  // DOXYGEN
 
 /**
  * @brief Creates an AvmValue containing a boolean.
@@ -112,6 +117,7 @@ AVMAPI AvmValue AvmValueFromStr(str value);
  * @brief Casts an AvmValue to a boolean.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindBool kind.
  *
  * @param self The AvmValue.
  * @return The boolean.
@@ -122,6 +128,7 @@ AVMAPI bool AvmValueAsBool(AvmValue* self);
  * @brief Casts an AvmValue to a character.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindChar kind.
  *
  * @param self The AvmValue.
  * @return The character.
@@ -132,6 +139,7 @@ AVMAPI char AvmValueAsChar(AvmValue* self);
  * @brief Casts an AvmValue to a float.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindFloat kind.
  *
  * @param self The AvmValue.
  * @return The float.
@@ -142,6 +150,7 @@ AVMAPI double AvmValueAsFloat(AvmValue* self);
  * @brief Casts an AvmValue to an unsigned integer.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindUInt kind.
  *
  * @param self The AvmValue.
  * @return The unsigned integer.
@@ -152,6 +161,7 @@ AVMAPI ulong AvmValueAsUInt(AvmValue* self);
  * @brief Casts an AvmValue to a signed integer.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindInt kind.
  *
  * @param self The AvmValue.
  * @return The signed integer.
@@ -162,6 +172,7 @@ AVMAPI _long AvmValueAsInt(AvmValue* self);
  * @brief Casts an AvmValue to a str.
  *
  * @pre Parameter @p self must not be null.
+ * @pre Parameter @p self must be of ValueKindStr kind.
  *
  * @param self The AvmValue.
  * @return The str.
@@ -179,6 +190,9 @@ AVMAPI str AvmValueAsStr(AvmValue* self);
 AVMAPI AvmValueKind AvmValueGetKind(AvmValue* self);
 
 // Ensure type size constraint.
+
+#ifndef DOXYGEN
 static_assert_s(sizeof(AvmValue) == AVM_VALUE_SIZE);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_VALUE_H

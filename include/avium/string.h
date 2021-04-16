@@ -216,6 +216,49 @@ AVMAPI void AvmStringPushChars(AvmString* self, size_t length,
  */
 AVMAPI void AvmStringPushString(AvmString* self, AvmString* other);
 
+#ifdef DOXYGEN
+/**
+ * @brief Returns the index of the first occurrence of a character in an
+ * AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param character The character to find.
+ *
+ * @return The index of the first occurrence of the character or nothing.
+ */
+AVMAPI AvmOptional<size_t> AvmStringIndexOf(AvmString* self, char character);
+
+/**
+ * @brief Returns the index of the last occurrence of a character in an
+ * AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param character The character to find.
+ *
+ * @return The index of the last occurrence of the character or nothing.
+ */
+AVMAPI AvmOptional<size_t> AvmStringLastIndexOf(AvmString* self,
+                                                char character);
+
+/**
+ * @brief Replaces the first occurrence of a character in an AvmString with
+ * another.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param oldCharacter The character to be replaced.
+ * @param newCharacter The character to replace with.
+ *
+ * @return The index of the replaced character.
+ */
+AVMAPI AvmOptional<size_t> AvmStringReplace(AvmString* self, char oldCharacter,
+                                            char newCharacter);
+#else
 /**
  * @brief Returns the index of the first occurrence of a character in an
  * AvmString.
@@ -257,6 +300,7 @@ AVMAPI AvmOptional(size_t)
  */
 AVMAPI AvmOptional(size_t)
     AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter);
+#endif  // DOXYGEN
 
 /**
  * @brief Replaces the first N occurrences of a character in an AvmString with
@@ -291,6 +335,77 @@ AVMAPI size_t AvmStringReplaceLastN(AvmString* self, size_t count,
                                     char oldCharacter, char newCharacter);
 
 /**
+ * @brief Replaces all occurrences of a character in an AvmString with another.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param oldCharacter The character to be replaced.
+ * @param newCharacter The character to replace with.
+ *
+ * @return The count of the total replaced characters.
+ */
+AVMAPI size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
+                                  char newCharacter);
+
+#ifdef DOXYGEN
+/**
+ * @brief Replaces the last occurrence of a character in an AvmString with
+ * another.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param oldCharacter The character to be replaced.
+ * @param newCharacter The character to replace with.
+ *
+ * @return The index of the replaced character.
+ */
+AVMAPI AvmOptional<size_t> AvmStringReplaceLast(AvmString* self,
+                                                char oldCharacter,
+                                                char newCharacter);
+
+/**
+ * @brief Returns the index of the first occurrence of a substring in an
+ * AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ * @pre Parameter @p substring must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param substring The substring to find.
+ *
+ * @return The index of the first occurrence of the substring or nothing.
+ */
+AVMAPI AvmOptional<size_t> AvmStringFind(AvmString* self, str substring);
+
+/**
+ * @brief Returns the index of the last occurrence of a substring in an
+ * AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ * @pre Parameter @p substring must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param substring The substring to find.
+ *
+ * @return The index of the last occurrence of the substring or nothing.
+ */
+AVMAPI AvmOptional<size_t> AvmStringFindLast(AvmString* self, str substring);
+
+/**
+ * @brief Returns the character at the specified index in an AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param index The index of the character to get.
+ *
+ * @return The character at the specified index, or an error.
+ */
+AVMAPI AvmResult<char> AvmStringCharAt(AvmString* self, size_t index);
+#else
+/**
  * @brief Replaces the last occurrence of a character in an AvmString with
  * another.
  *
@@ -304,20 +419,6 @@ AVMAPI size_t AvmStringReplaceLastN(AvmString* self, size_t count,
  */
 AVMAPI AvmOptional(size_t)
     AvmStringReplaceLast(AvmString* self, char oldCharacter, char newCharacter);
-
-/**
- * @brief Replaces all occurrences of a character in an AvmString with another.
- *
- * @pre Parameter @p self must be not NULL.
- *
- * @param self The AvmString instance.
- * @param oldCharacter The character to be replaced.
- * @param newCharacter The character to replace with.
- *
- * @return The count of the total replaced characters.
- */
-AVMAPI size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
-                                  char newCharacter);
 
 /**
  * @brief Returns the index of the first occurrence of a substring in an
@@ -358,6 +459,7 @@ AVMAPI AvmOptional(size_t) AvmStringFindLast(AvmString* self, str substring);
  * @return The character at the specified index, or an error.
  */
 AVMAPI AvmResult(char) AvmStringCharAt(AvmString* self, size_t index);
+#endif  // DOXYGEN
 
 /**
  * @brief Reverses an AvmString.
@@ -590,11 +692,13 @@ AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
  */
 AVMAPI bool AvmStringEndsWithString(AvmString* self, AvmString* contents);
 
+#ifndef DOXYGEN
 // TODO
 AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
                                    const char* contents);
 
 // TODO
 AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_STRING_H

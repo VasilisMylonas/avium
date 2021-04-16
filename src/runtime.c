@@ -27,7 +27,7 @@ void AvmDealloc(void* memory) { AVM_DEALLOC(memory); }
 object AvmObjectAlloc(size_t size, object data) {
     object memory = AvmAlloc(size);
     if (data != NULL) {
-        memcpy(memory, data, size);
+        AvmMemCopy(data, size, memory, size);
     }
     return memory;
 }

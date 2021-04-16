@@ -1,9 +1,9 @@
 /**
  * @file avium/types.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
- * @brief Primitive Avium types.
+ * @brief Primitive Avium types and related functions.
  * @version 0.2
- * @date 2021-04-04
+ * @date 2021-04-14
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -34,6 +34,8 @@
 /**
  * @brief Creates an Avium class type.
  *
+ * @hideinitializer
+ *
  * @param T The name of the type.
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
@@ -50,6 +52,8 @@
 
 /**
  * @brief Creates an Avium interface type.
+ *
+ * @hideinitializer
  *
  * @param T The name of the type.
  */
@@ -77,8 +81,13 @@ typedef unsigned short ushort;
 /// Unsigned 8-bit integer type.
 typedef unsigned char byte;
 
-/// Read-only string type.
+#ifdef DOXYGEN
+/// Primitive read-only string.
+typedef char* str;
+#else
+/// Primitive read-only string.
 typedef const char* str;
+#endif  // DOXYGEN
 
 /// An unknown object type.
 typedef void* object;
@@ -97,12 +106,17 @@ typedef void (*AvmFunction)(void);
 /// A type containing information about an object.
 typedef struct AvmType AvmType;
 
-/// A dynamic string.
+#ifdef DOXYGEN
+/// A dynamic heap-allocated string.
+typedef struct AvmString AvmString;
+#else
+/// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {
     size_t _capacity;
     size_t _length;
     char* _buffer;
 });
+#endif  // DOXYGEN
 
 /**
  * @brief Gets information about the type of an object.
@@ -117,8 +131,9 @@ AVMAPI AvmType* AvmObjectGetType(object self);
 /**
  * @brief Compares two objects for equality.
  *
- * This function tries to use the FUNC_EQ virtual function entry to compare
- * for equality. If no such virtual function is available then memcmp is used.
+ * This function tries to use the FnEntryEquals virtual function entry. If no
+ * such virtual function is available then the objects are compared
+ * byte-by-byte.
  *
  * @pre Parameter @p self must be not null.
  * @pre Parameter @p other must be not null.
@@ -131,10 +146,10 @@ AVMAPI AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Destroys an object and deallocates its memory.
+ * @brief Destroys an object.
  *
- * This function tries to use the FUNC_DTOR virtual function entry to destroy
- * the object. If no such virtual function then this function does nothing.
+ * This function tries to use the FnEntryDtor virtual function entry. If no
+ * such virtual function then this function does nothing.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -145,9 +160,9 @@ AVMAPI void AvmObjectDestroy(object self);
 /**
  * @brief Clones an object, creating an exact copy.
  *
- * This function tries to use the FUNC_CLONE virtual function entry to clone
- * the object. If no such virtual function is available then a combination of
- * AvmAlloc and memcpy is used.
+ * This function tries to use the FnEntryClone virtual function entry. If no
+ * such virtual function is available then a the object is simple copied to
+ * heap memory.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -159,18 +174,20 @@ AVMAPI object AvmObjectClone(object self);
 /**
  * @brief Creates a string representation of an object.
  *
- * This function tries to use the FUNC_TO_STRING virtual function entry to
- * create a string representation of the object. If no such virtual function
- * is available then a default representation is returned.
+ * This function tries to use the FnEntryToString virtual function entry. If
+ * no such virtual function is available then a default representation is
+ * returned.
  *
  * @pre Parameter @p self must be not null.
  *
  * @param self The object instance.
- * @return AvmString The string representation of the object.
+ * @return The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
 // Ensure type size constraints.
+
+#ifndef DOXYGEN
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 static_assert_s(sizeof(int) == AVM_INT_SIZE);
@@ -180,5 +197,6 @@ static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H

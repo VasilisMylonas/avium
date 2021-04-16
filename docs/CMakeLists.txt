@@ -9,7 +9,6 @@ set(AVM_IMAGE_DIR ${CMAKE_SOURCE_DIR}/images)
 set(AVM_DOC_FILES
     ${CMAKE_SOURCE_DIR}/README.md
     ${CMAKE_SOURCE_DIR}/CONTRIBUTING.md
-    ${CMAKE_SOURCE_DIR}/INSTALL.md
     ${CMAKE_SOURCE_DIR}/AUTHORS
     ${CMAKE_SOURCE_DIR}/COPYING
     ${CMAKE_SOURCE_DIR}/COPYING.LESSER)
@@ -22,24 +21,32 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
     set(DOXYGEN_GENERATE_HTML FALSE)
     set(DOXYGEN_GENERATE_LATEX FALSE)
     set(DOXYGEN_GENERATE_XML TRUE)
-    set(DOXYGEN_GENERATE_MAN TRUE)
+    set(DOXYGEN_GENERATE_MAN FALSE)
     set(DOXYGEN_TYPEDEF_HIDES_STRUCT TRUE)
     set(DOXYGEN_OUTPUT_DIRECTORY ${AVM_DOC_OUTPUT_DIR})
-    set(DOXYGEN_WARN_IF_UNDOCUMENTED TRUE)
-    set(DOXYGEN_EXTRACT_ALL TRUE)
-    set(DOXYGEN_EXTRACT_STATIC TRUE)
+    set(WARN_NO_PARAMDOC TRUE)
+    set(HIDE_UNDOC_MEMBERS TRUE)
+    set(HIDE_UNDOC_CLASSES TRUE)
     set(DOXYGEN_RECURSIVE TRUE)
     set(DOXYGEN_MACRO_EXPANSION TRUE)
     set(DOXYGEN_EXPAND_ONLY_PREDEF TRUE)
-    set(DOXYGEN_PREDEFINED AVMAPI=extern static_assert=static_assert static_assert_s=static_assert AVM_PTR_TYPE=long AVM_LONG_TYPE=long)
+    set(DOXYGEN_PREDEFINED AVMAPI=extern
+            DOXYGEN
+            static_assert=static_assert
+            static_assert_s=static_assert
+            AVM_PTR_TYPE=long AVM_LONG_TYPE=long)
 
     doxygen_add_docs(Doxygen ${AVM_INCLUDE_DIR})
 
-    configure_file(conf.py.in xml/conf.py @ONLY)
-    configure_file(index.rst.in xml/index.rst @ONLY)
-    add_custom_target(Sphinx DEPENDS Doxygen
-                      COMMAND ${SPHINX_EXECUTABLE} -q -b html
-                      ${AVM_DOC_OUTPUT_DIR}/xml ${AVM_SPHINX_OUTPUT_DIR})
+    configure_file(conf.py.in conf.py @ONLY)
+
+    add_custom_target(HtmlDocs DEPENDS Doxygen
+                      COMMAND ${SPHINX_EXECUTABLE} -q -c ${AVM_DOC_OUTPUT_DIR}
+                      ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
+
+    add_custom_target(ManPages DEPENDS Doxygen
+                      COMMAND ${SPHINX_EXECUTABLE} -q -b man -c ${AVM_DOC_OUTPUT_DIR}
+                      ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
 else()
     message(WARNING "Install Doxygen and Sphinx to generate documentation.")
 endif()

@@ -35,8 +35,21 @@ jobs:
       working-directory: ${{env.SRC_DIR}}
       run: ./scripts/coverage.sh $BUILD_DIR $COVERAGE_FILE
 
+    - name: Docs
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: ./scripts/build-docs.sh $BUILD_DIR $BUILD_TYPE
+
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{secrets.github_token}}
         path-to-lcov: ${{env.COVERAGE_FILE}}
+
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: gh-pages
+        build_dir: site
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

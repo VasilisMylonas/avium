@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(Avium
+project(avium
         VERSION 0.1.0
         DESCRIPTION "An object oriented C utility runtime."
         LANGUAGES C)
