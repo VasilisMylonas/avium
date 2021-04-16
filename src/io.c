@@ -105,15 +105,13 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmString s = AvmStringNew(32);
-    char c;
-    AvmResult(char) result;
+    AvmString s = AvmStringNew(READ_LINE_CAPACITY);
 
-    result = AvmStreamReadChar(self);
+    AvmResult(char) result = AvmStreamReadChar(self);
     if (AvmIsFailure(char)(&result)) {
         return AvmFailure(AvmString)(AvmErrorOfKind(ErrorKindRead));
     }
-    c = AvmUnwrap(char)(&result);
+    char c = AvmUnwrap(char)(&result);
 
     while (c != '\n') {
         AvmStringPushChar(&s, c);
