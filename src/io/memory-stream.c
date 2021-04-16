@@ -12,7 +12,10 @@ AVM_CLASS(AvmMemoryStream, AvmStream, {
 
 static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
-static void AvmMemoryStreamFlush(AvmMemoryStream* self) { (void)self; }
+static AvmResult(void) AvmMemoryStreamFlush(AvmMemoryStream* self) {
+    (void)self;
+    return AvmSuccess(void)();
+}
 
 static AvmResult(void)
     AvmMemoryStreamRead(AvmMemoryStream* self, size_t length, byte bytes[]) {

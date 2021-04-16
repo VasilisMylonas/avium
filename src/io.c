@@ -9,13 +9,13 @@ typedef AvmResult(void) (*ReadWriteFunc)(AvmStream*, size_t, byte[]);
     AvmIsFailure(TFrom)(result) ? AvmFailure(TTo)((result)->_error) \
                                 : AvmSuccess(TTo)((TTo)(result)->_value)
 
-void AvmStreamFlush(AvmStream* self) {
+AvmResult(void) AvmStreamFlush(AvmStream* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
-    ((void (*)(AvmStream*))func)(self);
+    return ((AvmResult(void)(*)(AvmStream*))func)(self);
 }
 
 AvmResult(void)

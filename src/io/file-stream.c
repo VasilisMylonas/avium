@@ -9,7 +9,15 @@ AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
 
 static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
 
-static void AvmFileStreamFlush(AvmFileStream* self) { fflush(self->_handle); }
+static AvmResult(void) AvmFileStreamFlush(AvmFileStream* self) {
+    int status = fflush(self->_handle);
+
+    if (status != 0) {
+        return AvmFailure(void)(AvmErrorFromOSCode(status));
+    }
+
+    return AvmSuccess(void)();
+}
 
 static AvmResult(void)
     AvmFileStreamWrite(AvmFileStream* self, size_t length, byte bytes[]) {

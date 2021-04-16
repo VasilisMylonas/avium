@@ -102,8 +102,9 @@ AVMAPI AvmResult(void)
  * @pre Parameter @p self must be not null.
  *
  * @param self The AvmStream instance.
+ * @return The result of the IO operation.
  */
-AVMAPI void AvmStreamFlush(AvmStream* self);
+AVMAPI AvmResult(void) AvmStreamFlush(AvmStream* self);
 
 /**
  * @brief Seeks to a position in a stream.
