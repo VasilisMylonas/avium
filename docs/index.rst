@@ -24,3 +24,5 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
+This is the Avium documentation home page!
