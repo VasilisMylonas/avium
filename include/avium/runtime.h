@@ -41,11 +41,11 @@ typedef enum {
     FnEntryEquals,
 
     // AvmStream
-    FUNC_READ = 16,
-    FUNC_WRITE,
-    FUNC_SEEK,
-    FUNC_FLUSH,
-    FUNC_GET_POSITION,
+    FnEntryRead = 16,
+    FnEntryWrite,
+    FnEntrySeek,
+    FnEntryFlush,
+    FnEntryGetPosition,
 
     FnEntryGetLength = 12,
     FnEntryGetCapacity,

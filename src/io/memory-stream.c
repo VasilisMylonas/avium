@@ -77,11 +77,11 @@ static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self) {
 
 AVM_TYPE(AvmMemoryStream,
          {
-             [FUNC_FLUSH] = (AvmFunction)AvmMemoryStreamFlush,
-             [FUNC_READ] = (AvmFunction)AvmMemoryStreamRead,
-             [FUNC_WRITE] = (AvmFunction)AvmMemoryStreamWrite,
-             [FUNC_SEEK] = (AvmFunction)AvmMemoryStreamSeek,
-             [FUNC_GET_POSITION] = (AvmFunction)AvmMemoryStreamGetPosition,
+             [FnEntryFlush] = (AvmFunction)AvmMemoryStreamFlush,
+             [FnEntryRead] = (AvmFunction)AvmMemoryStreamRead,
+             [FnEntryWrite] = (AvmFunction)AvmMemoryStreamWrite,
+             [FnEntrySeek] = (AvmFunction)AvmMemoryStreamSeek,
+             [FnEntryGetPosition] = (AvmFunction)AvmMemoryStreamGetPosition,
              [FnEntryDtor] = (AvmFunction)AvmMemoryStreamDestroy,
              [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
          });

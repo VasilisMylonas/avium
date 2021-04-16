@@ -14,7 +14,7 @@ AvmResult(void) AvmStreamFlush(AvmStream* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryRead];
     return ((AvmResult(void)(*)(AvmStream*))func)(self);
 }
 
@@ -30,7 +30,7 @@ AvmResult(void)
             "SeekOriginEnd is specified.");
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_SEEK];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntrySeek];
     return ((AvmResult(void)(*)(AvmStream*, _long, AvmSeekOrigin))func)(
         self, offset, origin);
 }
@@ -49,7 +49,7 @@ size_t AvmStreamGetPosition(AvmStream* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_POSITION];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetPosition];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
@@ -62,7 +62,7 @@ AvmResult(void) AvmStreamRead(AvmStream* self, size_t length, byte buffer[]) {
         AvmPanic(BufferNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryRead];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
@@ -75,7 +75,7 @@ AvmResult(void) AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]) {
         AvmPanic(BufferNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_WRITE];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryWrite];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
