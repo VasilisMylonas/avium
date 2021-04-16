@@ -20,9 +20,9 @@ If you would like to suggest a feature then feel free to do so! File up an issue
 
 ## Submitting changes
 
-- Clone the repo and create a branch named as so:
-
-> [feature | bug | chore]/[insert name here]
+- Clone the repo and create a branch named
+    **feature/[name]** if adding new functionality or
+    **fix/[name]** if fixing a bug.
 
 - Write the code 👨‍💻.
 
