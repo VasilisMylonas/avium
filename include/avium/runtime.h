@@ -40,12 +40,16 @@ typedef enum {
     /// The VFT AvmObjectEquals entry.
     FnEntryEquals,
 
-    /// Currently unused.
+    // AvmStream
+    FUNC_READ = 16,
+    FUNC_WRITE,
+    FUNC_SEEK,
+    FUNC_FLUSH,
+    FUNC_GET_POSITION
+    
+    FnEntryGetLength = 12,
     FnEntryGetCapacity,
-
-    /// Currently unused.
-    FnEntryGetLength,
-
+    
     /// The VFT AvmErrorGetBacktrace entry.
     FnEntryGetBacktrace = 16,
 

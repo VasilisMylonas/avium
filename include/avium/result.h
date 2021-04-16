@@ -51,6 +51,12 @@ typedef enum {
 
     /// A required resource was unavailable.
     ErrorKindNotFound,
+
+    /// Could not perform the read operation.
+    ErrorKindRead,
+
+    /// Could not perform the write operation.
+    ErrorKindWrite,
 } AvmErrorKind;
 
 /**
@@ -257,5 +263,51 @@ AVM_RESULT_TYPE(object)
 AVM_RESULT_TYPE(size_t)
 AVM_RESULT_TYPE(AvmString)
 AVM_RESULT_TYPE(AvmFunction)
+
+#ifndef AVM_MSVC
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
+AVM_CLASS(AVM_GENERIC(AvmResult, void), object, { AvmError* _error; });
+
+static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
+    if (self->_error != NULL) {
+        AvmObjectDestroy(self->_error);
+    }
+}
+
+AVM_TYPE(AVM_GENERIC(AvmResult, void),
+         {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, void)});
+
+static inline AvmResult(void) AvmSuccess(void)(void) {
+    return (AvmResult(void)){
+        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._error = NULL,
+    };
+}
+
+static inline AvmResult(void) AvmFailure(void)(AvmError* error) {
+    return (AvmResult(void)){
+        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._error = error,
+    };
+}
+
+static inline void AvmUnwrap(void)(AvmResult(void) * self) {
+    if (self->_error == NULL) {
+        return;
+    }
+
+    AvmPanic("Tried to unwrap a result describing failure.");
+}
+
+static inline bool AvmIsFailure(void)(AvmResult(void) * self) {
+    return self->_error != NULL;
+}
+
+#ifndef AVM_MSVC
+#    pragma GCC diagnostic pop
+#endif
 
 #endif  // AVIUM_RESULT_H
