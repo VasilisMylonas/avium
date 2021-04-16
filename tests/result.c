@@ -1,17 +1,16 @@
 #include <avium/testing.h>
-#include <avium/prologue.h>
+#include <avium/result.h>
 
-static object TestInit() {
+static object TestInit(int argc, str argv[]) {
+    (void)argc;
+    (void)argv;
+
     static AvmResult(int) success;
 
     success = AvmSuccess(int)(5);
     return &success;
 }
 
-static void TestFini(object state) { (void)state; }
+__test TestUnwrap(object state) { AssertEqual(AvmUnwrap(int)(state), 5); }
 
-// TEST
-static void TestUnwrap(object state) { AssertEqual(AvmUnwrap(int)(state), 5); }
-
-// TEST
-static void TestIsFailure(object state) { AssertNot(AvmIsFailure(int)(state)); }
+__test TestIsFailure(object state) { AssertNot(AvmIsFailure(int)(state)); }

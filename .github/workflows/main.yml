@@ -1,0 +1,42 @@
+name: Main
+
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+  SRC_DIR: ${{github.workspace}}
+  BUILD_DIR: ${{github.workspace}}/build
+  COVERAGE_FILE: ${{github.workspace}}/build/coverage/cov.info
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: ./scripts/install-dependencies.sh
+
+    - name: Build
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: ./scripts/build.sh $BUILD_DIR $BUILD_TYPE
+
+    - name: Test
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: ./scripts/test.sh $BUILD_DIR $BUILD_TYPE
+
+    - name: Coverage
+      shell: bash
+      working-directory: ${{env.SRC_DIR}}
+      run: ./scripts/coverage.sh $BUILD_DIR $COVERAGE_FILE
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{secrets.github_token}}
+        path-to-lcov: ${{env.COVERAGE_FILE}}

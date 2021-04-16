@@ -2,10 +2,9 @@
 #define AVIUM_CONFIG_H
 
 // clang-format off
-#define AVM_VERSION_MAJOR @avium_VERSION_MAJOR@
-#define AVM_VERSION_MINOR @avium_VERSION_MINOR@
-#define AVM_VERSION_PATCH @avium_VERSION_PATCH@
-#define AVM_PTR_TYPE @AVM_PTR_TYPE@
+#define AVM_VERSION_MAJOR @Avium_VERSION_MAJOR@
+#define AVM_VERSION_MINOR @Avium_VERSION_MINOR@
+#define AVM_VERSION_PATCH @Avium_VERSION_PATCH@
 #define AVM_LONG_TYPE @AVM_LONG_TYPE@
 // clang-format on
 
@@ -14,12 +13,14 @@
 #cmakedefine AVM_DARWIN
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
+#cmakedefine AVM_USE_GC
+#cmakedefine AVM_HAVE_UCHAR_H
 
 #ifndef static_assert
 #    define static_assert _Static_assert
 #endif
 
-#define static_assert_s(assertion) _Static_assert(assertion, "")
+#define static_assert_s(condition) _Static_assert(condition, "")
 
 #ifdef AVM_MSVC
 #    ifndef alignof
@@ -41,7 +42,7 @@
 #    warning "Avium: C++ is not supported, you may encounter errors."
 #endif  // __cplusplus
 
-// prologue.h
+// types.h
 #define AVM_BYTE_SIZE  1
 #define AVM_CHAR_SIZE  1
 #define AVM_SHORT_SIZE 2
@@ -60,7 +61,14 @@
 #define AVM_ARRAY_LIST_SIZE          32
 #define AVM_ARRAY_LIST_GROWTH_FACTOR 2
 
+// value.h
+#define AVM_VALUE_SIZE 24
+
 // fmt.h
+#ifdef AVM_HAVE_UCHAR_H
+#    define AVM_FMT_UNICODE 'U'
+#endif
+
 #define AVM_FMT_INT_DECIMAL    'i'
 #define AVM_FMT_INT_HEX        'x'
 #define AVM_FMT_INT_BINARY     'b'
@@ -68,7 +76,6 @@
 #define AVM_FMT_INT_UNSIGNED   'u'
 #define AVM_FMT_INT_SIZE       'z'
 #define AVM_FMT_CHAR           'c'
-#define AVM_FMT_UNICODE        'U'
 #define AVM_FMT_FLOAT          'f'
 #define AVM_FMT_FLOAT_EXP      'e'
 #define AVM_FMT_FLOAT_AUTO     'g'
@@ -84,5 +91,10 @@
 #define AVM_FMT_OCTAL_PREFIX   "0o"
 #define AVM_FMT_BINARY_PREFIX  "0b"
 #define AVM_FMT_UNICODE_PREFIX "U+"
+
+// io.h
+#define AVM_STREAM_SIZE        8
+#define AVM_FILE_STREAM_SIZE   16
+#define AVM_MEMORY_STREAM_SIZE 48
 
 #endif  // AVIUM_CONFIG_H

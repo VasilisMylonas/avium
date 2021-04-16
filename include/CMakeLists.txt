@@ -1,17 +1,25 @@
 # Include files.
 
+include(CheckTypeSize)
+include(CheckIncludeFile)
+
 # All include files to be distributed.
 set(AVM_INCLUDE_FILES
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
     ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
     avium/array-list.h
     avium/array.h
-    avium/collection.h
+    avium/file.h
     avium/fmt.h
+    avium/io.h
+    avium/optional.h
     avium/options.h
-    avium/prologue.h
+    avium/path.h
+    avium/runtime.h
+    avium/result.h
     avium/string.h
     avium/testing.h
+    avium/types.h
     avium/value.h
     avium/version.h)
 
@@ -36,21 +44,13 @@ else()
     set(AVM_GNU ON)
 endif()
 
-include(CheckTypeSize)
-
 check_type_size(long AVM_LONG_SIZE)
-check_type_size(void* AVM_PTR_SIZE)
+check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE long)
 else()
-    set(AVM_LONG_TYPE long long)
-endif()
-
-if(${AVM_PTR_SIZE} EQUAL 8)
-    set(AVM_PTR_TYPE ${AVM_LONG_TYPE})
-else()
-    set(AVM_PTR_TYPE int)
+    set(AVM_LONG_TYPE "long long")
 endif()
 
 # Process header config file.

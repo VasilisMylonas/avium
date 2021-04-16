@@ -1,4 +1,5 @@
 #include "avium/array.h"
+
 #include "avium/string.h"
 #include "avium/fmt.h"
 
@@ -32,13 +33,11 @@
 
 AVM_ARRAY_TO_STRING_SIGNED(short)
 AVM_ARRAY_TO_STRING_SIGNED(_long)
-AVM_ARRAY_TO_STRING_SIGNED(ptr)
 AVM_ARRAY_TO_STRING_UNSIGNED(byte)
 AVM_ARRAY_TO_STRING_UNSIGNED(ushort)
 AVM_ARRAY_TO_STRING_SIGNED(int)
 AVM_ARRAY_TO_STRING_UNSIGNED(uint)
 AVM_ARRAY_TO_STRING_UNSIGNED(ulong)
-AVM_ARRAY_TO_STRING_UNSIGNED(uptr)
 
 AvmString AvmArrayToString_char(AvmArray(char, 1) * array) {
     AvmString string = AvmStringNew(array->length);

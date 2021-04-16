@@ -19,7 +19,6 @@ include(GNUInstallDirs)
 include(CTest)
 include(GenerateExportHeader)
 
-
 if(MSVC)
     # Enable warnings for MSVC and treat them as errors.
     add_compile_options(/Wall)
@@ -31,8 +30,16 @@ if(MSVC)
     add_compile_options(/wd5045) # Spectre mitigation.
     add_compile_options(/wd4668) # <macro> not defined as preprocessor macro, replacing with 0.
     add_compile_options(/wd4324) # Struct padded due to alignment specifier.
+    add_compile_options(/wd4820) # 'x' bytes padding added after member...
     add_compile_options(/wd4200) # Zero-sized array in struct/union.
     add_compile_options(/wd4063) # Invalid value for switch of enum.
+    add_compile_options(/wd5105) # Macro expansion producing 'defined'...
+    add_compile_options(/wd4711) # Function not selected for inlining.
+    add_compile_options(/wd4244) # Conversion ... possible loss of data.
+    add_compile_options(/wd4242) # Conversion ... possible loss of data.
+    add_compile_options(/wd4267) # Conversion ... possible loss of data.
+    add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
+    add_compile_options(/wd4273) # TODO: Temporary
 else()
     # Enable warnings for GCC compatible compilers.
     add_compile_options(-fprofile-arcs -ftest-coverage)
@@ -43,22 +50,14 @@ endif()
 include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUTPUT_DIR})
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
+option(AVM_GEN_DOCS "Generate docs?" ON)
+option(AVM_USE_GC "Use garbage collector?" ON)
+
 # Include subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
-
-option(AVM_GEN_DOCS "Generate docs?" TRUE)
-option(AVM_RUN_TESTS "Run tests?" TRUE)
-
-# Documentation
-if(AVM_GEN_DOCS)
-    add_subdirectory(docs)
-endif()
-
-# Tests.
-if(AVM_RUN_TESTS)
-    add_subdirectory(tests)
-endif()
+add_subdirectory(tests)
+add_subdirectory(docs)
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)

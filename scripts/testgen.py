@@ -5,6 +5,7 @@ import os
 import argparse
 
 runner_template = """// Auto-generated
+#include <avium/runtime.h>
 @FILE@
 
 int main(int argc, str argv[])

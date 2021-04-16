@@ -2,8 +2,8 @@
  * @file avium/fmt.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Formatted IO utilities.
- * @version 0.1
- * @date 2021-03-18
+ * @version 0.2
+ * @date 2021-04-06
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -24,7 +24,7 @@
 #ifndef AVIUM_FMT_H
 #define AVIUM_FMT_H
 
-#include "avium/prologue.h"
+#include "avium/types.h"
 
 /// Represents the base in which a number is represented.
 typedef enum {
@@ -39,7 +39,7 @@ typedef enum {
 
     /// Base 16 (10).
     NumericBaseHex = 16,
-} NumericBase;
+} AvmNumericBase;
 
 /**
  * @brief Converts a signed integer to a string.
@@ -55,15 +55,15 @@ AVMAPI AvmString AvmItoa(_long value);
  * @param value The unsigned integer value.
  * @param base The base of the number.
  *
- * @return AvmString The string representation.
+ * @return The string representation.
  */
-AVMAPI AvmString AvmUtoa(ulong value, NumericBase base);
+AVMAPI AvmString AvmUtoa(ulong value, AvmNumericBase base);
 
 /**
  * @brief Converts a double to a string.
  *
  * @param value The double value.
- * @return AvmString The string representation.
+ * @return The string representation.
  */
 AVMAPI AvmString AvmFtoa(double value);
 
@@ -71,12 +71,15 @@ AVMAPI AvmString AvmFtoa(double value);
  * @brief Converts a float to a string (custom implementation).
  *
  * @param value The float value.
- * @return AvmString The string representation.
+ * @return The string representation.
  */
 AVMAPI AvmString AvmFtoa2(float value);
 
 /**
  * @brief Reads formatted output from stdin using a va_list.
+ *
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
  *
  * @param format The format string.
  * @param args The va_list containing pointers to variables to read to.
@@ -86,10 +89,10 @@ AVMAPI void AvmVScanf(str format, va_list args);
 /**
  * @brief Reads formatted output from stdin.
  *
+ * @pre Parameter @p format must be not null.
+ *
  * @param format The format string.
  * @param ... Pointers to variables to read to.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmScanf(str format, ...) {
     va_list args;
@@ -101,6 +104,10 @@ AVMAPI inline void AvmScanf(str format, ...) {
 /**
  * @brief Reads formatted output from an AvmString using a va_list.
  *
+ * @pre Parameter @p string must be not null.
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param string The AvmString.
  * @param format The format string.
  * @param args The va_list containing pointers to variables to read to.
@@ -110,11 +117,12 @@ AVMAPI void AvmVSscanf(AvmString* string, str format, va_list args);
 /**
  * @brief Reads formatted output from an AvmString.
  *
+ * @pre Parameter @p string must be not null.
+ * @pre Parameter @p format must be not null.
+ *
  * @param string The AvmString.
  * @param format The format string.
  * @param ... Pointers to variables to read to.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmSscanf(AvmString* string, str format, ...) {
     va_list args;
@@ -126,6 +134,10 @@ AVMAPI inline void AvmSscanf(AvmString* string, str format, ...) {
 /**
  * @brief Reads formatted output from a stream using a va_list.
  *
+ * @pre Parameter @p handle must be not null.
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param handle The stream handle.
  * @param format The format string.
  * @param args The va_list containing pointers to variables to read to.
@@ -135,11 +147,12 @@ AVMAPI void AvmVFscanf(void* handle, str format, va_list args);
 /**
  * @brief Reads formatted output from a stream.
  *
+ * @pre Parameter @p handle must be not null.
+ * @pre Parameter @p format must be not null.
+ *
  * @param handle The stream handle.
  * @param format The format string.
  * @param ... Pointers to variables to read to.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmFscanf(void* handle, str format, ...) {
     va_list args;
@@ -151,22 +164,25 @@ AVMAPI inline void AvmFscanf(void* handle, str format, ...) {
 /**
  * @brief Writes formatted output into a string using a va_list.
  *
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param format The format string.
  * @param args The va_list containing values to insert into the format string.
  *
- * @return AvmString The formatted string.
+ * @return The formatted string.
  */
 AVMAPI AvmString AvmVSprintf(str format, va_list args);
 
 /**
  * @brief Writes formatted output into a string.
  *
+ * @pre Parameter @p format must be not null.
+ *
  * @param format The format string.
  * @param ... The values to insert into the format string.
  *
- * @return AvmString The formatted string.
- *
- * @note This function is inline.
+ * @return The formatted string.
  */
 AVMAPI inline AvmString AvmSprintf(str format, ...) {
     va_list args;
@@ -179,6 +195,10 @@ AVMAPI inline AvmString AvmSprintf(str format, ...) {
 /**
  * @brief Writes formatted output to a stream using a va_list.
  *
+ * @pre Parameter @p handle must be not null.
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param handle The stream handle.
  * @param format The format string.
  * @param args The va_list containing the values to write.
@@ -188,11 +208,12 @@ AVMAPI void AvmVFprintf(void* handle, str format, va_list args);
 /**
  * @brief Writes formatted output to a stream.
  *
+ * @pre Parameter @p handle must be not null.
+ * @pre Parameter @p format must be not null.
+ *
  * @param handle The stream handle.
  * @param format The format string.
  * @param ... The values to write.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmFprintf(void* handle, str format, ...) {
     va_list args;
@@ -204,6 +225,9 @@ AVMAPI inline void AvmFprintf(void* handle, str format, ...) {
 /**
  * @brief Writes formatted output to stdout using a va_list.
  *
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param format The format string.
  * @param args The va_list containing the values to write.
  */
@@ -212,10 +236,10 @@ AVMAPI void AvmVPrintf(str format, va_list args);
 /**
  * @brief Writes formatted output to stdout.
  *
+ * @pre Parameter @p format must be not null.
+ *
  * @param format The format string.
  * @param ... The values to write.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmPrintf(str format, ...) {
     va_list args;
@@ -227,6 +251,9 @@ AVMAPI inline void AvmPrintf(str format, ...) {
 /**
  * @brief Writes formatted output to stderr using a va_list.
  *
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
  * @param format The format string.
  * @param args The va_list containing the values to write.
  */
@@ -235,10 +262,10 @@ AVMAPI void AvmVErrorf(str format, va_list args);
 /**
  * Writes formatted output to stderr.
  *
+ * @pre Parameter @p format must be not null.
+ *
  * @param format The format string.
  * @param ... The values to write.
- *
- * @note This function is inline.
  */
 AVMAPI inline void AvmErrorf(str format, ...) {
     va_list args;
