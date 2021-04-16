@@ -45,7 +45,7 @@ static void AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
             break;
         case SeekOriginEnd:
             self->_position =
-                AvmArrayListGetLength(byte)(&self->_list) - offset;
+                AvmArrayListGetLength(byte)(&self->_list) + offset;
             break;
         default:
             AvmPanic(InvalidOriginMsg);
@@ -60,6 +60,10 @@ static void AvmMemoryStreamDestroy(AvmMemoryStream* self) {
     AvmObjectDestroy(&self->_list);
 }
 
+static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self) {
+    return AvmArrayListGetLength(byte)(&self->_list);
+}
+
 AVM_TYPE(AvmMemoryStream,
          {
              [FUNC_FLUSH] = (AvmFunction)AvmMemoryStreamFlush,
@@ -68,6 +72,7 @@ AVM_TYPE(AvmMemoryStream,
              [FUNC_SEEK] = (AvmFunction)AvmMemoryStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmMemoryStreamGetPosition,
              [FUNC_DTOR] = (AvmFunction)AvmMemoryStreamDestroy,
+             [FUNC_GET_LENGTH] = (AvmFunction)AvmMemoryStreamGetLength,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity) {

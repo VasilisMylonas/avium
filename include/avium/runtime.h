@@ -9,15 +9,15 @@ typedef enum {
     FUNC_TO_STRING,
     FUNC_CLONE,
     FUNC_EQUALS,
-    
+
     // AvmError
     FUNC_GET_BACKTRACE = 16,
     FUNC_GET_SOURCE,
-  
+
     // AvmCollection
-    FUNC_GET_LENGTH = 16,
+    FUNC_GET_LENGTH = 12,
     FUNC_GET_CAPACITY,
-  
+
     // AvmStream
     FUNC_READ = 16,
     FUNC_WRITE,

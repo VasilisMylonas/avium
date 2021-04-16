@@ -1,4 +1,5 @@
 #include "avium/io.h"
+
 #include "avium/resources.h"
 #include "avium/string.h"
 
@@ -22,8 +23,23 @@ void AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin) {
         AvmPanic(SelfNullMsg);
     }
 
+    if (origin == SeekOriginEnd && offset > 0) {
+        AvmPanic(
+            "Parameter `offset` must be smaller or equal to 0, if "
+            "SeekOriginEnd is specified.");
+    }
+
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
     ((void (*)(AvmStream*, _long, AvmSeekOrigin))func)(self, offset, origin);
+}
+
+size_t AvmStreamGetLength(AvmStream* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_LENGTH];
+    return ((size_t(*)(AvmStream*))func)(self);
 }
 
 size_t AvmStreamGetPosition(AvmStream* self) {
@@ -32,25 +48,33 @@ size_t AvmStreamGetPosition(AvmStream* self) {
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_POSITION];
-    return ((ulong(*)(AvmStream*))func)(self);
+    return ((size_t(*)(AvmStream*))func)(self);
 }
 
-AvmResult(void) AvmStreamRead(AvmStream* self, size_t length, byte bytes[]) {
+AvmResult(void) AvmStreamRead(AvmStream* self, size_t length, byte buffer[]) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
+    }
+
+    if (buffer == NULL) {
+        AvmPanic(BufferNullMsg);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
-    return ((ReadWriteFunc)func)(self, length, bytes);
+    return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
-AvmResult(void) AvmStreamWrite(AvmStream* self, size_t length, byte bytes[]) {
+AvmResult(void) AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
+    if (buffer == NULL) {
+        AvmPanic(BufferNullMsg);
+    }
+
     AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_WRITE];
-    return ((ReadWriteFunc)func)(self, length, bytes);
+    return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
 AvmResult(byte) AvmStreamReadByte(AvmStream* self) {
@@ -70,22 +94,8 @@ AvmResult(char) AvmStreamReadChar(AvmStream* self) {
     return RESULT_CAST(&result, byte, char);
 }
 
-AvmResult(void) AvmStreamWriteChar(AvmStream* self, char character) {
-    return AvmStreamWriteByte(self, (byte)character);
-}
-
-AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (self == NULL) {
-        AvmPanic(StringNullMsg);
-    }
-
-    AvmStreamWrite(self, AvmStringGetLength(string),
-                   (byte*)AvmStringAsPtr(string));
-    return AvmStreamWriteChar(self, '\n');
+AvmResult(void) AvmStreamWriteChar(AvmStream* self, char value) {
+    return AvmStreamWriteByte(self, (byte)value);
 }
 
 AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
@@ -118,4 +128,18 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
     }
 
     return AvmSuccess(AvmString)(s);
+}
+
+AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (string == NULL) {
+        AvmPanic(StringNullMsg);
+    }
+
+    AvmStreamWrite(self, AvmStringGetLength(string),
+                   (byte*)AvmStringAsPtr(string));
+    return AvmStreamWriteChar(self, '\n');
 }

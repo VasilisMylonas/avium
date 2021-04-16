@@ -52,6 +52,12 @@ static size_t AvmFileStreamGetPosition(AvmFileStream* self) {
 
 static void AvmFileStreamDestroy(AvmFileStream* self) { fclose(self->_handle); }
 
+static size_t AvmFileStreamGetLength(AvmFileStream* self) {
+    (void)self;
+    // TODO
+    return 0;
+}
+
 AVM_TYPE(AvmFileStream,
          {
              [FUNC_FLUSH] = (AvmFunction)AvmFileStreamFlush,
@@ -60,6 +66,7 @@ AVM_TYPE(AvmFileStream,
              [FUNC_SEEK] = (AvmFunction)AvmFileStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmFileStreamGetPosition,
              [FUNC_DTOR] = (AvmFunction)AvmFileStreamDestroy,
+             [FUNC_GET_LENGTH] = (AvmFunction)AvmFileStreamGetLength,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle) {
