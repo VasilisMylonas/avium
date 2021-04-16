@@ -34,22 +34,32 @@ static AvmResult(void)
     return AvmSuccess(void)();
 }
 
-static void AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
-                                AvmSeekOrigin origin) {
+static AvmResult(void) AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
+                                           AvmSeekOrigin origin) {
+    size_t remaining = self->_list._capacity - self->_position;
+
     switch (origin) {
         case SeekOriginCurrent:
             self->_position += offset;
             break;
         case SeekOriginBegin:
+            if (offset < 0) {
+                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+            }
             self->_position = offset;
             break;
         case SeekOriginEnd:
+            if (offset > 0) {
+                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+            }
             self->_position =
-                AvmArrayListGetLength(byte)(&self->_list) + offset;
+                AvmArrayListGetCapacity(byte)(&self->_list) + offset;
             break;
         default:
             AvmPanic(InvalidOriginMsg);
     }
+
+    return AvmSuccess(void)();
 }
 
 static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self) {
@@ -61,7 +71,7 @@ static void AvmMemoryStreamDestroy(AvmMemoryStream* self) {
 }
 
 static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self) {
-    return AvmArrayListGetLength(byte)(&self->_list);
+    return AvmArrayListGetCapacity(byte)(&self->_list);
 }
 
 AVM_TYPE(AvmMemoryStream,

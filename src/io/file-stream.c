@@ -29,21 +29,29 @@ static AvmResult(void)
     return AvmSuccess(void)();
 }
 
-static void AvmFileStreamSeek(AvmFileStream* self, _long offset,
-                              AvmSeekOrigin origin) {
+static AvmResult(void)
+    AvmFileStreamSeek(AvmFileStream* self, _long offset, AvmSeekOrigin origin) {
+    int status = 0;
+
     switch (origin) {
         case SeekOriginCurrent:
-            fseek(self->_handle, (long)offset, SEEK_CUR);
+            status = fseek(self->_handle, (long)offset, SEEK_CUR);
             break;
         case SeekOriginBegin:
-            fseek(self->_handle, (long)offset, SEEK_SET);
+            status = fseek(self->_handle, (long)offset, SEEK_SET);
             break;
         case SeekOriginEnd:
-            fseek(self->_handle, (long)offset, SEEK_END);
+            status = fseek(self->_handle, (long)offset, SEEK_END);
             break;
         default:
             AvmPanic(InvalidOriginMsg);
     }
+
+    if (status != 0) {
+        return AvmFailure(void)(AvmErrorFromOSCode(status));
+    }
+
+    return AvmSuccess(void)();
 }
 
 static size_t AvmFileStreamGetPosition(AvmFileStream* self) {

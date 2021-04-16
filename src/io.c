@@ -18,7 +18,8 @@ void AvmStreamFlush(AvmStream* self) {
     ((void (*)(AvmStream*))func)(self);
 }
 
-void AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin) {
+AvmResult(void)
+    AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -29,8 +30,9 @@ void AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin) {
             "SeekOriginEnd is specified.");
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_READ];
-    ((void (*)(AvmStream*, _long, AvmSeekOrigin))func)(self, offset, origin);
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_SEEK];
+    return ((AvmResult(void)(*)(AvmStream*, _long, AvmSeekOrigin))func)(
+        self, offset, origin);
 }
 
 size_t AvmStreamGetLength(AvmStream* self) {

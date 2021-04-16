@@ -118,8 +118,11 @@ AVMAPI void AvmStreamFlush(AvmStream* self);
  * @param self The AvmStream instance.
  * @param offset The offset.
  * @param origin The origin point for seek operation.
+ *
+ * @return The result of the IO operation.
  */
-AVMAPI void AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin);
+AVMAPI AvmResult(void)
+    AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin);
 
 /**
  * @brief Returns the current position in an AvmStream.
