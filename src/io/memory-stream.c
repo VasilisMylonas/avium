@@ -36,8 +36,6 @@ static AvmResult(void)
 
 static AvmResult(void) AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
                                            AvmSeekOrigin origin) {
-    size_t remaining = self->_list._capacity - self->_position;
-
     switch (origin) {
         case SeekOriginCurrent:
             self->_position += offset;

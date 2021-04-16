@@ -1,6 +1,5 @@
 #include <avium/testing.h>
 #include <avium/io.h>
-#include <avium/fmt.h>
 
 #define STREAM_CAPACITY 512
 
@@ -26,6 +25,14 @@ __test TestWriteByte(object state) {
     AssertEqual(AvmStreamGetPosition(state), 1);
 }
 
+__test TestReadByte(object state) {
+    AvmStreamWriteByte(state, 255);
+    AvmStreamSeek(state, 0, SeekOriginBegin);
+
+    AvmResult(byte) result = AvmStreamReadByte(state);
+    AssertEqual(AvmUnwrap(byte)(&result), 255);
+}
+
 __test TestStreamSeek(object state) {
     AvmStreamSeek(state, 10, SeekOriginBegin);
     AssertEqual(AvmStreamGetPosition(state), 10);
@@ -40,11 +47,5 @@ __test TestStreamSeek(object state) {
     AssertEqual(AvmStreamGetPosition(state), 5);
 
     AvmStreamSeek(state, -10, SeekOriginBegin);
-    AvmPrintf("%u\n", AvmStreamGetPosition(state));
     AssertEqual(AvmStreamGetPosition(state), 5);
-
-    // AvmResult(byte) b = AvmStreamReadByte(state);
-    // AvmPrintf("%u", AvmUnwrap(byte)(&b));
-
-    // (void)result;
 }
