@@ -82,8 +82,8 @@ AVM_TYPE(AvmMemoryStream,
              [FUNC_WRITE] = (AvmFunction)AvmMemoryStreamWrite,
              [FUNC_SEEK] = (AvmFunction)AvmMemoryStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmMemoryStreamGetPosition,
-             [FUNC_DTOR] = (AvmFunction)AvmMemoryStreamDestroy,
-             [FUNC_GET_LENGTH] = (AvmFunction)AvmMemoryStreamGetLength,
+             [FnEntryDtor] = (AvmFunction)AvmMemoryStreamDestroy,
+             [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity) {

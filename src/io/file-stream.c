@@ -81,8 +81,8 @@ AVM_TYPE(AvmFileStream,
              [FUNC_WRITE] = (AvmFunction)AvmFileStreamWrite,
              [FUNC_SEEK] = (AvmFunction)AvmFileStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmFileStreamGetPosition,
-             [FUNC_DTOR] = (AvmFunction)AvmFileStreamDestroy,
-             [FUNC_GET_LENGTH] = (AvmFunction)AvmFileStreamGetLength,
+             [FnEntryDtor] = (AvmFunction)AvmFileStreamDestroy,
+             [FnEntryGetLength] = (AvmFunction)AvmFileStreamGetLength,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle) {

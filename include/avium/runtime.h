@@ -45,11 +45,11 @@ typedef enum {
     FUNC_WRITE,
     FUNC_SEEK,
     FUNC_FLUSH,
-    FUNC_GET_POSITION
-    
+    FUNC_GET_POSITION,
+
     FnEntryGetLength = 12,
     FnEntryGetCapacity,
-    
+
     /// The VFT AvmErrorGetBacktrace entry.
     FnEntryGetBacktrace = 16,
 

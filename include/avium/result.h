@@ -278,7 +278,7 @@ static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
 }
 
 AVM_TYPE(AVM_GENERIC(AvmResult, void),
-         {[FUNC_DTOR] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, void)});
+         {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, void)});
 
 static inline AvmResult(void) AvmSuccess(void)(void) {
     return (AvmResult(void)){

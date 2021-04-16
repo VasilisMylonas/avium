@@ -40,7 +40,7 @@ size_t AvmStreamGetLength(AvmStream* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FUNC_GET_LENGTH];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetLength];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
