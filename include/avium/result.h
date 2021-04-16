@@ -51,6 +51,12 @@ typedef enum {
 
     /// A required resource was unavailable.
     ErrorKindNotFound,
+
+    /// Could not perform the read operation.
+    ErrorKindRead,
+
+    /// Could not perform the write operation.
+    ErrorKindWrite,
 } AvmErrorKind;
 
 /**

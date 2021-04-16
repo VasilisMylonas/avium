@@ -111,9 +111,7 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
 
     result = AvmStreamReadChar(self);
     if (AvmIsFailure(char)(&result)) {
-        // TODO
-        AvmPanic("Could not read line.");
-        // return AvmFailure(AvmString)(ErrorKindSys, "Could not read line.");
+        return AvmFailure(AvmString)(AvmErrorOfKind(ErrorKindRead));
     }
     c = AvmUnwrap(char)(&result);
 
@@ -121,10 +119,7 @@ AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
         AvmStringPushChar(&s, c);
         result = AvmStreamReadChar(self);
         if (AvmIsFailure(char)(&result)) {
-            // TODO
-            AvmPanic("Could not read line.");
-            // return AvmFailure(AvmString)(ErrorKindSys, "Could not read
-            // line.");
+            return AvmFailure(AvmString)(AvmErrorOfKind(ErrorKindRead));
         }
         c = AvmUnwrap(char)(&result);
     }
@@ -141,7 +136,12 @@ AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string) {
         AvmPanic(StringNullMsg);
     }
 
-    AvmStreamWrite(self, AvmStringGetLength(string),
-                   (byte*)AvmStringAsPtr(string));
+    AvmResult(void) result = AvmStreamWrite(self, AvmStringGetLength(string),
+                                            (byte*)AvmStringAsPtr(string));
+
+    if (AvmIsFailure(void)(&result)) {
+        return result;
+    }
+
     return AvmStreamWriteChar(self, '\n');
 }

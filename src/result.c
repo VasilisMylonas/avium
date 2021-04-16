@@ -30,6 +30,10 @@ static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
             return AvmStringFrom("An unknown system error occurred.");
         case ErrorKindNotFound:
             return AvmStringFrom("A required resource was unavailable.");
+        case ErrorKindRead:
+            return AvmStringFrom("Could not perform the read operation.");
+        case ErrorKindWrite:
+            return AvmStringFrom("Could not perform the write operation.");
         default:
             return AvmStringNew(0);
     }

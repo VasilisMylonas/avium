@@ -49,3 +49,8 @@ __test TestStreamSeek(object state) {
     AvmStreamSeek(state, -10, SeekOriginBegin);
     AssertEqual(AvmStreamGetPosition(state), 5);
 }
+
+__test TestStreamFlush(object state) {
+    AvmResult(void) result = AvmStreamFlush(state);
+    AssertNot(AvmIsFailure(void)(&result));
+}

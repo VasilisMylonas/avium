@@ -70,7 +70,7 @@ static void AvmFileStreamDestroy(AvmFileStream* self) { fclose(self->_handle); }
 
 static size_t AvmFileStreamGetLength(AvmFileStream* self) {
     (void)self;
-    // TODO
+    // TODO: What would be a good value for an unknown length?
     return 0;
 }
 
