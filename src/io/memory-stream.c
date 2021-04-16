@@ -12,7 +12,10 @@ AVM_CLASS(AvmMemoryStream, AvmStream, {
 
 static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
-static void AvmMemoryStreamFlush(AvmMemoryStream* self) { (void)self; }
+static AvmResult(void) AvmMemoryStreamFlush(AvmMemoryStream* self) {
+    (void)self;
+    return AvmSuccess(void)();
+}
 
 static AvmResult(void)
     AvmMemoryStreamRead(AvmMemoryStream* self, size_t length, byte bytes[]) {
@@ -34,22 +37,30 @@ static AvmResult(void)
     return AvmSuccess(void)();
 }
 
-static void AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
-                                AvmSeekOrigin origin) {
+static AvmResult(void) AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
+                                           AvmSeekOrigin origin) {
     switch (origin) {
         case SeekOriginCurrent:
             self->_position += offset;
             break;
         case SeekOriginBegin:
+            if (offset < 0) {
+                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+            }
             self->_position = offset;
             break;
         case SeekOriginEnd:
+            if (offset > 0) {
+                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+            }
             self->_position =
-                AvmArrayListGetLength(byte)(&self->_list) - offset;
+                AvmArrayListGetCapacity(byte)(&self->_list) + offset;
             break;
         default:
             AvmPanic(InvalidOriginMsg);
     }
+
+    return AvmSuccess(void)();
 }
 
 static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self) {
@@ -60,6 +71,10 @@ static void AvmMemoryStreamDestroy(AvmMemoryStream* self) {
     AvmObjectDestroy(&self->_list);
 }
 
+static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self) {
+    return AvmArrayListGetCapacity(byte)(&self->_list);
+}
+
 AVM_TYPE(AvmMemoryStream,
          {
              [FUNC_FLUSH] = (AvmFunction)AvmMemoryStreamFlush,
@@ -68,10 +83,11 @@ AVM_TYPE(AvmMemoryStream,
              [FUNC_SEEK] = (AvmFunction)AvmMemoryStreamSeek,
              [FUNC_GET_POSITION] = (AvmFunction)AvmMemoryStreamGetPosition,
              [FUNC_DTOR] = (AvmFunction)AvmMemoryStreamDestroy,
+             [FUNC_GET_LENGTH] = (AvmFunction)AvmMemoryStreamGetLength,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity) {
-    AvmMemoryStream* stream = malloc(sizeof(AvmMemoryStream));
+    AvmMemoryStream* stream = AvmAlloc(sizeof(AvmMemoryStream));
     stream->_list = AvmArrayListNew(byte)(capacity);
     stream->_type = AVM_GET_TYPE(AvmMemoryStream);
     stream->_position = 0;

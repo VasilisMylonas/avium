@@ -26,6 +26,7 @@ make_directory(${CMAKE_BINARY_DIR}/coverage)
 
 add_avm_test(array-list)
 add_avm_test(array)
+add_avm_test(io)
 add_avm_test(optional)
 add_avm_test(options)
 add_avm_test(result)
