@@ -8,7 +8,7 @@
 #    include <unistd.h>
 #endif
 
-AvmStream* AvmFileOpen(str path, AvmFileAccess access) {
+AvmResult(AvmStreamPtr) AvmFileOpen(str path, AvmFileAccess access) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
@@ -37,7 +37,11 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access) {
 
     // TODO: May be null.
     FILE* file = fopen(path, mode);
-    return AvmStreamFromHandle(file);
+    if (file == NULL) {
+        return AvmFailure(AvmStreamPtr)(AvmErrorGetLast());
+    }
+
+    return AvmSuccess(AvmStreamPtr)(AvmStreamFromHandle(file));
 }
 
 bool AvmFileExists(str path) {
@@ -98,22 +102,38 @@ AvmResult(void) AvmFileCopy(str source, str destination) {
     AvmPanic("Not implemented!");
 }
 
-// AvmResult(void) AvmFileReadAll(str path, size_t length, byte bytes[]) {
-//     if (path == NULL) {
-//         AvmPanic(PathNullMsg);
-//     }
-
-//     AvmStream* stream = AvmFileOpen(path, FileAccessRead);
-//     AvmStreamRead()
-// }
-
-AvmResult(void) AvmFileWriteAll(str path, size_t length, byte bytes[]) {
+AvmResult(void) AvmFileReadAll(str path, size_t length, byte buffer[]) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
 
-    AvmStream* stream = AvmFileOpen(path, FileAccessWrite);
-    AvmResult(void) result = AvmStreamWrite(stream, length, bytes);
+    AvmResult(AvmStreamPtr) res = AvmFileOpen(path, FileAccessRead);
+
+    if (AvmIsFailure(AvmStreamPtr)(&res)) {
+        return AvmFailure(void)(res._error);
+    }
+
+    AvmStream* stream = AvmUnwrap(AvmStreamPtr)(&res);
+    AvmStreamRead(stream, length, buffer);
+    AvmObjectDestroy(stream);
+
+    return AvmSuccess(void)();
+}
+
+AvmResult(void) AvmFileWriteAll(str path, size_t length, byte buffer[]) {
+    if (path == NULL) {
+        AvmPanic(PathNullMsg);
+    }
+
+    AvmResult(AvmStreamPtr) res = AvmFileOpen(path, FileAccessWrite);
+
+    if (AvmIsFailure(AvmStreamPtr)(&res)) {
+        return AvmFailure(void)(res._error);
+    }
+
+    AvmStream* stream = AvmUnwrap(AvmStreamPtr)(&res);
+
+    AvmResult(void) result = AvmStreamWrite(stream, length, buffer);
     AvmObjectDestroy(stream);
     return result;
 }

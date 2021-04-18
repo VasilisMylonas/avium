@@ -264,11 +264,6 @@ AVM_RESULT_TYPE(size_t)
 AVM_RESULT_TYPE(AvmString)
 AVM_RESULT_TYPE(AvmFunction)
 
-#ifndef AVM_MSVC
-#    pragma GCC diagnostic push
-#    pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 AVM_CLASS(AVM_GENERIC(AvmResult, void), object, { AvmError* _error; });
 
 static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
@@ -305,9 +300,5 @@ static inline void AvmUnwrap(void)(AvmResult(void) * self) {
 static inline bool AvmIsFailure(void)(AvmResult(void) * self) {
     return self->_error != NULL;
 }
-
-#ifndef AVM_MSVC
-#    pragma GCC diagnostic pop
-#endif
 
 #endif  // AVIUM_RESULT_H
