@@ -28,6 +28,26 @@ Avium is a library that aims to fill in many missing features in the C language 
 
 And many more!
 
+## Why use this over C++?
+
+### Simplicity
+
+C++ has a lot of features. Some are useful, some are not, and some are rather bad. Over the years C++ has increased a lot in complexity, making it hard to use, or confusing for some people.
+
+This library tries to stay light and simple so that it can be easily integrated in any C project. We try to make the API as self-explaining as possible and want to keep it portable across operating systems.
+
+### C library - stable ABI
+
+C++ also has no stable ABI making it harder to interface with in higher level programming languages.
+
+Because C is the lingua-franca of the programming world, an object-oriented system written in C is much easier to interface with higher level languages.
+
+### Control
+
+C++ gives you little to no control over how stuff like vtables, and method overloading work, or about the internal layout of a class.
+
+With this library you have direct control over all of these, and can tweak it as you see necessary.
+
 ## Helpful links 🔗
 
 - [Code Quality Dashboard](https://www.codefactor.io/repository/github/vasilismylonas/avium)
