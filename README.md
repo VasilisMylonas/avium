@@ -54,8 +54,9 @@ With this library you have direct control over all of these, and can tweak it as
 - [Coverage Dashboard](https://coveralls.io/github/VasilisMylonas/avium)
 - [Documentation](https://vasilismylonas.github.io/avium)
 
+## Building 🔨
 
-## Prerequisites ⏳️
+For building the library and running the tests the following dependencies are needed:
 
 - A C11-compatible compiler such as Clang or GCC and MSVC for Windows.
 - [CMake](https://cmake.org/) version 3.5.0 or newer.
@@ -68,8 +69,6 @@ For building the documentation, the following dependencies are also needed:
 - sphinx
 - breathe
 - sphinx-rtd-theme
-
-## Building 🔨
 
 Run the build script. Change 'Release' to 'Debug' for a debug build.
 
