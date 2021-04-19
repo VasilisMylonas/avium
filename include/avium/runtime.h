@@ -57,6 +57,18 @@ typedef enum {
     FnEntryGetSource,
 } AvmFnEntry;
 
+#ifdef AVM_MSVC
+#    define typeof(T) decltype(T)
+#else
+#    define typeof(T) __typeof__(T)
+#endif
+
+#define baseof(T)    typeof(((T*)NULL)->_base)
+#define getbase(x)   ((baseof(typeof(x))*)&x)
+#define istype(T, x) (strcmp(#T, AvmTypeGetName(AvmObjectGetType(x))) == 0)
+#define getfunc(T, instance, index) \
+    ((T)AvmTypeGetFunction(AvmObjectGetType(instance), index))
+
 /**
  * @brief Allocates heap memory.
  *
@@ -171,6 +183,8 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  * @return The type's size.
  */
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
+
+AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
 #ifndef DOXYGEN
 #    define AVM_TYPE_(T, ...)         \
