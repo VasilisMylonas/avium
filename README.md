@@ -24,7 +24,7 @@ Avium is a library that aims to fill in many missing features in the C language 
 - Fixed size generic arrays.
 - Testing utilities.
 - Intuitive formatted IO.
-- Garbage collecting (with support for libgc).
+- Garbage collecting (with support from libgc).
 
 And many more!
 
