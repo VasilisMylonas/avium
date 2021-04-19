@@ -1,5 +1,5 @@
 /**
- * @file avium/classes.c
+ * @file examples/classes.c
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Example on classes.
  * @version 0.1
