@@ -81,7 +81,7 @@ AVM_TYPE(Point, {[FnEntryDtor] = NULL});
  * mysterious brace enclosed thing. The second parameter is actually the type's
  * vtable.
  *
- * More explanation about this can be found in the vtable.c example (TODO) but
+ * More explanation about this can be found in the vtable.c example but
  * it not important right now.
  *
  * Note, that while the class declaration (AVM_CLASS) should probably be in the
