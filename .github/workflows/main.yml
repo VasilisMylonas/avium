@@ -18,22 +18,27 @@ jobs:
 
     - name: Install Dependencies
       shell: bash
+      working-directory: ${{github.workspace}}
       run: ./ci/install-deps.sh
 
     - name: Preparation
       shell: bash
+      working-directory: ${{github.workspace}}
       run: ./ci/prepare.sh $BUILD_TYPE
 
     - name: Build Library
       shell: bash
+      working-directory: ${{github.workspace}}
       run: ./ci/build-lib.sh $BUILD_TYPE
 
     - name: Build Documentation
       shell: bash
+      working-directory: ${{github.workspace}}
       run: ./ci/build-docs.sh $BUILD_TYPE
 
     - name: Test
       shell: bash
+      working-directory: ${{github.workspace}}
       run: ./ci/test.sh $BUILD_TYPE
 
     - name: Coverage
