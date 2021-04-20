@@ -40,11 +40,11 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
 
     configure_file(conf.py.in conf.py @ONLY)
 
-    add_custom_target(HtmlDocs DEPENDS Doxygen
+    add_custom_target(docs DEPENDS Doxygen
                       COMMAND ${SPHINX_EXECUTABLE} -q -c ${AVM_DOC_OUTPUT_DIR}
                       ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
 
-    add_custom_target(ManPages DEPENDS Doxygen
+    add_custom_target(man DEPENDS Doxygen
                       COMMAND ${SPHINX_EXECUTABLE} -q -b man -c ${AVM_DOC_OUTPUT_DIR}
                       ${CMAKE_SOURCE_DIR}/docs ${AVM_SPHINX_OUTPUT_DIR})
 else()

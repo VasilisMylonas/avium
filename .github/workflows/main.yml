@@ -22,19 +22,19 @@ jobs:
 
     - name: Preparation
       shell: bash
-      run: ./ci/prepare.sh $BUILD_TYPE
+      run: cmake -S . -B ./build
 
     - name: Build Library
       shell: bash
-      run: ./ci/build-lib.sh $BUILD_TYPE
+      run: cmake --build ./build --config $BUILD_TYPE
 
     - name: Build Documentation
       shell: bash
-      run: ./ci/build-docs.sh $BUILD_TYPE
+      run: cmake --build ./build --target docs
 
     - name: Test
       shell: bash
-      run: ./ci/test.sh $BUILD_TYPE
+      run: cmake --build ./build --target test
 
     - name: Coverage
       shell: bash
