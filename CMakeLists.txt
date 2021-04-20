@@ -31,7 +31,7 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-option(AVM_USE_GC "Use garbage collector? (requires libgc)" ON)
+option(USE_GC "Use garbage collector? (requires libgc)" ON)
 option(GEN_TESTS "Generate tests?" ON)
 
 include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
