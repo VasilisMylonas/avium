@@ -18,10 +18,11 @@ jobs:
       with:
         python-version: '3.8.x'
 
+
     - name: Preparation
       shell: bash
-      run: ./ci/prepare.sh $BUILD_TYPE -DAVM_USE_GC=OFF
+      run: cmake -S . -B ./build -DAVM_USE_GC=OFF
 
-    - name: Build
+    - name: Build Library
       shell: bash
-      run: ./ci/build-lib.sh $BUILD_TYPE
+      run: cmake --build ./build --config $BUILD_TYPE
