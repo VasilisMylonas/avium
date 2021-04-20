@@ -1,66 +1,57 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(avium
-        VERSION 0.1.0
-        DESCRIPTION "An object oriented C utility runtime."
-        LANGUAGES C)
+project(avium VERSION 0.1.0)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist)
-set(AVM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-set(AVM_INCLUDE_OUTPUT_DIR ${CMAKE_BINARY_DIR}/include)
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_ENABLE_EXPORTS TRUE)
 
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
+set(SHARED_NAME avm)
+set(STATIC_NAME avm-static)
+set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
+set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
+
 include(GNUInstallDirs)
-include(CTest)
-include(GenerateExportHeader)
+enable_testing()
 
 if(MSVC)
-    # Enable warnings for MSVC and treat them as errors.
-    add_compile_options(/Wall)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+    add_compile_options(/W4)
     add_compile_options(/WX)
-
-    # Disable silly warnings.
-    add_compile_options(/wd4710) # Function not inlined.
-    add_compile_options(/wd4201) # Nameless struct/union.
-    add_compile_options(/wd5045) # Spectre mitigation.
-    add_compile_options(/wd4668) # <macro> not defined as preprocessor macro, replacing with 0.
-    add_compile_options(/wd4324) # Struct padded due to alignment specifier.
-    add_compile_options(/wd4820) # 'x' bytes padding added after member...
-    add_compile_options(/wd4200) # Zero-sized array in struct/union.
-    add_compile_options(/wd4063) # Invalid value for switch of enum.
-    add_compile_options(/wd5105) # Macro expansion producing 'defined'...
-    add_compile_options(/wd4711) # Function not selected for inlining.
-    add_compile_options(/wd4244) # Conversion ... possible loss of data.
-    add_compile_options(/wd4242) # Conversion ... possible loss of data.
-    add_compile_options(/wd4267) # Conversion ... possible loss of data.
-    add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
-    add_compile_options(/wd4273) # TODO: Temporary
 else()
-    # Enable warnings for GCC compatible compilers.
     add_compile_options(-fprofile-arcs -ftest-coverage)
     add_link_options(-fprofile-arcs -ftest-coverage)
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUTPUT_DIR})
-link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+option(AVM_USE_GC "Use garbage collector? (requires libgc)" ON)
+option(GEN_TESTS "Generate tests?" ON)
 
-option(AVM_GEN_DOCS "Generate docs?" ON)
-option(AVM_USE_GC "Use garbage collector?" ON)
+include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-# Include subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(tests)
+
+if(GEN_TESTS)
+    add_subdirectory(tests)
+endif()
+
 add_subdirectory(docs)
 
-include(InstallRequiredSystemLibraries)
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
-set(CPACK_PACKGAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
-set(CPACK_PACKGAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
-include(CPack)
+install(FILES
+    ${CMAKE_SOURCE_DIR}/README.md
+    ${CMAKE_SOURCE_DIR}/CONTRIBUTING.md
+    ${CMAKE_SOURCE_DIR}/CODE_OF_CONDUCT.md
+    ${CMAKE_SOURCE_DIR}/AUTHORS
+    ${CMAKE_SOURCE_DIR}/COPYING
+    ${CMAKE_SOURCE_DIR}/COPYING.LESSER
+    DESTINATION ${CMAKE_INSTALL_DOCDIR}
+)

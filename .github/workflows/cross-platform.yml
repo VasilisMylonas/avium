@@ -18,10 +18,9 @@ jobs:
       with:
         python-version: '3.8.x'
 
-
     - name: Preparation
       shell: bash
-      run: cmake -S . -B ./build -DAVM_USE_GC=OFF
+      run: cmake -S . -B ./build -DUSE_GC=OFF
 
     - name: Build Library
       shell: bash

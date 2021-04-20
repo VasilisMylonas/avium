@@ -4,12 +4,12 @@
 mkdir -p ./site &&
 
 # Copy the html and js files.
-cp ./build/docs/sphinx/*.js ./site &&
-cp ./build/docs/sphinx/*.html ./site &&
+cp ./build/docs/html/*.js ./site &&
+cp ./build/docs/html/*.html ./site &&
 
 # Copy the static and sources directories.
-cp -r ./build/docs/sphinx/_static ./site/static &&
-cp -r ./build/docs/sphinx/_sources ./site/sources
+cp -r ./build/docs/html/_static ./site/static &&
+cp -r ./build/docs/html/_sources ./site/sources
 
 # Rename old refereneces.
 for f in ./site/*.html; do
