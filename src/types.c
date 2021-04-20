@@ -74,7 +74,8 @@ AvmString AvmObjectToString(object self) {
         AvmTypeGetFunction(AvmObjectGetType(self), FnEntryToString);
 
     if (fn == NULL) {
-        return AvmSprintf("object <%x>", self);
+        return AvmSprintf("%s [%x]", AvmTypeGetName(AvmObjectGetType(self)),
+                          self);
     }
 
     return ((AvmString(*)(object))fn)(self);
