@@ -1,18 +1,22 @@
-![Avium logo](images/avium-logo-transparent.png)
-
-![License badge](https://img.shields.io/github/license/VasilisMylonas/avium)
-![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium)
-![Discord server badge](https://img.shields.io/discord/810959563469357057)
-[![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=feature/coveralls-support)](https://coveralls.io/github/VasilisMylonas/avium?branch=feature/coveralls-support)
-![Workflow status badge](https://img.shields.io/github/workflow/status/VasilisMylonas/avium/Main)
-
 # Avium
 
-An object-oriented C utility library.
+![Code factor badge](https://img.shields.io/codefactor/grade/github/VasilisMylonas/avium)
+![Discord server badge](https://img.shields.io/discord/810959563469357057)
+![Coverage Status](https://coveralls.io/repos/github/VasilisMylonas/avium/badge.svg?branch=main)
+![Workflow status badge](https://img.shields.io/github/workflow/status/VasilisMylonas/avium/Main)
 
-## Description
+## Introduction 📖
 
-Avium is a library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object-oriented utility library, then Avium might be for you.
+Avium is an open source, multi-platform library that aims to fill in many missing features in the C language while remaining simple and understandable. If you are looking for an intuitive and object-oriented utility library, then Avium might be for you.
+
+Documentation about the library is available [here](https://vasilismylonas.github.io/avium) and documentation comments are provided in the header files. You can also check out the examples present in the `examples` directory.
+
+For more information about the project, join us on [our Discord server](https://discord.gg/ntcjbMbVts)! If you have any questions, feel free to ask!
+
+You may also wish to check out the following dashboards:
+
+- [Code Quality](https://www.codefactor.io/repository/github/vasilismylonas/avium)
+- [Coverage](https://coveralls.io/github/VasilisMylonas/avium)
 
 ## Key Features ⌨️
 
@@ -26,9 +30,7 @@ Avium is a library that aims to fill in many missing features in the C language 
 - Intuitive formatted IO.
 - Garbage collecting (with support from libgc).
 
-And many more!
-
-## Why use this over C++?
+## Why use this over C++
 
 ### Simplicity
 
@@ -48,29 +50,23 @@ C++ gives you little to no control over how stuff like vtables, and method overl
 
 With this library you have direct control over all of these, and can tweak it as you see necessary.
 
-## Helpful links 🔗
-
-- [Code Quality Dashboard](https://www.codefactor.io/repository/github/vasilismylonas/avium)
-- [Coverage Dashboard](https://coveralls.io/github/VasilisMylonas/avium)
-- [Documentation](https://vasilismylonas.github.io/avium)
-
 ## Building 🔨
 
-For building the library and running the tests the following dependencies are needed:
+### Prerequisites
 
 - A C11-compatible compiler such as Clang or GCC and MSVC for Windows.
 - [CMake](https://cmake.org/) version 3.5.0 or newer.
 - [Python 3](https://www.python.org/) with pip.
-- A Bash-compatible shell or Powershell on Windows.
+- A Bash compatible shell or Powershell on Windows.
 
-For building the documentation, the following dependencies are also needed:
+For building the documentation, the following are also needed:
 
 - [Doxygen](https://doxygen.nl)
-- sphinx
-- breathe
+- [Sphinx](https://github.com/sphinx-doc/sphinx)
+- [Breathe](https://github.com/michaeljones/breathe)
 - sphinx-rtd-theme
 
-Run the build script. Change 'Release' to 'Debug' for a debug build.
+### Building the project
 
 ``` bash
 # Clone this repository
@@ -90,7 +86,7 @@ If on Windows, run the scripts with the .ps1 extension instead.
 
 ## Supported Platforms 🏗️
 
-Currently the following configurations are supported ✅️:
+Currently the following configurations are supported:
 
 | Architecture | Operating System | Compiler |
 | ------------ | ---------------- | -------- |
@@ -102,10 +98,6 @@ Currently the following configurations are supported ✅️:
 ## Contributing 🤝
 
 If you are interested in contributing, please take the time to read [CONTRIBUTING.md](./CONTRIBUTING.md). You should also take a look at the [code of conduct](./CODE_OF_CONDUCT.md).
-
-## Contact Us ❔️
-
-You may join us on [our Discord server](https://discord.gg/ntcjbMbVts). For more information about the project, questions etc. you can ask there!
 
 ## License 📕
 
