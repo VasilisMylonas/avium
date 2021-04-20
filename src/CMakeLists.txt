@@ -10,7 +10,7 @@ generate_export_header(avm BASE_NAME AVM
                        INCLUDE_GUARD_NAME AVIUM_EXPORTS_H
                        EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h)
 
-if(USE_GC)
+if(AVM_USE_GC)
 find_library(LIBGC gc)
 
 if(NOT LIBGC)
