@@ -75,14 +75,18 @@ $ git clone https://github.com/VasilisMylonas/avium.git
 # Go into the repository
 $ cd avium
 
+# Configure
+$ cmake -S . -B ./build
+
 # Build
-$ ./scripts/build.sh ./build Release
+$ cmake --build ./build --config Release
 
-# Run the tests
-$ ./scripts/test.sh ./build Release
+# If you don't want garbage collection you must run this command instead:
+$ cmake --build ./build -DAVM_USE_GC=OFF --config Release
+
+# Test
+$ cmake --build ./build --target test
 ```
-
-If on Windows, run the scripts with the .ps1 extension instead.
 
 ## Supported Platforms 🏗️
 
