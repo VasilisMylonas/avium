@@ -7,4 +7,4 @@ sudo apt update &&
 sudo apt install -y cmake doxygen python3 python3-pip lcov libgc1c2 libgc-dev &&
 
 # Install python packages.
-sudo pip3 install sphinx breathe sphinx-rtd-theme &&
+sudo pip3 install sphinx breathe sphinx-rtd-theme
