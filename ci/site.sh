@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # Create the site directory.
-mkdir -p ./site
+mkdir -p ./site &&
 
 # Copy the html and js files.
-cp ./build/docs/sphinx/*.js ./site
-cp ./build/docs/sphinx/*.html ./site
+cp ./build/docs/sphinx/*.js ./site &&
+cp ./build/docs/sphinx/*.html ./site &&
 
 # Copy the static and sources directories.
-cp -r ./build/docs/sphinx/_static ./site/static
+cp -r ./build/docs/sphinx/_static ./site/static &&
 cp -r ./build/docs/sphinx/_sources ./site/sources
 
 # Rename old refereneces.

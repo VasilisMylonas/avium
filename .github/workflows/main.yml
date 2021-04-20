@@ -12,14 +12,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8.x'
+
+    - name: Install Dependencies
+      shell: bash
+      run: ./ci/install-deps.sh
 
     - name: Preparation
       shell: bash
       run: ./ci/prepare.sh $BUILD_TYPE
 
-    - name: Build
+    - name: Build Library
       shell: bash
-      run: ./ci/build.sh $BUILD_TYPE
+      run: ./ci/build-lib.sh $BUILD_TYPE
+
+    - name: Build Documentation
+      shell: bash
+      run: ./ci/build-docs.sh $BUILD_TYPE
 
     - name: Test
       shell: bash

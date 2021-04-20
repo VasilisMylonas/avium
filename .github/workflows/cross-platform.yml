@@ -18,14 +18,10 @@ jobs:
       with:
         python-version: '3.8.x'
 
-    - name: Prepare
+    - name: Preparation
       shell: bash
-      run: cmake -E make_directory ./build
-
-    - name: Config
-      shell: bash
-      run: cmake -S . -B ./build -DAVM_USE_GC=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: ./ci/x-prepare.sh $BUILD_TYPE -DAVM_USE_GC=OFF
 
     - name: Build
       shell: bash
-      run: cmake --build ./build --config $BUILD_TYPE
+      run: ./ci/build-lib.sh $BUILD_TYPE
