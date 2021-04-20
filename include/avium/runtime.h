@@ -63,8 +63,9 @@ typedef enum {
 #    define typeof(T) __typeof__(T)
 #endif
 
-#define baseof(T)    typeof(((T*)NULL)->_base)
-#define getbase(x)   ((baseof(typeof(x))*)&x)
+#define baseof(x) ((typeof(((typeof(*x)*)NULL)->_base)*)x)
+#define base()    (&self->_base)
+
 #define istype(T, x) (strcmp(#T, AvmTypeGetName(AvmObjectGetType(x))) == 0)
 #define getfunc(T, instance, index) \
     ((T)AvmTypeGetFunction(AvmObjectGetType(instance), index))
