@@ -78,7 +78,7 @@ $ cd avium
 # Configure
 $ cmake -S . -B ./build
 
-# Build
+# Build, switch Release to Debug for a debug build.
 $ cmake --build ./build --config Release
 
 # If you don't want garbage collection you must run this command instead:
