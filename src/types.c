@@ -53,7 +53,7 @@ object AvmObjectClone(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryDtor);
+    AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryClone);
 
     if (fn == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
@@ -70,7 +70,8 @@ AvmString AvmObjectToString(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryDtor);
+    AvmFunction fn =
+        AvmTypeGetFunction(AvmObjectGetType(self), FnEntryToString);
 
     if (fn == NULL) {
         return AvmSprintf("object <%x>", self);
