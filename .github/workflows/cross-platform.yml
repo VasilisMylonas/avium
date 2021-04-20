@@ -21,7 +21,7 @@ jobs:
     - name: Preparation
       shell: bash
       working-directory: ${{github.workspace}}
-      run: ./ci/x-prepare.sh $BUILD_TYPE -DAVM_USE_GC=OFF
+      run: ./ci/prepare.sh $BUILD_TYPE -DAVM_USE_GC=OFF
 
     - name: Build
       shell: bash
