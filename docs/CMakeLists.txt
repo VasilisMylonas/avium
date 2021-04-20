@@ -27,7 +27,7 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
     configure_file(conf.py.in conf.py @ONLY)
 
     doxygen_add_docs(Doxygen ${INCLUDE_DIR})
-    add_custom_target(docs ALL DEPENDS Doxygen
+    add_custom_target(docs DEPENDS Doxygen
         COMMAND ${SPHINX_EXECUTABLE} -q -c ${DOC_OUTPUT_DIR}
                 ${CMAKE_SOURCE_DIR}/docs ${HTML_OUTPUT_DIR})
 else()

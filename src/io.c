@@ -14,7 +14,7 @@ AvmResult(void) AvmStreamFlush(AvmStream* self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryRead];
+    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryFlush];
     return ((AvmResult(void)(*)(AvmStream*))func)(self);
 }
 
