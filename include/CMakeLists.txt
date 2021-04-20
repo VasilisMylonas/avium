@@ -1,43 +1,19 @@
-# Include files.
-
 include(CheckTypeSize)
 include(CheckIncludeFile)
 
-# All include files to be distributed.
-set(AVM_INCLUDE_FILES
-    ${AVM_INCLUDE_OUTPUT_DIR}/avium/config.h
-    ${AVM_INCLUDE_OUTPUT_DIR}/avium/exports.h
-    avium/array-list.h
-    avium/array.h
-    avium/file.h
-    avium/fmt.h
-    avium/io.h
-    avium/optional.h
-    avium/options.h
-    avium/path.h
-    avium/runtime.h
-    avium/result.h
-    avium/string.h
-    avium/testing.h
-    avium/types.h
-    avium/value.h
-    avium/version.h)
-
-# Platform definitions.
-if (CMAKE_SYSTEM_NAME MATCHES Linux)
+if (CMAKE_SYSTEM_NAME STREQUAL Linux)
     message("Building for Linux.")
     set(AVM_LINUX ON)
-elseif(CMAKE_SYSTEM_NAME MATCHES Darwin)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     message("Building for Darwin.")
     set(AVM_DARWIN ON)
-elseif (CMAKE_SYSTEM_NAME MATCHES Windows)
+elseif (CMAKE_SYSTEM_NAME STREQUAL Windows)
     message("Building for Win32.")
     set(AVM_WIN32 ON)
 else()
     message(FATAL_ERROR "Unknown platform.")
 endif()
 
-# Compiler definitions.
 if(MSVC)
     set(AVM_MSVC ON)
 else()
@@ -48,14 +24,15 @@ check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
-    set(AVM_LONG_TYPE long)
+    set(AVM_LONG_TYPE "long")
 else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-# Process header config file.
 configure_file(avium/config.h.in avium/config.h @ONLY)
 
-# Installation.
-install(FILES ${AVM_INCLUDE_FILES}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/avium)
+file(GLOB INCLUDE_FILES avium/*.h)
+list(APPEND INCLUDE_FILES ${INCLUDE_OUT_DIR}/avium/config.h)
+list(APPEND INCLUDE_FILES ${INCLUDE_OUT_DIR}/avium/exports.h)
+
+install(FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/avium)
