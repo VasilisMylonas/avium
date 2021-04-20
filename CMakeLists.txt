@@ -25,6 +25,23 @@ if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     add_compile_options(/W4)
     add_compile_options(/WX)
+
+    # Disable silly warnings.
+    add_compile_options(/wd4710) # Function not inlined.
+    add_compile_options(/wd4201) # Nameless struct/union.
+    add_compile_options(/wd5045) # Spectre mitigation.
+    add_compile_options(/wd4668) # <macro> not defined as preprocessor macro, replacing with 0.
+    add_compile_options(/wd4324) # Struct padded due to alignment specifier.
+    add_compile_options(/wd4820) # 'x' bytes padding added after member...
+    add_compile_options(/wd4200) # Zero-sized array in struct/union.
+    add_compile_options(/wd4063) # Invalid value for switch of enum.
+    add_compile_options(/wd5105) # Macro expansion producing 'defined'...
+    add_compile_options(/wd4711) # Function not selected for inlining.
+    add_compile_options(/wd4244) # Conversion ... possible loss of data.
+    add_compile_options(/wd4242) # Conversion ... possible loss of data.
+    add_compile_options(/wd4267) # Conversion ... possible loss of data.
+    add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
+    add_compile_options(/wd4273) # TODO: Temporary
 else()
     add_compile_options(-fprofile-arcs -ftest-coverage)
     add_link_options(-fprofile-arcs -ftest-coverage)
