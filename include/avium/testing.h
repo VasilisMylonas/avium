@@ -30,6 +30,12 @@
 /// Asserts whether a condition is true.
 #define Assert(x) AVM_ASSERT_(x)
 
+/// Asserts whether an object is of specific type.
+#define AssertIsType(T, x) AVM_ASSERT_TYPE_(T, x)
+
+/// Asserts whether an object is not of specific type.
+#define AssertIsNotType(T, x) (!AVM_ASSERT_TYPE_(T, x))
+
 /// Asserts whether a condition is false.
 #define AssertNot(x) AVM_ASSERT_(!x)
 
@@ -63,10 +69,12 @@
 /// Asserts whether two pointers are not equal.
 #define AssertPtrNotEqual(x, y) AVM_ASSERT_(((uptr)x) != ((uptr)y))
 
-/// Asserts whether a number is between the range of a min and max..
+/// Asserts whether a number is between the range of a min and
+/// max..
 #define AssertInRange(x, min, max) AVM_ASSERT_(min <= x && x <= max)
 
-/// Asserts whether a number is not between the range of a min and max.
+/// Asserts whether a number is not between the range of a min
+/// and max.
 #define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x > max)
 
 /**
@@ -85,6 +93,11 @@
         expression ? ((void)0)                                              \
                    : AvmPanicEx("Assertion failed: " #expression, __func__, \
                                 __FILE__, __LINE__);
+
+#    define AVM_ASSERT_TYPE_(T, x)                                            \
+        istype(T, x) ? ((void)0)                                              \
+                     : AvmPanicEx("Assertion failed: istype(" #T ", " #x ")", \
+                                  __func__, __FILE__, __LINE__);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TESTING_H
