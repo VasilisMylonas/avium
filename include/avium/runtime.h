@@ -66,14 +66,20 @@ typedef enum {
 #    pragma GCC diagnostic pop
 #endif
 
-#define baseof(x)          ((typeof(((typeof(*x)*)NULL)->_base)*)x)
-#define base()             (&self->_base)
-#define istype(T, x)       AVM_IS_TYPE_(T, x)
-#define AVM_IS_TYPE_(T, x) (AVM_HASH64(#T) == AvmTypeGetId(AvmObjectGetType(x)))
+/// Returns the base type of an object.
+#define baseof(x) ((typeof((x)->_base)*)x)
 
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
+
+/// Determines whether an object is of specific type.
+#define istype(T, x) AVM_IS_TYPE_(T, x)
+
+/// Calculates a hash for the provided string at compile time (256 max length).
 #define AVM_HASH256(s) \
     ((size_t)(AVM_H256_(s, 0, 0) ^ (AVM_H256_(s, 0, 0) >> 16)))
 
+/// Calculates a hash for the provided string at compile time (64 max length).
 #define AVM_HASH64(s) ((size_t)(AVM_H64_(s, 0, 0) ^ (AVM_H64_(s, 0, 0) >> 16)))
 
 /**
@@ -191,8 +197,25 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  */
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
+/**
+ * @brief Gets the id of a type.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmType instance.
+ * @return The type id.
+ */
 AVMAPI size_t AvmTypeGetId(const AvmType* self);
 
+/**
+ * @brief Returns the specified VFT entry of a type.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmType instance.
+ * @param index The VFT entry.
+ * @return The function pointer.
+ */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
 #define AVM_TYPE_LITE(T, ...) AVM_TYPE_LITE_(T, __VA_ARGS__)
@@ -213,6 +236,9 @@ AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
             ._size = sizeof(T),       \
             ._id = AVM_HASH64(#T),    \
         }
+
+#    define AVM_IS_TYPE_(T, x) \
+        (AVM_HASH64(#T) == AvmTypeGetId(AvmObjectGetType(x)))
 
 #    define AVM_GET_TYPE_(T) &_##T##Type
 

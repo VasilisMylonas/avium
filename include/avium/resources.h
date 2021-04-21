@@ -17,7 +17,8 @@ static const str ArgsNullMsg = "Parameter `args` was `NULL`.";
 static const str HandleNullMsg = "Parameter `handle` was `NULL`.";
 static const str SourceNullMsg = "Parameter `source` was `NULL`.";
 static const str DestinationNullMsg = "Parameter `destination` was `NULL`.";
-static const str BaseOutOfRangeMsg = "Parameter `base` was out of range.";
+static const str NumericBaseOutOfRangeMsg =
+    "Parameter `numericBase` was out of range.";
 static const str StringNullMsg = "Parameter `string` was `NULL`.";
 static const str BufferNullMsg = "Parameter `buffer` was `NULL`.";
 static const str IndexOutOfRange = "The specified index was out of range.";

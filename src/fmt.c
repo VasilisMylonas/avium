@@ -55,22 +55,22 @@ AvmString AvmItoa(_long value) {
     return s;
 }
 
-AvmString AvmUtoa(ulong value, AvmNumericBase base) {
-    switch (base) {
+AvmString AvmUtoa(ulong value, AvmNumericBase numericBase) {
+    switch (numericBase) {
         case NumericBaseBinary:
         case NumericBaseOctal:
         case NumericBaseDecimal:
         case NumericBaseHex:
             break;
         default:
-            AvmPanic(BaseOutOfRangeMsg);
+            AvmPanic(NumericBaseOutOfRangeMsg);
     }
 
     AvmString s = AvmStringNew(8);
 
     size_t i = 0;
-    for (; value != 0; i++, value /= base) {
-        _long r = value % base;
+    for (; value != 0; i++, value /= numericBase) {
+        _long r = value % numericBase;
 
         if (r >= 10) {
             AvmStringPushChar(&s, 'A' + (r - 10));

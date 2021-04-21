@@ -53,11 +53,11 @@ AVMAPI AvmString AvmItoa(_long value);
  * @brief Converts an unsigned integer to a string with a specified base.
  *
  * @param value The unsigned integer value.
- * @param base The base of the number.
+ * @param numericBase The base of the number.
  *
  * @return The string representation.
  */
-AVMAPI AvmString AvmUtoa(ulong value, AvmNumericBase base);
+AVMAPI AvmString AvmUtoa(ulong value, AvmNumericBase numericBase);
 
 /**
  * @brief Converts a double to a string.
