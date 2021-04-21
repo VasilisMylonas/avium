@@ -9,39 +9,39 @@
 #define AvmHasValue(T) AVM_GENERIC(AvmHasValue, T)
 #define AvmGetValue(T) AVM_GENERIC(AvmGetValue, T)
 
-#define AVM_OPTIONAL_TYPE(T)                                     \
-    AVM_CLASS(AVM_GENERIC(AvmOptional, T), object, {             \
-        T _value;                                                \
-        bool _hasValue;                                          \
-    });                                                          \
-                                                                 \
+#define AVM_OPTIONAL_TYPE(T)                                       \
+    AVM_CLASS(AVM_GENERIC(AvmOptional, T), object, {               \
+        T _value;                                                  \
+        bool _hasValue;                                            \
+    });                                                            \
+                                                                   \
     AVM_TYPE(AVM_GENERIC(AvmOptional, T), {[FnEntryDtor] = NULL}); \
-                                                                 \
-    static inline AvmOptional(T) AvmSome(T)(T value) {           \
-        return (AvmOptional(T)){                                 \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),  \
-            ._hasValue = true,                                   \
-            ._value = value,                                     \
-        };                                                       \
-    }                                                            \
-                                                                 \
-    static inline AvmOptional(T) AvmNone(T)(void) {              \
-        return (AvmOptional(T)){                                 \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),  \
-            ._hasValue = false,                                  \
-        };                                                       \
-    }                                                            \
-                                                                 \
-    static inline bool AvmHasValue(T)(AvmOptional(T) * self) {   \
-        return self->_hasValue;                                  \
-    }                                                            \
-                                                                 \
-    static inline T AvmGetValue(T)(AvmOptional(T) * self) {      \
-        if (self->_hasValue) {                                   \
-            return self->_value;                                 \
-        }                                                        \
-                                                                 \
-        AvmPanic("Tried to unwrap an empty optional.");          \
+                                                                   \
+    static inline AvmOptional(T) AvmSome(T)(T value) {             \
+        return (AvmOptional(T)){                                   \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),    \
+            ._hasValue = true,                                     \
+            ._value = value,                                       \
+        };                                                         \
+    }                                                              \
+                                                                   \
+    static inline AvmOptional(T) AvmNone(T)(void) {                \
+        return (AvmOptional(T)){                                   \
+            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),    \
+            ._hasValue = false,                                    \
+        };                                                         \
+    }                                                              \
+                                                                   \
+    static inline bool AvmHasValue(T)(AvmOptional(T) * self) {     \
+        return self->_hasValue;                                    \
+    }                                                              \
+                                                                   \
+    static inline T AvmGetValue(T)(AvmOptional(T) * self) {        \
+        if (self->_hasValue) {                                     \
+            return self->_value;                                   \
+        }                                                          \
+                                                                   \
+        AvmPanic("Tried to unwrap an empty optional.");            \
     }
 
 AVM_OPTIONAL_TYPE(char)
