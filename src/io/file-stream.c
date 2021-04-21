@@ -92,6 +92,6 @@ AvmStream* AvmStreamFromHandle(AvmFileHandle handle) {
 
     AvmFileStream* stream = AvmAlloc(sizeof(AvmFileStream));
     stream->_handle = handle;
-    stream->_type = AVM_GET_TYPE(AvmFileStream);
+    stream->_type = typeid(AvmFileStream);
     return (AvmStream*)stream;
 }

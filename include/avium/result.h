@@ -224,7 +224,7 @@ AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
                                                                                \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
         return (AvmResult(T)){                                                 \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                  \
+            ._type = typeid(AVM_GENERIC(AvmResult, T)),                        \
             ._error = NULL,                                                    \
             ._value = value,                                                   \
         };                                                                     \
@@ -232,7 +232,7 @@ AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
                                                                                \
     static inline AvmResult(T) AvmFailure(T)(AvmError * error) {               \
         return (AvmResult(T)){                                                 \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, T)),                  \
+            ._type = typeid(AVM_GENERIC(AvmResult, T)),                        \
             ._error = error,                                                   \
         };                                                                     \
     }                                                                          \
@@ -282,14 +282,14 @@ AVM_TYPE(AVM_GENERIC(AvmResult, void),
 
 static inline AvmResult(void) AvmSuccess(void)(void) {
     return (AvmResult(void)){
-        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._type = typeid(AVM_GENERIC(AvmResult, void)),
         ._error = NULL,
     };
 }
 
 static inline AvmResult(void) AvmFailure(void)(AvmError* error) {
     return (AvmResult(void)){
-        ._type = AVM_GET_TYPE(AVM_GENERIC(AvmResult, void)),
+        ._type = typeid(AVM_GENERIC(AvmResult, void)),
         ._error = error,
     };
 }

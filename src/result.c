@@ -45,7 +45,7 @@ AVM_TYPE(AvmSimpleError,
 
 AvmError* AvmErrorFromOSCode(int code) {
     return heapalloc(AvmOSError, {
-                                     ._type = AVM_GET_TYPE(AvmOSError),
+                                     ._type = typeid(AvmOSError),
                                      ._code = code,
                                  });
 }
@@ -54,7 +54,7 @@ AvmError* AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
 
 AvmError* AvmErrorOfKind(AvmErrorKind kind) {
     return heapalloc(AvmSimpleError, {
-                                         ._type = AVM_GET_TYPE(AvmSimpleError),
+                                         ._type = typeid(AvmSimpleError),
                                          ._kind = kind,
                                      });
 }

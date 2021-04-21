@@ -97,4 +97,6 @@
 #define AVM_FILE_STREAM_SIZE   16
 #define AVM_MEMORY_STREAM_SIZE 48
 
+#define AVM_TI_NAME(T) _TI_##T
+
 #endif  // AVIUM_CONFIG_H

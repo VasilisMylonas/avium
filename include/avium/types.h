@@ -104,7 +104,12 @@ typedef void (*AvmFunction)(void);
 #endif  // AVM_MSVC
 
 /// A type containing information about an object.
-typedef struct AvmType AvmType;
+typedef struct {
+    const str _name;
+    const size_t _size;
+    const size_t _id;
+    AvmFunction _vptr[AVM_VFT_SIZE];
+} AvmType;
 
 #ifdef DOXYGEN
 /// A dynamic heap-allocated string.

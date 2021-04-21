@@ -19,7 +19,7 @@
                                                                    \
     static inline AvmOptional(T) AvmSome(T)(T value) {             \
         return (AvmOptional(T)){                                   \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),    \
+            ._type = typeid(AVM_GENERIC(AvmOptional, T)),          \
             ._hasValue = true,                                     \
             ._value = value,                                       \
         };                                                         \
@@ -27,7 +27,7 @@
                                                                    \
     static inline AvmOptional(T) AvmNone(T)(void) {                \
         return (AvmOptional(T)){                                   \
-            ._type = AVM_GET_TYPE(AVM_GENERIC(AvmOptional, T)),    \
+            ._type = typeid(AVM_GENERIC(AvmOptional, T)),          \
             ._hasValue = false,                                    \
         };                                                         \
     }                                                              \

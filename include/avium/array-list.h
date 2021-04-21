@@ -59,7 +59,7 @@
                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {       \
         return (AvmArrayList(T)){                                             \
-            ._type = AVM_GET_TYPE(AvmArrayList(T)),                           \
+            ._type = typeid(AvmArrayList(T)),                                 \
             ._length = 0,                                                     \
             ._capacity = capacity,                                            \
             ._items = capacity == 0 ? NULL : AvmAlloc(capacity * sizeof(T)),  \
@@ -125,7 +125,7 @@
                                                                             \
         static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) { \
             return (AvmArrayList(T)){                                       \
-                ._type = AVM_GET_TYPE(AvmArrayList(T)),                     \
+                ._type = typeid(AvmArrayList(T)),                           \
                 ._length = 0,                                               \
                 ._capacity = capacity,                                      \
                 ._items =                                                   \

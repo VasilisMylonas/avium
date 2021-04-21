@@ -2,7 +2,7 @@
 
 #include "avium/fmt.h"        // For AvmSprintf
 #include "avium/resources.h"  // For panic messages.
-#include "avium/runtime.h"    // For AVM_GET_TYPE, AVM_TYPE, AvmPanic, AvmAlloc
+#include "avium/runtime.h"    // For typeid, AVM_TYPE, AvmPanic, AvmAlloc
 
 #include <string.h>  // For strcmp
 
@@ -19,7 +19,7 @@
 
 #define VALUE_FROM(kind, member)                                         \
     return (AvmValue) {                                                  \
-        ._type = AVM_GET_TYPE(AvmValue), .member = value, ._kind = kind, \
+        ._type = typeid(AvmValue), .member = value, ._kind = kind, \
     }
 
 static object AvmValueClone(AvmValue* value) {

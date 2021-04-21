@@ -41,10 +41,9 @@
  * @param N The length of the array.
  * @param ... The elements of the array.
  */
-#define AvmArrayFrom(T, N, ...)                             \
-    (AvmArray(T, N)) {                                      \
-        ._type = AVM_GET_TYPE(AvmArray(T, N)), .length = N, \
-        .at = {__VA_ARGS__},                                \
+#define AvmArrayFrom(T, N, ...)                                            \
+    (AvmArray(T, N)) {                                                     \
+        ._type = typeid(AvmArray(T, N)), .length = N, .at = {__VA_ARGS__}, \
     }
 
 /**
@@ -125,7 +124,7 @@
             T at[N];                                        \
         });                                                 \
                                                             \
-        AVM_TYPE_LITE(AvmArray(T, N), {[FnEntryDtor] = NULL});
+        AVM_TYPE(AvmArray(T, N), {[FnEntryDtor] = NULL});
 
 #    define AVM_ARRAY_NATIVE_TYPE_N(T, N)                              \
         AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {            \
@@ -135,9 +134,8 @@
                                                                        \
         AVMAPI AvmString AvmArrayToString_##T(AvmArray(T, 1) * array); \
                                                                        \
-        AVM_TYPE_LITE(                                                 \
-            AvmArray(T, N),                                            \
-            {[FnEntryToString] = (AvmFunction)AvmArrayToString_##T});
+        AVM_TYPE(AvmArray(T, N),                                       \
+                 {[FnEntryToString] = (AvmFunction)AvmArrayToString_##T});
 
 #    define AVM_ARRAY_NATIVE_TYPE(T)   \
         AVM_ARRAY_NATIVE_TYPE_N(T, 1)  \
