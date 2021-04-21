@@ -60,15 +60,21 @@ typedef enum {
 #ifdef AVM_MSVC
 #    define typeof(T) decltype(T)
 #else
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wkeyword-macro"
 #    define typeof(T) __typeof__(T)
+#    pragma GCC diagnostic pop
 #endif
 
-#define baseof(x) ((typeof(((typeof(*x)*)NULL)->_base)*)x)
-#define base()    (&self->_base)
+#define baseof(x)          ((typeof(((typeof(*x)*)NULL)->_base)*)x)
+#define base()             (&self->_base)
+#define istype(T, x)       AVM_IS_TYPE_(T, x)
+#define AVM_IS_TYPE_(T, x) (AVM_HASH64(#T) == AvmTypeGetId(AvmObjectGetType(x)))
 
-#define istype(T, x) (strcmp(#T, AvmTypeGetName(AvmObjectGetType(x))) == 0)
-#define getfunc(T, instance, index) \
-    ((T)AvmTypeGetFunction(AvmObjectGetType(instance), index))
+#define AVM_HASH256(s) \
+    ((size_t)(AVM_H256_(s, 0, 0) ^ (AVM_H256_(s, 0, 0) >> 16)))
+
+#define AVM_HASH64(s) ((size_t)(AVM_H64_(s, 0, 0) ^ (AVM_H64_(s, 0, 0) >> 16)))
 
 /**
  * @brief Allocates heap memory.
@@ -185,21 +191,59 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  */
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
+AVMAPI size_t AvmTypeGetId(const AvmType* self);
+
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
+#define AVM_TYPE_LITE(T, ...) AVM_TYPE_LITE_(T, __VA_ARGS__)
+
 #ifndef DOXYGEN
+#    define AVM_TYPE_LITE_(T, ...)    \
+        static AvmType _##T##Type = { \
+            ._vptr = __VA_ARGS__,     \
+            ._name = #T,              \
+            ._size = sizeof(T),       \
+            ._id = 0,                 \
+        }
+
 #    define AVM_TYPE_(T, ...)         \
         static AvmType _##T##Type = { \
             ._vptr = __VA_ARGS__,     \
             ._name = #T,              \
             ._size = sizeof(T),       \
+            ._id = AVM_HASH64(#T),    \
         }
 
 #    define AVM_GET_TYPE_(T) &_##T##Type
 
+#    define AVM_STRLEN_(s) ((sizeof(s) / sizeof(s[0])) - 1)
+
+#    define AVM_H1_(s, i, x)                                                  \
+        (x * 65599u + (byte)s[(i) < AVM_STRLEN_(s) ? AVM_STRLEN_(s) - 1 - (i) \
+                                                   : AVM_STRLEN_(s)])
+
+#    define AVM_H4_(s, i, x) \
+        AVM_H1_(s, i,        \
+                AVM_H1_(s, i + 1, AVM_H1_(s, i + 2, AVM_H1_(s, i + 3, x))))
+
+#    define AVM_H16_(s, i, x) \
+        AVM_H4_(s, i,         \
+                AVM_H4_(s, i + 4, AVM_H4_(s, i + 8, AVM_H4_(s, i + 12, x))))
+
+#    define AVM_H64_(s, i, x) \
+        AVM_H16_(             \
+            s, i,             \
+            AVM_H16_(s, i + 16, AVM_H16_(s, i + 32, AVM_H16_(s, i + 48, x))))
+
+#    define AVM_H256_(s, i, x)       \
+        AVM_H64_(s, i,               \
+                 AVM_H64_(s, i + 64, \
+                          AVM_H64_(s, i + 128, AVM_H64_(s, i + 192, x))))
+
 struct AvmType {
     const str _name;
     const size_t _size;
+    const size_t _id;
     AvmFunction _vptr[AVM_VFT_SIZE];
 };
 #endif  // DOXYGEN
