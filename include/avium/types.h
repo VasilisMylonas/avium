@@ -246,6 +246,16 @@ static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
+
+extern AvmType AVM_TI_NAME(size_t);
+extern AvmType AVM_TI_NAME(_long);
+extern AvmType AVM_TI_NAME(ulong);
+extern AvmType AVM_TI_NAME(int);
+extern AvmType AVM_TI_NAME(uint);
+extern AvmType AVM_TI_NAME(short);
+extern AvmType AVM_TI_NAME(ushort);
+extern AvmType AVM_TI_NAME(char);
+extern AvmType AVM_TI_NAME(byte);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H

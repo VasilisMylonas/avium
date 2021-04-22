@@ -80,3 +80,13 @@ AvmString AvmObjectToString(object self) {
 
     return ((AvmString(*)(object))fn)(self);
 }
+
+AVM_TYPE(size_t, {[FnEntryDtor] = NULL});
+AVM_TYPE(_long, {[FnEntryDtor] = NULL});
+AVM_TYPE(ulong, {[FnEntryDtor] = NULL});
+AVM_TYPE(int, {[FnEntryDtor] = NULL});
+AVM_TYPE(uint, {[FnEntryDtor] = NULL});
+AVM_TYPE(short, {[FnEntryDtor] = NULL});
+AVM_TYPE(ushort, {[FnEntryDtor] = NULL});
+AVM_TYPE(char, {[FnEntryDtor] = NULL});
+AVM_TYPE(byte, {[FnEntryDtor] = NULL});
