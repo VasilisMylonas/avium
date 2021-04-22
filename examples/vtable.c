@@ -108,8 +108,7 @@ uint PointDistance(object self) {
     // There are plans to make this simpler. But for now this how it is done.
 
     AvmType* type = AvmObjectGetType(self);
-    DistanceFunc function = (DistanceFunc)type->_vptr[DistanceEntry];
-    return function(self);
+    return ((DistanceFunc)AvmTypeGetFunction(type, DistanceEntry))(self);
 }
 
 /*

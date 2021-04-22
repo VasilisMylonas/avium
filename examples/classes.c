@@ -71,9 +71,6 @@ AVM_CLASS(Point, object, {
  * macro like so:
  */
 
-// You should include this.
-#include <avium/runtime.h>
-
 AVM_TYPE(Point, {[FnEntryDtor] = NULL});
 
 /*
@@ -97,7 +94,7 @@ AVM_TYPE(Point, {[FnEntryDtor] = NULL});
  * AvmStringFrom, etc. Along with performing any type-specific initialization,
  * the constructor is also responsible for connecting the type information with
  * the object instance, ie it should initialize the ._type member. This can be
- * done with the AVM_GET_TYPE macro.
+ * done with the typeid macro.
  *
  * Lets create an example constructor for our Point type.
  */
@@ -109,13 +106,12 @@ Point PointFrom(int x, int y) {
     return (Point){
         ._x = x,
         ._y = y,
-        ._type = AVM_GET_TYPE(Point),
+        ._type = typeid(Point),
     };
 }
 
 /*
- * Now this was really simple, wasn't it? The AVM_GET_TYPE macro only takes the
- * type name as an argument and returns a reference to the type information for
- * that type. Note that this macro should normally only be used from
- * constructors.
+ * Now this was really simple, wasn't it? The typeid macro only takes the
+ * type name as an argument and returns a pointer to the type information for
+ * that type.
  */
