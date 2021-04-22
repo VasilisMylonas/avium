@@ -9,7 +9,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist)
-set(CMAKE_ENABLE_EXPORTS TRUE)
+set(CMAKE_ENABLE_EXPORTS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
@@ -19,6 +20,8 @@ set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
 include(GNUInstallDirs)
+include(ExternalProject)
+
 enable_testing()
 
 if(MSVC)
@@ -49,7 +52,16 @@ else()
 endif()
 
 option(AVM_USE_GC "Use garbage collector? (requires libgc)" ON)
-option(GEN_TESTS "Generate tests?" ON)
+if(AVM_USE_GC)
+    ExternalProject_Add(
+        bdwgc
+        PREFIX deps
+        BUILD_ALWAYS OFF
+        GIT_REPOSITORY https://github.com/ivmai/bdwgc
+        GIT_TAG v8.0.4
+        INSTALL_COMMAND ""
+    )
+endif()
 
 include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
@@ -57,6 +69,7 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 add_subdirectory(include)
 add_subdirectory(src)
 
+option(GEN_TESTS "Generate tests?" ON)
 if(GEN_TESTS)
     add_subdirectory(tests)
 endif()
