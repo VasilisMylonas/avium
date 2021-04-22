@@ -118,24 +118,25 @@
     AVM_ARRAY_TYPE_N(T, 64)
 
 #ifndef DOXYGEN
-#    define AVM_ARRAY_TYPE_N(T, N)                          \
-        AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, { \
-            size_t length;                                  \
-            T at[N];                                        \
-        });                                                 \
-                                                            \
-        AVM_TYPE(AvmArray(T, N), {[FnEntryDtor] = NULL});
+#    define AVM_ARRAY_TYPE_N(T, N)                                 \
+        AVM_INLINE_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, { \
+            size_t length;                                         \
+            T at[N];                                               \
+        });                                                        \
+                                                                   \
+        AVM_INLINE_TYPE(AvmArray(T, N), {[FnEntryDtor] = NULL});
 
 #    define AVM_ARRAY_NATIVE_TYPE_N(T, N)                              \
-        AVM_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {            \
+        AVM_INLINE_CLASS(AVM_GENERIC(AvmArray, T##_##N), object, {     \
             size_t length;                                             \
             T at[N];                                                   \
         });                                                            \
                                                                        \
         AVMAPI AvmString AvmArrayToString_##T(AvmArray(T, 1) * array); \
                                                                        \
-        AVM_TYPE(AvmArray(T, N),                                       \
-                 {[FnEntryToString] = (AvmFunction)AvmArrayToString_##T});
+        AVM_INLINE_TYPE(                                               \
+            AvmArray(T, N),                                            \
+            {[FnEntryToString] = (AvmFunction)AvmArrayToString_##T});
 
 #    define AVM_ARRAY_NATIVE_TYPE(T)   \
         AVM_ARRAY_NATIVE_TYPE_N(T, 1)  \

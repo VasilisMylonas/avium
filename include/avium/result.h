@@ -208,7 +208,7 @@ AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
  * @param T The type.
  */
 #define AVM_RESULT_TYPE(T)                                                     \
-    AVM_CLASS(AVM_GENERIC(AvmResult, T), object, {                             \
+    AVM_INLINE_CLASS(AVM_GENERIC(AvmResult, T), object, {                      \
         AvmError* _error;                                                      \
         T _value;                                                              \
     });                                                                        \
@@ -219,8 +219,9 @@ AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
         }                                                                      \
     }                                                                          \
                                                                                \
-    AVM_TYPE(AVM_GENERIC(AvmResult, T),                                        \
-             {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)}); \
+    AVM_INLINE_TYPE(                                                           \
+        AVM_GENERIC(AvmResult, T),                                             \
+        {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});      \
                                                                                \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
         return (AvmResult(T)){                                                 \
@@ -269,7 +270,7 @@ AVM_RESULT_TYPE(AvmFunction)
 #    pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-AVM_CLASS(AVM_GENERIC(AvmResult, void), object, { AvmError* _error; });
+AVM_INLINE_CLASS(AVM_GENERIC(AvmResult, void), object, { AvmError* _error; });
 
 static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
     if (self->_error != NULL) {
@@ -277,8 +278,9 @@ static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
     }
 }
 
-AVM_TYPE(AVM_GENERIC(AvmResult, void),
-         {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, void)});
+AVM_INLINE_TYPE(AVM_GENERIC(AvmResult, void),
+                {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy,
+                                                          void)});
 
 static inline AvmResult(void) AvmSuccess(void)(void) {
     return (AvmResult(void)){
