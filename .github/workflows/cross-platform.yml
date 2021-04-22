@@ -4,8 +4,6 @@ on: [push]
 
 env:
   BUILD_TYPE: Release
-  SRC_DIR: ${{github.workspace}}
-  BUILD_DIR: ${{github.workspace}}/build
 
 jobs:
   build:
@@ -20,17 +18,10 @@ jobs:
       with:
         python-version: '3.8.x'
 
-    - name: Prepare
+    - name: Preparation
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: cmake -E make_directory $BUILD_DIR
+      run: cmake -S . -B ./build -DAVM_USE_GC=OFF -DGEN_TESTS=OFF
 
-    - name: Config
+    - name: Build Library
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: cmake -S . -B $BUILD_DIR -DAVM_USE_GC=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-
-    - name: Build
-      shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: cmake --build $BUILD_DIR --config $BUILD_TYPE
+      run: cmake --build ./build --config $BUILD_TYPE

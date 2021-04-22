@@ -4,8 +4,6 @@ on: [push]
 
 env:
   BUILD_TYPE: Release
-  SRC_DIR: ${{github.workspace}}
-  BUILD_DIR: ${{github.workspace}}/build
   COVERAGE_FILE: ${{github.workspace}}/build/coverage/cov.info
 
 jobs:
@@ -14,31 +12,37 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8.x'
 
     - name: Install Dependencies
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: ./scripts/install-dependencies.sh
+      run: ./ci/install-deps.sh
 
-    - name: Build
+    - name: Preparation
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: ./scripts/build.sh $BUILD_DIR $BUILD_TYPE
+      run: cmake -S . -B ./build
+
+    - name: Build Library
+      shell: bash
+      run: cmake --build ./build --config $BUILD_TYPE
+
+    - name: Build Documentation
+      shell: bash
+      run: cmake --build ./build --target docs
 
     - name: Test
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: ./scripts/test.sh $BUILD_DIR $BUILD_TYPE
+      run: cmake --build ./build --target test
 
     - name: Coverage
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: ./scripts/coverage.sh $BUILD_DIR $COVERAGE_FILE
+      run: ./ci/coverage.sh $COVERAGE_FILE
 
-    - name: Docs
+    - name: Prepare Site
       shell: bash
-      working-directory: ${{env.SRC_DIR}}
-      run: ./scripts/build-docs.sh $BUILD_DIR $BUILD_TYPE
+      run: ./ci/site.sh $BUILD_TYPE
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
@@ -52,4 +56,4 @@ jobs:
         target_branch: gh-pages
         build_dir: site
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
