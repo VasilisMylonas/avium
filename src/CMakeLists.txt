@@ -12,7 +12,7 @@ generate_export_header(avm
     EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h
 )
 
-if(AVM_USE_GC)
+if(USE_GC)
 find_library(LIBGC gcmt-lib PATHS ${CMAKE_BINARY_DIR}/deps/)
 
 if(NOT LIBGC)

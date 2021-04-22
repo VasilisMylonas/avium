@@ -20,7 +20,7 @@ jobs:
 
     - name: Preparation
       shell: bash
-      run: cmake -S . -B ./build -DAVM_USE_GC=OFF -DGEN_TESTS=OFF
+      run: cmake -S . -B ./build -DUSE_GC=OFF -DGEN_TESTS=OFF
 
     - name: Build Library
       shell: bash

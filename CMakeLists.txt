@@ -51,8 +51,8 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-option(AVM_USE_GC "Use garbage collector? (requires libgc)" ON)
-if(AVM_USE_GC)
+option(USE_GC "Use garbage collector? (requires libgc)" ON)
+if(USE_GC)
     ExternalProject_Add(
         bdwgc
         PREFIX deps
