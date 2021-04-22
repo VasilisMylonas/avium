@@ -75,6 +75,9 @@ typedef enum {
 /// Determines whether an object is of specific type.
 #define istype(T, x) AVM_IS_TYPE_(T, x)
 
+/// Returns a pointer to the type info of type T.
+#define typeid(T) ((void*)&AVM_TI_NAME(T))
+
 /**
  * @brief Allocates heap memory.
  *
@@ -159,17 +162,6 @@ AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
-/// Returns a pointer to the type info of type T.
-#define typeid(T) AVM_TYPEID_(T)
-
-/**
- * @brief Generates type info for a type.
- *
- * @param T The type for which to generate type info.
- * @param ... The type vtable enclosed in braces ({...})
- */
-#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
-
 /**
  * @brief Gets the name of a type.
  *
@@ -212,18 +204,8 @@ AVMAPI size_t AvmTypeGetId(const AvmType* self);
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
 #ifndef DOXYGEN
-#    define AVM_TYPE_(T, ...)      \
-        static AvmType _TI_##T = { \
-            ._vptr = __VA_ARGS__,  \
-            ._name = #T,           \
-            ._size = sizeof(T),    \
-            ._id = 0,              \
-        }
-
 // TODO
 #    define AVM_IS_TYPE_(T, x) (1 == AvmTypeGetId(AvmObjectGetType(x)))
-#    define AVM_TYPEID_(T)     ((void*)&AVM_TI_NAME(T))
-
 #endif  // DOXYGEN
 
 #endif  // AVIUM_RUNTIME_H

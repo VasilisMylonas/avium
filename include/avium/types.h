@@ -40,14 +40,25 @@
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
  */
-#define AVM_CLASS(T, B, ...)      \
-    typedef struct T T;           \
-    struct T {                    \
-        union {                   \
-            const AvmType* _type; \
-            B _base;              \
-        };                        \
-        struct __VA_ARGS__;       \
+#define AVM_CLASS(T, B, ...)       \
+    extern AvmType AVM_TI_NAME(T); \
+    typedef struct T T;            \
+    struct T {                     \
+        union {                    \
+            const AvmType* _type;  \
+            B _base;               \
+        };                         \
+        struct __VA_ARGS__;        \
+    }
+
+#define AVM_INLINE_CLASS(T, B, ...) \
+    typedef struct T T;             \
+    struct T {                      \
+        union {                     \
+            const AvmType* _type;   \
+            B _base;                \
+        };                          \
+        struct __VA_ARGS__;         \
     }
 
 /**
@@ -57,11 +68,22 @@
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)      \
-    typedef struct T T;       \
-    struct T {                \
-        const AvmType* _type; \
+#define AVM_INTERFACE(T)           \
+    extern AvmType AVM_TI_NAME(T); \
+    typedef struct T T;            \
+    struct T {                     \
+        const AvmType* _type;      \
     }
+
+/**
+ * @brief Generates type info for a type.
+ *
+ * @param T The type for which to generate type info.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
+#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
+
+#define AVM_INLINE_TYPE(T, ...) AVM_INLINE_TYPE_(T, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
@@ -193,6 +215,22 @@ AVMAPI AvmString AvmObjectToString(object self);
 // Ensure type size constraints.
 
 #ifndef DOXYGEN
+#    define AVM_TYPE_(T, ...)      \
+        AvmType AVM_TI_NAME(T) = { \
+            ._vptr = __VA_ARGS__,  \
+            ._name = #T,           \
+            ._size = sizeof(T),    \
+            ._id = 0,              \
+        }
+
+#    define AVM_INLINE_TYPE_(T, ...)      \
+        static AvmType AVM_TI_NAME(T) = { \
+            ._vptr = __VA_ARGS__,         \
+            ._name = #T,                  \
+            ._size = sizeof(T),           \
+            ._id = 0,                     \
+        }
+
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 static_assert_s(sizeof(int) == AVM_INT_SIZE);
