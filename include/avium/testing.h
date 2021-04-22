@@ -31,10 +31,10 @@
 #define Assert(x) AVM_ASSERT_(x)
 
 /// Asserts whether an object is of specific type.
-#define AssertIsType(T, x) AVM_ASSERT_TYPE_(T, x)
+#define AssertIsType(T, x) AVM_ASSERT_(typeid(T) == AvmObjectGetType(x))
 
 /// Asserts whether an object is not of specific type.
-#define AssertIsNotType(T, x) (!AVM_ASSERT_TYPE_(T, x))
+#define AssertIsNotType(T, x) AVM_ASSERT_(typeid(T) != AvmObjectGetType(x))
 
 /// Asserts whether a condition is false.
 #define AssertNot(x) AVM_ASSERT_(!x)
