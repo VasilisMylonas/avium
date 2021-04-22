@@ -26,7 +26,7 @@ AVM_TYPE(AvmString, {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
 
 AvmString AvmStringNew(size_t capacity) {
     return (AvmString){
-        ._type = AVM_GET_TYPE(AvmString),
+        ._type = typeid(AvmString),
         ._length = 0,
         ._capacity = capacity,
         ._buffer = capacity == 0 ? NULL : AvmAlloc(capacity),
@@ -419,7 +419,7 @@ AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
         ._buffer = buffer,
         ._capacity = capacity,
         ._length = length,
-        ._type = AVM_GET_TYPE(AvmString),
+        ._type = typeid(AvmString),
     };
 }
 

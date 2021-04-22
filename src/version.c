@@ -13,7 +13,7 @@ AVM_TYPE(AvmVersion, {[FnEntryToString] = (AvmFunction)AvmVersionToString});
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch, char tag) {
     return (AvmVersion){
-        ._type = AVM_GET_TYPE(AvmVersion),
+        ._type = typeid(AvmVersion),
         .Major = major,
         .Minor = minor,
         .Patch = patch,

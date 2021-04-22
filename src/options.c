@@ -38,7 +38,7 @@ AVM_TYPE(AvmOptionParser, {[FnEntryDtor] = (AvmFunction)AvmOptionParserDestroy})
 
 AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
     AvmOptionParser* self = AvmAlloc(sizeof(AvmOptionParser));
-    self->_type = AVM_GET_TYPE(AvmOptionParser);
+    self->_type = typeid(AvmOptionParser);
     self->argc = argc;
     self->argv = argv;
     self->options = AvmArrayListNew(AvmOption)(4);

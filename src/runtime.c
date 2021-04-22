@@ -89,6 +89,14 @@ size_t AvmTypeGetSize(const AvmType* self) {
     return self->_size;
 }
 
+AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_vptr[index];
+}
+
 #ifdef AVM_LINUX
 #    include <execinfo.h>
 #endif

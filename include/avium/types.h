@@ -34,34 +34,73 @@
 /**
  * @brief Creates an Avium class type.
  *
- * @hideinitializer
+ * @param T The name of the type.
+ * @param B The base class of the type.
+ * @param ... Member declaration in braces ({ ... })
+ */
+#define AVM_CLASS(T, B, ...)       \
+    extern AvmType AVM_TI_NAME(T); \
+    typedef struct T T;            \
+    struct T {                     \
+        union {                    \
+            const AvmType* _type;  \
+            B _base;               \
+        };                         \
+        struct __VA_ARGS__;        \
+    }
+
+/**
+ * @brief Creates an Avium inline class type.
+ *
+ * Use this for generic or otherwise header-only classes. It must be used with
+ * the AVM_INLINE_TYPE macro.
  *
  * @param T The name of the type.
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
  */
-#define AVM_CLASS(T, B, ...)      \
-    typedef struct T T;           \
-    struct T {                    \
-        union {                   \
-            const AvmType* _type; \
-            B _base;              \
-        };                        \
-        struct __VA_ARGS__;       \
+#define AVM_INLINE_CLASS(T, B, ...) \
+    typedef struct T T;             \
+    struct T {                      \
+        union {                     \
+            const AvmType* _type;   \
+            B _base;                \
+        };                          \
+        struct __VA_ARGS__;         \
     }
+
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
 
 /**
  * @brief Creates an Avium interface type.
  *
- * @hideinitializer
- *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)      \
-    typedef struct T T;       \
-    struct T {                \
-        const AvmType* _type; \
+#define AVM_INTERFACE(T)           \
+    extern AvmType AVM_TI_NAME(T); \
+    typedef struct T T;            \
+    struct T {                     \
+        const AvmType* _type;      \
     }
+
+/**
+ * @brief Generates type info for a type.
+ *
+ * @param T The type for which to generate type info.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
+#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
+
+/**
+ * @brief Generates inline type info for a type.
+ *
+ * Uses with the AVM_INLINE_CLASS macro.
+ *
+ * @param T The type for which to generate type info.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
+#define AVM_INLINE_TYPE(T, ...) static AVM_TYPE_(T, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
@@ -104,7 +143,11 @@ typedef void (*AvmFunction)(void);
 #endif  // AVM_MSVC
 
 /// A type containing information about an object.
-typedef struct AvmType AvmType;
+typedef struct {
+    const str _name;
+    const size_t _size;
+    AvmFunction _vptr[AVM_VFT_SIZE];
+} AvmType;
 
 #ifdef DOXYGEN
 /// A dynamic heap-allocated string.
@@ -185,9 +228,15 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-// Ensure type size constraints.
-
 #ifndef DOXYGEN
+#    define AVM_TYPE_(T, ...)      \
+        AvmType AVM_TI_NAME(T) = { \
+            ._vptr = __VA_ARGS__,  \
+            ._name = #T,           \
+            ._size = sizeof(T),    \
+        }
+
+// Ensure type size constraints.
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 static_assert_s(sizeof(int) == AVM_INT_SIZE);
@@ -197,6 +246,16 @@ static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
+
+extern AvmType AVM_TI_NAME(size_t);
+extern AvmType AVM_TI_NAME(_long);
+extern AvmType AVM_TI_NAME(ulong);
+extern AvmType AVM_TI_NAME(int);
+extern AvmType AVM_TI_NAME(uint);
+extern AvmType AVM_TI_NAME(short);
+extern AvmType AVM_TI_NAME(ushort);
+extern AvmType AVM_TI_NAME(char);
+extern AvmType AVM_TI_NAME(byte);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H

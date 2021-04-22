@@ -25,15 +25,15 @@ bool AvmObjectEquals(object self, object other) {
         AvmPanic(OtherNullMsg);
     }
 
-    const AvmType* type = AvmObjectGetType(self);
-    AvmFunction method = type->_vptr[FnEntryEquals];
+    AvmType* type = AvmObjectGetType(self);
+    AvmFunction fn = AvmTypeGetFunction(type, FnEntryEquals);
     size_t size = type->_size;
 
-    if (method == NULL) {
+    if (fn == NULL) {
         return memcmp(self, other, size) == 0;
     }
 
-    return ((bool (*)(object, object))method)(self, other);
+    return ((bool (*)(object, object))fn)(self, other);
 }
 
 void AvmObjectDestroy(object self) {
@@ -41,10 +41,10 @@ void AvmObjectDestroy(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryDtor];
+    AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryDtor);
 
-    if (method != NULL) {
-        ((void (*)(object))method)(self);
+    if (fn != NULL) {
+        ((void (*)(object))fn)(self);
     }
 }
 
@@ -53,16 +53,16 @@ object AvmObjectClone(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryClone];
+    AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryClone);
 
-    if (method == NULL) {
+    if (fn == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
         void* memory = AvmAlloc(size);
         AvmMemCopy((byte*)self, size, (byte*)memory, size);
         return memory;
     }
 
-    return ((object(*)(object))method)(self);
+    return ((object(*)(object))fn)(self);
 }
 
 AvmString AvmObjectToString(object self) {
@@ -70,11 +70,23 @@ AvmString AvmObjectToString(object self) {
         AvmPanic(SelfNullMsg);
     }
 
-    AvmFunction method = AvmObjectGetType(self)->_vptr[FnEntryToString];
+    AvmFunction fn =
+        AvmTypeGetFunction(AvmObjectGetType(self), FnEntryToString);
 
-    if (method == NULL) {
-        return AvmSprintf("object <%x>", self);
+    if (fn == NULL) {
+        return AvmSprintf("%s [%x]", AvmTypeGetName(AvmObjectGetType(self)),
+                          self);
     }
 
-    return ((AvmString(*)(object))method)(self);
+    return ((AvmString(*)(object))fn)(self);
 }
+
+AVM_TYPE(size_t, {[FnEntryDtor] = NULL});
+AVM_TYPE(_long, {[FnEntryDtor] = NULL});
+AVM_TYPE(ulong, {[FnEntryDtor] = NULL});
+AVM_TYPE(int, {[FnEntryDtor] = NULL});
+AVM_TYPE(uint, {[FnEntryDtor] = NULL});
+AVM_TYPE(short, {[FnEntryDtor] = NULL});
+AVM_TYPE(ushort, {[FnEntryDtor] = NULL});
+AVM_TYPE(char, {[FnEntryDtor] = NULL});
+AVM_TYPE(byte, {[FnEntryDtor] = NULL});
