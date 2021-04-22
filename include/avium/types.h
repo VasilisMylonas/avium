@@ -34,8 +34,6 @@
 /**
  * @brief Creates an Avium class type.
  *
- * @hideinitializer
- *
  * @param T The name of the type.
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
@@ -51,6 +49,16 @@
         struct __VA_ARGS__;        \
     }
 
+/**
+ * @brief Creates an Avium inline class type.
+ *
+ * Use this for generic or otherwise header-only classes. It must be used with
+ * the AVM_INLINE_TYPE macro.
+ *
+ * @param T The name of the type.
+ * @param B The base class of the type.
+ * @param ... Member declaration in braces ({ ... })
+ */
 #define AVM_INLINE_CLASS(T, B, ...) \
     typedef struct T T;             \
     struct T {                      \
@@ -61,10 +69,11 @@
         struct __VA_ARGS__;         \
     }
 
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
+
 /**
  * @brief Creates an Avium interface type.
- *
- * @hideinitializer
  *
  * @param T The name of the type.
  */
@@ -83,6 +92,14 @@
  */
 #define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
 
+/**
+ * @brief Generates inline type info for a type.
+ *
+ * Uses with the AVM_INLINE_CLASS macro.
+ *
+ * @param T The type for which to generate type info.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
 #define AVM_INLINE_TYPE(T, ...) static AVM_TYPE_(T, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
@@ -211,8 +228,6 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-// Ensure type size constraints.
-
 #ifndef DOXYGEN
 #    define AVM_TYPE_(T, ...)      \
         AvmType AVM_TI_NAME(T) = { \
@@ -221,6 +236,7 @@ AVMAPI AvmString AvmObjectToString(object self);
             ._size = sizeof(T),    \
         }
 
+// Ensure type size constraints.
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 static_assert_s(sizeof(int) == AVM_INT_SIZE);

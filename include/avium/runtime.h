@@ -69,9 +69,6 @@ typedef enum {
 /// Returns the base type of an object.
 #define baseof(x) ((typeof((x)->_base)*)x)
 
-/// Refers to the base type in a function with a self parameter.
-#define base (&self->_base)
-
 /// Determines whether an object is of specific type.
 #define istype(T, x) (typeid(T) == AvmObjectGetType(x))
 
