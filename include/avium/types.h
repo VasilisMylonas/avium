@@ -83,7 +83,7 @@
  */
 #define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
 
-#define AVM_INLINE_TYPE(T, ...) AVM_INLINE_TYPE_(T, __VA_ARGS__)
+#define AVM_INLINE_TYPE(T, ...) static AVM_TYPE_(T, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
@@ -129,7 +129,6 @@ typedef void (*AvmFunction)(void);
 typedef struct {
     const str _name;
     const size_t _size;
-    const size_t _id;
     AvmFunction _vptr[AVM_VFT_SIZE];
 } AvmType;
 
@@ -220,15 +219,6 @@ AVMAPI AvmString AvmObjectToString(object self);
             ._vptr = __VA_ARGS__,  \
             ._name = #T,           \
             ._size = sizeof(T),    \
-            ._id = 0,              \
-        }
-
-#    define AVM_INLINE_TYPE_(T, ...)      \
-        static AvmType AVM_TI_NAME(T) = { \
-            ._vptr = __VA_ARGS__,         \
-            ._name = #T,                  \
-            ._size = sizeof(T),           \
-            ._id = 0,                     \
         }
 
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
