@@ -14,15 +14,16 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
-set(BDWGC_PATH ${CMAKE_BINARY_DIR}/deps/src/bdwgc)
-set(BDWGC_INCLUDE_DIR ${BDWGC_PATH}/include)
+set(BDWGC_TAG v8.0.4)
+set(BDWGC_URL https://github.com/ivmai/bdwgc)
+set(BDWGC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/bdwgc-src/include)
 set(SHARED_NAME avm)
 set(STATIC_NAME avm-static)
 set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
 include(GNUInstallDirs)
-include(ExternalProject)
+include(FetchContent)
 
 enable_testing()
 
@@ -50,25 +51,13 @@ if(MSVC)
 else()
     add_compile_options(-fprofile-arcs -ftest-coverage)
     add_link_options(-fprofile-arcs -ftest-coverage)
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
 option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 if(USE_GC)
-    ExternalProject_Add(
-        bdwgc
-        BUILD_IN_SOURCE ON
-        PREFIX deps
-        BUILD_ALWAYS OFF
-        GIT_REPOSITORY https://github.com/ivmai/bdwgc
-        GIT_TAG v8.0.4
-        INSTALL_COMMAND ""
-    )
-
-    find_library(LIBGC gcmt-lib PATHS ${BDWGC_PATH})
-    if(NOT LIBGC)
-        message(FATAL_ERROR "libgc not found!")
-    endif()
+    FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
+    FetchContent_MakeAvailable(bdwgc)
 endif()
 
 include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR} ${BDWGC_INCLUDE_DIR})

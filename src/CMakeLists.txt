@@ -13,7 +13,8 @@ generate_export_header(avm
 )
 
 if(USE_GC)
-    target_link_libraries(${STATIC_NAME} ${LIBGC})
+    target_link_libraries(${STATIC_NAME} gcmt-lib)
+    target_link_libraries(${SHARED_NAME} gcmt-lib)
 endif()
 
 install(TARGETS ${STATIC_NAME} ${SHARED_NAME}
