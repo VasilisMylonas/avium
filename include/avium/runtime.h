@@ -73,10 +73,10 @@ typedef enum {
 #define base (&self->_base)
 
 /// Determines whether an object is of specific type.
-#define istype(T, x) AVM_IS_TYPE_(T, x)
+#define istype(T, x) (typeid(T) == AvmObjectGetType(x))
 
 /// Returns a pointer to the type info of type T.
-#define typeid(T) ((void*)&AVM_TI_NAME(T))
+#define typeid(T) (&AVM_TI_NAME(T))
 
 /**
  * @brief Allocates heap memory.
@@ -183,16 +183,6 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
 /**
- * @brief Gets the id of a type.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmType instance.
- * @return The type id.
- */
-AVMAPI size_t AvmTypeGetId(const AvmType* self);
-
-/**
  * @brief Returns the specified VFT entry of a type.
  *
  * @pre Parameter @p self must be not null.
@@ -202,10 +192,5 @@ AVMAPI size_t AvmTypeGetId(const AvmType* self);
  * @return The function pointer.
  */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
-
-#ifndef DOXYGEN
-// TODO
-#    define AVM_IS_TYPE_(T, x) (1 == AvmTypeGetId(AvmObjectGetType(x)))
-#endif  // DOXYGEN
 
 #endif  // AVIUM_RUNTIME_H
