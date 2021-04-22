@@ -13,14 +13,7 @@ generate_export_header(avm
 )
 
 if(USE_GC)
-find_library(LIBGC gcmt-lib PATHS ${CMAKE_BINARY_DIR}/deps/)
-
-if(NOT LIBGC)
-message(FATAL_ERROR "libgc not found!")
-endif()
-
-add_dependencies(${STATIC_NAME} bdwgc)
-target_link_libraries(${STATIC_NAME} ${LIBGC})
+    target_link_libraries(${STATIC_NAME} ${LIBGC})
 endif()
 
 install(TARGETS ${STATIC_NAME} ${SHARED_NAME}
