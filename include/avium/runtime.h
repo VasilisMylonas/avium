@@ -60,10 +60,14 @@ typedef enum {
 #ifdef AVM_MSVC
 #    define typeof(T) decltype(T)
 #else
-#    pragma GCC diagnostic push
-#    pragma GCC diagnostic ignored "-Wkeyword-macro"
+#    ifdef __clang__
+#        pragma GCC diagnostic push
+#        pragma GCC diagnostic ignored "-Wkeyword-macro"
+#    endif
 #    define typeof(T) __typeof__(T)
-#    pragma GCC diagnostic pop
+#    ifdef __clang__
+#        pragma GCC diagnostic pop
+#    endif
 #endif
 
 /// Returns the base type of an object.
