@@ -23,7 +23,6 @@ static const str StringNullMsg = "Parameter `string` was `NULL`.";
 static const str BufferNullMsg = "Parameter `buffer` was `NULL`.";
 static const str IndexOutOfRange = "The specified index was out of range.";
 static const str FunctionNullMsg = "Parameter `function` was `NULL`.";
-static const str VersionFormat = "%i.%i.%i-%c";
 static const str InvalidValueCastMsg = "Invalid AvmValue cast.";
 static const str InvalidValueKindMsg = "Invalid AvmValue kind.";
 static const str NoBacktraceMsg = "No backtrace is available.";
