@@ -15,6 +15,7 @@
 #cmakedefine AVM_GNU
 #cmakedefine AVM_USE_GC
 #cmakedefine AVM_HAVE_UCHAR_H
+#cmakedefine AVM_HAVE_DLFCN_H
 
 #ifndef static_assert
 #    define static_assert _Static_assert
@@ -96,6 +97,11 @@
 #define AVM_STREAM_SIZE        8
 #define AVM_FILE_STREAM_SIZE   16
 #define AVM_MEMORY_STREAM_SIZE 48
+
+// reflect.h
+#define AVM_NM_FN_PREFIX    'T'
+#define AVM_NM_VAR_PREFIX   'D'
+#define AVM_NM_CLASS_PREFIX "D_TI_"
 
 #define AVM_TI_NAME(T) _TI_##T
 

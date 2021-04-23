@@ -32,5 +32,7 @@ static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";
 static const str InvalidOriginMsg = "Parameter `origin` was invalid.";
 static const str PathNullMsg = "Parameter `path` was `NULL`.";
+static const str NameNullMsg = "Parameter `name` was `NULL`.";
+static const str MissingSymbolMsg = "Required symbol was missing.";
 
 #endif  // AVIUM_RESOURCES_H
