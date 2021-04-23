@@ -228,6 +228,8 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
+static const size_t AvmInvalid = (size_t)-1;
+
 #ifndef DOXYGEN
 #    define AVM_TYPE_(T, ...)      \
         AvmType AVM_TI_NAME(T) = { \
