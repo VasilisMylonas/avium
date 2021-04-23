@@ -8,9 +8,8 @@ Welcome to Avium's documentation!
    array-list
    array
    fmt
-   optional
    options
-   result
+   error
    runtime
    string
    testing
