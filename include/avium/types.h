@@ -77,11 +77,10 @@
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)           \
-    extern AvmType AVM_TI_NAME(T); \
-    typedef struct T T;            \
-    struct T {                     \
-        const AvmType* _type;      \
+#define AVM_INTERFACE(T)      \
+    typedef struct T T;       \
+    struct T {                \
+        const AvmType* _type; \
     }
 
 /**
