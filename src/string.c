@@ -5,9 +5,7 @@
 #include <ctype.h>
 #include <string.h>
 
-static AvmString AvmStringToString(AvmString* self) {
-    return AvmStringFrom(self->_buffer);
-}
+static AvmString AvmStringToString(AvmString* self) { return AvmStringFrom(self->_buffer); }
 
 static object AvmStringClone(AvmString* self) {
     AvmString s = AvmStringFrom(self->_buffer);
@@ -68,8 +66,7 @@ AvmString AvmStringRepeat(str contents, size_t count) {
     return AvmStringRepeatChars(strlen(contents), contents, count);
 }
 
-AvmString AvmStringRepeatChars(size_t length, const char* contents,
-                               size_t count) {
+AvmString AvmStringRepeatChars(size_t length, const char* contents, size_t count) {
     if (contents == NULL) {
         AvmPanic(ContentsNullMsg);
     }
@@ -188,8 +185,8 @@ void AvmStringPushChars(AvmString* self, size_t length, const char* contents) {
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
-    AvmMemCopy((byte*)contents, length + 1,
-               (byte*)&self->_buffer[self->_length - length], length + 1);
+    AvmMemCopy((byte*)contents, length + 1, (byte*)&self->_buffer[self->_length - length],
+               length + 1);
 }
 
 void AvmStringPushString(AvmString* self, AvmString* other) {
@@ -210,39 +207,39 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
     }
 
-    AvmMemCopy((byte*)other->_buffer, length + 1,
-               (byte*)&self->_buffer[self->_length - length], length + 1);
+    AvmMemCopy((byte*)other->_buffer, length + 1, (byte*)&self->_buffer[self->_length - length],
+               length + 1);
 }
 
-AvmOptional(size_t) AvmStringIndexOf(AvmString* self, char character) {
+size_t AvmStringIndexOf(AvmString* self, char character) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = 0; i < self->_length; i++) {
         if (self->_buffer[i] == character) {
-            return AvmSome(size_t)(i);
+            return i;
         }
     }
 
-    return AvmNone(size_t)();
+    return AvmInvalidIndex;
 }
 
-AvmOptional(size_t) AvmStringLastIndexOf(AvmString* self, char character) {
+size_t AvmStringLastIndexOf(AvmString* self, char character) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     for (size_t i = self->_length; i > 0; i--) {
         if (self->_buffer[i - 1] == character) {
-            return AvmSome(size_t)(i - 1);
+            return i - 1;
         }
     }
 
-    return AvmNone(size_t)();
+    return AvmInvalidIndex;
 }
 
-AvmOptional(size_t) AvmStringFind(AvmString* self, str substring) {
+size_t AvmStringFind(AvmString* self, str substring) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -254,13 +251,13 @@ AvmOptional(size_t) AvmStringFind(AvmString* self, str substring) {
     char* c = strstr(self->_buffer, substring);
 
     if (c == NULL) {
-        return AvmNone(size_t)();
+        return AvmInvalidIndex;
     }
 
-    return AvmSome(size_t)((size_t)(c - self->_buffer));
+    return (size_t)(c - self->_buffer);
 }
 
-AvmOptional(size_t) AvmStringFindLast(AvmString* self, str substring) {
+size_t AvmStringFindLast(AvmString* self, str substring) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -272,21 +269,19 @@ AvmOptional(size_t) AvmStringFindLast(AvmString* self, str substring) {
     size_t length = strlen(substring);
 
     if (length > self->_length) {
-        return AvmNone(size_t)();
+        return AvmInvalidIndex;
     }
 
-    for (char* end = self->_buffer + self->_length - length;
-         end != self->_buffer; end--) {
+    for (char* end = self->_buffer + self->_length - length; end != self->_buffer; end--) {
         if (strncmp(end, substring, length) == 0) {
-            return AvmSome(size_t)(end - self->_buffer);
+            return end - self->_buffer;
         }
     }
 
-    return AvmNone(size_t)();
+    return AvmInvalidIndex;
 }
 
-AvmOptional(size_t)
-    AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
+size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -294,15 +289,14 @@ AvmOptional(size_t)
     for (size_t i = 0; i < self->_length; i++) {
         if (self->_buffer[i] == oldCharacter) {
             self->_buffer[i] = newCharacter;
-            return AvmSome(size_t)(i);
+            return i;
         }
     }
 
-    return AvmNone(size_t)();
+    return AvmInvalidIndex;
 }
 
-size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
-                         char newCharacter) {
+size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -319,8 +313,7 @@ size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
-                             char newCharacter) {
+size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -337,8 +330,7 @@ size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-AvmOptional(size_t) AvmStringReplaceLast(AvmString* self, char oldCharacter,
-                                         char newCharacter) {
+size_t AvmStringReplaceLast(AvmString* self, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -346,15 +338,14 @@ AvmOptional(size_t) AvmStringReplaceLast(AvmString* self, char oldCharacter,
     for (size_t i = self->_length - 1; i + 1 > 0; i--) {
         if (self->_buffer[i] == oldCharacter) {
             self->_buffer[i] = newCharacter;
-            return AvmSome(size_t)(i);
+            return i;
         }
     }
 
-    return AvmNone(size_t)();
+    return AvmInvalidIndex;
 }
 
-size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
-                           char newCharacter) {
+size_t AvmStringReplaceAll(AvmString* self, char oldCharacter, char newCharacter) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -406,13 +397,9 @@ void AvmStringReverse(AvmString* self) {
     }
 }
 
-void AvmStringToUpper(AvmString* self) {
-    AvmStringForEachCompat(self, toupper);
-}
+void AvmStringToUpper(AvmString* self) { AvmStringForEachCompat(self, toupper); }
 
-void AvmStringToLower(AvmString* self) {
-    AvmStringForEachCompat(self, tolower);
-}
+void AvmStringToLower(AvmString* self) { AvmStringForEachCompat(self, tolower); }
 
 AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
     return (AvmString){
@@ -423,8 +410,7 @@ AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
     };
 }
 
-void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity, size_t* length,
-                             char** buffer) {
+void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity, size_t* length, char** buffer) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -472,7 +458,7 @@ bool AvmStringContainsChar(AvmString* self, char character) {
         AvmPanic(SelfNullMsg);
     }
 
-    return AvmStringIndexOf(self, character)._hasValue;
+    return AvmStringIndexOf(self, character) != AvmInvalidIndex;
 }
 
 bool AvmStringContainsStr(AvmString* self, str contents) {
@@ -480,7 +466,7 @@ bool AvmStringContainsStr(AvmString* self, str contents) {
         AvmPanic(SelfNullMsg);
     }
 
-    return AvmStringFind(self, contents)._hasValue;
+    return AvmStringFind(self, contents) != AvmInvalidIndex;
 }
 
 bool AvmStringStartsWithChar(AvmString* self, char character) {
@@ -491,8 +477,7 @@ bool AvmStringStartsWithChar(AvmString* self, char character) {
     return self->_buffer[0] == character;
 }
 
-bool AvmStringStartsWithChars(AvmString* self, size_t length,
-                              const char* contents) {
+bool AvmStringStartsWithChars(AvmString* self, size_t length, const char* contents) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -536,8 +521,7 @@ bool AvmStringEndsWithStr(AvmString* self, str contents) {
     return AvmStringEndsWithChars(self, strlen(contents), contents);
 }
 
-bool AvmStringEndsWithChars(AvmString* self, size_t length,
-                            const char* contents) {
+bool AvmStringEndsWithChars(AvmString* self, size_t length, const char* contents) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
