@@ -29,6 +29,10 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
+if(USE_GC)
+    set(AVM_USE_GC ON)
+endif()
+
 configure_file(avium/config.h.in avium/config.h @ONLY)
 
 file(GLOB INCLUDE_FILES avium/*.h)

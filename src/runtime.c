@@ -7,7 +7,7 @@
 #include "avium/resources.h"
 
 #ifdef AVM_USE_GC
-#    include <gc/gc.h>
+#    include "gc.h"
 #    define AVM_ALLOC   GC_malloc
 #    define AVM_REALLOC GC_realloc
 #    define AVM_DEALLOC GC_free
