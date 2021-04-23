@@ -68,7 +68,7 @@ AVMAPI AvmString AvmStringFrom(str contents);
  * @param contents The contents of the AvmString.
  * @return The created instance.
  */
-AVMAPI AvmString AvmStringFromChars(size_t length, const char* contents);
+AVMAPI AvmString AvmStringFromChars(size_t length, str contents);
 
 /**
  * @brief Creates an AvmString by repeating a raw string.
@@ -97,7 +97,7 @@ AVMAPI AvmString AvmStringRepeat(str contents, size_t count);
  * @param count The times to repeat.
  * @return The created instance.
  */
-AVMAPI AvmString AvmStringRepeatChars(size_t length, const char* contents,
+AVMAPI AvmString AvmStringRepeatChars(size_t length, str contents,
                                       size_t count);
 
 /**
@@ -199,8 +199,7 @@ AVMAPI void AvmStringPushStr(AvmString* self, str contents);
  * @param length The length of the array.
  * @param contents The array of characters.
  */
-AVMAPI void AvmStringPushChars(AvmString* self, size_t length,
-                               const char* contents);
+AVMAPI void AvmStringPushChars(AvmString* self, size_t length, str contents);
 
 /**
  * @brief Pushes an AvmString to the end an AvmString.
@@ -513,7 +512,7 @@ AVMAPI bool AvmStringStartsWithChar(AvmString* self, char character);
  * @return true if the AvmString starts with the string, otherwise false.
  */
 AVMAPI bool AvmStringStartsWithChars(AvmString* self, size_t length,
-                                     const char* contents);
+                                     str contents);
 
 /**
  * @brief Determines whether an AvmString starts with a raw string.
@@ -576,7 +575,7 @@ AVMAPI bool AvmStringEndsWithStr(AvmString* self, str contents);
  * @return true if the AvmString ends with the string, otherwise false.
  */
 AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
-                                   const char* contents);
+                                   str contents);
 
 /**
  * @brief Determines whether an AvmString ends with an AvmString.
@@ -593,7 +592,7 @@ AVMAPI bool AvmStringEndsWithString(AvmString* self, AvmString* contents);
 #ifndef DOXYGEN
 // TODO
 AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
-                                   const char* contents);
+                                   str contents);
 
 // TODO
 AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
