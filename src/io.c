@@ -78,10 +78,15 @@ AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]) {
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
-AvmResult(byte) AvmStreamReadByte(AvmStream* self) {
+byte AvmStreamReadByte(AvmStream* self, AvmError** error) {
     byte temp;
-    AvmStreamRead(self, 1, &temp);
-    return AvmSuccess(byte)(temp);
+    AvmError* result = AvmStreamRead(self, 1, &temp);
+
+    if (error != NULL) {
+        *error = result;
+    }
+
+    return temp;
 }
 
 AvmError* AvmStreamWriteByte(AvmStream* self, byte value) {
@@ -89,39 +94,37 @@ AvmError* AvmStreamWriteByte(AvmStream* self, byte value) {
     return NULL;
 }
 
-AvmResult(char) AvmStreamReadChar(AvmStream* self) {
-    AvmResult(byte) result = AvmStreamReadByte(self);
-
-    return RESULT_CAST(&result, byte, char);
+char AvmStreamReadChar(AvmStream* self, AvmError** error) {
+    return (char)AvmStreamReadByte(self, error);
 }
 
 AvmError* AvmStreamWriteChar(AvmStream* self, char value) {
     return AvmStreamWriteByte(self, (byte)value);
 }
 
-AvmResult(AvmString) AvmStreamReadLine(AvmStream* self) {
+AvmString AvmStreamReadLine(AvmStream* self, AvmError** error) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     AvmString s = AvmStringNew(READ_LINE_CAPACITY);
 
-    AvmResult(char) result = AvmStreamReadChar(self);
-    if (AvmIsFailure(char)(&result)) {
-        return AvmFailure(AvmString)(AvmErrorOfKind(ErrorKindRead));
+    char c = AvmStreamReadChar(self, error);
+    if (*error != NULL) {
+        AvmObjectDestroy(&s);
+        return AvmStringNew(0);
     }
-    char c = AvmUnwrap(char)(&result);
 
     while (c != '\n') {
         AvmStringPushChar(&s, c);
-        result = AvmStreamReadChar(self);
-        if (AvmIsFailure(char)(&result)) {
-            return AvmFailure(AvmString)(AvmErrorOfKind(ErrorKindRead));
+        c = AvmStreamReadChar(self, error);
+        if (*error != NULL) {
+            AvmObjectDestroy(&s);
+            return AvmStringNew(0);
         }
-        c = AvmUnwrap(char)(&result);
     }
 
-    return AvmSuccess(AvmString)(s);
+    return s;
 }
 
 AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string) {

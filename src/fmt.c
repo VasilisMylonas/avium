@@ -11,6 +11,7 @@
 
 #include "avium/string.h"
 #include "avium/resources.h"
+#include "avium/runtime.h"
 
 typedef union {
     float value;

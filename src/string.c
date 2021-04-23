@@ -224,7 +224,7 @@ size_t AvmStringIndexOf(AvmString* self, char character) {
         }
     }
 
-    return AvmInvalidIndex;
+    return AvmInvalid;
 }
 
 size_t AvmStringLastIndexOf(AvmString* self, char character) {
@@ -238,7 +238,7 @@ size_t AvmStringLastIndexOf(AvmString* self, char character) {
         }
     }
 
-    return AvmInvalidIndex;
+    return AvmInvalid;
 }
 
 size_t AvmStringFind(AvmString* self, str substring) {
@@ -253,7 +253,7 @@ size_t AvmStringFind(AvmString* self, str substring) {
     char* c = strstr(self->_buffer, substring);
 
     if (c == NULL) {
-        return AvmInvalidIndex;
+        return AvmInvalid;
     }
 
     return (size_t)(c - self->_buffer);
@@ -271,7 +271,7 @@ size_t AvmStringFindLast(AvmString* self, str substring) {
     size_t length = strlen(substring);
 
     if (length > self->_length) {
-        return AvmInvalidIndex;
+        return AvmInvalid;
     }
 
     for (char* end = self->_buffer + self->_length - length;
@@ -281,7 +281,7 @@ size_t AvmStringFindLast(AvmString* self, str substring) {
         }
     }
 
-    return AvmInvalidIndex;
+    return AvmInvalid;
 }
 
 size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
@@ -296,7 +296,7 @@ size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
         }
     }
 
-    return AvmInvalidIndex;
+    return AvmInvalid;
 }
 
 size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
@@ -348,7 +348,7 @@ size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
         }
     }
 
-    return AvmInvalidIndex;
+    return AvmInvalid;
 }
 
 size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
@@ -377,16 +377,16 @@ void AvmStringUnsafeSetLength(AvmString* self, size_t length) {
     self->_length = length;
 }
 
-AvmResult(char) AvmStringCharAt(AvmString* self, size_t index) {
+char AvmStringCharAt(AvmString* self, size_t index) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
     if (index < self->_length) {
-        return AvmSuccess(char)(self->_buffer[index]);
+        return self->_buffer[index];
     }
 
-    return AvmFailure(char)(AvmErrorFromOSCode(ErrorKindRange));
+    return '\0';
 }
 
 void AvmStringReverse(AvmString* self) {
@@ -470,7 +470,7 @@ bool AvmStringContainsChar(AvmString* self, char character) {
         AvmPanic(SelfNullMsg);
     }
 
-    return AvmStringIndexOf(self, character) != AvmInvalidIndex;
+    return AvmStringIndexOf(self, character) != AvmInvalid;
 }
 
 bool AvmStringContainsStr(AvmString* self, str contents) {
@@ -478,7 +478,7 @@ bool AvmStringContainsStr(AvmString* self, str contents) {
         AvmPanic(SelfNullMsg);
     }
 
-    return AvmStringFind(self, contents) != AvmInvalidIndex;
+    return AvmStringFind(self, contents) != AvmInvalid;
 }
 
 bool AvmStringStartsWithChar(AvmString* self, char character) {

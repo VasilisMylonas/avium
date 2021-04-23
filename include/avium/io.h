@@ -25,7 +25,7 @@
 #define AVIUM_IO_H
 
 #include "avium/runtime.h"
-#include "avium/result.h"
+#include "avium/error.h"
 
 /// Represents a C file handle.
 typedef void* AvmFileHandle;
@@ -149,9 +149,10 @@ AVMAPI size_t AvmStreamGetLength(AvmStream* self);
  * @pre Parameter @p self must be not null.
  *
  * @param self The AvmStream instance.
- * @return The result of the IO operation.
+ * @param[out] error Any error that occurs.
+ * @return The byte.
  */
-AVMAPI AvmResult(byte) AvmStreamReadByte(AvmStream* self);
+AVMAPI byte AvmStreamReadByte(AvmStream* self, AvmError** error);
 
 /**
  * @brief Writes a single byte to an AvmStream.
@@ -170,9 +171,10 @@ AVMAPI AvmError* AvmStreamWriteByte(AvmStream* self, byte value);
  * @pre Parameter @p self must be not null.
  *
  * @param self The AvmStream instance.
- * @return The result of the IO operation.
+ * @param[out] error Any error that occurs.
+ * @return The character.
  */
-AVMAPI AvmResult(char) AvmStreamReadChar(AvmStream* self);
+AVMAPI char AvmStreamReadChar(AvmStream* self, AvmError** error);
 
 /**
  * @brief Writes a single character to an AvmStream.
@@ -191,9 +193,10 @@ AVMAPI AvmError* AvmStreamWriteChar(AvmStream* self, char value);
  * @pre Parameter @p self must be not null.
  *
  * @param self The AvmStream instance.
+ * @param[out] error Any error that occurs.
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(AvmString) AvmStreamReadLine(AvmStream* self);
+AVMAPI AvmString AvmStreamReadLine(AvmStream* self, AvmError** error);
 
 /**
  * @brief Writes a line of text from an AvmStream.

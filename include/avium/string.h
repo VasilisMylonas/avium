@@ -25,9 +25,6 @@
 #define AVIUM_STRING_H
 
 #include "avium/types.h"
-#include "avium/result.h"
-
-static const size_t AvmInvalidIndex = (size_t)-1;
 
 // Type definition in types.h
 
@@ -225,7 +222,7 @@ AVMAPI void AvmStringPushString(AvmString* self, AvmString* other);
  * @param self The AvmString instance.
  * @param character The character to find.
  *
- * @return The index or AvmInvalidIndex.
+ * @return The index or AvmInvalid.
  */
 AVMAPI size_t AvmStringIndexOf(AvmString* self, char character);
 
@@ -238,7 +235,7 @@ AVMAPI size_t AvmStringIndexOf(AvmString* self, char character);
  * @param self The AvmString instance.
  * @param character The character to find.
  *
- * @return The index or AvmInvalidIndex.
+ * @return The index or AvmInvalid.
  */
 AVMAPI size_t AvmStringLastIndexOf(AvmString* self, char character);
 
@@ -252,7 +249,7 @@ AVMAPI size_t AvmStringLastIndexOf(AvmString* self, char character);
  * @param oldCharacter The character to be replaced.
  * @param newCharacter The character to replace with.
  *
- * @return The index of the replaced character or AvmInvalidIndex.
+ * @return The index of the replaced character or AvmInvalid.
  */
 AVMAPI size_t AvmStringReplace(AvmString* self, char oldCharacter,
                                char newCharacter);
@@ -313,7 +310,7 @@ AVMAPI size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
  * @param oldCharacter The character to be replaced.
  * @param newCharacter The character to replace with.
  *
- * @return The index or AvmInvalidIndex.
+ * @return The index or AvmInvalid.
  */
 AVMAPI size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
                                    char newCharacter);
@@ -328,7 +325,7 @@ AVMAPI size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
  * @param self The AvmString instance.
  * @param substring The substring to find.
  *
- * @return The index or AvmInvalidIndex.
+ * @return The index or AvmInvalid.
  */
 AVMAPI size_t AvmStringFind(AvmString* self, str substring);
 
@@ -342,7 +339,7 @@ AVMAPI size_t AvmStringFind(AvmString* self, str substring);
  * @param self The AvmString instance.
  * @param substring The substring to find.
  *
- * @return The index or AvmInvalidIndex.
+ * @return The index or AvmInvalid.
  */
 AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
 
@@ -354,9 +351,9 @@ AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
  * @param self The AvmString instance.
  * @param index The index of the character to get.
  *
- * @return The character at the specified index, or an error.
+ * @return The character at the specified index, or '\0'.
  */
-AVMAPI AvmResult(char) AvmStringCharAt(AvmString* self, size_t index);
+AVMAPI char AvmStringCharAt(AvmString* self, size_t index);
 
 /**
  * @brief Reverses an AvmString.
