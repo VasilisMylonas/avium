@@ -17,17 +17,17 @@ typedef void* AvmFileMetadata;
 AVMAPI AvmStream* AvmFileOpen(str path, AvmFileAccess access);
 AVMAPI bool AvmFileExists(str path);
 
-AVMAPI AvmResult(void) AvmFileDelete(str path);
-AVMAPI AvmResult(void) AvmFileMove(str source, str destination);
-AVMAPI AvmResult(void) AvmFileCopy(str source, str destination);
+AVMAPI AvmError* AvmFileDelete(str path);
+AVMAPI AvmError* AvmFileMove(str source, str destination);
+AVMAPI AvmError* AvmFileCopy(str source, str destination);
 
-AVMAPI AvmResult(void) AvmFileReadAll(str path, size_t length, byte bytes[]);
-AVMAPI AvmResult(void) AvmFileWriteAll(str path, size_t length, byte bytes[]);
-AVMAPI AvmResult(void) AvmFileAppendAll(str path, size_t length, byte bytes[]);
+AVMAPI AvmError* AvmFileReadAll(str path, size_t length, byte bytes[]);
+AVMAPI AvmError* AvmFileWriteAll(str path, size_t length, byte bytes[]);
+AVMAPI AvmError* AvmFileAppendAll(str path, size_t length, byte bytes[]);
 
-AVMAPI AvmResult(void) AvmFileReadAllText(str path, AvmString* string);
-AVMAPI AvmResult(void) AvmFileWriteAllText(str path, AvmString* string);
-AVMAPI AvmResult(void) AvmFileAppendAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileReadAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileWriteAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileAppendAllText(str path, AvmString* string);
 
 AVMAPI AvmFileMetadata AvmFileGetMetadata(str path);
 

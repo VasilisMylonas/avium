@@ -9,36 +9,36 @@ AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
 
 static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
 
-static AvmResult(void) AvmFileStreamFlush(AvmFileStream* self) {
+static AvmError* AvmFileStreamFlush(AvmFileStream* self) {
     int status = fflush(self->_handle);
 
     if (status != 0) {
-        return AvmFailure(void)(AvmErrorFromOSCode(status));
+        return AvmErrorFromOSCode(status);
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void)
-    AvmFileStreamWrite(AvmFileStream* self, size_t length, byte bytes[]) {
+static AvmError* AvmFileStreamWrite(AvmFileStream* self, size_t length,
+                                    byte bytes[]) {
     if (fwrite(bytes, 1, length, self->_handle) != length) {
-        return AvmFailure(void)(AvmErrorFromOSCode(ferror(self->_handle)));
+        return AvmErrorFromOSCode(ferror(self->_handle));
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void)
-    AvmFileStreamRead(AvmFileStream* self, size_t length, byte bytes[]) {
+static AvmError* AvmFileStreamRead(AvmFileStream* self, size_t length,
+                                   byte bytes[]) {
     if (fread(bytes, 1, length, self->_handle) != length) {
-        return AvmFailure(void)(AvmErrorFromOSCode(ferror(self->_handle)));
+        return AvmErrorFromOSCode(ferror(self->_handle));
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void)
-    AvmFileStreamSeek(AvmFileStream* self, _long offset, AvmSeekOrigin origin) {
+static AvmError* AvmFileStreamSeek(AvmFileStream* self, _long offset,
+                                   AvmSeekOrigin origin) {
     int status = 0;
 
     switch (origin) {
@@ -56,10 +56,10 @@ static AvmResult(void)
     }
 
     if (status != 0) {
-        return AvmFailure(void)(AvmErrorFromOSCode(status));
+        return AvmErrorFromOSCode(status);
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
 static size_t AvmFileStreamGetPosition(AvmFileStream* self) {

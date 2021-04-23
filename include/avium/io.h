@@ -78,8 +78,7 @@ AVMAPI AvmStream* AvmStreamFromRaw(size_t length, byte array[]);
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void)
-    AvmStreamRead(AvmStream* self, size_t length, byte buffer[]);
+AVMAPI AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[]);
 
 /**
  * @brief Writes bytes to an AvmStream.
@@ -93,8 +92,7 @@ AVMAPI AvmResult(void)
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void)
-    AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]);
+AVMAPI AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]);
 
 /**
  * @brief Flushes a stream, writing buffered data to the underlying device.
@@ -104,7 +102,7 @@ AVMAPI AvmResult(void)
  * @param self The AvmStream instance.
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void) AvmStreamFlush(AvmStream* self);
+AVMAPI AvmError* AvmStreamFlush(AvmStream* self);
 
 /**
  * @brief Seeks to a position in a stream.
@@ -122,8 +120,8 @@ AVMAPI AvmResult(void) AvmStreamFlush(AvmStream* self);
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void)
-    AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin);
+AVMAPI AvmError* AvmStreamSeek(AvmStream* self, _long offset,
+                               AvmSeekOrigin origin);
 
 /**
  * @brief Returns the current position in an AvmStream.
@@ -164,7 +162,7 @@ AVMAPI AvmResult(byte) AvmStreamReadByte(AvmStream* self);
  * @param value The byte to write.
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void) AvmStreamWriteByte(AvmStream* self, byte value);
+AVMAPI AvmError* AvmStreamWriteByte(AvmStream* self, byte value);
 
 /**
  * @brief Reads a single character from an AvmStream.
@@ -185,7 +183,7 @@ AVMAPI AvmResult(char) AvmStreamReadChar(AvmStream* self);
  * @param value The character to write.
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void) AvmStreamWriteChar(AvmStream* self, char value);
+AVMAPI AvmError* AvmStreamWriteChar(AvmStream* self, char value);
 
 /**
  * @brief Reads a line of text from an AvmStream.
@@ -207,7 +205,7 @@ AVMAPI AvmResult(AvmString) AvmStreamReadLine(AvmStream* self);
  * @param string The AvmString to write.s
  * @return The result of the IO operation.
  */
-AVMAPI AvmResult(void) AvmStreamWriteLine(AvmStream* self, AvmString* string);
+AVMAPI AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string);
 
 // Ensure type size constraints.
 static_assert_s(sizeof(AvmStream) == AVM_STREAM_SIZE);

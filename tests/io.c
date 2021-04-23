@@ -51,6 +51,5 @@ __test TestStreamSeek(object state) {
 }
 
 __test TestStreamFlush(object state) {
-    AvmResult(void) result = AvmStreamFlush(state);
-    AssertNot(AvmIsFailure(void)(&result));
+    AssertEqual(AvmStreamFlush(state), NULL);
 }
