@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef AVM_LINUX
+#ifdef AVM_WIN32
+#    include <windows.h>
+#else
 #    include <unistd.h>
 #endif
 
@@ -102,38 +104,47 @@ AvmResult(void) AvmFileCopy(str source, str destination) {
     AvmPanic("Not implemented!");
 }
 
-AvmResult(void) AvmFileReadAll(str path, size_t length, byte buffer[]) {
+static AvmResult(void) AvmFilePerform(str path, size_t length, byte buffer[],
+                                      AvmFileAccess access) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
 
-    AvmResult(AvmStreamPtr) res = AvmFileOpen(path, FileAccessRead);
+    AvmResult(AvmStreamPtr) res = AvmFileOpen(path, access);
 
     if (AvmIsFailure(AvmStreamPtr)(&res)) {
         return AvmFailure(void)(res._error);
     }
 
     AvmStream* stream = AvmUnwrap(AvmStreamPtr)(&res);
-    AvmStreamRead(stream, length, buffer);
-    AvmObjectDestroy(stream);
-
-    return AvmSuccess(void)();
-}
-
-AvmResult(void) AvmFileWriteAll(str path, size_t length, byte buffer[]) {
-    if (path == NULL) {
-        AvmPanic(PathNullMsg);
+    AvmResult(void) result;
+    switch (access) {
+        case FileAccessRead:
+            result = AvmStreamRead(stream, length, buffer);
+            break;
+        case FileAccessWrite:
+        case FileAccessAppend:
+            result = AvmStreamWrite(stream, length, buffer);
+            break;
+        default:
+            AvmPanic("Internal error.");
+            break;
     }
 
-    AvmResult(AvmStreamPtr) res = AvmFileOpen(path, FileAccessWrite);
-
-    if (AvmIsFailure(AvmStreamPtr)(&res)) {
-        return AvmFailure(void)(res._error);
-    }
-
-    AvmStream* stream = AvmUnwrap(AvmStreamPtr)(&res);
-
-    AvmResult(void) result = AvmStreamWrite(stream, length, buffer);
     AvmObjectDestroy(stream);
     return result;
 }
+
+AvmResult(void) AvmFileReadAll(str path, size_t length, byte buffer[]) {
+    return AvmFilePerform(path, length, buffer, FileAccessRead);
+}
+
+AvmResult(void) AvmFileWriteAll(str path, size_t length, byte buffer[]) {
+    return AvmFilePerform(path, length, buffer, FileAccessWrite);
+}
+
+AvmResult(void) AvmFileAppendAll(str path, size_t length, byte buffer[]) {
+    return AvmFilePerform(path, length, buffer, FileAccessAppend);
+}
+
+AvmFileMetadata AvmFileGetMetadata(str path) {}

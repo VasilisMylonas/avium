@@ -27,11 +27,19 @@ AVMAPI AvmResult(void) AvmFileReadAll(str path, size_t length, byte buffer[]);
 AVMAPI AvmResult(void) AvmFileWriteAll(str path, size_t length, byte buffer[]);
 AVMAPI AvmResult(void) AvmFileAppendAll(str path, size_t length, byte buffer[]);
 
+// TODO
 AVMAPI AvmResult(void) AvmFileReadAllText(str path, AvmString* string);
+
+// TODO
 AVMAPI AvmResult(void) AvmFileWriteAllText(str path, AvmString* string);
+
+// TODO
 AVMAPI AvmResult(void) AvmFileAppendAllText(str path, AvmString* string);
 
+// TODO
 typedef void* AvmFileMetadata;
+
+// TODO
 AVMAPI AvmFileMetadata AvmFileGetMetadata(str path);
 
 #endif  // AVIUM_FILE_H

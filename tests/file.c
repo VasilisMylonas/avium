@@ -28,6 +28,16 @@ __test TestReadAll(object state) {
     AssertMemEqual(contents, values, sizeof(contents));
 }
 
+__test TestWriteAll(object state) {
+    (void)state;
+
+    AvmFileWriteAll(filename, sizeof(contents), contents);
+
+    byte values[sizeof(contents)];
+    AvmFileReadAll(filename, sizeof(values), values);
+    AssertMemEqual(contents, values, sizeof(contents));
+}
+
 __test TestExists(object state) {
     (void)state;
 
