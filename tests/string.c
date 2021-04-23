@@ -2,8 +2,7 @@
 #include <avium/string.h>
 
 static const str TestString = "Hello World!";
-static const str TestString4 =
-    "Hello World!Hello World!Hello World!Hello World!";
+static const str TestString4 = "Hello World!Hello World!Hello World!Hello World!";
 static const char TestArray[] = {'H', 'e', 'l', 'l', 'o', '!'};
 
 static object TestInit(int argc, str argv[]) {
@@ -60,8 +59,7 @@ __test TestFromChars(object state) {
     s = AvmStringFromChars(sizeof(TestArray), TestArray);
     AssertNotNull(AvmStringAsPtr(&s));
     AssertEqual(AvmStringGetLength(&s), sizeof(TestArray));
-    AssertEqual(AvmStringGetCapacity(&s),
-                sizeof(TestArray) * AVM_STRING_GROWTH_FACTOR);
+    AssertEqual(AvmStringGetCapacity(&s), sizeof(TestArray) * AVM_STRING_GROWTH_FACTOR);
     AssertMemEqual(AvmStringAsPtr(&s), "Hello!", sizeof(TestArray));
     AvmObjectDestroy(&s);
 
@@ -87,8 +85,7 @@ __test TestRepeat(object state) {
     s = AvmStringRepeat(TestString, 4);
     AssertNotNull(AvmStringAsPtr(&s));
     AssertEqual(AvmStringGetLength(&s), 4 * strlen(TestString));
-    AssertEqual(AvmStringGetCapacity(&s),
-                4 * strlen(TestString) * AVM_STRING_GROWTH_FACTOR);
+    AssertEqual(AvmStringGetCapacity(&s), 4 * strlen(TestString) * AVM_STRING_GROWTH_FACTOR);
     AssertMemEqual(AvmStringAsPtr(&s), TestString4, 4 * strlen(TestString));
     AvmObjectDestroy(&s);
 
@@ -135,32 +132,16 @@ __test TestRepeatChars(object state) {
 __test TestIndexes(object state) {
     (void)state;
 
-    AvmOptional(size_t) index;
     AvmString s = AvmStringFrom("Hello Worldy World!");
 
-    index = AvmStringIndexOf(&s, 'W');
-    AssertEqual(AvmGetValue(size_t)(&index), 6);
-
-    index = AvmStringLastIndexOf(&s, 'W');
-    AssertEqual(AvmGetValue(size_t)(&index), 13);
-
-    index = AvmStringFind(&s, "World");
-    AssertEqual(AvmGetValue(size_t)(&index), 6);
-
-    index = AvmStringFindLast(&s, "World");
-    AssertEqual(AvmGetValue(size_t)(&index), 13);
-
-    index = AvmStringIndexOf(&s, 'x');
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringLastIndexOf(&s, 'x');
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringFind(&s, "xxl");
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringFindLast(&s, "xxl");
-    AssertNot(AvmHasValue(size_t)(&index));
+    AssertEqual(AvmStringIndexOf(&s, 'W'), 6);
+    AssertEqual(AvmStringLastIndexOf(&s, 'W'), 13);
+    AssertEqual(AvmStringFind(&s, "World"), 6);
+    AssertEqual(AvmStringFindLast(&s, "World"), 13);
+    AssertEqual(AvmStringIndexOf(&s, 'x'), AvmInvalidIndex);
+    AssertEqual(AvmStringLastIndexOf(&s, 'x'), AvmInvalidIndex);
+    AssertEqual(AvmStringFind(&s, "xxl"), AvmInvalidIndex);
+    AssertEqual(AvmStringFindLast(&s, "xxl"), AvmInvalidIndex);
 }
 
 __test TestPush(object state) {
@@ -191,30 +172,18 @@ __test TestReplaceLastN(object state) {
 }
 
 __test TestReplace(object state) {
-    AvmOptional(size_t) opt;
-
-    opt = AvmStringReplace(state, 'o', 'a');
-
-    Assert(AvmHasValue(size_t)(&opt));
-    AssertEqual(AvmGetValue(size_t)(&opt), 4);
+    AssertEqual(AvmStringReplace(state, 'o', 'a'), 4);
     AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
 
-    opt = AvmStringReplace(state, 'u', 'a');
-    AssertNot(AvmHasValue(size_t)(&opt));
+    AssertEqual(AvmStringReplace(state, 'u', 'a'), AvmInvalidIndex);
     AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
 }
 
 __test TestReplaceLast(object state) {
-    AvmOptional(size_t) opt;
-
-    opt = AvmStringReplaceLast(state, 'o', 'a');
-
-    Assert(AvmHasValue(size_t)(&opt));
-    AssertEqual(AvmGetValue(size_t)(&opt), 7);
+    AssertEqual(AvmStringReplaceLast(state, 'o', 'a'), 7);
     AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
 
-    opt = AvmStringReplaceLast(state, 'u', 'a');
-    AssertNot(AvmHasValue(size_t)(&opt));
+    AssertEqual(AvmStringReplaceLast(state, 'u', 'a'), AvmInvalidIndex);
     AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
 }
 
@@ -250,8 +219,7 @@ __test TestContainsChar(object state) {
 
 __test TestReverse(object state) {
     AvmStringReverse(state);
-    AssertMemEqual(AvmStringAsPtr(state), "!dlroW olleH",
-                   AvmStringGetLength(state));
+    AssertMemEqual(AvmStringAsPtr(state), "!dlroW olleH", AvmStringGetLength(state));
 }
 
 __test TestClear(object state) {
@@ -323,16 +291,14 @@ __test TestIsEmpty(object state) {
 __test TestToString(object state) {
     AvmString s = AvmObjectToString(state);
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(&s));
-    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(&s),
-                   AvmStringGetLength(state));
+    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(&s), AvmStringGetLength(state));
 }
 
 __test TestClone(object state) {
     AvmString* s = AvmObjectClone(state);
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(s));
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(s));
-    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(s),
-                   AvmStringGetLength(state));
+    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(s), AvmStringGetLength(state));
 }
 
 __test TestUnsafeDestruct(object state) {
