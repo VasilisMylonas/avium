@@ -25,6 +25,7 @@
 #define AVIUM_STRING_H
 
 #include "avium/types.h"
+#include "avium/error.h"
 
 // Type definition in types.h
 
@@ -130,6 +131,29 @@ AVMAPI size_t AvmStringGetCapacity(AvmString* self);
  * @return A pointer to the internal buffer.
  */
 AVMAPI char* AvmStringAsPtr(AvmString* self);
+
+/**
+ * @brief Determines whether an AvmString is empty.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @return true if the string is empty, otherwise false.
+ */
+AVMAPI bool AvmStringIsEmpty(AvmString* self);
+
+/**
+ * @brief Returns the character at the specified index in an AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param index The index of the character to get.
+ * @param error Any error that occurred.
+ *
+ * @return The character at the specified index.
+ */
+AVMAPI char AvmStringCharAt(AvmString* self, size_t index, AvmError** error);
 
 /**
  * @brief Calls a function for each character in an AvmString.
@@ -381,18 +405,6 @@ AVMAPI size_t AvmStringFind(AvmString* self, str substring);
 AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
 
 /**
- * @brief Returns the character at the specified index in an AvmString.
- *
- * @pre Parameter @p self must be not NULL.
- *
- * @param self The AvmString instance.
- * @param index The index of the character to get.
- *
- * @return The character at the specified index, or '\0'.
- */
-AVMAPI char AvmStringCharAt(AvmString* self, size_t index);
-
-/**
  * @brief Reverses an AvmString.
  *
  * @pre Parameter @p self must be not NULL.
@@ -417,6 +429,23 @@ AVMAPI void AvmStringToUpper(AvmString* self);
 AVMAPI void AvmStringToLower(AvmString* self);
 
 /**
+ * @brief Clears the contents of an AvmString by setting its length to 0).
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
+AVMAPI void AvmStringClear(AvmString* self);
+
+/**
+ * @brief Erases the contents of an AvmString, by filling the string with
+ * zeroes.
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
+AVMAPI void AvmStringErase(AvmString* self);
+
+/**
  * @brief Changed the length value of an AvmString.
  *
  * @pre Parameter @p self must be not NULL.
@@ -427,20 +456,6 @@ AVMAPI void AvmStringToLower(AvmString* self);
  * @warning This function can lead to undefined behavior if not used correctly.
  */
 AVMAPI void AvmStringUnsafeSetLength(AvmString* self, size_t length);
-
-/**
- * @brief Creates an AvmString from the provided parts.
- *
- * No validation is done on the parameters. You are responsible for correct
- * usage.
- *
- * @param capacity The capacity of the buffer.
- * @param length The current length of the buffer.
- * @param buffer The heap buffer.
- * @return The created instance.
- */
-AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
-                                        char* buffer);
 
 /**
  * @brief Destructures an AvmString instance.
@@ -458,31 +473,18 @@ AVMAPI void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity,
                                     size_t* length, char** buffer);
 
 /**
- * @brief Determines whether an AvmString is empty.
+ * @brief Creates an AvmString from the provided parts.
  *
- * @pre Parameter @p self must be not null.
+ * No validation is done on the parameters. You are responsible for correct
+ * usage.
  *
- * @param self The AvmString instance.
- * @return true if the string is empty, otherwise false.
+ * @param capacity The capacity of the buffer.
+ * @param length The current length of the buffer.
+ * @param buffer The heap buffer.
+ * @return The created instance.
  */
-AVMAPI bool AvmStringIsEmpty(AvmString* self);
-
-/**
- * @brief Clears the contents of an AvmString by setting its length to 0).
- *
- * @pre Parameter @p self must be not null.
- * @param self The AvmString instance.
- */
-AVMAPI void AvmStringClear(AvmString* self);
-
-/**
- * @brief Erases the contents of an AvmString, by filling the string with
- * zeroes.
- *
- * @pre Parameter @p self must be not null.
- * @param self The AvmString instance.
- */
-AVMAPI void AvmStringErase(AvmString* self);
+AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
+                                        char* buffer);
 
 /**
  * @brief Determines whether an AvmString contains a character.
