@@ -30,6 +30,17 @@ AVM_TYPE(AvmString, {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
         AvmPanic(SelfNullMsg); \
     }
 
+static void AvmStringReallocate(AvmString* self, size_t required) {
+    AVM_SELF_NULL_CHECK();
+
+    if (self->_length + required > self->_capacity) {
+        // TODO: There may be more efficient ways of doing this
+        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
+        self->_capacity += required;
+        self->_buffer = AvmRealloc(self->_buffer, self->_capacity);
+    }
+}
+
 //
 // Constructors.
 //
@@ -63,10 +74,6 @@ AvmString AvmStringFromChars(size_t length, str contents) {
 
     // We allocate more memory upfront to reduce reallocations.
     AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
-
-    // Don't forget to set the length.
-    s._length = length;
-
     AvmStringPushChars(&s, length, contents);
 
     return s;
@@ -200,11 +207,7 @@ void AvmStringMapCompat(AvmString* self, int (*function)(int)) {
 void AvmStringPushChar(AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
-    if (self->_length == self->_capacity) {
-        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
-    }
-
+    AvmStringReallocate(self, 1);
     self->_buffer[self->_length] = character;
     self->_length++;
 }
@@ -220,20 +223,23 @@ void AvmStringPushStr(AvmString* self, str contents) {
 void AvmStringPushChars(AvmString* self, size_t length, str contents) {
     AVM_SELF_NULL_CHECK();
 
+    if (length == 0) {
+        return;
+    }
+
     if (contents == NULL) {
         AvmPanic(ContentsNullMsg);
     }
 
+    AvmStringReallocate(self, length);
+
+    byte* const source = (byte*)contents;
+    byte* const dest = (byte*)&self->_buffer[self->_length];
+
+    AvmMemCopy(source, length, dest, self->_capacity);
+
+    // Don't forget to increase the length.
     self->_length += length;
-
-    if (self->_length > self->_capacity) {
-        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_capacity += length;
-        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
-    }
-
-    AvmMemCopy((byte*)contents, length + 1,
-               (byte*)&self->_buffer[self->_length - length], length + 1);
 }
 
 void AvmStringPushString(AvmString* self, AvmString* other) {
@@ -243,18 +249,12 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
         AvmPanic(OtherNullMsg);
     }
 
-    size_t length = other->_length;
-    self->_length += length;
-
-    if (self->_length > self->_capacity) {
-        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_capacity += length;
-        self->_buffer = AvmRealloc(self->_buffer, self->_capacity + 1);
-    }
-
-    AvmMemCopy((byte*)other->_buffer, length + 1,
-               (byte*)&self->_buffer[self->_length - length], length + 1);
+    AvmStringPushChars(self, other->_length, other->_buffer);
 }
+
+//
+// IndexOf, Find and overloads.
+//
 
 size_t AvmStringIndexOf(AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
@@ -271,6 +271,7 @@ size_t AvmStringIndexOf(AvmString* self, char character) {
 size_t AvmStringLastIndexOf(AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
+    // Same as IndexOf but we loop in reverse.
     for (size_t i = self->_length; i > 0; i--) {
         if (self->_buffer[i - 1] == character) {
             return i - 1;
