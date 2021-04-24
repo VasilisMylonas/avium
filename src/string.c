@@ -24,11 +24,16 @@ AVM_TYPE(AvmString, {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
                      [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
                      [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity});
 
+//
+// Constructors.
+//
+
 AvmString AvmStringNew(size_t capacity) {
     return (AvmString){
         ._type = typeid(AvmString),
         ._length = 0,
         ._capacity = capacity,
+        // If capacity is 0 we should not allocate any memory.
         ._buffer = capacity == 0 ? NULL : AvmAlloc(capacity),
     };
 }
@@ -50,9 +55,14 @@ AvmString AvmStringFromChars(size_t length, str contents) {
         AvmPanic(ContentsNullMsg);
     }
 
+    // We allocate more memory upfront to reduce reallocations.
     AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
+
+    // Don't forget to set the length.
     s._length = length;
-    AvmMemCopy((byte*)contents, length, (byte*)s._buffer, length);
+
+    AvmStringPushChars(&s, length, contents);
+
     return s;
 }
 
@@ -77,11 +87,26 @@ AvmString AvmStringRepeatChars(size_t length, str contents, size_t count) {
         return AvmStringNew(0);
     }
 
+    // Allocate all the memory upfront, + some extra to avoid reallocations.
     AvmString s = AvmStringNew(length * count * AVM_STRING_GROWTH_FACTOR);
+
     for (size_t i = 0; i < count; i++) {
         AvmStringPushChars(&s, length, contents);
     }
+
     return s;
+}
+
+//
+// Accessors.
+//
+
+size_t AvmStringGetLength(AvmString* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_length;
 }
 
 char* AvmStringAsPtr(AvmString* self) {
@@ -92,21 +117,51 @@ char* AvmStringAsPtr(AvmString* self) {
     return self->_buffer;
 }
 
-size_t AvmStringGetLength(AvmString* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-    return self->_length;
-}
-
 size_t AvmStringGetCapacity(AvmString* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
+
     return self->_capacity;
 }
 
-void AvmStringForEach(AvmString* self, char (*function)(char)) {
+//
+// ForEach and overloads.
+//
+
+void AvmStringForEach(AvmString* self, void (*function)(char)) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (self == NULL) {
+        AvmPanic(FunctionNullMsg);
+    }
+
+    for (size_t i = 0; i < self->_length; i++) {
+        function(self->_buffer[i]);
+    }
+}
+
+void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t)) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (self == NULL) {
+        AvmPanic(FunctionNullMsg);
+    }
+
+    for (size_t i = 0; i < self->_length; i++) {
+        function(self->_buffer[i], i);
+    }
+}
+
+//
+// Map and overloads.
+//
+
+void AvmStringMap(AvmString* self, char (*function)(char)) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -120,7 +175,7 @@ void AvmStringForEach(AvmString* self, char (*function)(char)) {
     }
 }
 
-void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t)) {
+void AvmStringMapEx(AvmString* self, char (*function)(char, size_t)) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -134,7 +189,7 @@ void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t)) {
     }
 }
 
-void AvmStringForEachCompat(AvmString* self, int (*function)(int)) {
+void AvmStringMapCompat(AvmString* self, int (*function)(int)) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -147,6 +202,10 @@ void AvmStringForEachCompat(AvmString* self, int (*function)(int)) {
         self->_buffer[i] = (char)function((int)self->_buffer[i]);
     }
 }
+
+//
+// Push and overloads.
+//
 
 void AvmStringPushChar(AvmString* self, char character) {
     if (self == NULL) {
