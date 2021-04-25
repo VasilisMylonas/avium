@@ -244,8 +244,8 @@ __test TestUnsafeSetLength(object state) {
 }
 
 __test TestCharAt(object state) {
-    AssertEqual(AvmStringCharAt(state, 0), 'H');
-    AssertEqual(AvmStringCharAt(state, 100), '\0');
+    AssertEqual(AvmStringCharAt(state, 0, NULL), 'H');
+    AssertEqual(AvmStringCharAt(state, 100, NULL), '\0');
 }
 
 static size_t timesCalled = 0;
