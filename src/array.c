@@ -1,7 +1,6 @@
 #include "avium/array.h"
 
 #include "avium/string.h"
-#include "avium/fmt.h"
 
 #define AVM_ARRAY_TO_STRING_SIGNED(T)                        \
     AvmString AvmArrayToString_##T(AvmArray(T, 1) * array) { \

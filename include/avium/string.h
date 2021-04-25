@@ -87,6 +87,33 @@ AVMAPI AvmString AvmStringNew(size_t capacity);
  */
 AVMAPI AvmString AvmStringFrom(str contents);
 
+/// Represents the base in which a number is represented.
+typedef enum {
+    /// Base 2 (00010000).
+    NumericBaseBinary = 2,
+
+    /// Base 8 (20).
+    NumericBaseOctal = 8,
+
+    /// Base 10 (16).
+    NumericBaseDecimal = 10,
+
+    /// Base 16 (10).
+    NumericBaseHex = 16,
+} AvmNumericBase;
+
+#ifdef AVM_ENABLE_ALIASES
+#    define AvmItoa  AvmStringFromInt
+#    define AvmUtoa  AvmStringFromUint
+#    define AvmFtoa  AvmStringFromFloat
+#    define AvmFtoa2 AvmStringFromFloat2
+#endif
+
+AVMAPI AvmString AvmStringFromInt(_long value);
+AVMAPI AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase);
+AVMAPI AvmString AvmStringFromFloat(double value);
+AVMAPI AvmString AvmStringFromFloat2(float value);
+
 /**
  * @brief Creates an AvmString from a raw string provided with its length.
  *
