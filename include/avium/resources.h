@@ -7,29 +7,28 @@
 #define BACKTRACE_MAX_SYMBOLS 128
 #define READ_LINE_CAPACITY    32
 
-static const str LongMinRepr = "-9223372036854775808";
-static const str SelfNullMsg = "Parameter `self` was `NULL`.";
-static const str ContentsNullMsg = "Parameter `contents` was `NULL`.";
-static const str OtherNullMsg = "Parameter `other` was `NULL`.";
-static const str SubstringNullMsg = "Parameter `substring` was `NULL`.";
-static const str FormatNullMsg = "Parameter `format` was `NULL`.";
-static const str ArgsNullMsg = "Parameter `args` was `NULL`.";
-static const str HandleNullMsg = "Parameter `handle` was `NULL`.";
-static const str SourceNullMsg = "Parameter `source` was `NULL`.";
-static const str DestinationNullMsg = "Parameter `destination` was `NULL`.";
-static const str NumericBaseOutOfRangeMsg =
-    "Parameter `numericBase` was out of range.";
-static const str StringNullMsg = "Parameter `string` was `NULL`.";
-static const str BufferNullMsg = "Parameter `buffer` was `NULL`.";
-static const str IndexOutOfRange = "The specified index was out of range.";
-static const str FunctionNullMsg = "Parameter `function` was `NULL`.";
-static const str InvalidValueCastMsg = "Invalid AvmValue cast.";
-static const str InvalidValueKindMsg = "Invalid AvmValue kind.";
-static const str NoBacktraceMsg = "No backtrace is available.";
-static const str InvalidPtrDerefMsg = "Invalid pointer dereference.";
-static const str IllegalInstructionMsg = "Illegal instruction.";
-static const str ArithmeticExceptionMsg = "Arithmetic exception.";
-static const str InvalidOriginMsg = "Parameter `origin` was invalid.";
-static const str PathNullMsg = "Parameter `path` was `NULL`.";
+AVMAPI const str LongMinRepr;
+AVMAPI const str SelfNullMsg;
+AVMAPI const str ContentsNullMsg;
+AVMAPI const str OtherNullMsg;
+AVMAPI const str SubstringNullMsg;
+AVMAPI const str FormatNullMsg;
+AVMAPI const str ArgsNullMsg;
+AVMAPI const str HandleNullMsg;
+AVMAPI const str SourceNullMsg;
+AVMAPI const str DestinationNullMsg;
+AVMAPI const str NumericBaseOutOfRangeMsg;
+AVMAPI const str StringNullMsg;
+AVMAPI const str BufferNullMsg;
+AVMAPI const str IndexOutOfRange;
+AVMAPI const str FunctionNullMsg;
+AVMAPI const str InvalidValueCastMsg;
+AVMAPI const str InvalidValueKindMsg;
+AVMAPI const str NoBacktraceMsg;
+AVMAPI const str InvalidPtrDerefMsg;
+AVMAPI const str IllegalInstructionMsg;
+AVMAPI const str ArithmeticExceptionMsg;
+AVMAPI const str InvalidOriginMsg;
+AVMAPI const str PathNullMsg;
 
 #endif  // AVIUM_RESOURCES_H
