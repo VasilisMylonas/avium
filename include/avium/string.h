@@ -29,6 +29,38 @@
 
 // Type definition in types.h
 
+#define AvmStringPush(self, x) \
+    _Generic((x),                        \
+        str: AvmStringPushStr,           \
+        char*: AvmStringPushStr,         \
+        char: AvmStringPushChar,         \
+        AvmString*: AvmStringPushString \
+    )(self, x)
+
+#define AvmStringStartsWith(self, x) \
+    _Generic((x),                        \
+        str: AvmStringStartsWithStr,           \
+        char*: AvmStringStartsWithStr,         \
+        char: AvmStringStartsWithChar,         \
+        AvmString*: AvmStringStartsWithString  \
+    )(self, x)
+
+#define AvmStringEndsWith(self, x) \
+    _Generic((x),                        \
+        str: AvmStringEndsWithStr,           \
+        char*: AvmStringEndsWithStr,         \
+        char: AvmStringEndsWithChar,         \
+        AvmString*: AvmStringEndsWithString  \
+    )(self, x)
+
+#define AvmStringContains(self, x) \
+    _Generic((x),                        \
+        str: AvmStringContainsStr,           \
+        char*: AvmStringContainsStr,         \
+        char: AvmStringContainsChar,         \
+        AvmString*: AvmStringContainsString  \
+    )(self, x)
+
 /**
  * @brief Creates an AvmString with a specified capacity.
  *
