@@ -1,17 +1,11 @@
 #include "avium/fmt.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
-#ifdef AVM_HAVE_UCHAR_H
-#    include <uchar.h>
-#endif
-
 #include "avium/string.h"
 #include "avium/resources.h"
 #include "avium/runtime.h"
+
+#include <stdint.h>
+#include <stdio.h>
 
 typedef union {
     float value;
@@ -24,7 +18,7 @@ typedef union {
     };
 } Float;
 
-AvmString AvmItoa(_long value) {
+AvmString AvmStringFromInt(_long value) {
     if (value == INTMAX_MIN) {
         return AvmStringFrom(LongMinRepr);
     }
@@ -56,7 +50,7 @@ AvmString AvmItoa(_long value) {
     return s;
 }
 
-AvmString AvmUtoa(ulong value, AvmNumericBase numericBase) {
+AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase) {
     switch (numericBase) {
         case NumericBaseBinary:
         case NumericBaseOctal:
@@ -89,7 +83,7 @@ AvmString AvmUtoa(ulong value, AvmNumericBase numericBase) {
     return s;
 }
 
-AvmString AvmFtoa2(float value) {
+AvmString AvmStringFromFloat2(float value) {
     Float f = {.value = value};
 
     int8_t exponent = f.exponent - 127;  // Biased exponent.
@@ -114,7 +108,7 @@ AvmString AvmFtoa2(float value) {
     mantissa += ((ulong)f.mantissaHigh << 16);
     mantissa += 0x00800000;
 
-    AvmString intPart = AvmItoa(mantissa >> (23 - exponent));
+    AvmString intPart = AvmStringFromInt(mantissa >> (23 - exponent));
     AvmStringPushString(&s, &intPart);
     AvmObjectDestroy(&intPart);
 
@@ -150,7 +144,7 @@ AvmString AvmFtoa2(float value) {
     return s;
 }
 
-AvmString AvmFtoa(double value) {
+AvmString AvmStringFromFloat(double value) {
     size_t length = snprintf(NULL, 0, "%lf", value);
     AvmString s = AvmStringNew(length);
     char* buffer = AvmStringAsPtr(&s);
@@ -159,140 +153,53 @@ AvmString AvmFtoa(double value) {
     return s;
 }
 
-void AvmVFprintf(void* handle, str format, va_list args) {
-    if (handle == NULL) {
-        AvmPanic(HandleNullMsg);
-    }
-
-    AvmString s = AvmStringFormatV(format, args);
-    fwrite(AvmStringAsPtr(&s), sizeof(char), AvmStringGetLength(&s), handle);
-    fflush(handle);
-    AvmObjectDestroy(&s);
-}
-
-void AvmVPrintf(str format, va_list args) { AvmVFprintf(stdout, format, args); }
-
-void AvmVErrorf(str format, va_list args) { AvmVFprintf(stderr, format, args); }
-
-void AvmScanf(str format, ...);
-void AvmSscanf(AvmString* string, str format, ...);
-void AvmFprintf(void* handle, str format, ...);
-void AvmPrintf(str format, ...);
-void AvmErrorf(str format, ...);
-
-static void SkipWord(char* buffer, size_t* index) {
-    while (buffer[*index] != ' ' && buffer[*index] != '\0') {
-        (*index)++;
-    }
-}
-
-#define UINT_CASE(base)       \
-    char* start = &buffer[j]; \
-    SkipWord(buffer, &j);     \
-    char* end = &buffer[j];   \
-    *((ulong*)va_arg(args, ulong*)) = strtoull(start, &end, base)
-
-void AvmVFscanf(void* handle, str format, va_list args) {
-    if (handle == NULL) {
-        AvmPanic(HandleNullMsg);
-    }
-
-    if (format == NULL) {
-        AvmPanic(FormatNullMsg);
-    }
-
-    // TODO
-    AvmString s = AvmStringNew(128);
-    char* dummy = fgets(AvmStringAsPtr(&s), AvmStringGetLength(&s), handle);
-    (void)dummy;
-    AvmVSscanf(&s, format, args);
-    AvmObjectDestroy(&s);
-}
+#define AVM_FORWARD(arg, call) \
+    va_list args;              \
+    va_start(args, arg);       \
+    call(arg, args);           \
+    va_end(args);
 
 void AvmVScanf(str format, va_list args) {
     if (format == NULL) {
         AvmPanic(FormatNullMsg);
     }
 
-    AvmVFscanf(stdin, format, args);
+    vscanf(format, args);
 }
 
-void AvmVSscanf(AvmString* string, str format, va_list args) {
-    if (string == NULL) {
-        AvmPanic(StringNullMsg);
-    }
-
+void AvmVPrintf(str format, va_list args) {
     if (format == NULL) {
         AvmPanic(FormatNullMsg);
     }
 
-    char* buffer = AvmStringAsPtr(string);
+    vfprintf(stdout, format, args);
+}
 
-    for (size_t i = 0, j = 0; format[i] != '\0'; i++) {
-        if (format[i] != '%') {
-            continue;
-        }
-
-        i++;
-
-        switch (format[i]) {
-            case AVM_FMT_CHAR: {
-                char* c = va_arg(args, char*);
-                *c = buffer[j];
-                j++;
-                break;
-            }
-            case AVM_FMT_BOOL: {
-                *((bool*)va_arg(args, bool*)) =
-                    strncmp(&buffer[j], AVM_FMT_TRUE, 4) == 0;
-                SkipWord(buffer, &j);
-                break;
-            }
-            case AVM_FMT_INT_DECIMAL: {
-                char* start = &buffer[j];
-                SkipWord(buffer, &j);
-                char* end = &buffer[j];
-                *((_long*)va_arg(args, _long*)) = strtoll(start, &end, 10);
-                break;
-            }
-            case AVM_FMT_INT_BINARY: {
-                UINT_CASE(2);
-                break;
-            }
-            case AVM_FMT_INT_OCTAL: {
-                UINT_CASE(8);
-                break;
-            }
-            case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED: {
-                UINT_CASE(10);
-                break;
-            }
-            case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX: {
-                UINT_CASE(16);
-                break;
-            }
-            case AVM_FMT_STRING: {
-                char* s = va_arg(args, char*);
-                size_t start = j;
-                SkipWord(buffer, &j);
-
-                size_t capacity = va_arg(args, size_t);
-                size_t length = j - start;
-
-                AvmMemCopy((byte*)&buffer[start], length, (byte*)s, capacity);
-
-                if (length < capacity) {
-                    s[length] = '\0';
-                } else {
-                    s[capacity - 1] = '\0';
-                }
-            }
-            default:
-                break;
-        }
-
-        j++;
+void AvmVErrorf(str format, va_list args) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
     }
+
+    vfprintf(stderr, format, args);
+}
+
+void AvmScanf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVScanf);
+}
+
+void AvmPrintf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVPrintf);
+}
+
+void AvmErrorf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVErrorf);
 }

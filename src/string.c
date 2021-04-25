@@ -2,9 +2,16 @@
 
 #include "avium/resources.h"
 #include "avium/runtime.h"
+#include "avium/fmt.h"
 
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#ifdef AVM_HAVE_UCHAR_H
+#    include <uchar.h>
+#endif
 
 static AvmString AvmStringToString(AvmString* self) {
     return AvmStringFrom(self->_buffer);
@@ -574,13 +581,6 @@ bool AvmStringEndsWithString(AvmString* self, AvmString* contents) {
     return AvmStringEndsWithChars(self, contents->_length, contents->_buffer);
 }
 
-#include "avium/fmt.h"
-#include <stdio.h>
-
-#ifdef AVM_HAVE_UCHAR_H
-#    include <uchar.h>
-#endif
-
 AvmString AvmStringFormat(str format, ...) {
     va_list args;
     va_start(args, format);
@@ -612,7 +612,7 @@ AvmString AvmStringFormatV(str format, va_list args) {
 #ifdef AVM_HAVE_UCHAR_H
             case AVM_FMT_UNICODE: {
                 AvmString temp =
-                    AvmUtoa(va_arg(args, char32_t), NumericBaseHex);
+                    AvmStringFromUint(va_arg(args, char32_t), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
@@ -620,13 +620,14 @@ AvmString AvmStringFormatV(str format, va_list args) {
             }
 #endif
             case AVM_FMT_INT_DECIMAL: {
-                AvmString temp = AvmItoa(va_arg(args, _long));
+                AvmString temp = AvmStringFromInt(va_arg(args, _long));
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
                 break;
             }
             case AVM_FMT_INT_OCTAL: {
-                AvmString temp = AvmUtoa(va_arg(args, ulong), NumericBaseOctal);
+                AvmString temp =
+                    AvmStringFromUint(va_arg(args, ulong), NumericBaseOctal);
                 AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
@@ -634,7 +635,8 @@ AvmString AvmStringFormatV(str format, va_list args) {
             }
             case AVM_FMT_POINTER:
             case AVM_FMT_INT_HEX: {
-                AvmString temp = AvmUtoa(va_arg(args, ulong), NumericBaseHex);
+                AvmString temp =
+                    AvmStringFromUint(va_arg(args, ulong), NumericBaseHex);
                 AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
@@ -642,14 +644,14 @@ AvmString AvmStringFormatV(str format, va_list args) {
             }
             case AVM_FMT_INT_BINARY: {
                 AvmString temp =
-                    AvmUtoa(va_arg(args, ulong), NumericBaseBinary);
+                    AvmStringFromUint(va_arg(args, ulong), NumericBaseBinary);
                 AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
                 break;
             }
             case AVM_FMT_FLOAT: {
-                AvmString temp = AvmFtoa(va_arg(args, double));
+                AvmString temp = AvmStringFromFloat(va_arg(args, double));
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
                 break;
@@ -671,7 +673,7 @@ AvmString AvmStringFormatV(str format, va_list args) {
             case AVM_FMT_INT_SIZE:
             case AVM_FMT_INT_UNSIGNED: {
                 AvmString temp =
-                    AvmUtoa(va_arg(args, ulong), NumericBaseDecimal);
+                    AvmStringFromUint(va_arg(args, ulong), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
                 break;
@@ -694,7 +696,7 @@ AvmString AvmStringFormatV(str format, va_list args) {
             case AVM_FMT_SIZE: {
                 const AvmType* type = AvmObjectGetType(va_arg(args, object));
                 AvmString temp =
-                    AvmUtoa(AvmTypeGetSize(type), NumericBaseDecimal);
+                    AvmStringFromUint(AvmTypeGetSize(type), NumericBaseDecimal);
                 AvmStringPushString(&s, &temp);
                 AvmObjectDestroy(&temp);
                 break;
@@ -712,4 +714,111 @@ AvmString AvmStringFormatV(str format, va_list args) {
     }
 
     return s;
+}
+
+static void SkipWord(char* buffer, size_t* index) {
+    while (buffer[*index] != ' ' && buffer[*index] != '\0') {
+        (*index)++;
+    }
+}
+
+#define UINT_CASE(base)       \
+    char* start = &buffer[j]; \
+    SkipWord(buffer, &j);     \
+    char* end = &buffer[j];   \
+    *((ulong*)va_arg(args, ulong*)) = strtoull(start, &end, base)
+
+void AvmStringParse(AvmString* self, str format, ...) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+
+    va_list args;
+    va_start(args, format);
+    AvmStringParseV(self, format, args);
+    va_end(args);
+}
+
+void AvmStringParseV(AvmString* self, str format, va_list args) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+
+    char* buffer = AvmStringAsPtr(self);
+
+    for (size_t i = 0, j = 0; format[i] != '\0'; i++) {
+        if (format[i] != '%') {
+            continue;
+        }
+
+        i++;
+
+        switch (format[i]) {
+            case AVM_FMT_CHAR: {
+                char* c = va_arg(args, char*);
+                *c = buffer[j];
+                j++;
+                break;
+            }
+            case AVM_FMT_BOOL: {
+                *((bool*)va_arg(args, bool*)) =
+                    strncmp(&buffer[j], AVM_FMT_TRUE, 4) == 0;
+                SkipWord(buffer, &j);
+                break;
+            }
+            case AVM_FMT_INT_DECIMAL: {
+                char* start = &buffer[j];
+                SkipWord(buffer, &j);
+                char* end = &buffer[j];
+                *((_long*)va_arg(args, _long*)) = strtoll(start, &end, 10);
+                break;
+            }
+            case AVM_FMT_INT_BINARY: {
+                UINT_CASE(2);
+                break;
+            }
+            case AVM_FMT_INT_OCTAL: {
+                UINT_CASE(8);
+                break;
+            }
+            case AVM_FMT_INT_SIZE:
+            case AVM_FMT_INT_UNSIGNED: {
+                UINT_CASE(10);
+                break;
+            }
+            case AVM_FMT_POINTER:
+            case AVM_FMT_INT_HEX: {
+                UINT_CASE(16);
+                break;
+            }
+            case AVM_FMT_STRING: {
+                char* s = va_arg(args, char*);
+                size_t start = j;
+                SkipWord(buffer, &j);
+
+                size_t capacity = va_arg(args, size_t);
+                size_t length = j - start;
+
+                AvmMemCopy((byte*)&buffer[start], length, (byte*)s, capacity);
+
+                if (length < capacity) {
+                    s[length] = '\0';
+                } else {
+                    s[capacity - 1] = '\0';
+                }
+            }
+            default:
+                break;
+        }
+
+        j++;
+    }
 }

@@ -8,7 +8,7 @@
         AvmString string = AvmStringNew(array->length);      \
         AvmStringPushStr(&string, "[ ");                     \
         for (size_t i = 0; i < array->length; i++) {         \
-            AvmString temp = AvmItoa(array->at[i]);          \
+            AvmString temp = AvmStringFromInt(array->at[i]); \
             AvmStringPushString(&string, &temp);             \
             AvmStringPushStr(&string, ", ");                 \
             AvmObjectDestroy(&temp);                         \
@@ -17,18 +17,19 @@
         return string;                                       \
     }
 
-#define AVM_ARRAY_TO_STRING_UNSIGNED(T)                                 \
-    AvmString AvmArrayToString_##T(AvmArray(T, 1) * array) {            \
-        AvmString string = AvmStringNew(array->length);                 \
-        AvmStringPushStr(&string, "[ ");                                \
-        for (size_t i = 0; i < array->length; i++) {                    \
-            AvmString temp = AvmUtoa(array->at[i], NumericBaseDecimal); \
-            AvmStringPushString(&string, &temp);                        \
-            AvmStringPushStr(&string, ", ");                            \
-            AvmObjectDestroy(&temp);                                    \
-        }                                                               \
-        AvmStringPushChar(&string, ']');                                \
-        return string;                                                  \
+#define AVM_ARRAY_TO_STRING_UNSIGNED(T)                              \
+    AvmString AvmArrayToString_##T(AvmArray(T, 1) * array) {         \
+        AvmString string = AvmStringNew(array->length);              \
+        AvmStringPushStr(&string, "[ ");                             \
+        for (size_t i = 0; i < array->length; i++) {                 \
+            AvmString temp =                                         \
+                AvmStringFromUint(array->at[i], NumericBaseDecimal); \
+            AvmStringPushString(&string, &temp);                     \
+            AvmStringPushStr(&string, ", ");                         \
+            AvmObjectDestroy(&temp);                                 \
+        }                                                            \
+        AvmStringPushChar(&string, ']');                             \
+        return string;                                               \
     }
 
 AVM_ARRAY_TO_STRING_SIGNED(short)
