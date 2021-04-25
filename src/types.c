@@ -4,7 +4,7 @@
 
 #include "avium/runtime.h"
 #include "avium/resources.h"
-#include "avium/fmt.h"
+#include "avium/string.h"
 
 AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
@@ -74,8 +74,8 @@ AvmString AvmObjectToString(object self) {
         AvmTypeGetFunction(AvmObjectGetType(self), FnEntryToString);
 
     if (fn == NULL) {
-        return AvmSprintf("%s [%x]", AvmTypeGetName(AvmObjectGetType(self)),
-                          self);
+        return AvmStringFormat("%s [%x]",
+                               AvmTypeGetName(AvmObjectGetType(self)), self);
     }
 
     return ((AvmString(*)(object))fn)(self);

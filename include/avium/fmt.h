@@ -162,37 +162,6 @@ AVMAPI inline void AvmFscanf(void* handle, str format, ...) {
 }
 
 /**
- * @brief Writes formatted output into a string using a va_list.
- *
- * @pre Parameter @p format must be not null.
- * @pre Parameter @p args must be not null.
- *
- * @param format The format string.
- * @param args The va_list containing values to insert into the format string.
- *
- * @return The formatted string.
- */
-AVMAPI AvmString AvmVSprintf(str format, va_list args);
-
-/**
- * @brief Writes formatted output into a string.
- *
- * @pre Parameter @p format must be not null.
- *
- * @param format The format string.
- * @param ... The values to insert into the format string.
- *
- * @return The formatted string.
- */
-AVMAPI inline AvmString AvmSprintf(str format, ...) {
-    va_list args;
-    va_start(args, format);
-    AvmString s = AvmVSprintf(format, args);
-    va_end(args);
-    return s;
-}
-
-/**
  * @brief Writes formatted output to a stream using a va_list.
  *
  * @pre Parameter @p handle must be not null.

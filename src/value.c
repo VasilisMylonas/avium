@@ -1,6 +1,6 @@
 #include "avium/value.h"
 
-#include "avium/fmt.h"        // For AvmSprintf
+#include "avium/string.h"     // For AvmStringFormat
 #include "avium/resources.h"  // For panic messages.
 #include "avium/runtime.h"    // For typeid, AVM_TYPE, AvmPanic, AvmAlloc
 
@@ -17,8 +17,8 @@
                                        \
     return self->member
 
-#define VALUE_FROM(kind, member)                                         \
-    return (AvmValue) {                                                  \
+#define VALUE_FROM(kind, member)                                   \
+    return (AvmValue) {                                            \
         ._type = typeid(AvmValue), .member = value, ._kind = kind, \
     }
 
@@ -31,17 +31,18 @@ static object AvmValueClone(AvmValue* value) {
 static AvmString AvmValueToString(AvmValue* value) {
     switch (value->_kind) {
         case ValueKindBool:
-            return AvmSprintf("%t", value->_asBool);
+            return AvmStringFormat("%t", value->_asBool);
         case ValueKindChar:
-            return AvmSprintf("%c", value->_asChar);
+            return AvmStringFormat("%c", value->_asChar);
         case ValueKindFloat:
-            return AvmSprintf("%f", value->_asFloat);
+            return AvmStringFormat("%f", value->_asFloat);
         case ValueKindInt:
-            return AvmSprintf("%i", value->_asInt);
+            return AvmStringFormat("%i", value->_asInt);
         case ValueKindUInt:
-            return AvmSprintf("%u", value->_asUInt);
+            return AvmStringFormat("%u", value->_asUInt);
         case ValueKindStr:
-            return AvmSprintf("%s", value->_asStr == NULL ? "" : value->_asStr);
+            return AvmStringFormat("%s",
+                                   value->_asStr == NULL ? "" : value->_asStr);
         default:
             AvmPanic(InvalidValueKindMsg);
     }

@@ -652,4 +652,29 @@ AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
 AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
 #endif  // DOXYGEN
 
+/**
+ * @brief Writes formatted output into a string.
+ *
+ * @pre Parameter @p format must be not null.
+ *
+ * @param format The format string.
+ * @param ... The values to insert into the format string.
+ *
+ * @return The formatted string.
+ */
+AVMAPI AvmString AvmStringFormat(str format, ...);
+
+/**
+ * @brief Writes formatted output into a string using a va_list.
+ *
+ * @pre Parameter @p format must be not null.
+ * @pre Parameter @p args must be not null.
+ *
+ * @param format The format string.
+ * @param args The va_list containing values to insert into the format string.
+ *
+ * @return The formatted string.
+ */
+AVMAPI AvmString AvmStringFormatV(str format, va_list args);
+
 #endif  // AVIUM_STRING_H
