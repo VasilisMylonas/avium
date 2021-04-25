@@ -244,34 +244,34 @@ __test TestUnsafeSetLength(object state) {
 }
 
 __test TestCharAt(object state) {
-    AssertEqual(AvmStringCharAt(state, 0), 'H');
-    AssertEqual(AvmStringCharAt(state, 100), '\0');
+    AssertEqual(AvmStringCharAt(state, 0, NULL), 'H');
+    AssertEqual(AvmStringCharAt(state, 100, NULL), '\0');
 }
 
 static size_t timesCalled = 0;
 static size_t finalIndex = 0;
 
-static char ForEachStub(char c) {
+static char MapStub(char c) {
     timesCalled++;
     return c;
 }
 
-static char ForEachExStub(char c, size_t index) {
+static char MapExStub(char c, size_t index) {
     timesCalled++;
     finalIndex = index;
     return c;
 }
 
-__test TestForEach(object state) {
+__test TestMap(object state) {
     size_t length = AvmStringGetLength(state);
-    AvmStringForEach(state, ForEachStub);
+    AvmStringMap(state, MapStub);
     AssertEqual(length, timesCalled);
     timesCalled = 0;
 }
 
-__test TestForEachEx(object state) {
+__test TestMapEx(object state) {
     size_t length = AvmStringGetLength(state);
-    AvmStringForEachEx(state, ForEachExStub);
+    AvmStringMapEx(state, MapExStub);
     AssertEqual(length, timesCalled);
     AssertEqual(length - 1, finalIndex);
     timesCalled = 0;

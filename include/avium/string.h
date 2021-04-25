@@ -2,8 +2,8 @@
  * @file avium/string.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Dynamic string implementation.
- * @version 0.2
- * @date 2021-04-5
+ * @version 0.2.5
+ * @date 2021-04-24
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -25,8 +25,41 @@
 #define AVIUM_STRING_H
 
 #include "avium/types.h"
+#include "avium/error.h"
 
 // Type definition in types.h
+
+#define AvmStringPush(self, x) \
+    _Generic((x),                        \
+        str: AvmStringPushStr,           \
+        char*: AvmStringPushStr,         \
+        char: AvmStringPushChar,         \
+        AvmString*: AvmStringPushString \
+    )(self, x)
+
+#define AvmStringStartsWith(self, x) \
+    _Generic((x),                        \
+        str: AvmStringStartsWithStr,           \
+        char*: AvmStringStartsWithStr,         \
+        char: AvmStringStartsWithChar,         \
+        AvmString*: AvmStringStartsWithString  \
+    )(self, x)
+
+#define AvmStringEndsWith(self, x) \
+    _Generic((x),                        \
+        str: AvmStringEndsWithStr,           \
+        char*: AvmStringEndsWithStr,         \
+        char: AvmStringEndsWithChar,         \
+        AvmString*: AvmStringEndsWithString  \
+    )(self, x)
+
+#define AvmStringContains(self, x) \
+    _Generic((x),                        \
+        str: AvmStringContainsStr,           \
+        char*: AvmStringContainsStr,         \
+        char: AvmStringContainsChar,         \
+        AvmString*: AvmStringContainsString  \
+    )(self, x)
 
 /**
  * @brief Creates an AvmString with a specified capacity.
@@ -75,7 +108,7 @@ AVMAPI AvmString AvmStringFromChars(size_t length, str contents);
  * @pre Parameter @p contents must be not NULL.
  *
  * @param contents The raw string to repeat.
- * @param count The times to repeat.
+ * @param count How many times to repeat.
  * @return The created instance.
  */
 AVMAPI AvmString AvmStringRepeat(str contents, size_t count);
@@ -91,7 +124,7 @@ AVMAPI AvmString AvmStringRepeat(str contents, size_t count);
  *
  * @param length The length of the array.
  * @param contents The character array to repeat.
- * @param count The times to repeat.
+ * @param count How many times to repeat.
  * @return The created instance.
  */
 AVMAPI AvmString AvmStringRepeatChars(size_t length, str contents,
@@ -118,6 +151,43 @@ AVMAPI size_t AvmStringGetLength(AvmString* self);
 AVMAPI size_t AvmStringGetCapacity(AvmString* self);
 
 /**
+ * @brief Gives access to the internal buffer of an AvmString.
+ *
+ * The returned pointer may be invalidated if the AvmString instance decides
+ * to reallocate. For safe usage, do not modify the AvmString while holding
+ * this pointer.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @return A pointer to the internal buffer.
+ */
+AVMAPI char* AvmStringAsPtr(AvmString* self);
+
+/**
+ * @brief Determines whether an AvmString is empty.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmString instance.
+ * @return true if the string is empty, otherwise false.
+ */
+AVMAPI bool AvmStringIsEmpty(AvmString* self);
+
+/**
+ * @brief Returns the character at the specified index in an AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param index The index of the character to get.
+ * @param error Any error that occurred.
+ *
+ * @return The character at the specified index.
+ */
+AVMAPI char AvmStringCharAt(AvmString* self, size_t index, AvmError** error);
+
+/**
  * @brief Calls a function for each character in an AvmString.
  *
  * @pre Parameter @p self must be not NULL.
@@ -126,7 +196,7 @@ AVMAPI size_t AvmStringGetCapacity(AvmString* self);
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringForEach(AvmString* self, char (*function)(char));
+AVMAPI void AvmStringForEach(AvmString* self, void (*function)(char));
 
 /**
  * @brief Calls a function for each character in an AvmString providing it
@@ -138,10 +208,33 @@ AVMAPI void AvmStringForEach(AvmString* self, char (*function)(char));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t));
+AVMAPI void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t));
 
 /**
- * @brief Calls a function for each character in an AvmString. Used for
+ * @brief Applies a function for each character in an AvmString.
+ *
+ * @pre Parameter @p self must be not NULL.
+ * @pre Parameter @p function must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param function The function to call.
+ */
+AVMAPI void AvmStringMap(AvmString* self, char (*function)(char));
+
+/**
+ * @brief Applies a function for each character in an AvmString providing it
+ * additionally with the character index.
+ *
+ * @pre Parameter @p self must be not NULL.
+ * @pre Parameter @p function must be not NULL.
+ *
+ * @param self The AvmString instance.
+ * @param function The function to call.
+ */
+AVMAPI void AvmStringMapEx(AvmString* self, char (*function)(char, size_t));
+
+/**
+ * @brief Applies a function for each character in an AvmString. Used for
  * compatibility with functions taking an int instead of a char.
  *
  * @pre Parameter @p self must be not NULL.
@@ -150,7 +243,7 @@ AVMAPI void AvmStringForEachEx(AvmString* self, char (*function)(char, size_t));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringForEachCompat(AvmString* self, int (*function)(int));
+AVMAPI void AvmStringMapCompat(AvmString* self, int (*function)(int));
 
 /**
  * @brief Pushes a character to the end of an AvmString.
@@ -344,18 +437,6 @@ AVMAPI size_t AvmStringFind(AvmString* self, str substring);
 AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
 
 /**
- * @brief Returns the character at the specified index in an AvmString.
- *
- * @pre Parameter @p self must be not NULL.
- *
- * @param self The AvmString instance.
- * @param index The index of the character to get.
- *
- * @return The character at the specified index, or '\0'.
- */
-AVMAPI char AvmStringCharAt(AvmString* self, size_t index);
-
-/**
  * @brief Reverses an AvmString.
  *
  * @pre Parameter @p self must be not NULL.
@@ -380,6 +461,23 @@ AVMAPI void AvmStringToUpper(AvmString* self);
 AVMAPI void AvmStringToLower(AvmString* self);
 
 /**
+ * @brief Clears the contents of an AvmString by setting its length to 0).
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
+AVMAPI void AvmStringClear(AvmString* self);
+
+/**
+ * @brief Erases the contents of an AvmString, by filling the string with
+ * zeroes.
+ *
+ * @pre Parameter @p self must be not null.
+ * @param self The AvmString instance.
+ */
+AVMAPI void AvmStringErase(AvmString* self);
+
+/**
  * @brief Changed the length value of an AvmString.
  *
  * @pre Parameter @p self must be not NULL.
@@ -390,34 +488,6 @@ AVMAPI void AvmStringToLower(AvmString* self);
  * @warning This function can lead to undefined behavior if not used correctly.
  */
 AVMAPI void AvmStringUnsafeSetLength(AvmString* self, size_t length);
-
-/**
- * @brief Gives access to the internal buffer of an AvmString.
- *
- * The returned pointer may be invalidated if the AvmString instance decides
- * to reallocate. For safe usage, do not modify the AvmString while holding
- * this pointer.
- *
- * @pre Parameter @p self must be not NULL.
- *
- * @param self The AvmString instance.
- * @return A pointer to the internal buffer.
- */
-AVMAPI char* AvmStringAsPtr(AvmString* self);
-
-/**
- * @brief Creates an AvmString from the provided parts.
- *
- * No validation is done on the parameters. You are responsible for correct
- * usage.
- *
- * @param capacity The capacity of the buffer.
- * @param length The current length of the buffer.
- * @param buffer The heap buffer.
- * @return The created instance.
- */
-AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
-                                        char* buffer);
 
 /**
  * @brief Destructures an AvmString instance.
@@ -435,31 +505,18 @@ AVMAPI void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity,
                                     size_t* length, char** buffer);
 
 /**
- * @brief Determines whether an AvmString is empty.
+ * @brief Creates an AvmString from the provided parts.
  *
- * @pre Parameter @p self must be not null.
+ * No validation is done on the parameters. You are responsible for correct
+ * usage.
  *
- * @param self The AvmString instance.
- * @return true if the string is empty, otherwise false.
+ * @param capacity The capacity of the buffer.
+ * @param length The current length of the buffer.
+ * @param buffer The heap buffer.
+ * @return The created instance.
  */
-AVMAPI bool AvmStringIsEmpty(AvmString* self);
-
-/**
- * @brief Clears the contents of an AvmString by setting its length to 0).
- *
- * @pre Parameter @p self must be not null.
- * @param self The AvmString instance.
- */
-AVMAPI void AvmStringClear(AvmString* self);
-
-/**
- * @brief Erases the contents of an AvmString, by filling the string with
- * zeroes.
- *
- * @pre Parameter @p self must be not null.
- * @param self The AvmString instance.
- */
-AVMAPI void AvmStringErase(AvmString* self);
+AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
+                                        char* buffer);
 
 /**
  * @brief Determines whether an AvmString contains a character.
