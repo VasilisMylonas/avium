@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(avium VERSION 0.1.0)
+project(avium VERSION 0.1.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
@@ -52,9 +52,12 @@ if(MSVC)
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
 else()
-    add_compile_options(-fprofile-arcs -ftest-coverage)
-    add_link_options(-fprofile-arcs -ftest-coverage)
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
+    if(CMAKE_BUILD_TYPE STREQUAL Release)
+        message("Building Release build.")
+        add_compile_options(-fprofile-arcs -ftest-coverage)
+        add_link_options(-fprofile-arcs -ftest-coverage)
+        add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
+    endif()
 endif()
 
 if(USE_GC)
