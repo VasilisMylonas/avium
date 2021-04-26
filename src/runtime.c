@@ -1,7 +1,7 @@
 #include <signal.h>  // For signal and related constants
 #include <stdlib.h>  // For exit
 #include <string.h>  // For memcpy, strchr, strrchr
-#include <stdio.h>
+#include <stdio.h>   // For vfprintf, vscanf, stderr, stdout
 
 #include "avium/runtime.h"
 #include "avium/resources.h"
@@ -12,7 +12,6 @@
 #    define AVM_REALLOC GC_realloc
 #    define AVM_DEALLOC GC_free
 #else
-#    include <stdlib.h>
 #    define AVM_ALLOC   malloc
 #    define AVM_REALLOC realloc
 #    define AVM_DEALLOC free
