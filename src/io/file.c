@@ -1,5 +1,5 @@
 #include "avium/file.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #include <stdio.h>
 #include <string.h>

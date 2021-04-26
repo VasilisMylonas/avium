@@ -4,7 +4,7 @@
 #include <stdio.h>   // For vfprintf, vscanf, stderr, stdout
 
 #include "avium/runtime.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC
 #    include "gc.h"

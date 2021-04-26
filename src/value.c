@@ -1,7 +1,7 @@
 #include "avium/value.h"
 
 #include "avium/string.h"     // For AvmStringFormat
-#include "avium/resources.h"  // For panic messages.
+#include "avium/private/resources.h"  // For panic messages.
 #include "avium/runtime.h"    // For typeid, AVM_TYPE, AvmPanic, AvmAlloc
 
 #include <string.h>  // For strcmp

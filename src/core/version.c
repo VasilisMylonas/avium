@@ -1,8 +1,8 @@
 #include "avium/version.h"
 
-#include "avium/runtime.h"    // For typeid
-#include "avium/string.h"     // For AvmStringFormat
-#include "avium/resources.h"  // For VersionFormat
+#include "avium/runtime.h"            // For typeid
+#include "avium/string.h"             // For AvmStringFormat
+#include "avium/private/resources.h"  // For VersionFormat
 
 static AvmString AvmVersionToString(AvmVersion* self) {
     return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);

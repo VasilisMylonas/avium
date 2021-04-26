@@ -1,4 +1,4 @@
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #define NULL_PARAM_STR(name)  "Parameter `" name "` was `NULL`."
 #define RANGE_PARAM_STR(name) "Parameter `" name "` was out of range."

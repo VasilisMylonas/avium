@@ -3,7 +3,7 @@
 #include <string.h>  // For memcmp
 
 #include "avium/runtime.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 #include "avium/string.h"
 
 AvmType* AvmObjectGetType(object self) {

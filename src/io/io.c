@@ -1,6 +1,6 @@
 #include "avium/io.h"
 
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 #include "avium/string.h"
 
 typedef AvmError* (*ReadWriteFunc)(AvmStream*, size_t, byte[]);
