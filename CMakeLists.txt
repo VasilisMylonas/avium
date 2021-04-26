@@ -25,6 +25,11 @@ include(FetchContent)
 
 enable_testing()
 
+option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
+option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
+option(USE_IO "Use the IO library?" ON)
+option(BUILD_TESTS "Generate tests?" ON)
+
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     add_compile_options(/W4)
@@ -52,13 +57,11 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
-option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 if(USE_GC)
     FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
     FetchContent_MakeAvailable(bdwgc)
 endif()
 
-option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
 if(BUILD_DYNAMIC)
     set(LIB_TYPE SHARED)
 else()
@@ -71,8 +74,7 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 add_subdirectory(include)
 add_subdirectory(src)
 
-option(GEN_TESTS "Generate tests?" ON)
-if(GEN_TESTS)
+if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 

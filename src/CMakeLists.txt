@@ -1,7 +1,10 @@
 include(GenerateExportHeader)
 
 add_subdirectory(core)
-add_subdirectory(io)
+
+if(USE_IO)
+    add_subdirectory(io)
+endif()
 
 add_library(avm ${LIB_TYPE} options.c value.c)
 target_link_libraries(avm avm.io avm.core)
