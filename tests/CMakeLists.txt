@@ -17,7 +17,7 @@ function(run_test TEST)
         target_link_libraries(${TEST} ${GCOV_PROGRAM})
     endif()
 
-    target_link_libraries(${TEST} ${STATIC_NAME})
+    target_link_libraries(${TEST} avm)
     add_test(NAME ${TEST} COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST})
 endfunction()
 

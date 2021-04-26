@@ -1,9 +1,10 @@
 include(GenerateExportHeader)
 
-file(GLOB SOURCE_FILES *.c)
+add_subdirectory(core)
+add_subdirectory(io)
 
-add_library(${SHARED_NAME} SHARED ${SOURCE_FILES})
-add_library(${STATIC_NAME} STATIC ${SOURCE_FILES})
+add_library(avm ${LIB_TYPE} options.c value.c)
+target_link_libraries(avm avm.io avm.core)
 
 generate_export_header(avm
     BASE_NAME AVM
@@ -13,9 +14,7 @@ generate_export_header(avm
 )
 
 if(USE_GC)
-    target_link_libraries(${STATIC_NAME} gcmt-lib)
-    target_link_libraries(${SHARED_NAME} gcmt-lib)
+    target_link_libraries(avm gcmt-lib)
 endif()
 
-install(TARGETS ${STATIC_NAME} ${SHARED_NAME}
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
+install(TARGETS avm DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
