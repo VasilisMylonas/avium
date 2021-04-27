@@ -102,6 +102,12 @@ typedef enum {
     NumericBaseHex = 16,
 } AvmNumericBase;
 
+typedef enum {
+    FloatReprSimple = 0,
+    FloatReprScientific,
+    FloatReprAuto,
+} AvmFloatRepr;
+
 #ifdef AVM_ENABLE_ALIASES
 #    define AvmItoa  AvmStringFromInt
 #    define AvmUtoa  AvmStringFromUint
@@ -113,6 +119,12 @@ AVMAPI AvmString AvmStringFromInt(_long value);
 AVMAPI AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase);
 AVMAPI AvmString AvmStringFromFloat(double value);
 AVMAPI AvmString AvmStringFromFloat2(float value);
+
+AVMAPI void AvmStringPushFloat(AvmString* self, double value,
+                               AvmFloatRepr repr);
+AVMAPI void AvmStringPushInt(AvmString* self, _long value);
+AVMAPI void AvmStringPushUint(AvmString* self, ulong value,
+                              AvmNumericBase numericBase);
 
 /**
  * @brief Creates an AvmString from a raw string provided with its length.
