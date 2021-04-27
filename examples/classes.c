@@ -71,12 +71,12 @@ AVM_CLASS(Point, object, {
  * macro like so:
  */
 
-AVM_TYPE(Point, {[FnEntryDtor] = NULL});
+AVM_TYPE(Point, object, {[FnEntryDtor] = NULL});
 
 /*
- * As you can see, the AVM_TYPE macro takes 2 parameters, the class name and a
- * mysterious brace enclosed thing. The second parameter is actually the type's
- * vtable.
+ * As you can see, the AVM_TYPE macro takes 3 parameters, the class name, the
+ * base name and a mysterious brace enclosed thing. The third parameter is
+ * actually the type's vtable.
  *
  * More explanation about this can be found in the vtable.c example but
  * it not important right now.
