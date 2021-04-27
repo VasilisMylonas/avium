@@ -4,6 +4,7 @@
 #include <stdio.h>   // For vfprintf, vscanf, stderr, stdout
 
 #include "avium/runtime.h"
+#include "avium/string.h"
 #include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC
@@ -140,7 +141,9 @@ void AvmVPrintf(str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    vfprintf(stdout, format, args);
+    AvmString temp = AvmStringFormatV(format, args);
+    fputs(AvmStringAsPtr(&temp), stdout);
+    AvmObjectDestroy(&temp);
 }
 
 void AvmVErrorf(str format, va_list args) {
@@ -148,7 +151,9 @@ void AvmVErrorf(str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    vfprintf(stderr, format, args);
+    AvmString temp = AvmStringFormatV(format, args);
+    fputs(AvmStringAsPtr(&temp), stderr);
+    AvmObjectDestroy(&temp);
 }
 
 void AvmScanf(str format, ...) {
