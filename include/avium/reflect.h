@@ -12,18 +12,23 @@ typedef enum {
     SymbolTypeType,
 } AvmSymbolType;
 
-AVM_CLASS(AvmSharedObject, object, {
+AVM_CLASS(AvmModule, object, {
     void* _handle;
+    str _name;
     AvmArrayList(AvmString) _symbols;
 });
 
-AVMAPI AvmSharedObject AvmReflectLoadObject(str path);
-AVMAPI size_t AvmReflectGetSymbolCount(AvmSharedObject* self);
-AVMAPI AvmSymbolType AvmReflectGetSymbolType(AvmSharedObject* self, str name);
+AVMAPI AvmModule AvmModuleLoad(str path);
+AVMAPI str AvmModuleGetName(AvmModule* self);
+AVMAPI size_t AvmModuleGetSymbolCount(AvmModule* self);
+AVMAPI bool AvmModuleHasSymbol(AvmModule* self, str name);
+AVMAPI AvmSymbolType AvmModuleGetSymbolType(AvmModule* self, str name);
+AVMAPI AvmType* AvmModuleGetType(AvmModule* self, str name);
+AVMAPI AvmFunction AvmModuleGetFunction(AvmModule* self, str name);
+AVMAPI void* AvmModuleGetVariable(AvmModule* self, str name);
 
-AVMAPI AvmType* AvmReflectGetType(AvmSharedObject* self, str name);
-AVMAPI AvmFunction AvmReflectGetFunction(AvmSharedObject* self, str name);
-AVMAPI void* AvmReflectGetVariable(AvmSharedObject* self, str name);
+AVMAPI object AvmReflectConstructType(AvmType* type);
+
 #endif  // AVM_HAVE_DLFCN_H
 
 #endif  // AVIUM_REFLECT_H

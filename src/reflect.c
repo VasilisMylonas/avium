@@ -57,9 +57,9 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     return functions;
 }
 
-AVM_TYPE(AvmSharedObject, {[FnEntryDtor] = NULL});
+AVM_TYPE(AvmModule, {[FnEntryDtor] = NULL});
 
-AvmSharedObject AvmReflectLoadObject(str path) {
+AvmModule AvmModuleLoad(str path) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
@@ -71,14 +71,23 @@ AvmSharedObject AvmReflectLoadObject(str path) {
         AvmPanic(dlerror());
     }
 
-    return (AvmSharedObject){
-        ._type = typeid(AvmSharedObject),
+    return (AvmModule){
+        ._type = typeid(AvmModule),
         ._handle = handle,
+        ._name = strrchr(path, '/') + 1,
         ._symbols = symbols,
     };
 }
 
-size_t AvmReflectGetSymbolCount(AvmSharedObject* self) {
+str AvmModuleGetName(AvmModule* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_name;
+}
+
+size_t AvmModuleGetSymbolCount(AvmModule* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -86,7 +95,7 @@ size_t AvmReflectGetSymbolCount(AvmSharedObject* self) {
     return AvmArrayListGetLength(AvmString)(&self->_symbols);
 }
 
-AvmSymbolType AvmReflectGetSymbolType(AvmSharedObject* self, str name) {
+AvmSymbolType AvmModuleGetSymbolType(AvmModule* self, str name) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -95,7 +104,7 @@ AvmSymbolType AvmReflectGetSymbolType(AvmSharedObject* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
-    for (size_t i = 0; i < AvmReflectGetSymbolCount(self); i++) {
+    for (size_t i = 0; i < AvmModuleGetSymbolCount(self); i++) {
         AvmString* string = &self->_symbols._items[i];
         size_t length = AvmStringGetLength(string);
         char* buffer = AvmStringAsPtr(string);
@@ -125,7 +134,7 @@ AvmSymbolType AvmReflectGetSymbolType(AvmSharedObject* self, str name) {
     return SymbolTypeUnknown;
 }
 
-AvmType* AvmReflectGetType(AvmSharedObject* self, str name) {
+AvmType* AvmModuleGetType(AvmModule* self, str name) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -134,7 +143,7 @@ AvmType* AvmReflectGetType(AvmSharedObject* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
-    AvmSymbolType type = AvmReflectGetSymbolType(self, name);
+    AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeType) {
         AvmPanic(MissingSymbolMsg);
@@ -146,8 +155,12 @@ AvmType* AvmReflectGetType(AvmSharedObject* self, str name) {
     return t;
 }
 
-AvmFunction AvmReflectGetFunction(AvmSharedObject* self, str name) {
-    AvmSymbolType type = AvmReflectGetSymbolType(self, name);
+bool AvmModuleHasSymbol(AvmModule* self, str name) {
+    return AvmModuleGetSymbolType(self, name) != SymbolTypeUnknown;
+}
+
+AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
+    AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeFunction) {
         AvmPanic(MissingSymbolMsg);
@@ -156,14 +169,20 @@ AvmFunction AvmReflectGetFunction(AvmSharedObject* self, str name) {
     return (AvmFunction)dlsym(self->_handle, name);
 }
 
-void* AvmReflectGetVariable(AvmSharedObject* self, str name) {
-    AvmSymbolType type = AvmReflectGetSymbolType(self, name);
+void* AvmModuleGetVariable(AvmModule* self, str name) {
+    AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeVariable) {
         AvmPanic(MissingSymbolMsg);
     }
 
     return dlsym(self->_handle, name);
+}
+
+object AvmReflectConstructType(AvmType* type) {
+    object o = AvmAlloc(AvmTypeGetSize(type));
+    *(AvmType**)o = type;
+    return o;
 }
 
 #endif  // AVM_HAVE_DLFCN_H
