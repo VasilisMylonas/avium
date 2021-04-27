@@ -17,8 +17,8 @@
                                        \
     return self->member
 
-#define VALUE_FROM(kind, member)                                         \
-    return (AvmValue) {                                                  \
+#define VALUE_FROM(kind, member)                                   \
+    return (AvmValue) {                                            \
         ._type = typeid(AvmValue), .member = value, ._kind = kind, \
     }
 
@@ -70,11 +70,12 @@ static bool AvmValueEquals(AvmValue* self, AvmValue* other) {
     }
 }
 
-AVM_TYPE(AvmValue, {
-                       [FnEntryToString] = (AvmFunction)AvmValueToString,
-                       [FnEntryClone] = (AvmFunction)AvmValueClone,
-                       [FnEntryEquals] = (AvmFunction)AvmValueEquals,
-                   });
+AVM_TYPE(AvmValue, object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmValueToString,
+             [FnEntryClone] = (AvmFunction)AvmValueClone,
+             [FnEntryEquals] = (AvmFunction)AvmValueEquals,
+         });
 
 AvmValue AvmValueFromBool(bool value) { VALUE_FROM(ValueKindBool, _asBool); }
 AvmValue AvmValueFromChar(char value) { VALUE_FROM(ValueKindChar, _asChar); }

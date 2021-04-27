@@ -9,7 +9,8 @@ static AvmString AvmVersionToString(AvmVersion* self) {
                       self->Tag);
 }
 
-AVM_TYPE(AvmVersion, {[FnEntryToString] = (AvmFunction)AvmVersionToString});
+AVM_TYPE(AvmVersion, object,
+         {[FnEntryToString] = (AvmFunction)AvmVersionToString});
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch, char tag) {
     return (AvmVersion){

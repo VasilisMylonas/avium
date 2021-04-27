@@ -75,7 +75,7 @@ static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self) {
     return AvmArrayListGetCapacity(byte)(&self->_list);
 }
 
-AVM_TYPE(AvmMemoryStream,
+AVM_TYPE(AvmMemoryStream, object,
          {
              [FnEntryFlush] = (AvmFunction)AvmMemoryStreamFlush,
              [FnEntryRead] = (AvmFunction)AvmMemoryStreamRead,

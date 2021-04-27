@@ -220,7 +220,7 @@ AVMAPI bool AvmIsFailure<T>(AvmResult<T>* self);
     }                                                                          \
                                                                                \
     AVM_INLINE_TYPE(                                                           \
-        AVM_GENERIC(AvmResult, T),                                             \
+        AVM_GENERIC(AvmResult, T), object,                                     \
         {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy, T)});      \
                                                                                \
     static inline AvmResult(T) AvmSuccess(T)(T value) {                        \
@@ -278,7 +278,7 @@ static inline void AVM_GENERIC(AvmResultDestroy, void)(AvmResult(void) * self) {
     }
 }
 
-AVM_INLINE_TYPE(AVM_GENERIC(AvmResult, void),
+AVM_INLINE_TYPE(AVM_GENERIC(AvmResult, void), object,
                 {[FnEntryDtor] = (AvmFunction)AVM_GENERIC(AvmResultDestroy,
                                                           void)});
 

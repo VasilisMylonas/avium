@@ -87,9 +87,10 @@
  * @brief Generates type info for a type.
  *
  * @param T The type for which to generate type info.
+ * @param B The base type.
  * @param ... The type vtable enclosed in braces ({...})
  */
-#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
+#define AVM_TYPE(T, B, ...) AVM_TYPE_(T, B, __VA_ARGS__)
 
 /**
  * @brief Generates inline type info for a type.
@@ -97,9 +98,10 @@
  * Uses with the AVM_INLINE_CLASS macro.
  *
  * @param T The type for which to generate type info.
+ * @param B The base type.
  * @param ... The type vtable enclosed in braces ({...})
  */
-#define AVM_INLINE_TYPE(T, ...) static AVM_TYPE_(T, __VA_ARGS__)
+#define AVM_INLINE_TYPE(T, B, ...) static AVM_TYPE_(T, B, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
@@ -141,17 +143,22 @@ typedef void (*AvmFunction)(void);
 #    define never _Noreturn void
 #endif  // AVM_MSVC
 
-/// A type containing information about an object.
-typedef struct {
-    const str _name;
-    const size_t _size;
-    AvmFunction _vptr[AVM_VFT_SIZE];
-} AvmType;
-
 #ifdef DOXYGEN
+/// A type containing information about an object.
+typedef struct AvmType AvmType;
+
 /// A dynamic heap-allocated string.
 typedef struct AvmString AvmString;
 #else
+/// A type containing information about an object.
+typedef struct AvmType AvmType;
+AVM_CLASS(AvmType, object, {
+    const str _name;
+    const size_t _size;
+    AvmType* const _baseType;
+    AvmFunction _vptr[AVM_VFT_SIZE];
+});
+
 /// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {
     size_t _capacity;
@@ -228,11 +235,13 @@ AVMAPI object AvmObjectClone(object self);
 AVMAPI AvmString AvmObjectToString(object self);
 
 #ifndef DOXYGEN
-#    define AVM_TYPE_(T, ...)      \
-        AvmType AVM_TI_NAME(T) = { \
-            ._vptr = __VA_ARGS__,  \
-            ._name = #T,           \
-            ._size = sizeof(T),    \
+#    define AVM_TYPE_(T, B, ...)      \
+        AvmType AVM_TI_NAME(T) = {    \
+            ._type = typeid(AvmType), \
+            ._vptr = __VA_ARGS__,     \
+            ._name = #T,              \
+            ._baseType = typeid(B),   \
+            ._size = sizeof(T),       \
         }
 
 // Ensure type size constraints.
@@ -246,6 +255,8 @@ static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
+extern AvmType AVM_TI_NAME(AvmType);
+extern AvmType AVM_TI_NAME(object);
 extern AvmType AVM_TI_NAME(size_t);
 extern AvmType AVM_TI_NAME(_long);
 extern AvmType AVM_TI_NAME(ulong);

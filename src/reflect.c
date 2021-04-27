@@ -57,7 +57,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     return functions;
 }
 
-AVM_TYPE(AvmModule, {[FnEntryDtor] = NULL});
+AVM_TYPE(AvmModule, object, {[FnEntryDtor] = NULL});
 
 AvmModule AvmModuleLoad(str path) {
     if (path == NULL) {

@@ -74,7 +74,7 @@ static size_t AvmFileStreamGetLength(AvmFileStream* self) {
     return 0;
 }
 
-AVM_TYPE(AvmFileStream,
+AVM_TYPE(AvmFileStream, object,
          {
              [FnEntryFlush] = (AvmFunction)AvmFileStreamFlush,
              [FnEntryRead] = (AvmFunction)AvmFileStreamRead,
