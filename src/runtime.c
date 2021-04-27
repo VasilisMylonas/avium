@@ -97,6 +97,52 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index) {
     return self->_vptr[index];
 }
 
+AvmType* AvmTypeGetBase(AvmType* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_baseType;
+}
+
+bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (baseType == NULL) {
+        AvmPanic("Parameter `baseType` was `NULL`.");
+    }
+
+    if (baseType == typeid(object)) {
+        return true;
+    }
+
+    for (AvmType* temp = AvmTypeGetBase(self); temp != typeid(object);
+         temp = AvmTypeGetBase(temp)) {
+        if (temp == baseType) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static str ProgramName = NULL;
+
+str AvmRuntimeGetProgramName(void) {
+    if (ProgramName == NULL) {
+        AvmPanic("Runtime not initialized! Call AvmRuntimeInit first!");
+    }
+
+    return ProgramName;
+}
+
+void AvmRuntimeInit(int argc, str argv[]) {
+    (void)argc;
+    ProgramName = argv[0];
+}
+
 #ifdef AVM_LINUX
 #    include <execinfo.h>
 #endif

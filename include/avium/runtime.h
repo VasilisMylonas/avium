@@ -76,8 +76,16 @@ typedef enum {
 /// Determines whether an object is of specific type.
 #define istype(T, x) (typeid(T) == AvmObjectGetType(x))
 
+// clang-format off
+#define instanceof(T, x) \
+    (istype(T, x) || AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
+// clang-format on
+
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
+
+AVMAPI void AvmRuntimeInit(int argc, str argv[]);
+AVMAPI str AvmRuntimeGetProgramName(void);
 
 /**
  * @brief Allocates heap memory.
@@ -193,5 +201,9 @@ AVMAPI size_t AvmTypeGetSize(const AvmType* self);
  * @return The function pointer.
  */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
+
+AVMAPI AvmType* AvmTypeGetBase(AvmType* self);
+
+AVMAPI bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType);
 
 #endif  // AVIUM_RUNTIME_H
