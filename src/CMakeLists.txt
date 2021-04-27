@@ -1,10 +1,10 @@
 include(GenerateExportHeader)
 
-add_subdirectory(core)
-add_subdirectory(argparse)
+add_subdirectory(avm.core)
+add_subdirectory(avm.argparse)
 
 if(USE_IO)
-    add_subdirectory(io)
+    add_subdirectory(avm.io)
 endif()
 
 add_library(avm ${LIB_TYPE} module.c)

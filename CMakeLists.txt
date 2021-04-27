@@ -52,11 +52,11 @@ if(MSVC)
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
 else()
-    if(CMAKE_BUILD_TYPE STREQUAL Release)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
         add_compile_options(-fprofile-arcs -ftest-coverage)
         add_link_options(-fprofile-arcs -ftest-coverage)
-        add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
     endif()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
 if(USE_GC)
