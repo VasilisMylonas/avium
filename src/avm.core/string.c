@@ -735,6 +735,134 @@ AvmString AvmStringFormat(str format, ...) {
     return s;
 }
 
+static void ParseSigned(AvmString* string, va_list args) {
+    AvmString temp = AvmStringFromInt(va_arg(args, _long));
+    AvmStringPushString(string, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+static void ParseUnsigned(AvmString* string, ulong num,
+                          AvmNumericBase numericBase) {
+    AvmString temp = AvmStringFromUint(num, numericBase);
+    switch (numericBase) {
+        case NumericBaseBinary:
+            AvmStringPushStr(string, AVM_FMT_BINARY_PREFIX);
+            break;
+        case NumericBaseOctal:
+            AvmStringPushStr(string, AVM_FMT_OCTAL_PREFIX);
+            break;
+        case NumericBaseHex:
+            AvmStringPushStr(string, AVM_FMT_HEX_PREFIX);
+            break;
+        default:
+            break;
+    }
+    AvmStringPushString(string, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+static void ParseFloat(AvmString* string, double num, int kind) {
+    switch (kind) {
+        // Float
+        case 0: {
+            AvmString temp = AvmStringFromFloat(num);
+            AvmStringPushString(string, &temp);
+            AvmObjectDestroy(&temp);
+            break;
+        }
+        // Float exponent
+        case 1: {
+            char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
+            snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le", num);
+            AvmStringPushStr(string, buffer);
+            break;
+        }
+        // Float auto
+        case 2: {
+            char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
+            snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg", num);
+            AvmStringPushStr(string, buffer);
+        }
+        default:
+            break;
+    }
+}
+
+static void ParseType(AvmString* string, object o) {
+    AvmType* type = AvmObjectGetType(o);
+    AvmStringPushStr(string, AvmTypeGetName(type));
+}
+
+static void ParseTypeSize(AvmString* string, object o) {
+    AvmType* type = AvmObjectGetType(o);
+    ParseUnsigned(string, AvmTypeGetSize(type), NumericBaseDecimal);
+}
+
+static void ParseValue(AvmString* string, object o) {
+    AvmString temp = AvmObjectToString(o);
+    AvmStringPushString(string, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+static void ParseFormat(char c, AvmString* string, va_list args) {
+    switch (c) {
+#ifdef AVM_HAVE_UCHAR_H
+        case AVM_FMT_UNICODE:
+            AvmStringPushStr(string, AVM_FMT_UNICODE_PREFIX);
+            ParseUnsigned(string, va_arg(args, char32_t), NumericBaseDecimal);
+            break;
+#endif
+        case AVM_FMT_INT_SIZE:
+        case AVM_FMT_INT_UNSIGNED:
+            ParseUnsigned(string, va_arg(args, ulong), NumericBaseDecimal);
+            break;
+        case AVM_FMT_INT_DECIMAL:
+            ParseSigned(string, args);
+            break;
+        case AVM_FMT_INT_OCTAL:
+            ParseUnsigned(string, va_arg(args, ulong), NumericBaseOctal);
+            break;
+        case AVM_FMT_POINTER:
+        case AVM_FMT_INT_HEX:
+            ParseUnsigned(string, va_arg(args, ulong), NumericBaseHex);
+            break;
+        case AVM_FMT_INT_BINARY:
+            ParseUnsigned(string, va_arg(args, ulong), NumericBaseBinary);
+            break;
+        case AVM_FMT_FLOAT:
+            ParseFloat(string, va_arg(args, double), 0);
+            break;
+        case AVM_FMT_FLOAT_EXP:
+            ParseFloat(string, va_arg(args, double), 1);
+            break;
+        case AVM_FMT_FLOAT_AUTO:
+            ParseFloat(string, va_arg(args, double), 2);
+            break;
+        case AVM_FMT_CHAR:
+            AvmStringPushChar(string, (char)va_arg(args, int));
+            break;
+        case AVM_FMT_STRING:
+            AvmStringPushStr(string, va_arg(args, char*));
+            break;
+        case AVM_FMT_BOOL:
+            AvmStringPushStr(string, (bool)va_arg(args, uint) ? AVM_FMT_TRUE
+                                                              : AVM_FMT_FALSE);
+            break;
+        case AVM_FMT_TYPE:
+            ParseType(string, va_arg(args, object));
+            break;
+        case AVM_FMT_SIZE:
+            ParseTypeSize(string, va_arg(args, object));
+            break;
+        case AVM_FMT_VALUE:
+            ParseValue(string, va_arg(args, object));
+            break;
+        default:
+            AvmStringPushChar(string, c);
+            break;
+    }
+}
+
 AvmString AvmStringFormatV(str format, va_list args) {
     if (format == NULL) {
         AvmPanic(FormatNullMsg);
@@ -754,109 +882,7 @@ AvmString AvmStringFormatV(str format, va_list args) {
 
         i++;
 
-        switch (format[i]) {
-#ifdef AVM_HAVE_UCHAR_H
-            case AVM_FMT_UNICODE: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, char32_t), NumericBaseHex);
-                AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-#endif
-            case AVM_FMT_INT_DECIMAL: {
-                AvmString temp = AvmStringFromInt(va_arg(args, _long));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_INT_OCTAL: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseOctal);
-                AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseHex);
-                AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_INT_BINARY: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseBinary);
-                AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_FLOAT: {
-                AvmString temp = AvmStringFromFloat(va_arg(args, double));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_FLOAT_EXP: {
-                char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-                snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le",
-                         va_arg(args, double));
-                AvmStringPushStr(&s, buffer);
-                break;
-            }
-            case AVM_FMT_FLOAT_AUTO: {
-                char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-                snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg",
-                         va_arg(args, double));
-                AvmStringPushStr(&s, buffer);
-                break;
-            }
-            case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseDecimal);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_CHAR:
-                AvmStringPushChar(&s, (char)va_arg(args, int));
-                break;
-            case AVM_FMT_STRING:
-                AvmStringPushStr(&s, va_arg(args, char*));
-                break;
-            case AVM_FMT_BOOL:
-                AvmStringPushStr(&s, (bool)va_arg(args, uint) ? AVM_FMT_TRUE
-                                                              : AVM_FMT_FALSE);
-                break;
-            case AVM_FMT_TYPE: {
-                const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                AvmStringPushStr(&s, AvmTypeGetName(type));
-                break;
-            }
-            case AVM_FMT_SIZE: {
-                const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                AvmString temp =
-                    AvmStringFromUint(AvmTypeGetSize(type), NumericBaseDecimal);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_VALUE: {
-                AvmString temp = AvmObjectToString(va_arg(args, object));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            default:
-                AvmStringPushChar(&s, format[i]);
-                break;
-        }
+        ParseFormat(format[i], &s, args);
     }
 
     return s;
