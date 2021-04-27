@@ -105,8 +105,6 @@ __test TestRepeat(object state) {
     AvmObjectDestroy(&s);
 }
 
-#include <avium/fmt.h>
-
 __test TestRepeatChars(object state) {
     (void)state;
 

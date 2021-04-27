@@ -1,6 +1,5 @@
 #include <avium/testing.h>
 #include <avium/array.h>
-#include <avium/fmt.h>
 
 static object TestInit(int argc, str argv[]) {
     (void)argc;

@@ -194,4 +194,12 @@ AVMAPI size_t AvmTypeGetSize(const AvmType* self);
  */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
+AVMAPI void AvmVScanf(str format, va_list args);
+AVMAPI void AvmVPrintf(str format, va_list args);
+AVMAPI void AvmVErrorf(str format, va_list args);
+
+AVMAPI void AvmScanf(str format, ...);
+AVMAPI void AvmPrintf(str format, ...);
+AVMAPI void AvmErrorf(str format, ...);
+
 #endif  // AVIUM_RUNTIME_H

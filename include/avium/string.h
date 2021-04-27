@@ -87,6 +87,33 @@ AVMAPI AvmString AvmStringNew(size_t capacity);
  */
 AVMAPI AvmString AvmStringFrom(str contents);
 
+/// Represents the base in which a number is represented.
+typedef enum {
+    /// Base 2 (00010000).
+    NumericBaseBinary = 2,
+
+    /// Base 8 (20).
+    NumericBaseOctal = 8,
+
+    /// Base 10 (16).
+    NumericBaseDecimal = 10,
+
+    /// Base 16 (10).
+    NumericBaseHex = 16,
+} AvmNumericBase;
+
+#ifdef AVM_ENABLE_ALIASES
+#    define AvmItoa  AvmStringFromInt
+#    define AvmUtoa  AvmStringFromUint
+#    define AvmFtoa  AvmStringFromFloat
+#    define AvmFtoa2 AvmStringFromFloat2
+#endif
+
+AVMAPI AvmString AvmStringFromInt(_long value);
+AVMAPI AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase);
+AVMAPI AvmString AvmStringFromFloat(double value);
+AVMAPI AvmString AvmStringFromFloat2(float value);
+
 /**
  * @brief Creates an AvmString from a raw string provided with its length.
  *
@@ -651,5 +678,53 @@ AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
 // TODO
 AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
 #endif  // DOXYGEN
+
+/**
+ * @brief Writes formatted output into an AvmString.
+ *
+ * @pre Parameter @p format must be not null.
+ *
+ * @param format The format string.
+ * @param ... The values to insert into the format string.
+ *
+ * @return The formatted string.
+ */
+AVMAPI AvmString AvmStringFormat(str format, ...);
+
+/**
+ * @brief Writes formatted output into an AvmString using a va_list.
+ *
+ * @pre Parameter @p format must be not null.
+ *
+ * @param format The format string.
+ * @param args The va_list with the values to insert into the format string.
+ *
+ * @return The formatted string.
+ */
+AVMAPI AvmString AvmStringFormatV(str format, va_list args);
+
+/**
+ * @brief Reads formatted output from an AvmString.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p format must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param format The format string.
+ * @param ... The values to insert into the format string.
+ */
+AVMAPI void AvmStringParse(AvmString* self, str format, ...);
+
+/**
+ * @brief Reads formatted output from an AvmString.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p format must be not null.
+ *
+ * @param self The AvmString instance.
+ * @param format The format string.
+ * @param args The va_list with the values to insert into the format string.
+ */
+AVMAPI void AvmStringParseV(AvmString* self, str format, va_list args);
 
 #endif  // AVIUM_STRING_H

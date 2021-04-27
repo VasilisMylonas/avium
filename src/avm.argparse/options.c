@@ -3,7 +3,6 @@
 #include <stdlib.h>  // For atof, atoll
 #include <string.h>  // For strlen, strncmp, strrchr
 
-#include "avium/fmt.h"
 #include "avium/string.h"
 
 typedef struct {
@@ -34,7 +33,8 @@ static void AvmOptionParserDestroy(AvmOptionParser* self) {
     AvmObjectDestroy(&self->options);
 }
 
-AVM_TYPE(AvmOptionParser, {[FnEntryDtor] = (AvmFunction)AvmOptionParserDestroy});
+AVM_TYPE(AvmOptionParser,
+         {[FnEntryDtor] = (AvmFunction)AvmOptionParserDestroy});
 
 AvmOptionParser* AvmOptionParserNew(int argc, str argv[]) {
     AvmOptionParser* self = AvmAlloc(sizeof(AvmOptionParser));

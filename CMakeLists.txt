@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(avium VERSION 0.1.0)
+project(avium VERSION 0.1.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
@@ -17,8 +17,6 @@ set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
 set(BDWGC_TAG v8.0.4)
 set(BDWGC_URL https://github.com/ivmai/bdwgc)
 set(BDWGC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/bdwgc-src/include)
-set(SHARED_NAME avm)
-set(STATIC_NAME avm-static)
 set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
@@ -26,6 +24,11 @@ include(GNUInstallDirs)
 include(FetchContent)
 
 enable_testing()
+
+option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
+option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
+option(USE_IO "Use the IO library?" ON)
+option(BUILD_TESTS "Generate tests?" ON)
 
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
@@ -49,25 +52,32 @@ if(MSVC)
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
 else()
-    add_compile_options(-fprofile-arcs -ftest-coverage)
-    add_link_options(-fprofile-arcs -ftest-coverage)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
+        add_compile_options(-fprofile-arcs -ftest-coverage)
+        add_link_options(-fprofile-arcs -ftest-coverage)
+    endif()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
-option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 if(USE_GC)
     FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
     FetchContent_MakeAvailable(bdwgc)
+    include_directories(${BDWGC_INCLUDE_DIR})
+    link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 endif()
 
-include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR} ${BDWGC_INCLUDE_DIR})
-link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+if(BUILD_DYNAMIC)
+    set(LIB_TYPE SHARED)
+else()
+    set(LIB_TYPE STATIC)
+endif()
+
+include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
 
 add_subdirectory(include)
 add_subdirectory(src)
 
-option(GEN_TESTS "Generate tests?" ON)
-if(GEN_TESTS)
+if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 

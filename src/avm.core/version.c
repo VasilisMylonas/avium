@@ -1,11 +1,11 @@
 #include "avium/version.h"
 
-#include "avium/runtime.h"    // For typeid
-#include "avium/fmt.h"        // For AvmSprintf
-#include "avium/resources.h"  // For VersionFormat
+#include "avium/runtime.h"            // For typeid
+#include "avium/string.h"             // For AvmStringFormat
+#include "avium/private/resources.h"  // For VersionFormat
 
 static AvmString AvmVersionToString(AvmVersion* self) {
-    return AvmSprintf("%i.%i.%i", self->Major, self->Minor, self->Patch);
+    return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
 }
 
 AVM_TYPE(AvmVersion, {[FnEntryToString] = (AvmFunction)AvmVersionToString});
