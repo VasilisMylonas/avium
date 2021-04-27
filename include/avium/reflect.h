@@ -19,6 +19,8 @@ AVM_CLASS(AvmModule, object, {
 });
 
 AVMAPI AvmModule AvmModuleLoad(str path);
+AVMAPI AvmModule* AvmModuleGetCurrent(void);
+
 AVMAPI str AvmModuleGetName(AvmModule* self);
 AVMAPI size_t AvmModuleGetSymbolCount(AvmModule* self);
 AVMAPI bool AvmModuleHasSymbol(AvmModule* self, str name);

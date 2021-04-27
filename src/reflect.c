@@ -74,9 +74,21 @@ AvmModule AvmModuleLoad(str path) {
     return (AvmModule){
         ._type = typeid(AvmModule),
         ._handle = handle,
-        ._name = strrchr(path, '/') + 1,
+        ._name = path,  // TODO: basename or something to get just the name.
         ._symbols = symbols,
     };
+}
+
+AvmModule* AvmModuleGetCurrent(void) {
+    static bool isLoaded = false;
+    static AvmModule module;
+
+    if (!isLoaded) {
+        module = AvmModuleLoad(AvmRuntimeGetProgramName());
+        isLoaded = true;
+    }
+
+    return &module;
 }
 
 str AvmModuleGetName(AvmModule* self) {
