@@ -727,14 +727,6 @@ bool AvmStringEndsWithString(AvmString* self, AvmString* contents) {
     return AvmStringEndsWithChars(self, contents->_length, contents->_buffer);
 }
 
-AvmString AvmStringFormat(str format, ...) {
-    va_list args;
-    va_start(args, format);
-    AvmString s = AvmStringFormatV(format, args);
-    va_end(args);
-    return s;
-}
-
 void AvmStringPushInt(AvmString* self, _long value) {
     AVM_SELF_NULL_CHECK();
 
@@ -809,7 +801,7 @@ static void FormatValue(AvmString* string, object o) {
     AvmObjectDestroy(&temp);
 }
 
-static void ParseFormat(char c, AvmString* string, va_list args) {
+static void Format(char c, AvmString* string, va_list args) {
     switch (c) {
 #ifdef AVM_HAVE_UCHAR_H
         case AVM_FMT_UNICODE:
@@ -870,6 +862,14 @@ static void ParseFormat(char c, AvmString* string, va_list args) {
     }
 }
 
+AvmString AvmStringFormat(str format, ...) {
+    va_list args;
+    va_start(args, format);
+    AvmString s = AvmStringFormatV(format, args);
+    va_end(args);
+    return s;
+}
+
 AvmString AvmStringFormatV(str format, va_list args) {
     if (format == NULL) {
         AvmPanic(FormatNullMsg);
@@ -889,11 +889,15 @@ AvmString AvmStringFormatV(str format, va_list args) {
 
         i++;
 
-        ParseFormat(format[i], &s, args);
+        Format(format[i], &s, args);
     }
 
     return s;
 }
+
+//
+// AvmStringParse, AvmStringParseV
+//
 
 static void SkipWord(char* buffer, size_t* index) {
     while (buffer[*index] != ' ' && buffer[*index] != '\0') {
@@ -941,6 +945,38 @@ static void ParseChar(size_t* index, char* buffer, char* ptr) {
     (*index)++;
 }
 
+static void Parse(char c, size_t* index, char* buffer, va_list args) {
+    switch (c) {
+        case AVM_FMT_CHAR:
+            ParseChar(index, buffer, va_arg(args, char*));
+            break;
+        case AVM_FMT_BOOL:
+            ParseBool(index, buffer, va_arg(args, bool*));
+            break;
+        case AVM_FMT_INT_DECIMAL:
+            ParseInt(index, buffer, va_arg(args, _long*));
+            break;
+        case AVM_FMT_INT_BINARY:
+            ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseBinary);
+            break;
+        case AVM_FMT_INT_OCTAL:
+            ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseOctal);
+            break;
+        case AVM_FMT_INT_SIZE:
+        case AVM_FMT_INT_UNSIGNED:
+            ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseDecimal);
+            break;
+        case AVM_FMT_POINTER:
+        case AVM_FMT_INT_HEX:
+            ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseHex);
+            break;
+        case AVM_FMT_STRING:
+            ParseStr(index, buffer, va_arg(args, char*), va_arg(args, size_t));
+        default:
+            break;
+    }
+}
+
 void AvmStringParse(AvmString* self, str format, ...) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
@@ -973,37 +1009,7 @@ void AvmStringParseV(AvmString* self, str format, va_list args) {
         }
 
         i++;
-
-        switch (format[i]) {
-            case AVM_FMT_CHAR:
-                ParseChar(&j, buffer, va_arg(args, char*));
-                break;
-            case AVM_FMT_BOOL:
-                ParseBool(&j, buffer, va_arg(args, bool*));
-                break;
-            case AVM_FMT_INT_DECIMAL:
-                ParseInt(&j, buffer, va_arg(args, _long*));
-                break;
-            case AVM_FMT_INT_BINARY:
-                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseBinary);
-                break;
-            case AVM_FMT_INT_OCTAL:
-                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseOctal);
-                break;
-            case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED:
-                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseDecimal);
-                break;
-            case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX:
-                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseHex);
-                break;
-            case AVM_FMT_STRING:
-                ParseStr(&j, buffer, va_arg(args, char*), va_arg(args, size_t));
-            default:
-                break;
-        }
-
+        Parse(format[i], &j, buffer, args);
         j++;
     }
 }
