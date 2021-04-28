@@ -793,17 +793,17 @@ void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr) {
     }
 }
 
-static void ParseType(AvmString* string, object o) {
+static void FormatType(AvmString* string, object o) {
     AvmType* type = AvmObjectGetType(o);
     AvmStringPushStr(string, AvmTypeGetName(type));
 }
 
-static void ParseTypeSize(AvmString* string, object o) {
+static void FormatTypeSize(AvmString* string, object o) {
     AvmType* type = AvmObjectGetType(o);
     AvmStringPushUint(string, AvmTypeGetSize(type), NumericBaseDecimal);
 }
 
-static void ParseValue(AvmString* string, object o) {
+static void FormatValue(AvmString* string, object o) {
     AvmString temp = AvmObjectToString(o);
     AvmStringPushString(string, &temp);
     AvmObjectDestroy(&temp);
@@ -856,13 +856,13 @@ static void ParseFormat(char c, AvmString* string, va_list args) {
                                                               : AVM_FMT_FALSE);
             break;
         case AVM_FMT_TYPE:
-            ParseType(string, va_arg(args, object));
+            FormatType(string, va_arg(args, object));
             break;
         case AVM_FMT_SIZE:
-            ParseTypeSize(string, va_arg(args, object));
+            FormatTypeSize(string, va_arg(args, object));
             break;
         case AVM_FMT_VALUE:
-            ParseValue(string, va_arg(args, object));
+            FormatValue(string, va_arg(args, object));
             break;
         default:
             AvmStringPushChar(string, c);
@@ -901,11 +901,45 @@ static void SkipWord(char* buffer, size_t* index) {
     }
 }
 
-#define UINT_CASE(base)       \
-    char* start = &buffer[j]; \
-    SkipWord(buffer, &j);     \
-    char* end = &buffer[j];   \
-    *((ulong*)va_arg(args, ulong*)) = strtoull(start, &end, base)
+static void ParseUint(size_t* index, char* buffer, ulong* ptr,
+                      AvmNumericBase numericBase) {
+    char* start = &buffer[*index];
+    SkipWord(buffer, index);
+    char* end = &buffer[*index];
+    *ptr = strtoull(start, &end, numericBase);
+}
+
+static void ParseInt(size_t* index, char* buffer, _long* ptr) {
+    char* start = &buffer[*index];
+    SkipWord(buffer, index);
+    char* end = &buffer[*index];
+    *ptr = strtoll(start, &end, 10);
+}
+
+static void ParseBool(size_t* index, char* buffer, bool* ptr) {
+    *ptr = strncmp(&buffer[*index], AVM_FMT_TRUE, 4) == 0;
+    SkipWord(buffer, index);
+}
+
+static void ParseStr(size_t* index, char* buffer, char* ptr, size_t capacity) {
+    size_t start = *index;
+    SkipWord(buffer, index);
+
+    size_t length = *index - start;
+
+    AvmMemCopy((byte*)&buffer[start], length, (byte*)ptr, capacity);
+
+    if (length < capacity) {
+        ptr[length] = '\0';
+    } else {
+        ptr[capacity - 1] = '\0';
+    }
+}
+
+static void ParseChar(size_t* index, char* buffer, char* ptr) {
+    *ptr = buffer[*index];
+    (*index)++;
+}
 
 void AvmStringParse(AvmString* self, str format, ...) {
     if (self == NULL) {
@@ -941,59 +975,31 @@ void AvmStringParseV(AvmString* self, str format, va_list args) {
         i++;
 
         switch (format[i]) {
-            case AVM_FMT_CHAR: {
-                char* c = va_arg(args, char*);
-                *c = buffer[j];
-                j++;
+            case AVM_FMT_CHAR:
+                ParseChar(&j, buffer, va_arg(args, char*));
                 break;
-            }
-            case AVM_FMT_BOOL: {
-                *((bool*)va_arg(args, bool*)) =
-                    strncmp(&buffer[j], AVM_FMT_TRUE, 4) == 0;
-                SkipWord(buffer, &j);
+            case AVM_FMT_BOOL:
+                ParseBool(&j, buffer, va_arg(args, bool*));
                 break;
-            }
-            case AVM_FMT_INT_DECIMAL: {
-                char* start = &buffer[j];
-                SkipWord(buffer, &j);
-                char* end = &buffer[j];
-                *((_long*)va_arg(args, _long*)) = strtoll(start, &end, 10);
+            case AVM_FMT_INT_DECIMAL:
+                ParseInt(&j, buffer, va_arg(args, _long*));
                 break;
-            }
-            case AVM_FMT_INT_BINARY: {
-                UINT_CASE(2);
+            case AVM_FMT_INT_BINARY:
+                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseBinary);
                 break;
-            }
-            case AVM_FMT_INT_OCTAL: {
-                UINT_CASE(8);
+            case AVM_FMT_INT_OCTAL:
+                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseOctal);
                 break;
-            }
             case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED: {
-                UINT_CASE(10);
+            case AVM_FMT_INT_UNSIGNED:
+                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseDecimal);
                 break;
-            }
             case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX: {
-                UINT_CASE(16);
+            case AVM_FMT_INT_HEX:
+                ParseUint(&j, buffer, va_arg(args, ulong*), NumericBaseHex);
                 break;
-            }
-            case AVM_FMT_STRING: {
-                char* s = va_arg(args, char*);
-                size_t start = j;
-                SkipWord(buffer, &j);
-
-                size_t capacity = va_arg(args, size_t);
-                size_t length = j - start;
-
-                AvmMemCopy((byte*)&buffer[start], length, (byte*)s, capacity);
-
-                if (length < capacity) {
-                    s[length] = '\0';
-                } else {
-                    s[capacity - 1] = '\0';
-                }
-            }
+            case AVM_FMT_STRING:
+                ParseStr(&j, buffer, va_arg(args, char*), va_arg(args, size_t));
             default:
                 break;
         }
