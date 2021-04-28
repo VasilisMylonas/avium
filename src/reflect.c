@@ -178,7 +178,10 @@ AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
         AvmPanic(MissingSymbolMsg);
     }
 
-    return (AvmFunction)dlsym(self->_handle, name);
+    void* ptr = dlsym(self->_handle, name);
+    // This weird thing is needed because apparently ISO C forbids conversion
+    // between void* and void(*)(void).
+    return *((AvmFunction*)&ptr);
 }
 
 void* AvmModuleGetVariable(AvmModule* self, str name) {
