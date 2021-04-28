@@ -125,6 +125,7 @@ AVMAPI void AvmStringPushFloat(AvmString* self, double value,
 AVMAPI void AvmStringPushInt(AvmString* self, _long value);
 AVMAPI void AvmStringPushUint(AvmString* self, ulong value,
                               AvmNumericBase numericBase);
+AVMAPI void AvmStringPushValue(AvmString* self, object value);
 
 /**
  * @brief Creates an AvmString from a raw string provided with its length.

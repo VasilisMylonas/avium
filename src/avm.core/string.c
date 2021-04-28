@@ -759,21 +759,18 @@ void AvmStringPushUint(AvmString* self, ulong value,
 
 void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr) {
     switch (repr) {
-        // Float
         case FloatReprSimple: {
             AvmString temp = AvmStringFromFloat(value);
             AvmStringPushString(self, &temp);
             AvmObjectDestroy(&temp);
             break;
         }
-        // Float exponent
         case FloatReprScientific: {
             char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
             snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le", value);
             AvmStringPushStr(self, buffer);
             break;
         }
-        // Float auto
         case FloatReprAuto: {
             char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
             snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg", value);
@@ -785,21 +782,17 @@ void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr) {
     }
 }
 
-static void FormatType(AvmString* string, object o) {
-    AvmType* type = AvmObjectGetType(o);
-    AvmStringPushStr(string, AvmTypeGetName(type));
-}
+void AvmStringPushValue(AvmString* self, object value) {
+    AVM_SELF_NULL_CHECK();
 
-static void FormatTypeSize(AvmString* string, object o) {
-    AvmType* type = AvmObjectGetType(o);
-    AvmStringPushUint(string, AvmTypeGetSize(type), NumericBaseDecimal);
-}
-
-static void FormatValue(AvmString* string, object o) {
-    AvmString temp = AvmObjectToString(o);
-    AvmStringPushString(string, &temp);
+    AvmString temp = AvmObjectToString(value);
+    AvmStringPushString(self, &temp);
     AvmObjectDestroy(&temp);
 }
+
+//
+// AvmStringFormat, AvmStringFormatV
+//
 
 static void Format(char c, AvmString* string, va_list args) {
     switch (c) {
@@ -848,13 +841,16 @@ static void Format(char c, AvmString* string, va_list args) {
                                                               : AVM_FMT_FALSE);
             break;
         case AVM_FMT_TYPE:
-            FormatType(string, va_arg(args, object));
+            AvmStringPushStr(
+                string, AvmTypeGetName(AvmObjectGetType(va_arg(args, object))));
             break;
         case AVM_FMT_SIZE:
-            FormatTypeSize(string, va_arg(args, object));
+            AvmStringPushUint(
+                string, AvmTypeGetSize(AvmObjectGetType(va_arg(args, object))),
+                NumericBaseDecimal);
             break;
         case AVM_FMT_VALUE:
-            FormatValue(string, va_arg(args, object));
+            AvmStringPushValue(string, va_arg(args, object));
             break;
         default:
             AvmStringPushChar(string, c);
