@@ -27,8 +27,10 @@ enable_testing()
 
 option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
-option(USE_IO "Use the IO library?" ON)
 option(BUILD_TESTS "Generate tests?" ON)
+option(USE_IO "Use the IO library?" ON)
+option(USE_ARGPARSE "Use the argument parsing library?" ON)
+option(USE_REFLECT "Use the reflection library?" ON)
 
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)

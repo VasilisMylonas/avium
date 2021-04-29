@@ -26,11 +26,12 @@ static object AvmStringClone(AvmString* self) {
 
 static void AvmStringDestroy(AvmString* self) { AvmDealloc(self->_buffer); }
 
-AVM_TYPE(AvmString, {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
-                     [FnEntryClone] = (AvmFunction)AvmStringClone,
-                     [FnEntryToString] = (AvmFunction)AvmStringToString,
-                     [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
-                     [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity});
+AVM_TYPE(AvmString, object,
+         {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
+          [FnEntryClone] = (AvmFunction)AvmStringClone,
+          [FnEntryToString] = (AvmFunction)AvmStringToString,
+          [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
+          [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity});
 
 // Helpful macro for null checks.
 #define AVM_SELF_NULL_CHECK()  \

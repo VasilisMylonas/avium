@@ -1,14 +1,13 @@
 #include "avium/reflect.h"
 
-#ifdef AVM_HAVE_DLFCN_H
-#    include "avium/runtime.h"
-#    include "avium/resources.h"
-#    include "avium/string.h"
-#    include "avium/fmt.h"
+#include "avium/runtime.h"
+#include "avium/string.h"
 
-#    include <stdio.h>
-#    include <string.h>
-#    include <dlfcn.h>
+#include "avium/private/resources.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <dlfcn.h>
 
 static const str CommandTemplate =
     "nm --defined-only -g %s | awk '!/^(_{2}|\\.|\\/|\\s*$|.*:$)/ { print $2 "
@@ -29,7 +28,7 @@ static AvmString ReadString(FILE* handle, bool* hasFailed) {
 static AvmArrayList(AvmString) GetSymbolList(str path) {
     AvmArrayList(AvmString) functions = AvmArrayListNew(AvmString)(10);
 
-    AvmString command = AvmSprintf(CommandTemplate, path);
+    AvmString command = AvmStringFormat(CommandTemplate, path);
     FILE* out = popen(AvmStringAsPtr(&command), "r");
     AvmObjectDestroy(&command);
 
@@ -161,7 +160,7 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
         AvmPanic(MissingSymbolMsg);
     }
 
-    AvmString string = AvmSprintf("_TI_%s", name);
+    AvmString string = AvmStringFormat("_TI_%s", name);
     AvmType* t = dlsym(self->_handle, AvmStringAsPtr(&string));
     AvmObjectDestroy(&string);
     return t;
@@ -199,5 +198,3 @@ object AvmReflectConstructType(AvmType* type) {
     *(AvmType**)o = type;
     return o;
 }
-
-#endif  // AVM_HAVE_DLFCN_H

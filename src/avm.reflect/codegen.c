@@ -1,6 +1,6 @@
 #include "avium/codegen.h"
 
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #include <libtcc.h>
 
