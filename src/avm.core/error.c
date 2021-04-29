@@ -1,7 +1,8 @@
-#include "avium/result.h"
+#include "avium/error.h"
 
+#include "avium/runtime.h"
 #include "avium/string.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #include <string.h>
 #include <errno.h>

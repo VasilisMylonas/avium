@@ -82,7 +82,7 @@ $ cmake -S . -B ./build
 $ cmake --build ./build --config Release
 
 # If you don't want garbage collection you must run this command instead:
-$ cmake --build ./build -DAVM_USE_GC=OFF --config Release
+$ cmake --build ./build -DUSE_GC=OFF --config Release
 
 # Test
 $ cmake --build ./build --target test

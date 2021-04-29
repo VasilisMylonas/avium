@@ -1,33 +1,20 @@
 include(GenerateExportHeader)
 
-file(GLOB SOURCE_FILES *.c)
+add_subdirectory(avm.core)
+add_subdirectory(avm.argparse)
 
-add_library(${SHARED_NAME} SHARED ${SOURCE_FILES})
-add_library(${STATIC_NAME} STATIC ${SOURCE_FILES})
-
-generate_export_header(avm BASE_NAME AVM
-                       EXPORT_MACRO_NAME AVMAPI
-                       INCLUDE_GUARD_NAME AVIUM_EXPORTS_H
-                       EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h)
-
-if(AVM_USE_GC)
-find_library(LIBGC gc)
-find_library(LIBDL dl)
-find_library(LIBTCC tcc)
-
-if(NOT LIBGC)
-    message(FATAL_ERROR "libgc not installed!")
+if(USE_IO)
+    add_subdirectory(avm.io)
 endif()
 
-target_link_libraries(${SHARED_NAME} tcc)
-target_link_libraries(${STATIC_NAME} tcc)
+add_library(avm ${LIB_TYPE} module.c)
+target_link_libraries(avm avm.core avm.io avm.argparse)
 
-target_link_libraries(${SHARED_NAME} dl)
-target_link_libraries(${STATIC_NAME} dl)
+generate_export_header(avm
+    BASE_NAME AVM
+    EXPORT_MACRO_NAME AVMAPI
+    INCLUDE_GUARD_NAME AVIUM_EXPORTS_H
+    EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h
+)
 
-target_link_libraries(${SHARED_NAME} ${LIBGC})
-target_link_libraries(${STATIC_NAME} ${LIBGC})
-endif()
-
-install(TARGETS ${STATIC_NAME} ${SHARED_NAME}
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
+install(TARGETS avm DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})

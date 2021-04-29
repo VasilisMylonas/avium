@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(avium VERSION 0.1.0)
+project(avium VERSION 0.1.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
@@ -9,17 +9,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist)
-set(CMAKE_ENABLE_EXPORTS TRUE)
+set(CMAKE_ENABLE_EXPORTS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
-set(SHARED_NAME avm)
-set(STATIC_NAME avm-static)
+set(BDWGC_TAG v8.0.4)
+set(BDWGC_URL https://github.com/ivmai/bdwgc)
+set(BDWGC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/bdwgc-src/include)
 set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
 include(GNUInstallDirs)
+include(FetchContent)
+
 enable_testing()
+
+option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
+option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
+option(USE_IO "Use the IO library?" ON)
+option(BUILD_TESTS "Generate tests?" ON)
 
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
@@ -43,21 +52,32 @@ if(MSVC)
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
 else()
-    add_compile_options(-fprofile-arcs -ftest-coverage)
-    add_link_options(-fprofile-arcs -ftest-coverage)
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
+        add_compile_options(-fprofile-arcs -ftest-coverage)
+        add_link_options(-fprofile-arcs -ftest-coverage)
+    endif()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
-option(AVM_USE_GC "Use garbage collector? (requires libgc)" ON)
-option(GEN_TESTS "Generate tests?" ON)
+if(USE_GC)
+    FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
+    FetchContent_MakeAvailable(bdwgc)
+    include_directories(${BDWGC_INCLUDE_DIR})
+    link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endif()
+
+if(BUILD_DYNAMIC)
+    set(LIB_TYPE SHARED)
+else()
+    set(LIB_TYPE STATIC)
+endif()
 
 include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
-link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 add_subdirectory(include)
 add_subdirectory(src)
 
-if(GEN_TESTS)
+if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 

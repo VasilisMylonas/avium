@@ -1,5 +1,5 @@
 #include "avium/file.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -53,7 +53,7 @@ bool AvmFileExists(str path) {
 #endif
 }
 
-AvmResult(void) AvmFileDelete(str path) {
+AvmError* AvmFileDelete(str path) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
@@ -61,13 +61,13 @@ AvmResult(void) AvmFileDelete(str path) {
     int status = remove(path);
 
     if (status != 0) {
-        return AvmFailure(void)(AvmErrorFromOSCode(status));
+        return AvmErrorFromOSCode(status);
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-AvmResult(void) AvmFileMove(str source, str destination) {
+AvmError* AvmFileMove(str source, str destination) {
     if (source == NULL) {
         AvmPanic(SourceNullMsg);
     }
@@ -79,13 +79,13 @@ AvmResult(void) AvmFileMove(str source, str destination) {
     int status = rename(source, destination);
 
     if (status != 0) {
-        return AvmFailure(void)(AvmErrorFromOSCode(status));
+        return AvmErrorFromOSCode(status);
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-AvmResult(void) AvmFileCopy(str source, str destination) {
+AvmError* AvmFileCopy(str source, str destination) {
     if (source == NULL) {
         AvmPanic(SourceNullMsg);
     }
@@ -98,7 +98,7 @@ AvmResult(void) AvmFileCopy(str source, str destination) {
     AvmPanic("Not implemented!");
 }
 
-// AvmResult(void) AvmFileReadAll(str path, size_t length, byte bytes[]) {
+// AvmError* AvmFileReadAll(str path, size_t length, byte bytes[]) {
 //     if (path == NULL) {
 //         AvmPanic(PathNullMsg);
 //     }
@@ -107,13 +107,13 @@ AvmResult(void) AvmFileCopy(str source, str destination) {
 //     AvmStreamRead()
 // }
 
-AvmResult(void) AvmFileWriteAll(str path, size_t length, byte bytes[]) {
+AvmError* AvmFileWriteAll(str path, size_t length, byte bytes[]) {
     if (path == NULL) {
         AvmPanic(PathNullMsg);
     }
 
     AvmStream* stream = AvmFileOpen(path, FileAccessWrite);
-    AvmResult(void) result = AvmStreamWrite(stream, length, bytes);
+    AvmError* result = AvmStreamWrite(stream, length, bytes);
     AvmObjectDestroy(stream);
     return result;
 }

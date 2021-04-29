@@ -1,5 +1,5 @@
 #include "avium/io.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 #include "avium/array-list.h"
 
 #include <stdio.h>
@@ -12,46 +12,46 @@ AVM_CLASS(AvmMemoryStream, AvmStream, {
 
 static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
-static AvmResult(void) AvmMemoryStreamFlush(AvmMemoryStream* self) {
+static AvmError* AvmMemoryStreamFlush(AvmMemoryStream* self) {
     (void)self;
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void)
-    AvmMemoryStreamRead(AvmMemoryStream* self, size_t length, byte bytes[]) {
+static AvmError* AvmMemoryStreamRead(AvmMemoryStream* self, size_t length,
+                                     byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
         bytes[i] = self->_list._items[self->_position];
         self->_position++;
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void)
-    AvmMemoryStreamWrite(AvmMemoryStream* self, size_t length, byte bytes[]) {
+static AvmError* AvmMemoryStreamWrite(AvmMemoryStream* self, size_t length,
+                                      byte bytes[]) {
     for (size_t i = 0; i < length; i++) {
         AvmArrayListPush(byte)(&self->_list, bytes[i]);
         self->_position++;
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
-static AvmResult(void) AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
-                                           AvmSeekOrigin origin) {
+static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
+                                     AvmSeekOrigin origin) {
     switch (origin) {
         case SeekOriginCurrent:
             self->_position += offset;
             break;
         case SeekOriginBegin:
             if (offset < 0) {
-                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+                return AvmErrorOfKind(ErrorKindRange);
             }
             self->_position = offset;
             break;
         case SeekOriginEnd:
             if (offset > 0) {
-                return AvmFailure(void)(AvmErrorOfKind(ErrorKindRange));
+                return AvmErrorOfKind(ErrorKindRange);
             }
             self->_position =
                 AvmArrayListGetCapacity(byte)(&self->_list) + offset;
@@ -60,7 +60,7 @@ static AvmResult(void) AvmMemoryStreamSeek(AvmMemoryStream* self, _long offset,
             AvmPanic(InvalidOriginMsg);
     }
 
-    return AvmSuccess(void)();
+    return NULL;
 }
 
 static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self) {

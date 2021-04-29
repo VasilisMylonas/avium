@@ -2,7 +2,7 @@
 
 # Find the .gcda files.
 GCDA_TEST_FILES=$(find ./build/tests/CMakeFiles/*.dir/*.gcda)
-GCDA_SRC_FILES=$(find ./build/src/CMakeFiles/*.dir/*.gcda)
+GCDA_SRC_FILES=$(find ./build/src/avm.*/CMakeFiles/*.dir/*.gcda)
 
 mkdir -p ./build/coverage
 

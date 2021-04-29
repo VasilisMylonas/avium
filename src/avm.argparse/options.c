@@ -3,7 +3,6 @@
 #include <stdlib.h>  // For atof, atoll
 #include <string.h>  // For strlen, strncmp, strrchr
 
-#include "avium/fmt.h"
 #include "avium/string.h"
 
 typedef struct {

@@ -206,4 +206,12 @@ AVMAPI AvmType* AvmTypeGetBase(AvmType* self);
 
 AVMAPI bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType);
 
+AVMAPI void AvmVScanf(str format, va_list args);
+AVMAPI void AvmVPrintf(str format, va_list args);
+AVMAPI void AvmVErrorf(str format, va_list args);
+
+AVMAPI void AvmScanf(str format, ...);
+AVMAPI void AvmPrintf(str format, ...);
+AVMAPI void AvmErrorf(str format, ...);
+
 #endif  // AVIUM_RUNTIME_H
