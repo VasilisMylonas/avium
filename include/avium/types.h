@@ -154,9 +154,9 @@ typedef struct AvmType AvmType;
 
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
-    const str _name;
-    const size_t _size;
-    AvmType* const _baseType;
+    str _name;
+    size_t _size;
+    AvmType* _baseType;
     AvmFunction _vptr[AVM_VFT_SIZE];
 });
 

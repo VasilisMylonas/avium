@@ -13,18 +13,20 @@ generate_export_header(avm BASE_NAME AVM
 if(AVM_USE_GC)
 find_library(LIBGC gc)
 find_library(LIBDL dl)
+find_library(LIBTCC tcc)
 
 if(NOT LIBGC)
     message(FATAL_ERROR "libgc not installed!")
 endif()
 
-if(NOT LIBDL)
-    target_link_libraries(${SHARED_NAME} ${LIBGC})
-    target_link_libraries(${STATIC_NAME} ${LIBGC})
-endif()
+target_link_libraries(${SHARED_NAME} tcc)
+target_link_libraries(${STATIC_NAME} tcc)
 
-target_link_libraries(${SHARED_NAME} ${LIBGC} ${LIBDL})
-target_link_libraries(${STATIC_NAME} ${LIBGC} ${LIBDL})
+target_link_libraries(${SHARED_NAME} dl)
+target_link_libraries(${STATIC_NAME} dl)
+
+target_link_libraries(${SHARED_NAME} ${LIBGC})
+target_link_libraries(${STATIC_NAME} ${LIBGC})
 endif()
 
 install(TARGETS ${STATIC_NAME} ${SHARED_NAME}
