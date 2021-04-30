@@ -4,6 +4,6 @@ add_library(avm.reflect ${LIB_TYPE}
 )
 
 find_library(LIBDL dl REQUIRED)
-find_library(LIBTCC tcc REQUIRED)
+find_library(LIBTCC libtcc REQUIRED HINTS ${CMAKE_BINARY_DIR}/_deps/tcc-src/lib)
 
 target_link_libraries(avm.reflect avm.core ${LIBDL} ${LIBTCC})
