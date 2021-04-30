@@ -2,7 +2,10 @@
 
 #include "avium/private/resources.h"
 
-#include <libtcc.h>
+#include "avium/reflect.h"
+
+#ifdef AVM_HAVE_LIBTCC_H
+#    include <libtcc.h>
 
 static void AvmFnBuilderDestroy(AvmFnBuilder* self) {
     if (self == NULL) {
@@ -80,6 +83,9 @@ AvmFunction AvmFnBuilderCompile(AvmFnBuilder* self) {
     return *(AvmFunction*)&symbol;
 }
 
+#endif  // AVM_HAVE_LIBTCC_H
+
+// TODO: Destructor
 AVM_TYPE(AvmTypeBuilder, object, {[FnEntryDtor] = NULL});
 
 AvmTypeBuilder* AvmTypeBuilderNew(AvmType* baseType) {

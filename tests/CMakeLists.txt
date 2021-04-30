@@ -23,8 +23,15 @@ endfunction()
 
 run_test(array-list)
 run_test(array)
-run_test(io)
-run_test(options)
+
+if(USE_IO)
+    run_test(io)
+endif()
+
+if(USE_ARGPARSE)
+    run_test(options)
+    run_test(value)
+endif()
+
 run_test(string)
-run_test(value)
 run_test(version)

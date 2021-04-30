@@ -7,7 +7,10 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <dlfcn.h>
+
+#ifdef AVM_HAVE_DLFCN_H
+#    include <dlfcn.h>
+#endif  //  AVM_HAVE_DLFCN_H
 
 static const str CommandTemplate =
     "nm --defined-only -g %s | awk '!/^(_{2}|\\.|\\/|\\s*$|.*:$)/ { print $2 "
@@ -56,6 +59,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     return functions;
 }
 
+// TODO: Destructor
 AVM_TYPE(AvmModule, object, {[FnEntryDtor] = NULL});
 
 AvmModule AvmModuleLoad(str path) {
@@ -63,18 +67,20 @@ AvmModule AvmModuleLoad(str path) {
         AvmPanic(PathNullMsg);
     }
 
+#ifdef AVM_HAVE_DLFCN_H
     void* handle = dlopen(path, RTLD_LAZY);
-    AvmArrayList(AvmString) symbols = GetSymbolList(path);
-
     if (handle == NULL) {
         AvmPanic(dlerror());
     }
+#else
+    void* handle = NULL;
+#endif  // AVM_HAVE_DLFCN_H
 
     return (AvmModule){
         ._type = typeid(AvmModule),
         ._handle = handle,
         ._name = path,  // TODO: basename or something to get just the name.
-        ._symbols = symbols,
+        ._symbols = GetSymbolList(path),
     };
 }
 
@@ -154,6 +160,7 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
+#ifdef AVM_HAVE_DLFCN_H
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeType) {
@@ -164,6 +171,9 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
     AvmType* t = dlsym(self->_handle, AvmStringAsPtr(&string));
     AvmObjectDestroy(&string);
     return t;
+#else
+    AvmPanic("This platform does not support this operation.");
+#endif  // AVM_HAVE_DLFCN_H
 }
 
 bool AvmModuleHasSymbol(AvmModule* self, str name) {
@@ -171,6 +181,15 @@ bool AvmModuleHasSymbol(AvmModule* self, str name) {
 }
 
 AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (name == NULL) {
+        AvmPanic(NameNullMsg);
+    }
+
+#ifdef AVM_HAVE_DLFCN_H
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeFunction) {
@@ -181,9 +200,22 @@ AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
     // This weird thing is needed because apparently ISO C forbids conversion
     // between void* and void(*)(void).
     return *((AvmFunction*)&ptr);
+#else
+    AvmPanic("This platform does not support this operation.");
+#endif  // AVM_HAVE_DLFCN_H
 }
 
 void* AvmModuleGetVariable(AvmModule* self, str name) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (name == NULL) {
+        AvmPanic(NameNullMsg);
+    }
+
+#ifdef AVM_HAVE_DLFCN_H
+
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeVariable) {
@@ -191,6 +223,9 @@ void* AvmModuleGetVariable(AvmModule* self, str name) {
     }
 
     return dlsym(self->_handle, name);
+#else
+    AvmPanic("This platform does not support this operation.");
+#endif  // AVM_HAVE_DLFCN_H
 }
 
 object AvmReflectConstructType(AvmType* type) {

@@ -1,10 +1,13 @@
 #ifndef AVIUM_REFLECT_H
 #define AVIUM_REFLECT_H
 
-#include "avium/types.h"
-#include "avium/array-list.h"
+#include "avium/config.h"
 
-#ifdef AVM_HAVE_DLFCN_H
+#ifdef AVM_USE_REFLECT
+
+#    include "avium/types.h"
+#    include "avium/array-list.h"
+
 typedef enum {
     SymbolTypeUnknown = 0,
     SymbolTypeVariable,
@@ -31,6 +34,6 @@ AVMAPI void* AvmModuleGetVariable(AvmModule* self, str name);
 
 AVMAPI object AvmReflectConstructType(AvmType* type);
 
-#endif  // AVM_HAVE_DLFCN_H
+#endif  // AVM_USE_REFLECT
 
 #endif  // AVIUM_REFLECT_H
