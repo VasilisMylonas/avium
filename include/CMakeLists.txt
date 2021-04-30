@@ -23,7 +23,7 @@ endif()
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 check_include_file(dlfcn.h AVM_HAVE_DLFCN_H)
-check_include_file(tcc.h AVM_HAVE_TCC_H)
+check_include_file(libtcc.h AVM_HAVE_TCC_H)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE "long")
