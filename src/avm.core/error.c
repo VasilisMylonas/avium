@@ -60,7 +60,7 @@ AvmError* AvmErrorOfKind(AvmErrorKind kind) {
                                      });
 }
 
-AvmError* AvmErrorGetSource(AvmError* self) {
+weakptr(AvmError) AvmErrorGetSource(AvmError* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
