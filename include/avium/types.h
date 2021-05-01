@@ -161,8 +161,8 @@ AVM_CLASS(AvmString, object, {
 });
 #endif  // DOXYGEN
 
-#define weak(T) T*
-#define box(T)  T*
+#define weakptr(T) T*
+#define box(T)     T*
 
 /**
  * @brief Gets information about the type of an object.

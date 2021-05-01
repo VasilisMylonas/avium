@@ -274,7 +274,7 @@ size_t AvmStringGetLength(const AvmString* self) {
     return self->_length;
 }
 
-char* AvmStringGetBuffer(const AvmString* self) {
+weakptr(char) AvmStringGetBuffer(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_buffer;
