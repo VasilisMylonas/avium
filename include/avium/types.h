@@ -2,8 +2,8 @@
  * @file avium/types.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Primitive Avium types and related functions.
- * @version 0.2
- * @date 2021-04-14
+ * @version 0.2.2
+ * @date 2021-05-01
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -69,9 +69,6 @@
         struct __VA_ARGS__;         \
     }
 
-/// Refers to the base type in a function with a self parameter.
-#define base (&self->_base)
-
 /**
  * @brief Creates an Avium interface type.
  *
@@ -95,7 +92,7 @@
 /**
  * @brief Generates inline type info for a type.
  *
- * Uses with the AVM_INLINE_CLASS macro.
+ * Used with the AVM_INLINE_CLASS macro.
  *
  * @param T The type for which to generate type info.
  * @param ... The type vtable enclosed in braces ({...})
@@ -104,6 +101,11 @@
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
+
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
+
+#define AvmInvalid ((size_t)-1);
 
 /// Signed 64-bit integer type.
 typedef AVM_LONG_TYPE _long;
@@ -120,14 +122,6 @@ typedef unsigned short ushort;
 /// Unsigned 8-bit integer type.
 typedef unsigned char byte;
 
-#ifdef DOXYGEN
-/// Primitive read-only string.
-typedef char* str;
-#else
-/// Primitive read-only string.
-typedef const char* str;
-#endif  // DOXYGEN
-
 /// An unknown object type.
 typedef void* object;
 
@@ -142,6 +136,19 @@ typedef void (*AvmFunction)(void);
 #    define never _Noreturn void
 #endif  // AVM_MSVC
 
+#ifdef DOXYGEN
+/// Primitive read-only string.
+typedef char* str;
+
+/// A dynamic heap-allocated string.
+typedef struct AvmString AvmString;
+
+/// A type containing information about an object.
+typedef struct AvmType AvmType;
+#else
+/// Primitive read-only string.
+typedef const char* str;
+
 /// A type containing information about an object.
 typedef struct {
     str _name;
@@ -149,10 +156,6 @@ typedef struct {
     AvmFunction _vptr[AVM_VFT_SIZE];
 } AvmType;
 
-#ifdef DOXYGEN
-/// A dynamic heap-allocated string.
-typedef struct AvmString AvmString;
-#else
 /// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {
     size_t _capacity;
@@ -230,8 +233,6 @@ AVMAPI object AvmObjectClone(object self);
  * @return The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
-
-static const size_t AvmInvalid = (size_t)-1;
 
 #ifndef DOXYGEN
 #    define AVM_TYPE_(T, ...)            \
