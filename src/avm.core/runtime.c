@@ -106,7 +106,7 @@ never AvmPanicEx(str message, str function, str file, uint line) {
               function, message);
 
 #ifdef AVM_LINUX
-    object arr[BACKTRACE_MAX_SYMBOLS];
+    void* arr[BACKTRACE_MAX_SYMBOLS];
 
     int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
     char** s = backtrace_symbols(arr, length);
@@ -121,12 +121,6 @@ never AvmPanicEx(str message, str function, str file, uint line) {
 
     exit(1);
 }
-
-#define AVM_FORWARD(arg, call) \
-    va_list args;              \
-    va_start(args, arg);       \
-    call(arg, args);           \
-    va_end(args);
 
 void AvmVScanf(str format, va_list args) {
     if (format == NULL) {
