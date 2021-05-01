@@ -59,8 +59,22 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     return functions;
 }
 
-// TODO: Destructor
-AVM_TYPE(AvmModule, object, {[FnEntryDtor] = NULL});
+static void AvmModuleDestroy(AvmModule* self) {
+#ifdef AVM_HAVE_DLFCN_H
+    dlclose(self->_handle);
+    self->_handle = NULL;
+#endif  // AVM_HAVE_DLFCN_H
+
+    size_t length = AvmArrayListGetLength(AvmString)(&self->_symbols);
+
+    for (size_t i = 0; i < length; i++) {
+        AvmObjectDestroy(&self->_symbols._items[i]);
+    }
+
+    AvmObjectDestroy(&self->_symbols);
+}
+
+AVM_TYPE(AvmModule, object, {[FnEntryDtor] = (AvmFunction)AvmModuleDestroy});
 
 AvmModule AvmModuleLoad(str path) {
     if (path == NULL) {
@@ -76,10 +90,20 @@ AvmModule AvmModuleLoad(str path) {
     void* handle = NULL;
 #endif  // AVM_HAVE_DLFCN_H
 
+    str name = strrchr(path, '/');
+
+    if (name == NULL) {
+        name = strrchr(path, '\\');
+    }
+
+    if (name == NULL) {
+        name = path;
+    }
+
     return (AvmModule){
         ._type = typeid(AvmModule),
         ._handle = handle,
-        ._name = path,  // TODO: basename or something to get just the name.
+        ._name = name,
         ._symbols = GetSymbolList(path),
     };
 }
