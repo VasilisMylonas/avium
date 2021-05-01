@@ -38,15 +38,15 @@
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
  */
-#define AVM_CLASS(T, B, ...)       \
-    extern AvmType AVM_TI_NAME(T); \
-    typedef struct T T;            \
-    struct T {                     \
-        union {                    \
-            const AvmType* _type;  \
-            B _base;               \
-        };                         \
-        struct __VA_ARGS__;        \
+#define AVM_CLASS(T, B, ...)             \
+    extern const AvmType AVM_TI_NAME(T); \
+    typedef struct T T;                  \
+    struct T {                           \
+        union {                          \
+            const AvmType* _type;        \
+            B _base;                     \
+        };                               \
+        struct __VA_ARGS__;              \
     }
 
 /**
@@ -77,11 +77,11 @@
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)           \
-    extern AvmType AVM_TI_NAME(T); \
-    typedef struct T T;            \
-    struct T {                     \
-        const AvmType* _type;      \
+#define AVM_INTERFACE(T)                 \
+    extern const AvmType AVM_TI_NAME(T); \
+    typedef struct T T;                  \
+    struct T {                           \
+        const AvmType* _type;            \
     }
 
 /**
@@ -144,8 +144,8 @@ typedef void (*AvmFunction)(void);
 
 /// A type containing information about an object.
 typedef struct {
-    const str _name;
-    const size_t _size;
+    str _name;
+    size_t _size;
     AvmFunction _vptr[AVM_VFT_SIZE];
 } AvmType;
 
@@ -161,6 +161,9 @@ AVM_CLASS(AvmString, object, {
 });
 #endif  // DOXYGEN
 
+#define weak(T) T*
+#define box(T)  T*
+
 /**
  * @brief Gets information about the type of an object.
  *
@@ -169,7 +172,7 @@ AVM_CLASS(AvmString, object, {
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI AvmType* AvmObjectGetType(object self);
+AVMAPI const AvmType* AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.
@@ -231,11 +234,11 @@ AVMAPI AvmString AvmObjectToString(object self);
 static const size_t AvmInvalid = (size_t)-1;
 
 #ifndef DOXYGEN
-#    define AVM_TYPE_(T, ...)      \
-        AvmType AVM_TI_NAME(T) = { \
-            ._vptr = __VA_ARGS__,  \
-            ._name = #T,           \
-            ._size = sizeof(T),    \
+#    define AVM_TYPE_(T, ...)            \
+        const AvmType AVM_TI_NAME(T) = { \
+            ._vptr = __VA_ARGS__,        \
+            ._name = #T,                 \
+            ._size = sizeof(T),          \
         }
 
 // Ensure type size constraints.
@@ -249,15 +252,15 @@ static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
-extern AvmType AVM_TI_NAME(size_t);
-extern AvmType AVM_TI_NAME(_long);
-extern AvmType AVM_TI_NAME(ulong);
-extern AvmType AVM_TI_NAME(int);
-extern AvmType AVM_TI_NAME(uint);
-extern AvmType AVM_TI_NAME(short);
-extern AvmType AVM_TI_NAME(ushort);
-extern AvmType AVM_TI_NAME(char);
-extern AvmType AVM_TI_NAME(byte);
+extern const AvmType AVM_TI_NAME(size_t);
+extern const AvmType AVM_TI_NAME(_long);
+extern const AvmType AVM_TI_NAME(ulong);
+extern const AvmType AVM_TI_NAME(int);
+extern const AvmType AVM_TI_NAME(uint);
+extern const AvmType AVM_TI_NAME(short);
+extern const AvmType AVM_TI_NAME(ushort);
+extern const AvmType AVM_TI_NAME(char);
+extern const AvmType AVM_TI_NAME(byte);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H
