@@ -136,7 +136,7 @@ void AvmVPrintf(str format, va_list args) {
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringAsPtr(&temp), stdout);
+    fputs(AvmStringGetBuffer(&temp), stdout);
     AvmObjectDestroy(&temp);
 }
 
@@ -146,7 +146,7 @@ void AvmVErrorf(str format, va_list args) {
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringAsPtr(&temp), stderr);
+    fputs(AvmStringGetBuffer(&temp), stderr);
     AvmObjectDestroy(&temp);
 }
 

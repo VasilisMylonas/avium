@@ -227,7 +227,7 @@ AvmString AvmStringFromFloat2(float value) {
 AvmString AvmStringFromFloat(double value) {
     size_t length = snprintf(NULL, 0, "%lf", value);
     AvmString s = AvmStringNew(length);
-    char* buffer = AvmStringAsPtr(&s);
+    char* buffer = AvmStringGetBuffer(&s);
     snprintf(buffer, length + 1, "%lf", value);
     AvmStringUnsafeSetLength(&s, length);
     return s;
@@ -274,7 +274,7 @@ size_t AvmStringGetLength(const AvmString* self) {
     return self->_length;
 }
 
-char* AvmStringAsPtr(const AvmString* self) {
+char* AvmStringGetBuffer(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_buffer;
@@ -583,8 +583,8 @@ size_t AvmStringReplaceAll(const AvmString* self, char oldCharacter,
 void AvmStringReverse(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
-    char* start = AvmStringAsPtr(self);
-    char* end = AvmStringAsPtr(self) + self->_length - 1;
+    char* start = AvmStringGetBuffer(self);
+    char* end = AvmStringGetBuffer(self) + self->_length - 1;
 
     for (char temp = 0; start < end; start++, end--) {
         temp = *start;
@@ -1005,7 +1005,7 @@ void AvmStringParseV(const AvmString* self, str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    char* buffer = AvmStringAsPtr(self);
+    char* buffer = AvmStringGetBuffer(self);
 
     for (size_t i = 0, j = 0; format[i] != '\0'; i++) {
         if (format[i] != '%') {

@@ -202,7 +202,7 @@ AVMAPI size_t AvmStringGetCapacity(const AvmString* self);
  * @param self The AvmString instance.
  * @return A pointer to the internal buffer.
  */
-AVMAPI char* AvmStringAsPtr(const AvmString* self);
+AVMAPI char* AvmStringGetBuffer(const AvmString* self);
 
 /**
  * @brief Determines whether an AvmString is empty.

@@ -137,7 +137,7 @@ AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string) {
     }
 
     AvmError* result = AvmStreamWrite(self, AvmStringGetLength(string),
-                                      (byte*)AvmStringAsPtr(string));
+                                      (byte*)AvmStringGetBuffer(string));
 
     if (result != NULL) {
         return result;
