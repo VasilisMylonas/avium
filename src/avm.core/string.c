@@ -268,31 +268,31 @@ AvmString AvmStringRepeatChars(size_t length, str contents, size_t count) {
 // Accessors.
 //
 
-size_t AvmStringGetLength(AvmString* self) {
+size_t AvmStringGetLength(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_length;
 }
 
-char* AvmStringAsPtr(AvmString* self) {
+char* AvmStringAsPtr(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_buffer;
 }
 
-size_t AvmStringGetCapacity(AvmString* self) {
+size_t AvmStringGetCapacity(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_capacity;
 }
 
-bool AvmStringIsEmpty(AvmString* self) {
+bool AvmStringIsEmpty(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     return self->_length == 0;
 }
 
-char AvmStringCharAt(AvmString* self, size_t index, AvmError** error) {
+char AvmStringCharAt(const AvmString* self, size_t index, AvmError** error) {
     AVM_SELF_NULL_CHECK();
 
     if (index < self->_length) {
@@ -310,7 +310,7 @@ char AvmStringCharAt(AvmString* self, size_t index, AvmError** error) {
 // ForEach and overloads.
 //
 
-void AvmStringForEach(AvmString* self, void (*function)(char)) {
+void AvmStringForEach(const AvmString* self, void (*function)(char)) {
     AVM_SELF_NULL_CHECK();
 
     if (self == NULL) {
@@ -322,7 +322,7 @@ void AvmStringForEach(AvmString* self, void (*function)(char)) {
     }
 }
 
-void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t)) {
+void AvmStringForEachEx(const AvmString* self, void (*function)(char, size_t)) {
     AVM_SELF_NULL_CHECK();
 
     if (self == NULL) {
@@ -338,7 +338,7 @@ void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t)) {
 // Map and overloads.
 //
 
-void AvmStringMap(AvmString* self, char (*function)(char)) {
+void AvmStringMap(const AvmString* self, char (*function)(char)) {
     AVM_SELF_NULL_CHECK();
 
     if (self == NULL) {
@@ -350,7 +350,7 @@ void AvmStringMap(AvmString* self, char (*function)(char)) {
     }
 }
 
-void AvmStringMapEx(AvmString* self, char (*function)(char, size_t)) {
+void AvmStringMapEx(const AvmString* self, char (*function)(char, size_t)) {
     AVM_SELF_NULL_CHECK();
 
     if (self == NULL) {
@@ -362,7 +362,7 @@ void AvmStringMapEx(AvmString* self, char (*function)(char, size_t)) {
     }
 }
 
-void AvmStringMapCompat(AvmString* self, int (*function)(int)) {
+void AvmStringMapCompat(const AvmString* self, int (*function)(int)) {
     AVM_SELF_NULL_CHECK();
 
     if (self == NULL) {
@@ -416,7 +416,7 @@ void AvmStringPushChars(AvmString* self, size_t length, str contents) {
     self->_length += length;
 }
 
-void AvmStringPushString(AvmString* self, AvmString* other) {
+void AvmStringPushString(AvmString* self, const AvmString* other) {
     AVM_SELF_NULL_CHECK();
 
     if (other == NULL) {
@@ -430,7 +430,7 @@ void AvmStringPushString(AvmString* self, AvmString* other) {
 // IndexOf, Find and overloads.
 //
 
-size_t AvmStringIndexOf(AvmString* self, char character) {
+size_t AvmStringIndexOf(const AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
     for (size_t i = 0; i < self->_length; i++) {
@@ -442,7 +442,7 @@ size_t AvmStringIndexOf(AvmString* self, char character) {
     return AvmInvalid;
 }
 
-size_t AvmStringLastIndexOf(AvmString* self, char character) {
+size_t AvmStringLastIndexOf(const AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
     // Same as IndexOf but we loop in reverse.
@@ -457,7 +457,7 @@ size_t AvmStringLastIndexOf(AvmString* self, char character) {
 
 // TODO: Implement Find for AvmString and Chars.
 
-size_t AvmStringFind(AvmString* self, str substring) {
+size_t AvmStringFind(const AvmString* self, str substring) {
     AVM_SELF_NULL_CHECK();
 
     if (substring == NULL) {
@@ -473,7 +473,7 @@ size_t AvmStringFind(AvmString* self, str substring) {
     return (size_t)(c - self->_buffer);
 }
 
-size_t AvmStringFindLast(AvmString* self, str substring) {
+size_t AvmStringFindLast(const AvmString* self, str substring) {
     AVM_SELF_NULL_CHECK();
 
     if (substring == NULL) {
@@ -500,7 +500,8 @@ size_t AvmStringFindLast(AvmString* self, str substring) {
 // Replace and overloads.
 //
 
-size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
+size_t AvmStringReplace(const AvmString* self, char oldCharacter,
+                        char newCharacter) {
     AVM_SELF_NULL_CHECK();
 
     for (size_t i = 0; i < self->_length; i++) {
@@ -513,7 +514,7 @@ size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
     return AvmInvalid;
 }
 
-size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
+size_t AvmStringReplaceN(const AvmString* self, size_t count, char oldCharacter,
                          char newCharacter) {
     AVM_SELF_NULL_CHECK();
 
@@ -529,8 +530,8 @@ size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
-                             char newCharacter) {
+size_t AvmStringReplaceLastN(const AvmString* self, size_t count,
+                             char oldCharacter, char newCharacter) {
     AVM_SELF_NULL_CHECK();
 
     size_t realCount = 0;
@@ -545,7 +546,7 @@ size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
+size_t AvmStringReplaceLast(const AvmString* self, char oldCharacter,
                             char newCharacter) {
     AVM_SELF_NULL_CHECK();
 
@@ -559,7 +560,7 @@ size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
     return AvmInvalid;
 }
 
-size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
+size_t AvmStringReplaceAll(const AvmString* self, char oldCharacter,
                            char newCharacter) {
     AVM_SELF_NULL_CHECK();
 
@@ -579,7 +580,7 @@ size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
 // String manipulations.
 //
 
-void AvmStringReverse(AvmString* self) {
+void AvmStringReverse(const AvmString* self) {
     AVM_SELF_NULL_CHECK();
 
     char* start = AvmStringAsPtr(self);
@@ -592,9 +593,13 @@ void AvmStringReverse(AvmString* self) {
     }
 }
 
-void AvmStringToUpper(AvmString* self) { AvmStringMapCompat(self, toupper); }
+void AvmStringToUpper(const AvmString* self) {
+    AvmStringMapCompat(self, toupper);
+}
 
-void AvmStringToLower(AvmString* self) { AvmStringMapCompat(self, tolower); }
+void AvmStringToLower(const AvmString* self) {
+    AvmStringMapCompat(self, tolower);
+}
 
 void AvmStringClear(AvmString* self) {
     AVM_SELF_NULL_CHECK();
@@ -619,8 +624,8 @@ void AvmStringUnsafeSetLength(AvmString* self, size_t length) {
     self->_length = length;
 }
 
-void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity, size_t* length,
-                             char** buffer) {
+void AvmStringUnsafeDestruct(const AvmString* self, size_t* capacity,
+                             size_t* length, char** buffer) {
     AVM_SELF_NULL_CHECK();
 
     if (capacity != NULL) {
@@ -649,13 +654,13 @@ AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
 // Contains and overloads.
 //
 
-bool AvmStringContainsChar(AvmString* self, char character) {
+bool AvmStringContainsChar(const AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringIndexOf(self, character) != AvmInvalid;
 }
 
-bool AvmStringContainsStr(AvmString* self, str contents) {
+bool AvmStringContainsStr(const AvmString* self, str contents) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringFind(self, contents) != AvmInvalid;
@@ -665,13 +670,14 @@ bool AvmStringContainsStr(AvmString* self, str contents) {
 // StartsWith and overloads.
 //
 
-bool AvmStringStartsWithChar(AvmString* self, char character) {
+bool AvmStringStartsWithChar(const AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
     return self->_buffer[0] == character;
 }
 
-bool AvmStringStartsWithChars(AvmString* self, size_t length, str contents) {
+bool AvmStringStartsWithChars(const AvmString* self, size_t length,
+                              str contents) {
     AVM_SELF_NULL_CHECK();
 
     if (self->_length < length) {
@@ -681,13 +687,14 @@ bool AvmStringStartsWithChars(AvmString* self, size_t length, str contents) {
     return strncmp(self->_buffer, contents, length) == 0;
 }
 
-bool AvmStringStartsWithStr(AvmString* self, str contents) {
+bool AvmStringStartsWithStr(const AvmString* self, str contents) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringStartsWithChars(self, strlen(contents), contents);
 }
 
-bool AvmStringStartsWithString(AvmString* self, AvmString* contents) {
+bool AvmStringStartsWithString(const AvmString* self,
+                               const AvmString* contents) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringStartsWithChars(self, contents->_length, contents->_buffer);
@@ -697,19 +704,20 @@ bool AvmStringStartsWithString(AvmString* self, AvmString* contents) {
 // EndsWith and overloads.
 //
 
-bool AvmStringEndsWithChar(AvmString* self, char character) {
+bool AvmStringEndsWithChar(const AvmString* self, char character) {
     AVM_SELF_NULL_CHECK();
 
     return self->_buffer[self->_length - 1] == character;
 }
 
-bool AvmStringEndsWithStr(AvmString* self, str contents) {
+bool AvmStringEndsWithStr(const AvmString* self, str contents) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringEndsWithChars(self, strlen(contents), contents);
 }
 
-bool AvmStringEndsWithChars(AvmString* self, size_t length, str contents) {
+bool AvmStringEndsWithChars(const AvmString* self, size_t length,
+                            str contents) {
     AVM_SELF_NULL_CHECK();
 
     if (self->_length < length) {
@@ -721,7 +729,7 @@ bool AvmStringEndsWithChars(AvmString* self, size_t length, str contents) {
     return strncmp(self->_buffer + index, contents, length) == 0;
 }
 
-bool AvmStringEndsWithString(AvmString* self, AvmString* contents) {
+bool AvmStringEndsWithString(const AvmString* self, const AvmString* contents) {
     AVM_SELF_NULL_CHECK();
 
     return AvmStringEndsWithChars(self, contents->_length, contents->_buffer);
@@ -973,7 +981,7 @@ static void Parse(char c, size_t* index, char* buffer, va_list args) {
     }
 }
 
-void AvmStringParse(AvmString* self, str format, ...) {
+void AvmStringParse(const AvmString* self, str format, ...) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -988,7 +996,7 @@ void AvmStringParse(AvmString* self, str format, ...) {
     va_end(args);
 }
 
-void AvmStringParseV(AvmString* self, str format, va_list args) {
+void AvmStringParseV(const AvmString* self, str format, va_list args) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }

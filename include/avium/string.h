@@ -178,7 +178,7 @@ AVMAPI AvmString AvmStringRepeatChars(size_t length, str contents,
  * @param self The AvmString instance.
  * @return The AvmString length.
  */
-AVMAPI size_t AvmStringGetLength(AvmString* self);
+AVMAPI size_t AvmStringGetLength(const AvmString* self);
 
 /**
  * @brief Gets the capacity of an AvmString.
@@ -188,7 +188,7 @@ AVMAPI size_t AvmStringGetLength(AvmString* self);
  * @param self The AvmString instance.
  * @return The AvmString capacity.
  */
-AVMAPI size_t AvmStringGetCapacity(AvmString* self);
+AVMAPI size_t AvmStringGetCapacity(const AvmString* self);
 
 /**
  * @brief Gives access to the internal buffer of an AvmString.
@@ -202,7 +202,7 @@ AVMAPI size_t AvmStringGetCapacity(AvmString* self);
  * @param self The AvmString instance.
  * @return A pointer to the internal buffer.
  */
-AVMAPI char* AvmStringAsPtr(AvmString* self);
+AVMAPI char* AvmStringAsPtr(const AvmString* self);
 
 /**
  * @brief Determines whether an AvmString is empty.
@@ -212,7 +212,7 @@ AVMAPI char* AvmStringAsPtr(AvmString* self);
  * @param self The AvmString instance.
  * @return true if the string is empty, otherwise false.
  */
-AVMAPI bool AvmStringIsEmpty(AvmString* self);
+AVMAPI bool AvmStringIsEmpty(const AvmString* self);
 
 /**
  * @brief Returns the character at the specified index in an AvmString.
@@ -225,7 +225,8 @@ AVMAPI bool AvmStringIsEmpty(AvmString* self);
  *
  * @return The character at the specified index.
  */
-AVMAPI char AvmStringCharAt(AvmString* self, size_t index, AvmError** error);
+AVMAPI char AvmStringCharAt(const AvmString* self, size_t index,
+                            AvmError** error);
 
 /**
  * @brief Calls a function for each character in an AvmString.
@@ -236,7 +237,7 @@ AVMAPI char AvmStringCharAt(AvmString* self, size_t index, AvmError** error);
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringForEach(AvmString* self, void (*function)(char));
+AVMAPI void AvmStringForEach(const AvmString* self, void (*function)(char));
 
 /**
  * @brief Calls a function for each character in an AvmString providing it
@@ -248,7 +249,8 @@ AVMAPI void AvmStringForEach(AvmString* self, void (*function)(char));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t));
+AVMAPI void AvmStringForEachEx(const AvmString* self,
+                               void (*function)(char, size_t));
 
 /**
  * @brief Applies a function for each character in an AvmString.
@@ -259,7 +261,7 @@ AVMAPI void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringMap(AvmString* self, char (*function)(char));
+AVMAPI void AvmStringMap(const AvmString* self, char (*function)(char));
 
 /**
  * @brief Applies a function for each character in an AvmString providing it
@@ -271,7 +273,8 @@ AVMAPI void AvmStringMap(AvmString* self, char (*function)(char));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringMapEx(AvmString* self, char (*function)(char, size_t));
+AVMAPI void AvmStringMapEx(const AvmString* self,
+                           char (*function)(char, size_t));
 
 /**
  * @brief Applies a function for each character in an AvmString. Used for
@@ -283,7 +286,7 @@ AVMAPI void AvmStringMapEx(AvmString* self, char (*function)(char, size_t));
  * @param self The AvmString instance.
  * @param function The function to call.
  */
-AVMAPI void AvmStringMapCompat(AvmString* self, int (*function)(int));
+AVMAPI void AvmStringMapCompat(const AvmString* self, int (*function)(int));
 
 /**
  * @brief Pushes a character to the end of an AvmString.
@@ -344,7 +347,7 @@ AVMAPI void AvmStringPushChars(AvmString* self, size_t length, str contents);
  * @param self The AvmString instance.
  * @param other The AvmString to push.
  */
-AVMAPI void AvmStringPushString(AvmString* self, AvmString* other);
+AVMAPI void AvmStringPushString(AvmString* self, const AvmString* other);
 
 /**
  * @brief Returns the index of the first occurrence of a character in an
@@ -357,7 +360,7 @@ AVMAPI void AvmStringPushString(AvmString* self, AvmString* other);
  *
  * @return The index or AvmInvalid.
  */
-AVMAPI size_t AvmStringIndexOf(AvmString* self, char character);
+AVMAPI size_t AvmStringIndexOf(const AvmString* self, char character);
 
 /**
  * @brief Returns the index of the last occurrence of a character in an
@@ -370,7 +373,7 @@ AVMAPI size_t AvmStringIndexOf(AvmString* self, char character);
  *
  * @return The index or AvmInvalid.
  */
-AVMAPI size_t AvmStringLastIndexOf(AvmString* self, char character);
+AVMAPI size_t AvmStringLastIndexOf(const AvmString* self, char character);
 
 /**
  * @brief Replaces the first occurrence of a character in an AvmString with
@@ -384,7 +387,7 @@ AVMAPI size_t AvmStringLastIndexOf(AvmString* self, char character);
  *
  * @return The index of the replaced character or AvmInvalid.
  */
-AVMAPI size_t AvmStringReplace(AvmString* self, char oldCharacter,
+AVMAPI size_t AvmStringReplace(const AvmString* self, char oldCharacter,
                                char newCharacter);
 
 /**
@@ -400,7 +403,7 @@ AVMAPI size_t AvmStringReplace(AvmString* self, char oldCharacter,
  *
  * @return The count of the total replaced characters.
  */
-AVMAPI size_t AvmStringReplaceN(AvmString* self, size_t count,
+AVMAPI size_t AvmStringReplaceN(const AvmString* self, size_t count,
                                 char oldCharacter, char newCharacter);
 
 /**
@@ -416,7 +419,7 @@ AVMAPI size_t AvmStringReplaceN(AvmString* self, size_t count,
  *
  * @return The count of the total replaced characters.
  */
-AVMAPI size_t AvmStringReplaceLastN(AvmString* self, size_t count,
+AVMAPI size_t AvmStringReplaceLastN(const AvmString* self, size_t count,
                                     char oldCharacter, char newCharacter);
 
 /**
@@ -430,7 +433,7 @@ AVMAPI size_t AvmStringReplaceLastN(AvmString* self, size_t count,
  *
  * @return The count of the total replaced characters.
  */
-AVMAPI size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
+AVMAPI size_t AvmStringReplaceAll(const AvmString* self, char oldCharacter,
                                   char newCharacter);
 
 /**
@@ -445,7 +448,7 @@ AVMAPI size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
  *
  * @return The index or AvmInvalid.
  */
-AVMAPI size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
+AVMAPI size_t AvmStringReplaceLast(const AvmString* self, char oldCharacter,
                                    char newCharacter);
 
 /**
@@ -460,7 +463,7 @@ AVMAPI size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
  *
  * @return The index or AvmInvalid.
  */
-AVMAPI size_t AvmStringFind(AvmString* self, str substring);
+AVMAPI size_t AvmStringFind(const AvmString* self, str substring);
 
 /**
  * @brief Returns the index of the last occurrence of a substring in an
@@ -474,7 +477,7 @@ AVMAPI size_t AvmStringFind(AvmString* self, str substring);
  *
  * @return The index or AvmInvalid.
  */
-AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
+AVMAPI size_t AvmStringFindLast(const AvmString* self, str substring);
 
 /**
  * @brief Reverses an AvmString.
@@ -482,7 +485,7 @@ AVMAPI size_t AvmStringFindLast(AvmString* self, str substring);
  * @pre Parameter @p self must be not NULL.
  * @param self The AvmString instance.
  */
-AVMAPI void AvmStringReverse(AvmString* self);
+AVMAPI void AvmStringReverse(const AvmString* self);
 
 /**
  * @brief Converts all characters in an AvmString to uppercase.
@@ -490,7 +493,7 @@ AVMAPI void AvmStringReverse(AvmString* self);
  * @pre Parameter @p self must be not NULL.
  * @param self The AvmString instance.
  */
-AVMAPI void AvmStringToUpper(AvmString* self);
+AVMAPI void AvmStringToUpper(const AvmString* self);
 
 /**
  * Converts all characters in an AvmString to lowercase.
@@ -498,7 +501,7 @@ AVMAPI void AvmStringToUpper(AvmString* self);
  * @pre Parameter @p self must be not NULL.
  * @param self The AvmString instance.
  */
-AVMAPI void AvmStringToLower(AvmString* self);
+AVMAPI void AvmStringToLower(const AvmString* self);
 
 /**
  * @brief Clears the contents of an AvmString by setting its length to 0).
@@ -541,7 +544,7 @@ AVMAPI void AvmStringUnsafeSetLength(AvmString* self, size_t length);
  * @param[out] length The length.
  * @param[out] buffer The internal buffer.
  */
-AVMAPI void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity,
+AVMAPI void AvmStringUnsafeDestruct(const AvmString* self, size_t* capacity,
                                     size_t* length, char** buffer);
 
 /**
@@ -567,7 +570,7 @@ AVMAPI AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length,
  * @param character The character to find.
  * @return true if the character is found, otherwise false.
  */
-AVMAPI bool AvmStringContainsChar(AvmString* self, char character);
+AVMAPI bool AvmStringContainsChar(const AvmString* self, char character);
 
 /**
  * @brief Determines whether an AvmString contains a raw string.
@@ -579,7 +582,7 @@ AVMAPI bool AvmStringContainsChar(AvmString* self, char character);
  * @param contents The string to find.
  * @return true if the string is found, otherwise false.
  */
-AVMAPI bool AvmStringContainsStr(AvmString* self, str contents);
+AVMAPI bool AvmStringContainsStr(const AvmString* self, str contents);
 
 /**
  * @brief Determines whether an AvmString starts with a character.
@@ -590,7 +593,7 @@ AVMAPI bool AvmStringContainsStr(AvmString* self, str contents);
  * @param character The character to find.
  * @return true if the AvmString starts with the character, otherwise false.
  */
-AVMAPI bool AvmStringStartsWithChar(AvmString* self, char character);
+AVMAPI bool AvmStringStartsWithChar(const AvmString* self, char character);
 
 /**
  * @brief Determines whether an AvmString starts with a raw string provided with
@@ -605,7 +608,7 @@ AVMAPI bool AvmStringStartsWithChar(AvmString* self, char character);
  *
  * @return true if the AvmString starts with the string, otherwise false.
  */
-AVMAPI bool AvmStringStartsWithChars(AvmString* self, size_t length,
+AVMAPI bool AvmStringStartsWithChars(const AvmString* self, size_t length,
                                      str contents);
 
 /**
@@ -618,7 +621,7 @@ AVMAPI bool AvmStringStartsWithChars(AvmString* self, size_t length,
  * @param contents The string to find.
  * @return true if the AvmString starts with the string, otherwise false.
  */
-AVMAPI bool AvmStringStartsWithStr(AvmString* self, str contents);
+AVMAPI bool AvmStringStartsWithStr(const AvmString* self, str contents);
 
 /**
  * @brief Determines whether an AvmString starts with an AvmString.
@@ -630,7 +633,8 @@ AVMAPI bool AvmStringStartsWithStr(AvmString* self, str contents);
  * @param contents The string to find.
  * @return true if the AvmString starts with the string, otherwise false.
  */
-AVMAPI bool AvmStringStartsWithString(AvmString* self, AvmString* contents);
+AVMAPI bool AvmStringStartsWithString(const AvmString* self,
+                                      const AvmString* contents);
 
 /**
  * @brief Determines whether an AvmString ends with a character.
@@ -641,7 +645,7 @@ AVMAPI bool AvmStringStartsWithString(AvmString* self, AvmString* contents);
  * @param character The character to find.
  * @return true if the AvmString ends with the character, otherwise false.
  */
-AVMAPI bool AvmStringEndsWithChar(AvmString* self, char character);
+AVMAPI bool AvmStringEndsWithChar(const AvmString* self, char character);
 
 /**
  * @brief Determines whether an AvmString ends with a raw string.
@@ -653,7 +657,7 @@ AVMAPI bool AvmStringEndsWithChar(AvmString* self, char character);
  * @param contents The string to find.
  * @return true if the AvmString ends with the string, otherwise false.
  */
-AVMAPI bool AvmStringEndsWithStr(AvmString* self, str contents);
+AVMAPI bool AvmStringEndsWithStr(const AvmString* self, str contents);
 
 /**
  * @brief Determines whether an AvmString ends with a raw string provided with
@@ -668,7 +672,7 @@ AVMAPI bool AvmStringEndsWithStr(AvmString* self, str contents);
  *
  * @return true if the AvmString ends with the string, otherwise false.
  */
-AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
+AVMAPI bool AvmStringEndsWithChars(const AvmString* self, size_t length,
                                    str contents);
 
 /**
@@ -681,15 +685,17 @@ AVMAPI bool AvmStringEndsWithChars(AvmString* self, size_t length,
  * @param contents The string to find.
  * @return true if the AvmString ends with the string, otherwise false.
  */
-AVMAPI bool AvmStringEndsWithString(AvmString* self, AvmString* contents);
+AVMAPI bool AvmStringEndsWithString(const AvmString* self,
+                                    const AvmString* contents);
 
 #ifndef DOXYGEN
 // TODO
-AVMAPI bool AvmStringContainsChars(AvmString* self, size_t length,
+AVMAPI bool AvmStringContainsChars(const AvmString* self, size_t length,
                                    str contents);
 
 // TODO
-AVMAPI bool AvmStringContainsString(AvmString* self, AvmString* contents);
+AVMAPI bool AvmStringContainsString(const AvmString* self,
+                                    const AvmString* contents);
 #endif  // DOXYGEN
 
 /**
@@ -726,7 +732,7 @@ AVMAPI AvmString AvmStringFormatV(str format, va_list args);
  * @param format The format string.
  * @param ... The values to insert into the format string.
  */
-AVMAPI void AvmStringParse(AvmString* self, str format, ...);
+AVMAPI void AvmStringParse(const AvmString* self, str format, ...);
 
 /**
  * @brief Reads formatted output from an AvmString.
@@ -738,6 +744,6 @@ AVMAPI void AvmStringParse(AvmString* self, str format, ...);
  * @param format The format string.
  * @param args The va_list with the values to insert into the format string.
  */
-AVMAPI void AvmStringParseV(AvmString* self, str format, va_list args);
+AVMAPI void AvmStringParseV(const AvmString* self, str format, va_list args);
 
 #endif  // AVIUM_STRING_H
