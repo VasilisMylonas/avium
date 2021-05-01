@@ -105,7 +105,7 @@
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
 
-#define AvmInvalid ((size_t)-1);
+#define AvmInvalid ((size_t)-1)
 
 /// Signed 64-bit integer type.
 typedef AVM_LONG_TYPE _long;
@@ -158,14 +158,17 @@ typedef struct {
 
 /// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {
-    size_t _capacity;
-    size_t _length;
+    uint _capacity;
+    uint _length;
     char* _buffer;
 });
 #endif  // DOXYGEN
 
+/// A weak pointer to a type T.
 #define weakptr(T) T*
-#define box(T)     T*
+
+/// A pointer to a heap-allocated type T.
+#define box(T) T*
 
 /**
  * @brief Gets information about the type of an object.
