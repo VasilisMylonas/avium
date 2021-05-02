@@ -21,13 +21,13 @@ __test TestNew(object state) {
     AvmString s;
 
     s = AvmStringNew(0);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
 
     s = AvmStringNew(2);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 2);
     AvmObjectDestroy(&s);
@@ -39,16 +39,16 @@ __test TestFrom(object state) {
     AvmString s;
 
     s = AvmStringFrom("");
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
 
     s = AvmStringFrom(TestString);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 12);
     AssertEqual(AvmStringGetCapacity(&s), 12 * AVM_STRING_GROWTH_FACTOR);
-    AssertStrEqual(AvmStringAsPtr(&s), TestString);
+    AssertStrEqual(AvmStringGetBuffer(&s), TestString);
     AvmObjectDestroy(&s);
 }
 
@@ -58,22 +58,22 @@ __test TestFromChars(object state) {
     AvmString s;
 
     s = AvmStringFromChars(sizeof(TestArray), TestArray);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), sizeof(TestArray));
     AssertEqual(AvmStringGetCapacity(&s),
                 sizeof(TestArray) * AVM_STRING_GROWTH_FACTOR);
-    AssertMemEqual(AvmStringAsPtr(&s), "Hello!", sizeof(TestArray));
+    AssertMemEqual(AvmStringGetBuffer(&s), "Hello!", sizeof(TestArray));
     AvmObjectDestroy(&s);
 
     s = AvmStringFromChars(3, TestArray);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 3);
     AssertEqual(AvmStringGetCapacity(&s), 3 * AVM_STRING_GROWTH_FACTOR);
-    AssertMemEqual(AvmStringAsPtr(&s), "Hel", 3);
+    AssertMemEqual(AvmStringGetBuffer(&s), "Hel", 3);
     AvmObjectDestroy(&s);
 
     s = AvmStringFromChars(0, TestArray);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
@@ -85,21 +85,21 @@ __test TestRepeat(object state) {
     AvmString s;
 
     s = AvmStringRepeat(TestString, 4);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 4 * strlen(TestString));
     AssertEqual(AvmStringGetCapacity(&s),
                 4 * strlen(TestString) * AVM_STRING_GROWTH_FACTOR);
-    AssertMemEqual(AvmStringAsPtr(&s), TestString4, 4 * strlen(TestString));
+    AssertMemEqual(AvmStringGetBuffer(&s), TestString4, 4 * strlen(TestString));
     AvmObjectDestroy(&s);
 
     s = AvmStringRepeat(TestString, 0);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
 
     s = AvmStringRepeat("", 4);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
@@ -111,20 +111,20 @@ __test TestRepeatChars(object state) {
     AvmString s;
 
     s = AvmStringRepeatChars(5, TestString, 4);
-    AssertNotNull(AvmStringAsPtr(&s));
+    AssertNotNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 4 * 5);
     AssertEqual(AvmStringGetCapacity(&s), 4 * 5 * AVM_STRING_GROWTH_FACTOR);
-    AssertMemEqual(AvmStringAsPtr(&s), "HelloHelloHelloHello", 4 * 5);
+    AssertMemEqual(AvmStringGetBuffer(&s), "HelloHelloHelloHello", 4 * 5);
     AvmObjectDestroy(&s);
 
     s = AvmStringRepeatChars(5, TestString, 0);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
 
     s = AvmStringRepeatChars(0, TestString, 4);
-    AssertNull(AvmStringAsPtr(&s));
+    AssertNull(AvmStringGetBuffer(&s));
     AssertEqual(AvmStringGetLength(&s), 0);
     AssertEqual(AvmStringGetCapacity(&s), 0);
     AvmObjectDestroy(&s);
@@ -147,45 +147,45 @@ __test TestIndexes(object state) {
 
 __test TestPush(object state) {
     AvmStringPushStr(state, "!!");
-    AssertStrEqual(AvmStringAsPtr(state), "Hello World!!!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hello World!!!");
 }
 
 __test TestReplaceAll(object state) {
     AssertEqual(AvmStringReplaceAll(state, 'o', 'a'), 2);
-    AssertStrEqual(AvmStringAsPtr(state), "Hella Warld!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hella Warld!");
 }
 
 __test TestUpperLower(object state) {
     AvmStringToUpper(state);
-    AssertStrEqual(AvmStringAsPtr(state), "HELLO WORLD!");
+    AssertStrEqual(AvmStringGetBuffer(state), "HELLO WORLD!");
     AvmStringToLower(state);
-    AssertStrEqual(AvmStringAsPtr(state), "hello world!");
+    AssertStrEqual(AvmStringGetBuffer(state), "hello world!");
 }
 
 __test TestReplaceN(object state) {
     AssertEqual(AvmStringReplaceN(state, 1, 'o', 'a'), 1);
-    AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hella World!");
 }
 
 __test TestReplaceLastN(object state) {
     AssertEqual(AvmStringReplaceLastN(state, 1, 'o', 'a'), 1);
-    AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hello Warld!");
 }
 
 __test TestReplace(object state) {
     AssertEqual(AvmStringReplace(state, 'o', 'a'), 4);
-    AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hella World!");
 
     AssertEqual(AvmStringReplace(state, 'u', 'a'), AvmInvalid);
-    AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hella World!");
 }
 
 __test TestReplaceLast(object state) {
     AssertEqual(AvmStringReplaceLast(state, 'o', 'a'), 7);
-    AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hello Warld!");
 
     AssertEqual(AvmStringReplaceLast(state, 'u', 'a'), AvmInvalid);
-    AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
+    AssertStrEqual(AvmStringGetBuffer(state), "Hello Warld!");
 }
 
 __test TestStartsWithStr(object state) {
@@ -220,7 +220,7 @@ __test TestContainsChar(object state) {
 
 __test TestReverse(object state) {
     AvmStringReverse(state);
-    AssertMemEqual(AvmStringAsPtr(state), "!dlroW olleH",
+    AssertMemEqual(AvmStringGetBuffer(state), "!dlroW olleH",
                    AvmStringGetLength(state));
 }
 
@@ -232,7 +232,7 @@ __test TestClear(object state) {
 __test TestErase(object state) {
     byte desired[12] = {0};
     AvmStringErase(state);
-    AssertMemEqual(AvmStringAsPtr(state), desired, sizeof(desired));
+    AssertMemEqual(AvmStringGetBuffer(state), desired, sizeof(desired));
     AssertEqual(AvmStringGetLength(state), 0);
 }
 
@@ -286,7 +286,7 @@ __test TestIsEmpty(object state) {
 __test TestToString(object state) {
     AvmString s = AvmObjectToString(state);
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(&s));
-    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(&s),
+    AssertMemEqual(AvmStringGetBuffer(state), AvmStringGetBuffer(&s),
                    AvmStringGetLength(state));
 }
 
@@ -294,7 +294,7 @@ __test TestClone(object state) {
     AvmString* s = AvmObjectClone(state);
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(s));
     AssertEqual(AvmStringGetLength(state), AvmStringGetLength(s));
-    AssertMemEqual(AvmStringAsPtr(state), AvmStringAsPtr(s),
+    AssertMemEqual(AvmStringGetBuffer(state), AvmStringGetBuffer(s),
                    AvmStringGetLength(state));
 }
 
@@ -307,5 +307,5 @@ __test TestUnsafeDestruct(object state) {
 
     AssertEqual(capacity, AvmStringGetCapacity(state));
     AssertEqual(length, AvmStringGetLength(state));
-    AssertEqual(buffer, AvmStringAsPtr(state));
+    AssertEqual(buffer, AvmStringGetBuffer(state));
 }

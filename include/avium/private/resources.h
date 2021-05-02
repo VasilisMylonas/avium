@@ -7,6 +7,12 @@
 #define BACKTRACE_MAX_SYMBOLS 128
 #define READ_LINE_CAPACITY    32
 
+#define AVM_FORWARD(arg, call) \
+    va_list args;              \
+    va_start(args, arg);       \
+    call(arg, args);           \
+    va_end(args);
+
 #define NULL_PARAM_STR(name)  "Parameter `" name "` was `NULL`."
 #define RANGE_PARAM_STR(name) "Parameter `" name "` was out of range."
 

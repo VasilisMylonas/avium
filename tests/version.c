@@ -21,5 +21,5 @@ __test TestFields(object state) {
 
 __test TestToString(object state) {
     AvmString s = AvmObjectToString(state);
-    AssertMemEqual(AvmStringAsPtr(&s), "0.9.1", AvmStringGetLength(state));
+    AssertMemEqual(AvmStringGetBuffer(&s), "0.9.1", AvmStringGetLength(state));
 }

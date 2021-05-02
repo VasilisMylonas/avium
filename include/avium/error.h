@@ -95,7 +95,7 @@ AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
  * @param self The AvmError instance.
  * @return The source of the error.
  */
-AVMAPI AvmError* AvmErrorGetSource(AvmError* self);
+AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError* self);
 
 /**
  * @brief Gets a backtrace of the stack during the creation of an error.

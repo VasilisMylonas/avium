@@ -94,14 +94,14 @@ AVMAPI void* AvmAlloc(size_t size);
  * @param size The new size of the memory block in bytes.
  * @return The reallocated memory.
  */
-AVMAPI void* AvmRealloc(void* memory, size_t size);
+AVMAPI box(void) AvmRealloc(box(void) memory, size_t size);
 
 /**
  * @brief Deallocates heap memory.
  *
  * @param memory The memory block to deallocate.
  */
-AVMAPI void AvmDealloc(void* memory);
+AVMAPI void AvmDealloc(box(void) memory);
 
 /**
  * @brief Allocates an object on the heap, and initializes it with the provided

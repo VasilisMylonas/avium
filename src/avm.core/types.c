@@ -6,14 +6,14 @@
 #include "avium/private/resources.h"
 #include "avium/string.h"
 
-AvmType* AvmObjectGetType(object self) {
+const AvmType* AvmObjectGetType(object self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
 
-    // The first member of an object should be an AvmType*
+    // The first member of an object should be a const AvmType*
     // Look in types.h for AVM_CLASS
-    return *(AvmType**)self;
+    return *(const AvmType**)self;
 }
 
 bool AvmObjectEquals(object self, object other) {
@@ -25,7 +25,7 @@ bool AvmObjectEquals(object self, object other) {
         AvmPanic(OtherNullMsg);
     }
 
-    AvmType* type = AvmObjectGetType(self);
+    const AvmType* type = AvmObjectGetType(self);
     AvmFunction fn = AvmTypeGetFunction(type, FnEntryEquals);
     size_t size = type->_size;
 
@@ -57,7 +57,7 @@ object AvmObjectClone(object self) {
 
     if (fn == NULL) {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
-        void* memory = AvmAlloc(size);
+        box(void) memory = AvmAlloc(size);
         AvmMemCopy((byte*)self, size, (byte*)memory, size);
         return memory;
     }

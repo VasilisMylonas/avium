@@ -2,8 +2,8 @@
  * @file avium/types.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Primitive Avium types and related functions.
- * @version 0.2
- * @date 2021-04-14
+ * @version 0.2.2
+ * @date 2021-05-01
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -38,15 +38,15 @@
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
  */
-#define AVM_CLASS(T, B, ...)       \
-    extern AvmType AVM_TI_NAME(T); \
-    typedef struct T T;            \
-    struct T {                     \
-        union {                    \
-            const AvmType* _type;  \
-            B _base;               \
-        };                         \
-        struct __VA_ARGS__;        \
+#define AVM_CLASS(T, B, ...)             \
+    extern const AvmType AVM_TI_NAME(T); \
+    typedef struct T T;                  \
+    struct T {                           \
+        union {                          \
+            const AvmType* _type;        \
+            B _base;                     \
+        };                               \
+        struct __VA_ARGS__;              \
     }
 
 /**
@@ -69,19 +69,16 @@
         struct __VA_ARGS__;         \
     }
 
-/// Refers to the base type in a function with a self parameter.
-#define base (&self->_base)
-
 /**
  * @brief Creates an Avium interface type.
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)           \
-    extern AvmType AVM_TI_NAME(T); \
-    typedef struct T T;            \
-    struct T {                     \
-        const AvmType* _type;      \
+#define AVM_INTERFACE(T)                 \
+    extern const AvmType AVM_TI_NAME(T); \
+    typedef struct T T;                  \
+    struct T {                           \
+        const AvmType* _type;            \
     }
 
 /**
@@ -95,7 +92,7 @@
 /**
  * @brief Generates inline type info for a type.
  *
- * Uses with the AVM_INLINE_CLASS macro.
+ * Used with the AVM_INLINE_CLASS macro.
  *
  * @param T The type for which to generate type info.
  * @param ... The type vtable enclosed in braces ({...})
@@ -104,6 +101,11 @@
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T
+
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
+
+#define AvmInvalid ((size_t)-1)
 
 /// Signed 64-bit integer type.
 typedef AVM_LONG_TYPE _long;
@@ -120,14 +122,6 @@ typedef unsigned short ushort;
 /// Unsigned 8-bit integer type.
 typedef unsigned char byte;
 
-#ifdef DOXYGEN
-/// Primitive read-only string.
-typedef char* str;
-#else
-/// Primitive read-only string.
-typedef const char* str;
-#endif  // DOXYGEN
-
 /// An unknown object type.
 typedef void* object;
 
@@ -142,24 +136,39 @@ typedef void (*AvmFunction)(void);
 #    define never _Noreturn void
 #endif  // AVM_MSVC
 
+#ifdef DOXYGEN
+/// Primitive read-only string.
+typedef char* str;
+
+/// A dynamic heap-allocated string.
+typedef struct AvmString AvmString;
+
+/// A type containing information about an object.
+typedef struct AvmType AvmType;
+#else
+/// Primitive read-only string.
+typedef const char* str;
+
 /// A type containing information about an object.
 typedef struct {
-    const str _name;
-    const size_t _size;
+    str _name;
+    size_t _size;
     AvmFunction _vptr[AVM_VFT_SIZE];
 } AvmType;
 
-#ifdef DOXYGEN
-/// A dynamic heap-allocated string.
-typedef struct AvmString AvmString;
-#else
 /// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {
-    size_t _capacity;
-    size_t _length;
+    uint _capacity;
+    uint _length;
     char* _buffer;
 });
 #endif  // DOXYGEN
+
+/// A weak pointer to a type T.
+#define weakptr(T) T*
+
+/// A pointer to a heap-allocated type T.
+#define box(T) T*
 
 /**
  * @brief Gets information about the type of an object.
@@ -169,7 +178,7 @@ AVM_CLASS(AvmString, object, {
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI AvmType* AvmObjectGetType(object self);
+AVMAPI const AvmType* AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.
@@ -228,14 +237,12 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-static const size_t AvmInvalid = (size_t)-1;
-
 #ifndef DOXYGEN
-#    define AVM_TYPE_(T, ...)      \
-        AvmType AVM_TI_NAME(T) = { \
-            ._vptr = __VA_ARGS__,  \
-            ._name = #T,           \
-            ._size = sizeof(T),    \
+#    define AVM_TYPE_(T, ...)            \
+        const AvmType AVM_TI_NAME(T) = { \
+            ._vptr = __VA_ARGS__,        \
+            ._name = #T,                 \
+            ._size = sizeof(T),          \
         }
 
 // Ensure type size constraints.
@@ -249,15 +256,15 @@ static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
-extern AvmType AVM_TI_NAME(size_t);
-extern AvmType AVM_TI_NAME(_long);
-extern AvmType AVM_TI_NAME(ulong);
-extern AvmType AVM_TI_NAME(int);
-extern AvmType AVM_TI_NAME(uint);
-extern AvmType AVM_TI_NAME(short);
-extern AvmType AVM_TI_NAME(ushort);
-extern AvmType AVM_TI_NAME(char);
-extern AvmType AVM_TI_NAME(byte);
+extern const AvmType AVM_TI_NAME(size_t);
+extern const AvmType AVM_TI_NAME(_long);
+extern const AvmType AVM_TI_NAME(ulong);
+extern const AvmType AVM_TI_NAME(int);
+extern const AvmType AVM_TI_NAME(uint);
+extern const AvmType AVM_TI_NAME(short);
+extern const AvmType AVM_TI_NAME(ushort);
+extern const AvmType AVM_TI_NAME(char);
+extern const AvmType AVM_TI_NAME(byte);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H
