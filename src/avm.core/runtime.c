@@ -97,7 +97,7 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index) {
     return self->_vptr[index];
 }
 
-AvmType* AvmTypeGetBase(AvmType* self) {
+const AvmType* AvmTypeGetBase(const AvmType* self) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -105,7 +105,7 @@ AvmType* AvmTypeGetBase(AvmType* self) {
     return self->_baseType;
 }
 
-bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType) {
+bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType) {
     if (self == NULL) {
         AvmPanic(SelfNullMsg);
     }
@@ -118,7 +118,7 @@ bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType) {
         return true;
     }
 
-    for (AvmType* temp = AvmTypeGetBase(self); temp != typeid(object);
+    for (const AvmType* temp = AvmTypeGetBase(self); temp != typeid(object);
          temp = AvmTypeGetBase(temp)) {
         if (temp == baseType) {
             return true;
@@ -173,6 +173,7 @@ void AvmVScanf(str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
+    // TODO
     vscanf(format, args);
 }
 
@@ -220,6 +221,7 @@ void AvmErrorf(str format, ...) {
 void AvmRuntimeRunTests(str program) {
     AvmEnableExceptions();
 
+    (void)program;
     // TODO
 
     AvmDisableExceptions();

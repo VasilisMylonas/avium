@@ -39,8 +39,8 @@
  * @param ... Member declaration in braces ({ ... })
  */
 #define AVM_CLASS(T, B, ...)             \
-    extern const AvmType AVM_TI_NAME(T); \
     typedef struct T T;                  \
+    extern const AvmType AVM_TI_NAME(T); \
     struct T {                           \
         union {                          \
             const AvmType* _type;        \
@@ -74,11 +74,10 @@
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)                 \
-    extern const AvmType AVM_TI_NAME(T); \
-    typedef struct T T;                  \
-    struct T {                           \
-        const AvmType* _type;            \
+#define AVM_INTERFACE(T)      \
+    typedef struct T T;       \
+    struct T {                \
+        const AvmType* _type; \
     }
 
 /**
@@ -155,7 +154,7 @@ typedef const char* str;
 AVM_CLASS(AvmType, object, {
     str _name;
     size_t _size;
-    AvmType* _baseType;
+    const AvmType* _baseType;
     AvmFunction _vptr[AVM_VFT_SIZE];
 });
 
@@ -241,13 +240,13 @@ AVMAPI object AvmObjectClone(object self);
 AVMAPI AvmString AvmObjectToString(object self);
 
 #ifndef DOXYGEN
-#    define AVM_TYPE_(T, B, ...)      \
-        AvmType AVM_TI_NAME(T) = {    \
-            ._type = typeid(AvmType), \
-            ._vptr = __VA_ARGS__,     \
-            ._name = #T,              \
-            ._baseType = typeid(B),   \
-            ._size = sizeof(T),       \
+#    define AVM_TYPE_(T, B, ...)         \
+        const AvmType AVM_TI_NAME(T) = { \
+            ._type = typeid(AvmType),    \
+            ._vptr = __VA_ARGS__,        \
+            ._name = #T,                 \
+            ._baseType = typeid(B),      \
+            ._size = sizeof(T),          \
         }
 
 // Ensure type size constraints.
@@ -261,17 +260,17 @@ static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
-extern AvmType AVM_TI_NAME(AvmType);
-extern AvmType AVM_TI_NAME(object);
-extern AvmType AVM_TI_NAME(size_t);
-extern AvmType AVM_TI_NAME(_long);
-extern AvmType AVM_TI_NAME(ulong);
-extern AvmType AVM_TI_NAME(int);
-extern AvmType AVM_TI_NAME(uint);
-extern AvmType AVM_TI_NAME(short);
-extern AvmType AVM_TI_NAME(ushort);
-extern AvmType AVM_TI_NAME(char);
-extern AvmType AVM_TI_NAME(byte);
+extern const AvmType AVM_TI_NAME(AvmType);
+extern const AvmType AVM_TI_NAME(object);
+extern const AvmType AVM_TI_NAME(size_t);
+extern const AvmType AVM_TI_NAME(_long);
+extern const AvmType AVM_TI_NAME(ulong);
+extern const AvmType AVM_TI_NAME(int);
+extern const AvmType AVM_TI_NAME(uint);
+extern const AvmType AVM_TI_NAME(short);
+extern const AvmType AVM_TI_NAME(ushort);
+extern const AvmType AVM_TI_NAME(char);
+extern const AvmType AVM_TI_NAME(byte);
 #endif  // DOXYGEN
 
 #endif  // AVIUM_TYPES_H

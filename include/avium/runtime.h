@@ -208,9 +208,9 @@ AVMAPI size_t AvmTypeGetSize(const AvmType* self);
  */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
-AVMAPI AvmType* AvmTypeGetBase(AvmType* self);
+AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
 
-AVMAPI bool AvmTypeInheritsFrom(AvmType* self, AvmType* baseType);
+AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);
@@ -225,8 +225,9 @@ void __main();
 AVMAPI void AvmRuntimeRunTests(str program);
 
 int main(int argc, str argv[]) {
-    __main();
+    AvmRuntimeInit(argc, argv);
     AvmRuntimeRunTests(argv[0]);
+    __main();
     return 0;
 }
 

@@ -32,7 +32,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     AvmArrayList(AvmString) functions = AvmArrayListNew(AvmString)(10);
 
     AvmString command = AvmStringFormat(CommandTemplate, path);
-    FILE* out = popen(AvmStringAsPtr(&command), "r");
+    FILE* out = popen(AvmStringGetBuffer(&command), "r");
     AvmObjectDestroy(&command);
 
     bool hasFailed = false;
@@ -148,7 +148,7 @@ AvmSymbolType AvmModuleGetSymbolType(AvmModule* self, str name) {
     for (size_t i = 0; i < AvmModuleGetSymbolCount(self); i++) {
         AvmString* string = &self->_symbols._items[i];
         size_t length = AvmStringGetLength(string);
-        char* buffer = AvmStringAsPtr(string);
+        char* buffer = AvmStringGetBuffer(string);
 
         if (AvmStringStartsWithChar(string, AVM_NM_FN_PREFIX)) {
             if (strncmp(&buffer[1], name, length - 1) == 0) {
@@ -192,7 +192,7 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
     }
 
     AvmString string = AvmStringFormat("_TI_%s", name);
-    AvmType* t = dlsym(self->_handle, AvmStringAsPtr(&string));
+    AvmType* t = dlsym(self->_handle, AvmStringGetBuffer(&string));
     AvmObjectDestroy(&string);
     return t;
 #else
