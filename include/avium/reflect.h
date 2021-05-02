@@ -34,6 +34,36 @@ AVMAPI void* AvmModuleGetVariable(AvmModule* self, str name);
 
 AVMAPI object AvmReflectConstructType(AvmType* type);
 
+AVM_CLASS(AvmEnum, object, {
+    str _name;
+    size_t _size;
+    struct {
+        str _name;
+        long _value;
+    } _members[AVM_MAX_ENUM_MEMBERS];
+});
+
+AVMAPI str AvmEnumGetName(AvmEnum* self);
+AVMAPI size_t AvmEnumGetSize(AvmEnum* self);
+AVMAPI bool AvmEnumIsDefined(AvmEnum* self, long value);
+AVMAPI str AvmEnumGetNameOf(AvmEnum* self, long value);
+AVMAPI long AvmEnumGetValueOf(AvmEnum* self, str name);
+
+#    define AVM_ENUM_MEMBER(V) \
+        { #V, V }
+
+#    define AVM_ENUM(T, ...) AVM_ENUM_(T, __VA_ARGS__)
+
+#    define enumid(T) (&AVM_EI_NAME(T))
+
+#    define AVM_ENUM_(T, ...)         \
+        AvmEnum AVM_EI_NAME(T) = {    \
+            ._type = typeid(AvmEnum), \
+            ._name = #T,              \
+            ._size = sizeof(T),       \
+            ._members = __VA_ARGS__,  \
+        }
+
 #endif  // AVM_USE_REFLECT
 
 #endif  // AVIUM_REFLECT_H

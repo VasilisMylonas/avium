@@ -106,5 +106,8 @@
 #define AVM_NM_CLASS_PREFIX "D_TI_"
 
 #define AVM_TI_NAME(T) _TI_##T
+#define AVM_EI_NAME(T) _EI_##T
+
+#define AVM_MAX_ENUM_MEMBERS 32
 
 #endif  // AVIUM_CONFIG_H

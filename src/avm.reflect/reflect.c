@@ -257,3 +257,52 @@ object AvmReflectConstructType(AvmType* type) {
     *(AvmType**)o = type;
     return o;
 }
+
+AVM_TYPE(AvmEnum, object, {[FnEntryDtor] = NULL});
+
+str AvmEnumGetName(AvmEnum* self) { return self->_name; }
+size_t AvmEnumGetSize(AvmEnum* self) { return self->_size; }
+
+bool AvmEnumIsDefined(AvmEnum* self, long value) {
+    for (size_t i = 0; true; i++) {
+        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL) {
+            break;
+        }
+
+        if (self->_members[i]._value == value) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+str AvmEnumGetNameOf(AvmEnum* self, long value) {
+    for (size_t i = 0; true; i++) {
+        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL) {
+            break;
+        }
+
+        if (self->_members[i]._value == value) {
+            return self->_members[i]._name;
+        }
+    }
+
+    // TODO
+    AvmPanic("TODO");
+}
+
+long AvmEnumGetValueOf(AvmEnum* self, str name) {
+    for (size_t i = 0; true; i++) {
+        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL) {
+            break;
+        }
+
+        if (strcmp(self->_members[i]._name, name) == 0) {
+            return self->_members[i]._value;
+        }
+    }
+
+    // TODO
+    AvmPanic("TODO");
+}
