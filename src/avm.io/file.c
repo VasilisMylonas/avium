@@ -117,6 +117,14 @@ static AvmError* AvmFilePerform(str path, size_t length, byte buffer[],
         AvmPanic(PathNullMsg);
     }
 
+    if (buffer == NULL) {
+        AvmPanic(BufferNullMsg);
+    }
+
+    if (length == 0) {
+        return NULL;
+    }
+
     AvmError* error = NULL;
     AvmStream* stream = AvmFileOpen(path, access, &error);
 
