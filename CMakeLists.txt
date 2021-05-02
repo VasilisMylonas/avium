@@ -34,6 +34,7 @@ option(BUILD_TESTS "Generate tests?" ON)
 option(USE_IO "Use the IO library?" ON)
 option(USE_ARGPARSE "Use the argument parsing library?" ON)
 option(USE_REFLECT "Use the reflection library?" ON)
+option(USE_TEST "Use the test runner?" ON)
 
 if(USE_GC)
     FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})

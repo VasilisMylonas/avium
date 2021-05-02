@@ -6,17 +6,17 @@
 
 AVMAPI void AvmRuntimeRunTests(str program);
 
-#ifndef _AVM_BUILD
-void __main();
+// #ifndef _AVM_BUILD
+// void __main();
 
-int main(int argc, str argv[]) {
-    AvmRuntimeInit(argc, argv);
-    AvmRuntimeRunTests(argv[0]);
-    __main();
-    return 0;
-}
-#endif
+// int main(int argc, str argv[]) {
+//     AvmRuntimeInit(argc, argv);
+//     AvmRuntimeRunTests(argv[1]);
+//     __main();
+//     return 0;
+// }
 
-#define main __main
+// #    define main __main
+// #endif
 
 #endif  // AVIUM_H
