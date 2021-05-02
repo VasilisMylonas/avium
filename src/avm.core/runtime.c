@@ -1,18 +1,17 @@
 #include <signal.h>  // For signal and related constants
 #include <stdlib.h>  // For exit
 #include <string.h>  // For memcpy, strchr, strrchr
+#include <stdio.h>   // For vfprintf, vscanf, stderr, stdout
 
-#include "avium/fmt.h"
 #include "avium/runtime.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC
-#    include <gc/gc.h>
+#    include "gc.h"
 #    define AVM_ALLOC   GC_malloc
 #    define AVM_REALLOC GC_realloc
 #    define AVM_DEALLOC GC_free
 #else
-#    include <stdlib.h>
 #    define AVM_ALLOC   malloc
 #    define AVM_REALLOC realloc
 #    define AVM_DEALLOC free
@@ -89,6 +88,14 @@ size_t AvmTypeGetSize(const AvmType* self) {
     return self->_size;
 }
 
+AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_vptr[index];
+}
+
 #ifdef AVM_LINUX
 #    include <execinfo.h>
 #endif
@@ -112,4 +119,55 @@ never AvmPanicEx(str message, str function, str file, uint line) {
 #endif
 
     exit(1);
+}
+
+#define AVM_FORWARD(arg, call) \
+    va_list args;              \
+    va_start(args, arg);       \
+    call(arg, args);           \
+    va_end(args);
+
+void AvmVScanf(str format, va_list args) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+
+    vscanf(format, args);
+}
+
+void AvmVPrintf(str format, va_list args) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+
+    vfprintf(stdout, format, args);
+}
+
+void AvmVErrorf(str format, va_list args) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+
+    vfprintf(stderr, format, args);
+}
+
+void AvmScanf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVScanf);
+}
+
+void AvmPrintf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVPrintf);
+}
+
+void AvmErrorf(str format, ...) {
+    if (format == NULL) {
+        AvmPanic(FormatNullMsg);
+    }
+    AVM_FORWARD(format, AvmVErrorf);
 }

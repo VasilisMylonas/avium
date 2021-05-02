@@ -1,7 +1,8 @@
-#include "avium/result.h"
+#include "avium/error.h"
 
+#include "avium/runtime.h"
 #include "avium/string.h"
-#include "avium/resources.h"
+#include "avium/private/resources.h"
 
 #include <string.h>
 #include <errno.h>
@@ -45,7 +46,7 @@ AVM_TYPE(AvmSimpleError,
 
 AvmError* AvmErrorFromOSCode(int code) {
     return heapalloc(AvmOSError, {
-                                     ._type = AVM_GET_TYPE(AvmOSError),
+                                     ._type = typeid(AvmOSError),
                                      ._code = code,
                                  });
 }
@@ -54,7 +55,7 @@ AvmError* AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
 
 AvmError* AvmErrorOfKind(AvmErrorKind kind) {
     return heapalloc(AvmSimpleError, {
-                                         ._type = AVM_GET_TYPE(AvmSimpleError),
+                                         ._type = typeid(AvmSimpleError),
                                          ._kind = kind,
                                      });
 }

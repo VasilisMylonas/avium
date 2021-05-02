@@ -12,29 +12,20 @@ typedef enum {
     FileAccessReadAppend = FileAccessRead | FileAccessAppend,
 } AvmFileAccess;
 
-typedef AvmStream* AvmStreamPtr;
-
-AVM_RESULT_TYPE(AvmStreamPtr)
-
-AVMAPI AvmResult(AvmStreamPtr) AvmFileOpen(str path, AvmFileAccess access);
+AVMAPI AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error);
 AVMAPI bool AvmFileExists(str path);
 
-AVMAPI AvmResult(void) AvmFileDelete(str path);
-AVMAPI AvmResult(void) AvmFileMove(str source, str destination);
-AVMAPI AvmResult(void) AvmFileCopy(str source, str destination);
+AVMAPI AvmError* AvmFileDelete(str path);
+AVMAPI AvmError* AvmFileMove(str source, str destination);
+AVMAPI AvmError* AvmFileCopy(str source, str destination);
 
-AVMAPI AvmResult(void) AvmFileReadAll(str path, size_t length, byte buffer[]);
-AVMAPI AvmResult(void) AvmFileWriteAll(str path, size_t length, byte buffer[]);
-AVMAPI AvmResult(void) AvmFileAppendAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError* AvmFileReadAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError* AvmFileWriteAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError* AvmFileAppendAll(str path, size_t length, byte buffer[]);
 
-// TODO
-AVMAPI AvmResult(void) AvmFileReadAllText(str path, AvmString* string);
-
-// TODO
-AVMAPI AvmResult(void) AvmFileWriteAllText(str path, AvmString* string);
-
-// TODO
-AVMAPI AvmResult(void) AvmFileAppendAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileReadAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileWriteAllText(str path, AvmString* string);
+AVMAPI AvmError* AvmFileAppendAllText(str path, AvmString* string);
 
 // TODO
 typedef void* AvmFileMetadata;

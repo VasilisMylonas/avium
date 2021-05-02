@@ -57,6 +57,28 @@ typedef enum {
     FnEntryGetSource,
 } AvmFnEntry;
 
+#ifdef AVM_MSVC
+#    define typeof(T) decltype(T)
+#else
+#    ifdef __clang__
+#        pragma GCC diagnostic push
+#        pragma GCC diagnostic ignored "-Wkeyword-macro"
+#    endif
+#    define typeof(T) __typeof__(T)
+#    ifdef __clang__
+#        pragma GCC diagnostic pop
+#    endif
+#endif
+
+/// Returns the base type of an object.
+#define baseof(x) ((typeof((x)->_base)*)x)
+
+/// Determines whether an object is of specific type.
+#define istype(T, x) (typeid(T) == AvmObjectGetType(x))
+
+/// Returns a pointer to the type info of type T.
+#define typeid(T) (&AVM_TI_NAME(T))
+
 /**
  * @brief Allocates heap memory.
  *
@@ -141,17 +163,6 @@ AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 AVMAPI void AvmMemCopy(byte* source, size_t length, byte* destination,
                        size_t size);
 
-/// Returns a pointer to the type info of type T.
-#define AVM_GET_TYPE(T) AVM_GET_TYPE_(T)
-
-/**
- * @brief Generates type info for a type.
- *
- * @param T The type for which to generate type info.
- * @param ... The type vtable enclosed in braces ({...})
- */
-#define AVM_TYPE(T, ...) AVM_TYPE_(T, __VA_ARGS__)
-
 /**
  * @brief Gets the name of a type.
  *
@@ -172,21 +183,23 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  */
 AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
-#ifndef DOXYGEN
-#    define AVM_TYPE_(T, ...)         \
-        static AvmType _##T##Type = { \
-            ._vptr = __VA_ARGS__,     \
-            ._name = #T,              \
-            ._size = sizeof(T),       \
-        }
+/**
+ * @brief Returns the specified VFT entry of a type.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmType instance.
+ * @param index The VFT entry.
+ * @return The function pointer.
+ */
+AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
-#    define AVM_GET_TYPE_(T) &_##T##Type
+AVMAPI void AvmVScanf(str format, va_list args);
+AVMAPI void AvmVPrintf(str format, va_list args);
+AVMAPI void AvmVErrorf(str format, va_list args);
 
-struct AvmType {
-    const str _name;
-    const size_t _size;
-    AvmFunction _vptr[AVM_VFT_SIZE];
-};
-#endif  // DOXYGEN
+AVMAPI void AvmScanf(str format, ...);
+AVMAPI void AvmPrintf(str format, ...);
+AVMAPI void AvmErrorf(str format, ...);
 
 #endif  // AVIUM_RUNTIME_H

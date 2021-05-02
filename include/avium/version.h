@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Version information and type.
  * @version 0.2
- * @date 2021-04-04
+ * @date 2021-04-23
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -27,10 +27,10 @@
 #include "avium/types.h"
 
 #ifdef DOXYGEN
-/// A type representing a software version in the format: N.N.N-c
+/// A type representing a software version in the format: N.N.N
 typedef struct AvmVersion AvmVersion;
 #else
-/// A type representing a software version in the format: N.N.N-c
+/// A type representing a software version in the format: N.N.N
 AVM_CLASS(AvmVersion, object, {
     /// The major version.
     ushort Major;
@@ -40,9 +40,6 @@ AVM_CLASS(AvmVersion, object, {
 
     /// The patch version.
     ushort Patch;
-
-    /// The version tag.
-    char Tag;
 });
 #endif  // DOXYGEN
 
@@ -52,12 +49,10 @@ AVM_CLASS(AvmVersion, object, {
  * @param major The version major number (incremented at breaking changes).
  * @param minor The version minor number (incremented at non-breaking changes).
  * @param patch The version patch number (incremented at bug fixes).
- * @param tag The version tag (a, b, etc).
  *
  * @return The created instance.
  */
-AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
-                                 char tag);
+AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
 
 /**
  * @brief Return an AvmVersion indicating the current runtime version.
@@ -65,8 +60,6 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch,
  * @return The current runtime version.
  */
 AVMAPI AvmVersion AvmRuntimeGetVersion(void);
-
-// Ensure type size constraint.
 
 #ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);

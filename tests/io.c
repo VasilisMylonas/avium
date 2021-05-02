@@ -29,8 +29,7 @@ __test TestReadByte(object state) {
     AvmStreamWriteByte(state, 255);
     AvmStreamSeek(state, 0, SeekOriginBegin);
 
-    AvmResult(byte) result = AvmStreamReadByte(state);
-    AssertEqual(AvmUnwrap(byte)(&result), 255);
+    AssertEqual(AvmStreamReadByte(state, NULL), 255);
 }
 
 __test TestStreamSeek(object state) {
@@ -51,6 +50,5 @@ __test TestStreamSeek(object state) {
 }
 
 __test TestStreamFlush(object state) {
-    AvmResult(void) result = AvmStreamFlush(state);
-    AssertNot(AvmIsFailure(void)(&result));
+    AssertEqual(AvmStreamFlush(state), NULL);
 }

@@ -105,8 +105,6 @@ __test TestRepeat(object state) {
     AvmObjectDestroy(&s);
 }
 
-#include <avium/fmt.h>
-
 __test TestRepeatChars(object state) {
     (void)state;
 
@@ -135,32 +133,16 @@ __test TestRepeatChars(object state) {
 __test TestIndexes(object state) {
     (void)state;
 
-    AvmOptional(size_t) index;
     AvmString s = AvmStringFrom("Hello Worldy World!");
 
-    index = AvmStringIndexOf(&s, 'W');
-    AssertEqual(AvmGetValue(size_t)(&index), 6);
-
-    index = AvmStringLastIndexOf(&s, 'W');
-    AssertEqual(AvmGetValue(size_t)(&index), 13);
-
-    index = AvmStringFind(&s, "World");
-    AssertEqual(AvmGetValue(size_t)(&index), 6);
-
-    index = AvmStringFindLast(&s, "World");
-    AssertEqual(AvmGetValue(size_t)(&index), 13);
-
-    index = AvmStringIndexOf(&s, 'x');
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringLastIndexOf(&s, 'x');
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringFind(&s, "xxl");
-    AssertNot(AvmHasValue(size_t)(&index));
-
-    index = AvmStringFindLast(&s, "xxl");
-    AssertNot(AvmHasValue(size_t)(&index));
+    AssertEqual(AvmStringIndexOf(&s, 'W'), 6);
+    AssertEqual(AvmStringLastIndexOf(&s, 'W'), 13);
+    AssertEqual(AvmStringFind(&s, "World"), 6);
+    AssertEqual(AvmStringFindLast(&s, "World"), 13);
+    AssertEqual(AvmStringIndexOf(&s, 'x'), AvmInvalid);
+    AssertEqual(AvmStringLastIndexOf(&s, 'x'), AvmInvalid);
+    AssertEqual(AvmStringFind(&s, "xxl"), AvmInvalid);
+    AssertEqual(AvmStringFindLast(&s, "xxl"), AvmInvalid);
 }
 
 __test TestPush(object state) {
@@ -191,30 +173,18 @@ __test TestReplaceLastN(object state) {
 }
 
 __test TestReplace(object state) {
-    AvmOptional(size_t) opt;
-
-    opt = AvmStringReplace(state, 'o', 'a');
-
-    Assert(AvmHasValue(size_t)(&opt));
-    AssertEqual(AvmGetValue(size_t)(&opt), 4);
+    AssertEqual(AvmStringReplace(state, 'o', 'a'), 4);
     AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
 
-    opt = AvmStringReplace(state, 'u', 'a');
-    AssertNot(AvmHasValue(size_t)(&opt));
+    AssertEqual(AvmStringReplace(state, 'u', 'a'), AvmInvalid);
     AssertStrEqual(AvmStringAsPtr(state), "Hella World!");
 }
 
 __test TestReplaceLast(object state) {
-    AvmOptional(size_t) opt;
-
-    opt = AvmStringReplaceLast(state, 'o', 'a');
-
-    Assert(AvmHasValue(size_t)(&opt));
-    AssertEqual(AvmGetValue(size_t)(&opt), 7);
+    AssertEqual(AvmStringReplaceLast(state, 'o', 'a'), 7);
     AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
 
-    opt = AvmStringReplaceLast(state, 'u', 'a');
-    AssertNot(AvmHasValue(size_t)(&opt));
+    AssertEqual(AvmStringReplaceLast(state, 'u', 'a'), AvmInvalid);
     AssertStrEqual(AvmStringAsPtr(state), "Hello Warld!");
 }
 
@@ -272,41 +242,34 @@ __test TestUnsafeSetLength(object state) {
 }
 
 __test TestCharAt(object state) {
-    AvmResult(char) res = AvmStringCharAt(state, 0);
-
-    AssertNot(AvmIsFailure(char)(&res));
-    char c = AvmUnwrap(char)(&res);
-    AssertEqual(c, 'H');
-
-    res = AvmStringCharAt(state, 100);
-
-    Assert(AvmIsFailure(char)(&res));
+    AssertEqual(AvmStringCharAt(state, 0, NULL), 'H');
+    AssertEqual(AvmStringCharAt(state, 100, NULL), '\0');
 }
 
 static size_t timesCalled = 0;
 static size_t finalIndex = 0;
 
-static char ForEachStub(char c) {
+static char MapStub(char c) {
     timesCalled++;
     return c;
 }
 
-static char ForEachExStub(char c, size_t index) {
+static char MapExStub(char c, size_t index) {
     timesCalled++;
     finalIndex = index;
     return c;
 }
 
-__test TestForEach(object state) {
+__test TestMap(object state) {
     size_t length = AvmStringGetLength(state);
-    AvmStringForEach(state, ForEachStub);
+    AvmStringMap(state, MapStub);
     AssertEqual(length, timesCalled);
     timesCalled = 0;
 }
 
-__test TestForEachEx(object state) {
+__test TestMapEx(object state) {
     size_t length = AvmStringGetLength(state);
-    AvmStringForEachEx(state, ForEachExStub);
+    AvmStringMapEx(state, MapExStub);
     AssertEqual(length, timesCalled);
     AssertEqual(length - 1, finalIndex);
     timesCalled = 0;

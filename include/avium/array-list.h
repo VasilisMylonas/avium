@@ -42,7 +42,7 @@
  * @param T The type.
  */
 #define AVM_ARRAY_LIST_TYPE(T)                                                \
-    AVM_CLASS(AVM_GENERIC(AvmArrayList, T), object, {                         \
+    AVM_INLINE_CLASS(AVM_GENERIC(AvmArrayList, T), object, {                  \
         size_t _length;                                                       \
         size_t _capacity;                                                     \
         T* _items;                                                            \
@@ -54,12 +54,12 @@
         AvmDealloc((void*)self->_items);                                      \
     }                                                                         \
                                                                               \
-    AVM_TYPE(AvmArrayList(T),                                                 \
-             {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});          \
+    AVM_INLINE_TYPE(AvmArrayList(T),                                          \
+                    {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});   \
                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {       \
         return (AvmArrayList(T)){                                             \
-            ._type = AVM_GET_TYPE(AvmArrayList(T)),                           \
+            ._type = typeid(AvmArrayList(T)),                                 \
             ._length = 0,                                                     \
             ._capacity = capacity,                                            \
             ._items = capacity == 0 ? NULL : AvmAlloc(capacity * sizeof(T)),  \
@@ -108,7 +108,7 @@
 
 #ifndef DOXYGEN
 #    define AVM_ARRAY_LIST_TYPE_PROMOTABLE(T, C)                            \
-        AVM_CLASS(AVM_GENERIC(AvmArrayList, T), object, {                   \
+        AVM_INLINE_CLASS(AVM_GENERIC(AvmArrayList, T), object, {            \
             size_t _length;                                                 \
             size_t _capacity;                                               \
             T* _items;                                                      \
@@ -120,12 +120,13 @@
             AvmDealloc((void*)self->_items);                                \
         }                                                                   \
                                                                             \
-        AVM_TYPE(AvmArrayList(T),                                           \
-                 {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});    \
+        AVM_INLINE_TYPE(                                                    \
+            AvmArrayList(T),                                                \
+            {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});         \
                                                                             \
         static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) { \
             return (AvmArrayList(T)){                                       \
-                ._type = AVM_GET_TYPE(AvmArrayList(T)),                     \
+                ._type = typeid(AvmArrayList(T)),                           \
                 ._length = 0,                                               \
                 ._capacity = capacity,                                      \
                 ._items =                                                   \
