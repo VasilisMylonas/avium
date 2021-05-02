@@ -81,12 +81,14 @@ AvmString AvmObjectToString(object self) {
     return ((AvmString(*)(object))fn)(self);
 }
 
-AVM_TYPE(size_t, {[FnEntryDtor] = NULL});
-AVM_TYPE(_long, {[FnEntryDtor] = NULL});
-AVM_TYPE(ulong, {[FnEntryDtor] = NULL});
-AVM_TYPE(int, {[FnEntryDtor] = NULL});
-AVM_TYPE(uint, {[FnEntryDtor] = NULL});
-AVM_TYPE(short, {[FnEntryDtor] = NULL});
-AVM_TYPE(ushort, {[FnEntryDtor] = NULL});
-AVM_TYPE(char, {[FnEntryDtor] = NULL});
-AVM_TYPE(byte, {[FnEntryDtor] = NULL});
+AVM_TYPE(AvmType, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(object, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(size_t, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(_long, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(ulong, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(int, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(uint, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(short, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(ushort, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(char, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(byte, object, {[FnEntryDtor] = NULL});

@@ -88,16 +88,16 @@ static uint Point3DDistance(Point3D* self) { ... }
 // entry at the index defined by DistanceEntry (20 in our case) with the
 // corresponding functions.
 
-AVM_TYPE(Point1D, {[DistanceEntry] = Point1DDistance})
-AVM_TYPE(Point1D, {[DistanceEntry] = Point2DDistance})
-AVM_TYPE(Point1D, {[DistanceEntry] = Point3DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = Point1DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = Point2DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = Point3DDistance})
 
 // Depending on your compiler and/or compile options, you may have to cast the
 // functions to the AvmFunction type:
 
-AVM_TYPE(Point1D, {[DistanceEntry] = (AvmFunction)Point1DDistance})
-AVM_TYPE(Point1D, {[DistanceEntry] = (AvmFunction)Point2DDistance})
-AVM_TYPE(Point1D, {[DistanceEntry] = (AvmFunction)Point3DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point1DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point2DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point3DDistance})
 
 // Typedefing this here is not required but is good for understanding.
 typedef uint (*DistanceFunc)(object);
