@@ -217,12 +217,3 @@ void AvmErrorf(str format, ...) {
     }
     AVM_FORWARD(format, AvmVErrorf);
 }
-
-void AvmRuntimeRunTests(str program) {
-    AvmEnableExceptions();
-
-    (void)program;
-    // TODO
-
-    AvmDisableExceptions();
-}
