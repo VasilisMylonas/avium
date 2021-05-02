@@ -9,6 +9,8 @@ generate_export_header(avm
     EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h
 )
 
+add_compile_definitions(_AVM_BUILD)
+
 add_subdirectory(avm.core)
 target_link_libraries(avm avm.core)
 

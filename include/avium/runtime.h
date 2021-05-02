@@ -220,9 +220,10 @@ AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
-void __main();
-
 AVMAPI void AvmRuntimeRunTests(str program);
+
+#ifndef _AVM_BUILD
+void __main();
 
 int main(int argc, str argv[]) {
     AvmRuntimeInit(argc, argv);
@@ -230,6 +231,7 @@ int main(int argc, str argv[]) {
     __main();
     return 0;
 }
+#endif
 
 #define main __main
 
