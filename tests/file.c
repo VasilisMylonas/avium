@@ -13,8 +13,7 @@ static object TestInit(int argc, str argv[]) {
 __test TestOpen(object state) {
     (void)state;
 
-    AvmResult(AvmStreamPtr) result = AvmFileOpen(filename, FileAccessWrite);
-    AvmStream* stream = AvmUnwrap(AvmStreamPtr)(&result);
+    AvmStream* stream = AvmFileOpen(filename, FileAccessWrite, NULL);
     AvmStreamWrite(stream, sizeof(contents), contents);
     AvmObjectDestroy(stream);
 }
