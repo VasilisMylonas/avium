@@ -79,6 +79,12 @@ typedef enum {
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
 
+#if defined AVM_GNU && defined AVM_LINUX
+#    pragma weak AvmAlloc
+#    pragma weak AvmRealloc
+#    pragma weak AvmDealloc
+#endif
+
 /**
  * @brief Allocates heap memory.
  *
