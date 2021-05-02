@@ -77,16 +77,10 @@
 /// and max.
 #define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x > max)
 
-/**
- * @brief This attributes marks a function as a test.
- *
- * Tests have the following signature:
- *
- * @code
- * __test TestSomething(object state);
- * @endcode
- */
-#define __test static void
+#define AVM_CONCAT_(x, y) x##y
+#define AVM_CONCAT(x, y)  AVM_CONCAT_(x, y)
+
+#define test void AVM_CONCAT(__AvmTest, __LINE__)(void)
 
 #ifndef DOXYGEN
 #    define AVM_ASSERT_(expression)                                         \

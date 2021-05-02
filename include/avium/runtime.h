@@ -208,4 +208,16 @@ AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
+void __main();
+
+AVMAPI void AvmRuntimeRunTests(str program);
+
+int main(int argc, str argv[]) {
+    __main();
+    AvmRuntimeRunTests(argv[0]);
+    return 0;
+}
+
+#define main __main
+
 #endif  // AVIUM_RUNTIME_H
