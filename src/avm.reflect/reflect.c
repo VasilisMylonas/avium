@@ -28,10 +28,11 @@ static AvmString ReadString(FILE* handle, bool* hasFailed) {
     return AvmStringFrom(buffer);
 }
 
-static AvmArrayList(AvmString) GetSymbolList(str path) {
+// TODO: This is also used in module.c in avm
+AvmArrayList(AvmString) __AvmGetSymbolList(str path, str nmCommandTemplate) {
     AvmArrayList(AvmString) functions = AvmArrayListNew(AvmString)(10);
 
-    AvmString command = AvmStringFormat(CommandTemplate, path);
+    AvmString command = AvmStringFormat(nmCommandTemplate, path);
     FILE* out = popen(AvmStringGetBuffer(&command), "r");
     AvmObjectDestroy(&command);
 
@@ -42,6 +43,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
 
     if (!hasFailed) {
         string._length--;
+        string._buffer[string._length] = '\0';
         AvmArrayListPush(AvmString)(&functions, string);
     }
 
@@ -50,6 +52,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
 
         if (!hasFailed) {
             string._length--;
+            string._buffer[string._length] = '\0';
             AvmArrayListPush(AvmString)(&functions, string);
         }
     };
@@ -104,7 +107,7 @@ AvmModule AvmModuleLoad(str path) {
         ._type = typeid(AvmModule),
         ._handle = handle,
         ._name = name,
-        ._symbols = GetSymbolList(path),
+        ._symbols = __AvmGetSymbolList(path, CommandTemplate),
     };
 }
 
