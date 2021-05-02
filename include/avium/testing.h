@@ -26,72 +26,94 @@
 
 #include "avium/types.h"
 #include <string.h>
+#include <avium/runtime.h>
 
-/// Asserts whether a condition is true.
-#define Assert(x) AVM_ASSERT_(x)
+AVMAPI void AvmAssert(bool condition, str file, uint line, str expression);
+AVMAPI void AvmAssertEqInt(_long x, _long y, str file, uint line, str xName,
+                           str yName);
+AVMAPI void AvmAssertNeInt(_long x, _long y, str file, uint line, str xName,
+                           str yName);
+AVMAPI void AvmAssertGtInt(ulong x, ulong y, str file, uint line, str xName,
+                           str yName);
+AVMAPI void AvmAssertEqUint(ulong x, ulong y, str file, uint line, str xName,
+                            str yName);
+AVMAPI void AvmAssertNeUint(ulong x, ulong y, str file, uint line, str xName,
+                            str yName);
+AVMAPI void AvmAssertGtUint(ulong x, ulong y, str file, uint line, str xName,
+                            str yName);
+AVMAPI void AvmAssertEqStr(str x, str y, str file, uint line, str xName,
+                           str yName);
+AVMAPI void AvmAssertNeStr(str x, str y, str file, uint line, str xName,
+                           str yName);
+AVMAPI void AvmAssertGtStr(str x, str y, str file, uint line, str xName,
+                           str yName);
 
-/// Asserts whether an object is of specific type.
-#define AssertIsType(T, x) AVM_ASSERT_(typeid(T) == AvmObjectGetType(x))
+AVMAPI void AvmAssertNull(void* pointer, str file, uint line, str name);
+AVMAPI void AvmAssertNotNull(void* pointer, str file, uint line, str name);
 
-/// Asserts whether an object is not of specific type.
-#define AssertIsNotType(T, x) AVM_ASSERT_(typeid(T) != AvmObjectGetType(x))
+#define AssertTrue(condition) \
+    AvmAssert(condition, __FILE__, __LINE__, #condition)
+#define AssertFalse(condition) AssertTrue(!condition)
 
-/// Asserts whether a condition is false.
-#define AssertNot(x) AVM_ASSERT_(!x)
+#define AssertEq(x, y) \
+    _Generic((x), byte                 \
+             : AvmAssertEqUint, ushort \
+             : AvmAssertEqUint, uint   \
+             : AvmAssertEqUint, ulong  \
+             : AvmAssertEqUint, char   \
+             : AvmAssertEqInt, short   \
+             : AvmAssertEqInt, int     \
+             : AvmAssertEqInt, _long   \
+             : AvmAssertEqInt, str     \
+             : AvmAssertEqStr, char*   \
+             : AvmAssertEqStr)(x, y, __FILE__, __LINE__, #x, #y)
 
-/// Asserts whether two primitives are equal.
-#define AssertEqual(x, y) AVM_ASSERT_(x == y)
+#define AssertNe(x, y) \
+    _Generic((x), byte                 \
+             : AvmAssertNeUint, ushort \
+             : AvmAssertNeUint, uint   \
+             : AvmAssertNeUint, ulong  \
+             : AvmAssertNeUint, char   \
+             : AvmAssertNeInt, short   \
+             : AvmAssertNeInt, int     \
+             : AvmAssertNeInt, _long   \
+             : AvmAssertNeInt, str     \
+             : AvmAssertNeStr, char*   \
+             : AvmAssertNeStr)(x, y, __FILE__, __LINE__, #x, #y)
 
-/// Asserts whether two primitives are not equal.
-#define AssertNotEqual(x, y) AVM_ASSERT_(x != y)
+#define AssertGt(x, y) \
+    _Generic((x), byte                 \
+             : AvmAssertGtUint, ushort \
+             : AvmAssertGtUint, uint   \
+             : AvmAssertGtUint, ulong  \
+             : AvmAssertGtUint, char   \
+             : AvmAssertGtInt, short   \
+             : AvmAssertGtInt, int     \
+             : AvmAssertGtInt, _long   \
+             : AvmAssertGtInt, str     \
+             : AvmAssertGtStr, char*  \
+             : AvmAssertGtStr)(x, y, __FILE__, __LINE__, #x, #y)
 
-/// Asserts whether two strings are equal.
-#define AssertStrEqual(x, y) AVM_ASSERT_(strcmp(x, y) == 0)
+#define AssertNull(pointer) AvmAssertNull(pointer, __FILE__, __LINE__, #pointer)
+#define AssertNotNull(pointer) \
+    AvmAssertNotNull(pointer, __FILE__, __LINE__, #pointer)
 
-/// Asserts whether two strings are not equal.
-#define AssertStrNotEqual(x, y) AVM_ASSERT_(strcmp(x, y) != 0)
+// /// Asserts whether a number is between the range of a min and
+// /// max..
+// #define AssertInRange(x, min, max) AVM_ASSERT_(min <= x && x <=
+// max)
 
-/// Asserts whether two memory blocks are equal.
-#define AssertMemEqual(x, y, size) AVM_ASSERT_(memcmp(x, y, size) == 0)
+// /// Asserts whether a number is not between the range of a min
+// /// and max.
+// #define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x >
+// max)
 
-/// Asserts whether two memory blocks are not equal.
-#define AssertMemNotEqual(x, y, size) AVM_ASSERT_(memcmp(x, y, size) != 0)
+// /// Asserts whether two memory blocks are equal.
+// #define AssertMemEqual(x, y, size) AVM_ASSERT_(memcmp(x, y,
+// size) == 0)
 
-/// Asserts whether a pointer is null.
-#define AssertNull(x) AVM_ASSERT_(x == NULL)
-
-/// Asserts whether a pointer is not null.
-#define AssertNotNull(x) AVM_ASSERT_(x != NULL)
-
-/// Asserts whether two pointers are equal.
-#define AssertPtrEqual(x, y) AVM_ASSERT_(((uptr)x) == ((uptr)y))
-
-/// Asserts whether two pointers are not equal.
-#define AssertPtrNotEqual(x, y) AVM_ASSERT_(((uptr)x) != ((uptr)y))
-
-/// Asserts whether a number is between the range of a min and
-/// max..
-#define AssertInRange(x, min, max) AVM_ASSERT_(min <= x && x <= max)
-
-/// Asserts whether a number is not between the range of a min
-/// and max.
-#define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x > max)
-
-#define AVM_CONCAT_(x, y) x##y
-#define AVM_CONCAT(x, y)  AVM_CONCAT_(x, y)
-
-#define test void AVM_CONCAT(__AvmTest, __LINE__)(void)
-
-#ifndef DOXYGEN
-#    define AVM_ASSERT_(expression)                                         \
-        expression ? ((void)0)                                              \
-                   : AvmPanicEx("Assertion failed: " #expression, __func__, \
-                                __FILE__, __LINE__);
-
-#    define AVM_ASSERT_TYPE_(T, x)                                            \
-        istype(T, x) ? ((void)0)                                              \
-                     : AvmPanicEx("Assertion failed: istype(" #T ", " #x ")", \
-                                  __func__, __FILE__, __LINE__);
-#endif  // DOXYGEN
+// /// Asserts whether two memory blocks are not equal.
+// #define AssertMemNotEqual(x, y, size) AVM_ASSERT_(memcmp(x, y,
+// size) != 0)
 
 #endif  // AVIUM_TESTING_H

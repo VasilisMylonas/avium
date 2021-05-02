@@ -1,7 +1,7 @@
 function(run_test TEST)
-    add_library(${TEST} SHARED ${TEST}.c)
+    add_executable(${TEST} ${TEST}.c)
     target_link_libraries(${TEST} avm)
-    add_test(NAME ${TEST} COMMAND avmtest ${CMAKE_BINARY_DIR}/lib/${TEST})
+    add_test(NAME ${TEST} COMMAND ${TEST})
 endfunction()
 
 run_test(string)
