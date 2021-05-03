@@ -28,25 +28,28 @@
 #include <string.h>
 #include <avium/runtime.h>
 
+#define ASSERT_PARAMS str file, uint line, str xName, str yName
+
 AVMAPI void AvmAssert(bool condition, str file, uint line, str expression);
-AVMAPI void AvmAssertEqInt(_long x, _long y, str file, uint line, str xName,
-                           str yName);
-AVMAPI void AvmAssertNeInt(_long x, _long y, str file, uint line, str xName,
-                           str yName);
-AVMAPI void AvmAssertGtInt(ulong x, ulong y, str file, uint line, str xName,
-                           str yName);
-AVMAPI void AvmAssertEqUint(ulong x, ulong y, str file, uint line, str xName,
-                            str yName);
-AVMAPI void AvmAssertNeUint(ulong x, ulong y, str file, uint line, str xName,
-                            str yName);
-AVMAPI void AvmAssertGtUint(ulong x, ulong y, str file, uint line, str xName,
-                            str yName);
-AVMAPI void AvmAssertEqStr(str x, str y, str file, uint line, str xName,
-                           str yName);
-AVMAPI void AvmAssertNeStr(str x, str y, str file, uint line, str xName,
-                           str yName);
-AVMAPI void AvmAssertGtStr(str x, str y, str file, uint line, str xName,
-                           str yName);
+AVMAPI void AvmAssertEqInt(_long x, _long y, ASSERT_PARAMS);
+AVMAPI void AvmAssertNeInt(_long x, _long y, ASSERT_PARAMS);
+AVMAPI void AvmAssertGtInt(_long x, _long y, ASSERT_PARAMS);
+AVMAPI void AvmAssertLtInt(_long x, _long y, ASSERT_PARAMS);
+AVMAPI void AvmAssertEqUint(ulong x, ulong y, ASSERT_PARAMS);
+AVMAPI void AvmAssertNeUint(ulong x, ulong y, ASSERT_PARAMS);
+AVMAPI void AvmAssertGtUint(ulong x, ulong y, ASSERT_PARAMS);
+AVMAPI void AvmAssertLtUint(ulong x, ulong y, ASSERT_PARAMS);
+AVMAPI void AvmAssertEqStr(str x, str y, ASSERT_PARAMS);
+AVMAPI void AvmAssertNeStr(str x, str y, ASSERT_PARAMS);
+AVMAPI void AvmAssertGtStr(str x, str y, ASSERT_PARAMS);
+AVMAPI void AvmAssertLtStr(str x, str y, ASSERT_PARAMS);
+
+AVMAPI void AvmAssertMemEq(byte* x, byte* y, size_t length, ASSERT_PARAMS);
+
+AVMAPI void AvmAssertInRangeInt(_long value, _long _min, _long _max, str file,
+                                uint line, str name);
+AVMAPI void AvmAssertInRangeUint(ulong value, ulong _min, ulong _max, str file,
+                                 uint line, str name);
 
 AVMAPI void AvmAssertNull(void* pointer, str file, uint line, str name);
 AVMAPI void AvmAssertNotNull(void* pointer, str file, uint line, str name);
@@ -94,26 +97,38 @@ AVMAPI void AvmAssertNotNull(void* pointer, str file, uint line, str name);
              : AvmAssertGtStr, char*  \
              : AvmAssertGtStr)(x, y, __FILE__, __LINE__, #x, #y)
 
+#define AssertLt(x, y) \
+    _Generic((x), byte                 \
+             : AvmAssertLtUint, ushort \
+             : AvmAssertLtUint, uint   \
+             : AvmAssertLtUint, ulong  \
+             : AvmAssertLtUint, char   \
+             : AvmAssertLtInt, short   \
+             : AvmAssertLtInt, int     \
+             : AvmAssertLtInt, _long   \
+             : AvmAssertLtInt, str     \
+             : AvmAssertLtStr, char*  \
+             : AvmAssertLtStr)(x, y, __FILE__, __LINE__, #x, #y)
+
+#define AssertInRange(min, max, value)                                   \
+    _Generic((x), byte                                                   \
+             : AvmAssertInRangeUint, ushort                              \
+             : AvmAssertInRangeUint, uint                                \
+             : AvmAssertInRangeUint, ulong                               \
+             : AvmAssertInRangeUint, char                                \
+             : AvmAssertInRangeInt, short                                \
+             : AvmAssertInRangeInt, int                                  \
+             : AvmAssertInRangeInt, _long                                \
+             : AvmAssertInRangeInt)(value, min, max, __FILE__, __LINE__, \
+                                    #value)
+
 #define AssertNull(pointer) AvmAssertNull(pointer, __FILE__, __LINE__, #pointer)
 #define AssertNotNull(pointer) \
     AvmAssertNotNull(pointer, __FILE__, __LINE__, #pointer)
 
-// /// Asserts whether a number is between the range of a min and
-// /// max..
-// #define AssertInRange(x, min, max) AVM_ASSERT_(min <= x && x <=
-// max)
+#define AssertMemEq(x, y, length) \
+    AvmAssertMemEq((byte*)(x), (byte*)(y), length, __FILE__, __LINE__, #x, #y)
 
-// /// Asserts whether a number is not between the range of a min
-// /// and max.
-// #define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x >
-// max)
-
-// /// Asserts whether two memory blocks are equal.
-// #define AssertMemEqual(x, y, size) AVM_ASSERT_(memcmp(x, y,
-// size) == 0)
-
-// /// Asserts whether two memory blocks are not equal.
-// #define AssertMemNotEqual(x, y, size) AVM_ASSERT_(memcmp(x, y,
-// size) != 0)
+#define test int main()
 
 #endif  // AVIUM_TESTING_H

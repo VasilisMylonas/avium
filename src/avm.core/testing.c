@@ -2,7 +2,7 @@
 #include "avium/runtime.h"
 
 static void PrintLocation(str file, uint line) {
-    AvmErrorf("%s:%u\n", file, line);
+    AvmErrorf("(%s:%u) ", file, line);
 }
 
 #define ASSERT_INT_BODY(op)                                       \
@@ -21,13 +21,13 @@ static void PrintLocation(str file, uint line) {
     AvmErrorf("Assertion failed: %s " #op " %s\n", xName, yName); \
     AvmErrorf("Got:\n    %s: %u\n    %s: %u\n\n", xName, x, yName, y)
 
-#define ASSERT_STR_BODY(op)                                                  \
-    if (strcmp(x, y) op 0) {                                                 \
-        return;                                                              \
-    }                                                                        \
-    PrintLocation(file, line);                                               \
-    AvmErrorf("Assertion failed: strcmp(%s, %s) " #op " 0\n", xName, yName); \
-    AvmErrorf("Got:\n    %s: %u\n    %s: %u\n\n", xName, x, yName, y)
+#define ASSERT_STR_BODY(op)                                           \
+    if (strcmp(x, y) op 0) {                                          \
+        return;                                                       \
+    }                                                                 \
+    PrintLocation(file, line);                                        \
+    AvmErrorf("Assertion failed: [%s] " #op " [%s]\n", xName, yName); \
+    AvmErrorf("Got:\n    %s: %s\n    %s: %s\n\n", xName, x, yName, y)
 
 void AvmAssert(bool condition, str file, uint line, str expression) {
     if (condition) {
@@ -35,8 +35,7 @@ void AvmAssert(bool condition, str file, uint line, str expression) {
     }
 
     PrintLocation(file, line);
-    AvmErrorf("Assertion failed: %s\n", expression);
-    AvmErrorf("\n\n");
+    AvmErrorf("Assertion failed: %s\n\n", expression);
 }
 
 void AvmAssertEqInt(_long x, _long y, str file, uint line, str xName,
@@ -49,9 +48,14 @@ void AvmAssertNeInt(_long x, _long y, str file, uint line, str xName,
     ASSERT_INT_BODY(!=);
 }
 
-void AvmAssertGtInt(ulong x, ulong y, str file, uint line, str xName,
+void AvmAssertGtInt(_long x, _long y, str file, uint line, str xName,
                     str yName) {
     ASSERT_INT_BODY(>);
+}
+
+void AvmAssertLtInt(_long x, _long y, str file, uint line, str xName,
+                    str yName) {
+    ASSERT_INT_BODY(<);
 }
 
 void AvmAssertEqUint(ulong x, ulong y, str file, uint line, str xName,
@@ -73,6 +77,11 @@ void AvmAssertGtUint(ulong x, ulong y, str file, uint line, str xName,
     ASSERT_UINT_BODY(>);
 }
 
+void AvmAssertLtUint(ulong x, ulong y, str file, uint line, str xName,
+                     str yName) {
+    ASSERT_UINT_BODY(<);
+}
+
 void AvmAssertEqStr(str x, str y, str file, uint line, str xName, str yName) {
     ASSERT_STR_BODY(==);
 }
@@ -85,14 +94,17 @@ void AvmAssertGtStr(str x, str y, str file, uint line, str xName, str yName) {
     ASSERT_STR_BODY(>);
 }
 
+void AvmAssertLtStr(str x, str y, str file, uint line, str xName, str yName) {
+    ASSERT_STR_BODY(<);
+}
+
 void AvmAssertNull(void* pointer, str file, uint line, str name) {
     if (pointer == NULL) {
         return;
     }
 
     PrintLocation(file, line);
-    AvmErrorf("Assertion failed: %s == NULL\n", name);
-    AvmErrorf("\n\n");
+    AvmErrorf("Assertion failed: %s == NULL\n\n", name);
 }
 
 void AvmAssertNotNull(void* pointer, str file, uint line, str name) {
@@ -101,6 +113,55 @@ void AvmAssertNotNull(void* pointer, str file, uint line, str name) {
     }
 
     PrintLocation(file, line);
-    AvmErrorf("Assertion failed: %s != NULL\n", name);
+    AvmErrorf("Assertion failed: %s != NULL\n\n", name);
+}
+
+void AvmAssertInRangeInt(_long value, _long _min, _long _max, str file,
+                         uint line, str name) {
+    if (_min <= value && value <= _max) {
+        return;
+    }
+
+    PrintLocation(file, line);
+    AvmErrorf("Assertion failed: %i <= %s <= %i\n\n", _min, name, _max);
+}
+
+void AvmAssertInRangeUint(ulong value, ulong _min, ulong _max, str file,
+                          uint line, str name) {
+    if (_min <= value && value <= _max) {
+        return;
+    }
+
+    PrintLocation(file, line);
+    AvmErrorf("Assertion failed: %u <= %s <= %u\n\n", _min, name, _max);
+}
+
+void AvmAssertMemEq(byte* x, byte* y, size_t length, ASSERT_PARAMS) {
+    if (memcmp(x, y, length) == 0) {
+        return;
+    }
+
+    PrintLocation(file, line);
+    AvmErrorf("Assertion failed: [%s] == [%s]\n", xName, yName);
+    AvmErrorf("Memory was:\n    ");
+    for (size_t i = 0; i < length; i++) {
+        if (x[i] < 10) {  // One digit
+            AvmErrorf("%i    ", x[i]);
+        } else if (x[i] < 100) {
+            AvmErrorf("%i   ", x[i]);
+        } else {
+            AvmErrorf("%i  ", x[i]);
+        }
+    }
+    AvmErrorf("\n    ");
+    for (size_t i = 0; i < length; i++) {
+        if (y[i] < 10) {
+            AvmErrorf("%i    ", y[i]);
+        } else if (y[i] < 100) {
+            AvmErrorf("%i   ", y[i]);
+        } else {
+            AvmErrorf("%i  ", y[i]);
+        }
+    }
     AvmErrorf("\n\n");
 }
