@@ -8,5 +8,6 @@ add_library(avm.core ${LIB_TYPE}
 )
 
 if(USE_GC)
-    target_link_libraries(avm.core gcmt-lib)
+    include(GC)
+    target_link_libraries(avm.core ${LIBGC})
 endif()

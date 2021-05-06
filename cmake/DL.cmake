@@ -1,0 +1,12 @@
+set(FLEXDLL_URL https://github.com/alainfrisch/flexdll)
+set(FLEXDLL_TAG 0.39)
+set(FLEXDLL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/flexdll-src/include)
+
+if(WIN32)
+    FetchContent_Declare(dl GIT_REPOSITORY ${FLEXDLL_URL} GIT_TAG ${FLEXDLL_TAG})
+    FetchContent_MakeAvailable(dl)
+    include_directories(${FLEXDLL_INCLUDE_DIR})
+    find_library(LIBDL flexdll REQUIRED HINTS ${CMAKE_BINARY_DIR}/_deps/flexdll-src/lib)
+else()
+    find_library(LIBDL dl REQUIRED)
+endif()
