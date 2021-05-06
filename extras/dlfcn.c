@@ -1,4 +1,9 @@
+#pragma warning(push)
+#pragma warning(disable : 2059)
+#pragma warning(disable : 4094)
+#pragma warning(disable : 5103)
 #include <windows.h>
+#pragma warning(pop)
 
 static __declspec(thread) DWORD last_dl_error;
 
