@@ -24,111 +24,107 @@
 #ifndef AVIUM_TESTING_H
 #define AVIUM_TESTING_H
 
-#include "avium/types.h"
-#include <string.h>
-#include <avium/runtime.h>
-
-#define ASSERT_PARAMS str file, uint line, str xName, str yName
-
-AVMAPI void AvmAssert(bool condition, str file, uint line, str expression);
-AVMAPI void AvmAssertEqInt(_long x, _long y, ASSERT_PARAMS);
-AVMAPI void AvmAssertNeInt(_long x, _long y, ASSERT_PARAMS);
-AVMAPI void AvmAssertGtInt(_long x, _long y, ASSERT_PARAMS);
-AVMAPI void AvmAssertLtInt(_long x, _long y, ASSERT_PARAMS);
-AVMAPI void AvmAssertEqUint(ulong x, ulong y, ASSERT_PARAMS);
-AVMAPI void AvmAssertNeUint(ulong x, ulong y, ASSERT_PARAMS);
-AVMAPI void AvmAssertGtUint(ulong x, ulong y, ASSERT_PARAMS);
-AVMAPI void AvmAssertLtUint(ulong x, ulong y, ASSERT_PARAMS);
-AVMAPI void AvmAssertEqStr(str x, str y, ASSERT_PARAMS);
-AVMAPI void AvmAssertNeStr(str x, str y, ASSERT_PARAMS);
-AVMAPI void AvmAssertGtStr(str x, str y, ASSERT_PARAMS);
-AVMAPI void AvmAssertLtStr(str x, str y, ASSERT_PARAMS);
-
-AVMAPI void AvmAssertMemEq(byte* x, byte* y, size_t length, ASSERT_PARAMS);
-
-AVMAPI void AvmAssertInRangeInt(_long value, _long _min, _long _max, str file,
-                                uint line, str name);
-AVMAPI void AvmAssertInRangeUint(ulong value, ulong _min, ulong _max, str file,
-                                 uint line, str name);
-
-AVMAPI void AvmAssertNull(void* pointer, str file, uint line, str name);
-AVMAPI void AvmAssertNotNull(void* pointer, str file, uint line, str name);
+#include "avium/runtime.h"
 
 #define AssertTrue(condition) \
-    AvmAssert(condition, __FILE__, __LINE__, #condition)
+    __AvmAssert(condition, __FILE__, __LINE__, #condition)
+
 #define AssertFalse(condition) AssertTrue(!condition)
 
 #define AssertEq(x, y) \
     _Generic((x), byte                 \
-             : AvmAssertEqUint, ushort \
-             : AvmAssertEqUint, uint   \
-             : AvmAssertEqUint, ulong  \
-             : AvmAssertEqUint, char   \
-             : AvmAssertEqInt, short   \
-             : AvmAssertEqInt, int     \
-             : AvmAssertEqInt, _long   \
-             : AvmAssertEqInt, str     \
-             : AvmAssertEqStr, char*   \
-             : AvmAssertEqStr)(x, y, __FILE__, __LINE__, #x, #y)
+             : __AvmAssertEqUint, ushort \
+             : __AvmAssertEqUint, uint   \
+             : __AvmAssertEqUint, ulong  \
+             : __AvmAssertEqUint, char   \
+             : __AvmAssertEqInt, short   \
+             : __AvmAssertEqInt, int     \
+             : __AvmAssertEqInt, _long   \
+             : __AvmAssertEqInt, str     \
+             : __AvmAssertEqStr, char*   \
+             : __AvmAssertEqStr)(x, y, __FILE__, __LINE__, #x, #y)
 
 #define AssertNe(x, y) \
     _Generic((x), byte                 \
-             : AvmAssertNeUint, ushort \
-             : AvmAssertNeUint, uint   \
-             : AvmAssertNeUint, ulong  \
-             : AvmAssertNeUint, char   \
-             : AvmAssertNeInt, short   \
-             : AvmAssertNeInt, int     \
-             : AvmAssertNeInt, _long   \
-             : AvmAssertNeInt, str     \
-             : AvmAssertNeStr, char*   \
-             : AvmAssertNeStr)(x, y, __FILE__, __LINE__, #x, #y)
+             : __AvmAssertNeUint, ushort \
+             : __AvmAssertNeUint, uint   \
+             : __AvmAssertNeUint, ulong  \
+             : __AvmAssertNeUint, char   \
+             : __AvmAssertNeInt, short   \
+             : __AvmAssertNeInt, int     \
+             : __AvmAssertNeInt, _long   \
+             : __AvmAssertNeInt, str     \
+             : __AvmAssertNeStr, char*   \
+             : __AvmAssertNeStr)(x, y, __FILE__, __LINE__, #x, #y)
 
 #define AssertGt(x, y) \
     _Generic((x), byte                 \
-             : AvmAssertGtUint, ushort \
-             : AvmAssertGtUint, uint   \
-             : AvmAssertGtUint, ulong  \
-             : AvmAssertGtUint, char   \
-             : AvmAssertGtInt, short   \
-             : AvmAssertGtInt, int     \
-             : AvmAssertGtInt, _long   \
-             : AvmAssertGtInt, str     \
-             : AvmAssertGtStr, char*  \
-             : AvmAssertGtStr)(x, y, __FILE__, __LINE__, #x, #y)
+             : __AvmAssertGtUint, ushort \
+             : __AvmAssertGtUint, uint   \
+             : __AvmAssertGtUint, ulong  \
+             : __AvmAssertGtUint, char   \
+             : __AvmAssertGtInt, short   \
+             : __AvmAssertGtInt, int     \
+             : __AvmAssertGtInt, _long   \
+             : __AvmAssertGtInt, str     \
+             : __AvmAssertGtStr, char*  \
+             : __AvmAssertGtStr)(x, y, __FILE__, __LINE__, #x, #y)
 
 #define AssertLt(x, y) \
     _Generic((x), byte                 \
-             : AvmAssertLtUint, ushort \
-             : AvmAssertLtUint, uint   \
-             : AvmAssertLtUint, ulong  \
-             : AvmAssertLtUint, char   \
-             : AvmAssertLtInt, short   \
-             : AvmAssertLtInt, int     \
-             : AvmAssertLtInt, _long   \
-             : AvmAssertLtInt, str     \
-             : AvmAssertLtStr, char*  \
-             : AvmAssertLtStr)(x, y, __FILE__, __LINE__, #x, #y)
+             : __AvmAssertLtUint, ushort \
+             : __AvmAssertLtUint, uint   \
+             : __AvmAssertLtUint, ulong  \
+             : __AvmAssertLtUint, char   \
+             : __AvmAssertLtInt, short   \
+             : __AvmAssertLtInt, int     \
+             : __AvmAssertLtInt, _long   \
+             : __AvmAssertLtInt, str     \
+             : __AvmAssertLtStr, char*  \
+             : __AvmAssertLtStr)(x, y, __FILE__, __LINE__, #x, #y)
 
-#define AssertInRange(min, max, value)                                   \
-    _Generic((x), byte                                                   \
-             : AvmAssertInRangeUint, ushort                              \
-             : AvmAssertInRangeUint, uint                                \
-             : AvmAssertInRangeUint, ulong                               \
-             : AvmAssertInRangeUint, char                                \
-             : AvmAssertInRangeInt, short                                \
-             : AvmAssertInRangeInt, int                                  \
-             : AvmAssertInRangeInt, _long                                \
-             : AvmAssertInRangeInt)(value, min, max, __FILE__, __LINE__, \
-                                    #value)
+#define AssertInRange(min, max, value)                                     \
+    _Generic((x), byte                                                     \
+             : __AvmAssertInRangeUint, ushort                              \
+             : __AvmAssertInRangeUint, uint                                \
+             : __AvmAssertInRangeUint, ulong                               \
+             : __AvmAssertInRangeUint, char                                \
+             : __AvmAssertInRangeInt, short                                \
+             : __AvmAssertInRangeInt, int                                  \
+             : __AvmAssertInRangeInt, _long                                \
+             : __AvmAssertInRangeInt)(value, min, max, __FILE__, __LINE__, \
+                                      #value)
 
-#define AssertNull(pointer) AvmAssertNull(pointer, __FILE__, __LINE__, #pointer)
+#define AssertNull(pointer) \
+    __AvmAssertNull(pointer, __FILE__, __LINE__, #pointer)
+
 #define AssertNotNull(pointer) \
-    AvmAssertNotNull(pointer, __FILE__, __LINE__, #pointer)
+    __AvmAssertNotNull(pointer, __FILE__, __LINE__, #pointer)
 
 #define AssertMemEq(x, y, length) \
-    AvmAssertMemEq((byte*)(x), (byte*)(y), length, __FILE__, __LINE__, #x, #y)
+    __AvmAssertMemEq((byte*)(x), (byte*)(y), length, __FILE__, __LINE__, #x, #y)
 
 #define test int main()
+
+#ifndef DOXYGEN
+AVMAPI void __AvmAssert(bool, str, uint, str);
+AVMAPI void __AvmAssertEqInt(_long, _long, str, uint, str, str);
+AVMAPI void __AvmAssertNeInt(_long, _long, str, uint, str, str);
+AVMAPI void __AvmAssertGtInt(_long, _long, str, uint, str, str);
+AVMAPI void __AvmAssertLtInt(_long, _long, str, uint, str, str);
+AVMAPI void __AvmAssertEqUint(ulong, ulong, str, uint, str, str);
+AVMAPI void __AvmAssertNeUint(ulong, ulong, str, uint, str, str);
+AVMAPI void __AvmAssertGtUint(ulong, ulong, str, uint, str, str);
+AVMAPI void __AvmAssertLtUint(ulong, ulong, str, uint, str, str);
+AVMAPI void __AvmAssertEqStr(str, str, str, uint, str, str);
+AVMAPI void __AvmAssertNeStr(str, str, str, uint, str, str);
+AVMAPI void __AvmAssertGtStr(str, str, str, uint, str, str);
+AVMAPI void __AvmAssertLtStr(str, str, str, uint, str, str);
+AVMAPI void __AvmAssertMemEq(byte*, byte*, size_t, str, uint, str, str);
+AVMAPI void __AvmAssertInRangeInt(_long, _long, _long, str, uint, str);
+AVMAPI void __AvmAssertInRangeUint(ulong, ulong, ulong, str, uint, str);
+AVMAPI void __AvmAssertNull(void*, str, uint, str);
+AVMAPI void __AvmAssertNotNull(void*, str, uint, str);
+#endif  // DOXYGEN
 
 #endif  // AVIUM_TESTING_H
