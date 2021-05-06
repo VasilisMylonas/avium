@@ -27,9 +27,9 @@ int dlclose(void* handle) {
 }
 
 void* dlsym(void* handle, const char* name) {
-    void* addr = GetProcAddress(handle, name);
+    FARPROC proc = GetProcAddress(handle, name);
     last_dl_error = GetLastError();
-    return addr;
+    return *(void**)&addr;
 }
 
 char* dlerror(void) {
@@ -38,7 +38,8 @@ char* dlerror(void) {
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
                       FORMAT_MESSAGE_IGNORE_INSERTS,
                   NULL, last_dl_error,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &message, 0, NULL);
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&message, 0,
+                  NULL);
 
     return message;
 }
