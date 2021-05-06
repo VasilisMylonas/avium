@@ -8,9 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef AVM_HAVE_DLFCN_H
-#    include <dlfcn.h>
-#endif  //  AVM_HAVE_DLFCN_H
+#include <dlfcn.h>
 
 static const str CommandTemplate =
     "nm --defined-only -g %s | awk '!/^(_{2}|\\.|\\/|\\s*$|.*:$)/ { print $2 "
@@ -60,10 +58,8 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
 }
 
 static void AvmModuleDestroy(AvmModule* self) {
-#ifdef AVM_HAVE_DLFCN_H
     dlclose(self->_handle);
     self->_handle = NULL;
-#endif  // AVM_HAVE_DLFCN_H
 
     size_t length = AvmArrayListGetLength(AvmString)(&self->_symbols);
 
@@ -81,14 +77,10 @@ AvmModule AvmModuleLoad(str path) {
         AvmPanic(PathNullMsg);
     }
 
-#ifdef AVM_HAVE_DLFCN_H
     void* handle = dlopen(path, RTLD_LAZY);
     if (handle == NULL) {
         AvmPanic(dlerror());
     }
-#else
-    void* handle = NULL;
-#endif  // AVM_HAVE_DLFCN_H
 
     str name = strrchr(path, '/');
 
@@ -184,7 +176,6 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
-#ifdef AVM_HAVE_DLFCN_H
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeType) {
@@ -195,9 +186,6 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
     AvmType* t = dlsym(self->_handle, AvmStringAsPtr(&string));
     AvmObjectDestroy(&string);
     return t;
-#else
-    AvmPanic("This platform does not support this operation.");
-#endif  // AVM_HAVE_DLFCN_H
 }
 
 bool AvmModuleHasSymbol(AvmModule* self, str name) {
@@ -213,7 +201,6 @@ AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
-#ifdef AVM_HAVE_DLFCN_H
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeFunction) {
@@ -224,9 +211,6 @@ AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
     // This weird thing is needed because apparently ISO C forbids conversion
     // between void* and void(*)(void).
     return *((AvmFunction*)&ptr);
-#else
-    AvmPanic("This platform does not support this operation.");
-#endif  // AVM_HAVE_DLFCN_H
 }
 
 void* AvmModuleGetVariable(AvmModule* self, str name) {
@@ -238,8 +222,6 @@ void* AvmModuleGetVariable(AvmModule* self, str name) {
         AvmPanic(NameNullMsg);
     }
 
-#ifdef AVM_HAVE_DLFCN_H
-
     AvmSymbolType type = AvmModuleGetSymbolType(self, name);
 
     if (type != SymbolTypeVariable) {
@@ -247,9 +229,6 @@ void* AvmModuleGetVariable(AvmModule* self, str name) {
     }
 
     return dlsym(self->_handle, name);
-#else
-    AvmPanic("This platform does not support this operation.");
-#endif  // AVM_HAVE_DLFCN_H
 }
 
 object AvmReflectConstructType(AvmType* type) {

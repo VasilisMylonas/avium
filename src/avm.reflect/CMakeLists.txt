@@ -3,7 +3,12 @@ add_library(avm.reflect ${LIB_TYPE}
     reflect.c
 )
 
+if (WIN32)
+    add_subdirectory(extras)
+    include_directories(extras)
+endif()
+
 # include(TCC)
-include(DL)
+find_library(LIBDL dl REQUIRED)
 
 target_link_libraries(avm.reflect avm.core ${LIBDL} ${LIBTCC})
