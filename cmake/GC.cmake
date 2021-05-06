@@ -6,4 +6,4 @@ FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
 FetchContent_MakeAvailable(bdwgc)
 include_directories(${BDWGC_INCLUDE_DIR})
 
-find_library(LIBGC gcmt-lib REQUIRED HINTS ${CMAKE_BINARY_DIR}/lib)
+set(LIBGC gcmt-lib)
