@@ -67,6 +67,11 @@ else()
     set(LIB_TYPE STATIC)
 endif()
 
+if (WIN32)
+    add_subdirectory(extras)
+    include_directories(extras/include)
+endif()
+
 include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
 
 add_subdirectory(include)
