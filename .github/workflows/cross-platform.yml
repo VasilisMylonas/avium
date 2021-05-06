@@ -20,7 +20,7 @@ jobs:
 
     - name: Preparation
       shell: bash
-      run: cmake -S . -B ./build -DBUILD_TESTS=OFF
+      run: cmake -S . -B ./build -DUSE_GC=OFF -DBUILD_TESTS=OFF
 
     - name: Build Library
       shell: bash
