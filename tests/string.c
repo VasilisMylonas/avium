@@ -1,6 +1,6 @@
 #include <avium/testing.h>
-#include <avium/runtime.h>
 #include <avium/string.h>
+#include <string.h>
 
 void TestNew(size_t capacity) {
     const size_t length = 0;
