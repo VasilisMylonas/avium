@@ -29,7 +29,7 @@ int dlclose(void* handle) {
 void* dlsym(void* handle, const char* name) {
     FARPROC proc = GetProcAddress(handle, name);
     last_dl_error = GetLastError();
-    return *(void**)&addr;
+    return *(void**)&proc;
 }
 
 char* dlerror(void) {
