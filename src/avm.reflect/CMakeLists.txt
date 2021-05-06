@@ -3,7 +3,7 @@ add_library(avm.reflect ${LIB_TYPE}
     reflect.c
 )
 
-include(TCC)
+# include(TCC)
 include(DL)
 
 target_link_libraries(avm.reflect avm.core ${LIBDL} ${LIBTCC})
