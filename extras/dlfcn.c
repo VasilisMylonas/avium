@@ -1,7 +1,6 @@
+#define WIN32_LEAN_AND_MEAN
+
 #pragma warning(push)
-#pragma warning(disable : 2059)
-#pragma warning(disable : 2079)
-#pragma warning(disable : 2371)
 #pragma warning(disable : 4094)
 #pragma warning(disable : 5103)
 #include <windows.h>
