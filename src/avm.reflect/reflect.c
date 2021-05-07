@@ -2,14 +2,13 @@
 
 #include "avium/runtime.h"
 #include "avium/string.h"
+#include "avium/basename.h"
+#include "avium/dlfcn.h"
 
 #include "avium/private/resources.h"
 
 #include <stdio.h>
 #include <string.h>
-
-#include "avium/basename.h"
-#include "avium/dlfcn.h"
 
 static const str CommandTemplate =
     "nm --defined-only -g %s | awk '!/^(_{2}|\\.|\\/|\\s*$|.*:$)/ { print $2 "

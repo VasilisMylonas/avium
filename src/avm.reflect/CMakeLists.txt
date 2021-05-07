@@ -1,7 +1,4 @@
-add_library(avm.reflect ${LIB_TYPE}
-    codegen.c
-    reflect.c
-)
+add_library(avm.reflect codegen.c reflect.c)
 
 # include(TCC)
 
