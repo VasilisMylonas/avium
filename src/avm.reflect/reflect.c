@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <dlfcn.h>
+#include "avium/basename.h"
+#include "avium/dlfcn.h"
 
 static const str CommandTemplate =
     "nm --defined-only -g %s | awk '!/^(_{2}|\\.|\\/|\\s*$|.*:$)/ { print $2 "

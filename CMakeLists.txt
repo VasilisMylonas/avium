@@ -14,6 +14,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
+set(INCLUDE_EXTRAS_DIR ${CMAKE_SOURCE_DIR}/extras/include)
 
 set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
@@ -67,13 +68,9 @@ else()
     set(LIB_TYPE STATIC)
 endif()
 
-if (WIN32)
-    add_subdirectory(extras)
-    include_directories(extras/include)
-endif()
+include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR} ${INCLUDE_EXTRAS_DIR})
 
-include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
-
+add_subdirectory(extras)
 add_subdirectory(include)
 add_subdirectory(src)
 

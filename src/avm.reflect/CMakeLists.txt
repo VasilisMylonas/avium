@@ -11,4 +11,4 @@ else()
     find_library(LIBDL dl REQUIRED)
 endif()
 
-target_link_libraries(avm.reflect avm.core ${LIBDL} ${LIBTCC})
+target_link_libraries(avm.reflect avm.core ${LIBDL} ${LIBTCC} basename)
