@@ -30,7 +30,11 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
     AvmArrayList(AvmString) functions = AvmArrayListNew(AvmString)(10);
 
     AvmString command = AvmStringFormat(CommandTemplate, path);
+#ifdef AVM_WIN32
+    FILE* out = _popen(AvmStringAsPtr(&command), "r");
+#else
     FILE* out = popen(AvmStringAsPtr(&command), "r");
+#endif
     AvmObjectDestroy(&command);
 
     bool hasFailed = false;
