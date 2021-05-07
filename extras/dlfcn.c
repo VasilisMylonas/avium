@@ -1,10 +1,8 @@
-#define WIN32_LEAN_AND_MEAN
+#include "avium/dlfcn.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4094)
-#pragma warning(disable : 5103)
-#include <windows.h>
-#pragma warning(pop)
+#ifdef AVM_WIN32
+#    define WIN32_LEAN_AND_MEAN
+#    include <windows.h>
 
 static __declspec(thread) DWORD last_dl_error;
 
@@ -43,3 +41,14 @@ char* dlerror(void) {
 
     return message;
 }
+#endif
+
+extern void* AvmDlopen(str filename, int mode) {
+    return dlopen(filename, mode);
+}
+
+extern int AvmDlclose(void* handle) { return dlclose(handle); }
+
+extern void* AvmDlsym(void* handle, str name) { return dlsym(handle, name); }
+
+extern char* AvmDlerror(void) { return dlerror(); }

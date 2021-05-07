@@ -63,7 +63,7 @@ static AvmArrayList(AvmString) GetSymbolList(str path) {
 }
 
 static void AvmModuleDestroy(AvmModule* self) {
-    dlclose(self->_handle);
+    AvmDlclose(self->_handle);
     self->_handle = NULL;
 
     size_t length = AvmArrayListGetLength(AvmString)(&self->_symbols);
@@ -82,9 +82,9 @@ AvmModule AvmModuleLoad(str path) {
         AvmPanic(PathNullMsg);
     }
 
-    void* handle = dlopen(path, RTLD_LAZY);
+    void* handle = AvmDlopen(path, RTLD_LAZY);
     if (handle == NULL) {
-        AvmPanic(dlerror());
+        AvmPanic(AvmDlerror());
     }
 
     str name = strrchr(path, '/');
@@ -188,7 +188,7 @@ AvmType* AvmModuleGetType(AvmModule* self, str name) {
     }
 
     AvmString string = AvmStringFormat("_TI_%s", name);
-    AvmType* t = dlsym(self->_handle, AvmStringAsPtr(&string));
+    AvmType* t = AvmDlsym(self->_handle, AvmStringAsPtr(&string));
     AvmObjectDestroy(&string);
     return t;
 }
@@ -212,7 +212,7 @@ AvmFunction AvmModuleGetFunction(AvmModule* self, str name) {
         AvmPanic(MissingSymbolMsg);
     }
 
-    void* ptr = dlsym(self->_handle, name);
+    void* ptr = AvmDlsym(self->_handle, name);
     // This weird thing is needed because apparently ISO C forbids conversion
     // between void* and void(*)(void).
     return *((AvmFunction*)&ptr);
@@ -233,7 +233,7 @@ void* AvmModuleGetVariable(AvmModule* self, str name) {
         AvmPanic(MissingSymbolMsg);
     }
 
-    return dlsym(self->_handle, name);
+    return AvmDlsym(self->_handle, name);
 }
 
 object AvmReflectConstructType(AvmType* type) {
