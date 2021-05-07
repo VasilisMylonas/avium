@@ -61,6 +61,7 @@
 #define AVM_ARRAY_LIST_SIZE          32
 #define AVM_ARRAY_LIST_GROWTH_FACTOR 2
 #define AVM_VALUE_SIZE               24
+#define AVM_MAX_STRING_SIZE          ((uint)-1)
 
 #ifdef AVM_HAVE_UCHAR_H
 #    define AVM_FMT_UNICODE 'U'

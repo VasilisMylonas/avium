@@ -26,6 +26,12 @@
 
 #include "avium/runtime.h"
 
+// TODO: These should be toggable via some config mechanism.
+#define pre  if (true)
+#define post if (true)
+
+#include <assert.h>
+
 #define AssertTrue(condition) \
     __AvmAssert(condition, __FILE__, __LINE__, #condition)
 
