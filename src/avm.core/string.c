@@ -57,19 +57,29 @@ AVM_TYPE(AvmString, object,
              [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
          });
 
-static void AvmStringReallocate(AvmString *self, size_t required)
-{
+void AvmStringEnsureCapacity(AvmString* self, size_t capacity) {
     pre
     {
         assert(self != NULL);
         assert(required <= AVM_MAX_STRING_SIZE);
     }
 
-    if (self->_length + required > self->_capacity)
+    if (capacity == 0) {
+        return;
+    }
+
+    const size_t totalRequired = self->_length + capacity;
+    const size_t newCapacity = self->_capacity * AVM_STRING_GROWTH_FACTOR;
+
+    if (totalRequired > self->_capacity)
     {
         // TODO: There may be more efficient ways of doing this
-        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_capacity += required;
+        self->_capacity = newCapacity;
+
+        if (newCapacity < totalRequired) {
+            self->_capacity += capacity;
+        }
+
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity);
     }
 
@@ -569,7 +579,7 @@ void AvmStringPushChar(AvmString *self, char character)
         assert(self != NULL);
     }
 
-    AvmStringReallocate(self, 1);
+    AvmStringEnsureCapacity(self, 1);
     self->_buffer[self->_length] = character;
     self->_length++;
 
@@ -615,7 +625,7 @@ void AvmStringPushChars(AvmString *self, size_t length, str contents)
         return;
     }
 
-    AvmStringReallocate(self, length);
+    AvmStringEnsureCapacity(self, length);
 
     byte *const source = (byte *)contents;
     byte *const dest = (byte *)&self->_buffer[self->_length];

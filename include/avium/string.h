@@ -288,6 +288,8 @@ AVMAPI void AvmStringMapEx(const AvmString* self,
  */
 AVMAPI void AvmStringMapCompat(const AvmString* self, int (*function)(int));
 
+AVMAPI void AvmStringEnsureCapacity(AvmString* self, size_t capacity);
+
 /**
  * @brief Pushes a character to the end of an AvmString.
  *
