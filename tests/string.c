@@ -36,7 +36,7 @@ void TestFrom(str string)
     else
     {
         assert(AvmStringGetBuffer(&s) != NULL);
-        assert_eq(AvmStringGetBuffer(&s), string);
+        assert_eq(strcmp(AvmStringGetBuffer(&s), string), 0);
     }
 
     assert_eq(AvmStringGetLength(&s), length);
