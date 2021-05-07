@@ -1,14 +1,6 @@
 include(GenerateExportHeader)
 
-add_subdirectory(avm.core)
-add_subdirectory(avm.argparse)
-
-if(USE_IO)
-    add_subdirectory(avm.io)
-endif()
-
 add_library(avm ${LIB_TYPE} module.c)
-target_link_libraries(avm avm.core avm.io avm.argparse)
 
 generate_export_header(avm
     BASE_NAME AVM
@@ -16,5 +8,25 @@ generate_export_header(avm
     INCLUDE_GUARD_NAME AVIUM_EXPORTS_H
     EXPORT_FILE_NAME ${INCLUDE_OUT_DIR}/avium/exports.h
 )
+
+add_compile_definitions(_AVM_BUILD)
+
+add_subdirectory(avm.core)
+target_link_libraries(avm avm.core)
+
+if(USE_ARGPARSE)
+    add_subdirectory(avm.argparse)
+    target_link_libraries(avm avm.argparse)
+endif()
+
+if(USE_IO)
+    add_subdirectory(avm.io)
+    target_link_libraries(avm avm.io)
+endif()
+
+if(USE_REFLECT)
+    add_subdirectory(avm.reflect)
+    target_link_libraries(avm avm.reflect)
+endif()
 
 install(TARGETS avm DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})

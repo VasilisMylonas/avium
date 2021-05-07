@@ -7,6 +7,12 @@
 #define BACKTRACE_MAX_SYMBOLS 128
 #define READ_LINE_CAPACITY    32
 
+#define AVM_FORWARD(arg, call) \
+    va_list args;              \
+    va_start(args, arg);       \
+    call(arg, args);           \
+    va_end(args);
+
 #define NULL_PARAM_STR(name)  "Parameter `" name "` was `NULL`."
 #define RANGE_PARAM_STR(name) "Parameter `" name "` was out of range."
 
@@ -36,5 +42,7 @@ static const str PathNullMsg = NULL_PARAM_STR("path");
 static const str InvalidAccessMsg = "Parameter `access` was invalid.";
 static const str InternalErrorMsg = "Internal error.";
 static const str NotImplementedMsg = "Not implemented.";
+static const str NameNullMsg = NULL_PARAM_STR("name");
+static const str MissingSymbolMsg = "The requested symbol was missing.";
 
 #endif  // AVIUM_RESOURCES_H

@@ -24,8 +24,12 @@
 #ifndef AVIUM_IO_H
 #define AVIUM_IO_H
 
-#include "avium/runtime.h"
-#include "avium/error.h"
+#include "avium/config.h"
+
+#ifdef AVM_USE_IO
+
+#    include "avium/runtime.h"
+#    include "avium/error.h"
 
 /// Represents a C file handle.
 typedef void* AvmFileHandle;
@@ -212,5 +216,7 @@ AVMAPI AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string);
 
 // Ensure type size constraints.
 static_assert_s(sizeof(AvmStream) == AVM_STREAM_SIZE);
+
+#endif  // AVM_USE_IO
 
 #endif  // AVIUM_IO_H

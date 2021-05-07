@@ -4,6 +4,7 @@
 #include <stdio.h>   // For vfprintf, vscanf, stderr, stdout
 
 #include "avium/runtime.h"
+#include "avium/string.h"
 #include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC
@@ -17,11 +18,11 @@
 #    define AVM_DEALLOC free
 #endif
 
-void* AvmAlloc(size_t size) { return AVM_ALLOC(size); }
-void* AvmRealloc(void* memory, size_t size) {
+box(void) AvmAlloc(size_t size) { return AVM_ALLOC(size); }
+box(void) AvmRealloc(box(void) memory, size_t size) {
     return AVM_REALLOC(memory, size);
 }
-void AvmDealloc(void* memory) { AVM_DEALLOC(memory); }
+void AvmDealloc(box(void) memory) { AVM_DEALLOC(memory); }
 
 object AvmObjectAlloc(size_t size, object data) {
     object memory = AvmAlloc(size);
@@ -96,6 +97,52 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index) {
     return self->_vptr[index];
 }
 
+const AvmType* AvmTypeGetBase(const AvmType* self) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    return self->_baseType;
+}
+
+bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType) {
+    if (self == NULL) {
+        AvmPanic(SelfNullMsg);
+    }
+
+    if (baseType == NULL) {
+        AvmPanic("Parameter `baseType` was `NULL`.");
+    }
+
+    if (baseType == typeid(object)) {
+        return true;
+    }
+
+    for (const AvmType* temp = AvmTypeGetBase(self); temp != typeid(object);
+         temp = AvmTypeGetBase(temp)) {
+        if (temp == baseType) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static str ProgramName = NULL;
+
+str AvmRuntimeGetProgramName(void) {
+    if (ProgramName == NULL) {
+        AvmPanic("Runtime not initialized! Call AvmRuntimeInit first!");
+    }
+
+    return ProgramName;
+}
+
+void AvmRuntimeInit(int argc, str argv[]) {
+    (void)argc;
+    ProgramName = argv[0];
+}
+
 #ifdef AVM_LINUX
 #    include <execinfo.h>
 #endif
@@ -105,7 +152,7 @@ never AvmPanicEx(str message, str function, str file, uint line) {
               function, message);
 
 #ifdef AVM_LINUX
-    object arr[BACKTRACE_MAX_SYMBOLS];
+    void* arr[BACKTRACE_MAX_SYMBOLS];
 
     int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
     char** s = backtrace_symbols(arr, length);
@@ -121,17 +168,12 @@ never AvmPanicEx(str message, str function, str file, uint line) {
     exit(1);
 }
 
-#define AVM_FORWARD(arg, call) \
-    va_list args;              \
-    va_start(args, arg);       \
-    call(arg, args);           \
-    va_end(args);
-
 void AvmVScanf(str format, va_list args) {
     if (format == NULL) {
         AvmPanic(FormatNullMsg);
     }
 
+    // TODO
     vscanf(format, args);
 }
 
@@ -140,7 +182,9 @@ void AvmVPrintf(str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    vfprintf(stdout, format, args);
+    AvmString temp = AvmStringFormatV(format, args);
+    fputs(AvmStringGetBuffer(&temp), stdout);
+    AvmObjectDestroy(&temp);
 }
 
 void AvmVErrorf(str format, va_list args) {
@@ -148,7 +192,9 @@ void AvmVErrorf(str format, va_list args) {
         AvmPanic(FormatNullMsg);
     }
 
-    vfprintf(stderr, format, args);
+    AvmString temp = AvmStringFormatV(format, args);
+    fputs(AvmStringGetBuffer(&temp), stderr);
+    AvmObjectDestroy(&temp);
 }
 
 void AvmScanf(str format, ...) {

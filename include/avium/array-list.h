@@ -54,7 +54,7 @@
         AvmDealloc((void*)self->_items);                                      \
     }                                                                         \
                                                                               \
-    AVM_INLINE_TYPE(AvmArrayList(T),                                          \
+    AVM_INLINE_TYPE(AvmArrayList(T), object,                                  \
                     {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});   \
                                                                               \
     static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) {       \
@@ -121,7 +121,7 @@
         }                                                                   \
                                                                             \
         AVM_INLINE_TYPE(                                                    \
-            AvmArrayList(T),                                                \
+            AvmArrayList(T), object,                                        \
             {[FnEntryDtor] = (AvmFunction)AvmArrayListDestroy(T)});         \
                                                                             \
         static inline AvmArrayList(T) AvmArrayListNew(T)(size_t capacity) { \

@@ -8,7 +8,8 @@ static AvmString AvmVersionToString(AvmVersion* self) {
     return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
 }
 
-AVM_TYPE(AvmVersion, {[FnEntryToString] = (AvmFunction)AvmVersionToString});
+AVM_TYPE(AvmVersion, object,
+         {[FnEntryToString] = (AvmFunction)AvmVersionToString});
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch) {
     return (AvmVersion){

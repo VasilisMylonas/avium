@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Testing utilities.
  * @version 0.2
- * @date 2021-04-05
+ * @date 2021-05-07
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -24,80 +24,27 @@
 #ifndef AVIUM_TESTING_H
 #define AVIUM_TESTING_H
 
-#include "avium/types.h"
-#include <string.h>
+#include "avium/runtime.h"
 
-/// Asserts whether a condition is true.
-#define Assert(x) AVM_ASSERT_(x)
+#include <assert.h>
 
-/// Asserts whether an object is of specific type.
-#define AssertIsType(T, x) AVM_ASSERT_(typeid(T) == AvmObjectGetType(x))
+#ifdef AVM_NO_PRECOND
+#define pre if (false)
+#else
+#define pre if (true)
+#endif
 
-/// Asserts whether an object is not of specific type.
-#define AssertIsNotType(T, x) AVM_ASSERT_(typeid(T) != AvmObjectGetType(x))
+#if defined NDEBUG || defined AVM_NO_POSTCOND
+#define post if (false)
+#else
+#define post if (true)
+#endif
 
-/// Asserts whether a condition is false.
-#define AssertNot(x) AVM_ASSERT_(!x)
+#define assert_eq(x, y) assert(x == y)
+#define assert_ne(x, y) assert(x != y)
+#define assert_gt(x, y) assert(x > y)
+#define assert_lt(x, y) assert(x < y)
+#define assert_ge(x, y) assert(x >= y)
+#define assert_le(x, y) assert(x <= y)
 
-/// Asserts whether two primitives are equal.
-#define AssertEqual(x, y) AVM_ASSERT_(x == y)
-
-/// Asserts whether two primitives are not equal.
-#define AssertNotEqual(x, y) AVM_ASSERT_(x != y)
-
-/// Asserts whether two strings are equal.
-#define AssertStrEqual(x, y) AVM_ASSERT_(strcmp(x, y) == 0)
-
-/// Asserts whether two strings are not equal.
-#define AssertStrNotEqual(x, y) AVM_ASSERT_(strcmp(x, y) != 0)
-
-/// Asserts whether two memory blocks are equal.
-#define AssertMemEqual(x, y, size) AVM_ASSERT_(memcmp(x, y, size) == 0)
-
-/// Asserts whether two memory blocks are not equal.
-#define AssertMemNotEqual(x, y, size) AVM_ASSERT_(memcmp(x, y, size) != 0)
-
-/// Asserts whether a pointer is null.
-#define AssertNull(x) AVM_ASSERT_(x == NULL)
-
-/// Asserts whether a pointer is not null.
-#define AssertNotNull(x) AVM_ASSERT_(x != NULL)
-
-/// Asserts whether two pointers are equal.
-#define AssertPtrEqual(x, y) AVM_ASSERT_(((uptr)x) == ((uptr)y))
-
-/// Asserts whether two pointers are not equal.
-#define AssertPtrNotEqual(x, y) AVM_ASSERT_(((uptr)x) != ((uptr)y))
-
-/// Asserts whether a number is between the range of a min and
-/// max..
-#define AssertInRange(x, min, max) AVM_ASSERT_(min <= x && x <= max)
-
-/// Asserts whether a number is not between the range of a min
-/// and max.
-#define AssertNotInRange(x, min, max) AVM_ASSERT_(min > x && x > max)
-
-/**
- * @brief This attributes marks a function as a test.
- *
- * Tests have the following signature:
- *
- * @code
- * __test TestSomething(object state);
- * @endcode
- */
-#define __test static void
-
-#ifndef DOXYGEN
-#    define AVM_ASSERT_(expression)                                         \
-        expression ? ((void)0)                                              \
-                   : AvmPanicEx("Assertion failed: " #expression, __func__, \
-                                __FILE__, __LINE__);
-
-#    define AVM_ASSERT_TYPE_(T, x)                                            \
-        istype(T, x) ? ((void)0)                                              \
-                     : AvmPanicEx("Assertion failed: istype(" #T ", " #x ")", \
-                                  __func__, __FILE__, __LINE__);
-#endif  // DOXYGEN
-
-#endif  // AVIUM_TESTING_H
+#endif // AVIUM_TESTING_H

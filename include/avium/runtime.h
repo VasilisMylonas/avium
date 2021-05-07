@@ -76,8 +76,22 @@ typedef enum {
 /// Determines whether an object is of specific type.
 #define istype(T, x) (typeid(T) == AvmObjectGetType(x))
 
+// clang-format off
+#define instanceof(T, x) \
+    (istype(T, x) || AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
+// clang-format on
+
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
+
+#if defined AVM_GNU && defined AVM_LINUX
+#    pragma weak AvmAlloc
+#    pragma weak AvmRealloc
+#    pragma weak AvmDealloc
+#endif
+
+AVMAPI void AvmRuntimeInit(int argc, str argv[]);
+AVMAPI str AvmRuntimeGetProgramName(void);
 
 /**
  * @brief Allocates heap memory.
@@ -94,14 +108,14 @@ AVMAPI void* AvmAlloc(size_t size);
  * @param size The new size of the memory block in bytes.
  * @return The reallocated memory.
  */
-AVMAPI void* AvmRealloc(void* memory, size_t size);
+AVMAPI box(void) AvmRealloc(box(void) memory, size_t size);
 
 /**
  * @brief Deallocates heap memory.
  *
  * @param memory The memory block to deallocate.
  */
-AVMAPI void AvmDealloc(void* memory);
+AVMAPI void AvmDealloc(box(void) memory);
 
 /**
  * @brief Allocates an object on the heap, and initializes it with the provided
@@ -193,6 +207,10 @@ AVMAPI size_t AvmTypeGetSize(const AvmType* self);
  * @return The function pointer.
  */
 AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
+
+AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
+
+AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);
