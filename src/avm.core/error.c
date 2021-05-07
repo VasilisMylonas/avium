@@ -40,8 +40,9 @@ static AvmString AvmSimpleErrorToString(AvmSimpleError* self) {
     }
 }
 
-AVM_TYPE(AvmOSError, {[FnEntryToString] = (AvmFunction)AvmOSErrorToString});
-AVM_TYPE(AvmSimpleError,
+AVM_TYPE(AvmOSError, object,
+         {[FnEntryToString] = (AvmFunction)AvmOSErrorToString});
+AVM_TYPE(AvmSimpleError, object,
          {[FnEntryToString] = (AvmFunction)AvmSimpleErrorToString});
 
 AvmError* AvmErrorFromOSCode(int code) {

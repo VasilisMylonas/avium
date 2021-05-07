@@ -24,7 +24,11 @@
 #ifndef AVIUM_VALUE_H
 #define AVIUM_VALUE_H
 
-#include "avium/types.h"
+#include "avium/config.h"
+
+#ifdef AVM_USE_ARGPARSE
+
+#    include "avium/types.h"
 
 /// Describes the type currently held by an AvmValue.
 typedef enum {
@@ -47,10 +51,10 @@ typedef enum {
     ValueKindChar,
 } AvmValueKind;
 
-#ifdef DOXYGEN
+#    ifdef DOXYGEN
 /// A type that can contain any primitive type.
 typedef struct AvmValue AvmValue;
-#else
+#    else
 /// A type that can contain any primitive type.
 AVM_CLASS(AvmValue, object, {
     union {
@@ -63,7 +67,7 @@ AVM_CLASS(AvmValue, object, {
     };
     AvmValueKind _kind;
 });
-#endif  // DOXYGEN
+#    endif  // DOXYGEN
 
 /**
  * @brief Creates an AvmValue containing a boolean.
@@ -191,8 +195,10 @@ AVMAPI AvmValueKind AvmValueGetKind(AvmValue* self);
 
 // Ensure type size constraint.
 
-#ifndef DOXYGEN
+#    ifndef DOXYGEN
 static_assert_s(sizeof(AvmValue) == AVM_VALUE_SIZE);
-#endif  // DOXYGEN
+#    endif  // DOXYGEN
+
+#endif  // AVM_USE_ARGPARSE
 
 #endif  // AVIUM_VALUE_H

@@ -24,9 +24,13 @@
 #ifndef AVIUM_OPTIONS_H
 #define AVIUM_OPTIONS_H
 
-#include "avium/types.h"
-#include "avium/array-list.h"
-#include "avium/value.h"
+#include "avium/config.h"
+
+#ifdef AVM_USE_ARGPARSE
+
+#    include "avium/types.h"
+#    include "avium/array-list.h"
+#    include "avium/value.h"
 
 AVM_ARRAY_LIST_TYPE(AvmValue)
 
@@ -83,7 +87,7 @@ AVMAPI void AvmOptionParserAddOptionEx(AvmOptionParser* self, str option,
  */
 AVMAPI void AvmOptionParserShowUsage(AvmOptionParser* self, str description);
 
-#ifdef DOXYGEN
+#    ifdef DOXYGEN
 /**
  * @brief Parses command-line options, returning a list of the string values.
  *
@@ -99,7 +103,7 @@ AVMAPI AvmArrayList<str> AvmOptionParserParseRaw(AvmOptionParser* self);
  * @return The list of values.
  */
 AVMAPI AvmArrayList<AvmValue> AvmOptionParserParse(AvmOptionParser* self);
-#else
+#    else
 /**
  * @brief Parses command-line options, returning a list of the string values.
  *
@@ -115,6 +119,8 @@ AVMAPI AvmArrayList(str) AvmOptionParserParseRaw(AvmOptionParser* self);
  * @return The list of values.
  */
 AVMAPI AvmArrayList(AvmValue) AvmOptionParserParse(AvmOptionParser* self);
-#endif  // DOXYGEN
+#    endif  // DOXYGEN
+
+#endif  // AVM_USE_ARGPARSE
 
 #endif  // AVIUM_OPTIONS_H

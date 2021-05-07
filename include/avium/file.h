@@ -1,8 +1,12 @@
 #ifndef AVIUM_FILE_H
 #define AVIUM_FILE_H
 
-#include "avium/runtime.h"
-#include "avium/io.h"
+#include "avium/config.h"
+
+#ifdef AVM_USE_IO
+
+#    include "avium/runtime.h"
+#    include "avium/io.h"
 
 typedef enum {
     FileAccessRead = 2,
@@ -30,5 +34,7 @@ AVMAPI AvmError* AvmFileWriteAllText(str path, AvmString* string);
 AVMAPI AvmError* AvmFileAppendAllText(str path, AvmString* string);
 
 AVMAPI AvmFileMetadata AvmFileGetMetadata(str path);
+
+#endif  // AVM_USE_IO
 
 #endif  // AVIUM_FILE_H
