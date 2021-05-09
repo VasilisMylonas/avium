@@ -1,10 +1,11 @@
 #include "avium/types.h"
 
-#include <string.h> // For memcmp
+#include <string.h>
 
 #include "avium/core.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
+#include "avium/error.h"
 #include "avium/typeinfo.h"
 
 const AvmType *AvmObjectGetType(object self)

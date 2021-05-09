@@ -7,6 +7,11 @@
 
 #include <string.h>
 #include <errno.h>
+#include <stdlib.h>
+
+#ifdef AVM_LINUX
+#include <execinfo.h>
+#endif
 
 AVM_CLASS(AvmOSError, AvmError, { int _code; });
 AVM_CLASS(AvmSimpleError, AvmError, { AvmErrorKind _kind; });
@@ -99,4 +104,27 @@ AvmString AvmErrorGetBacktrace(AvmError *self)
     }
 
     return AvmStringNew(0);
+}
+
+never AvmPanicEx(str message, str function, str file, uint line)
+{
+    AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n", file, line,
+              function, message);
+
+#ifdef AVM_LINUX
+    void *arr[BACKTRACE_MAX_SYMBOLS];
+
+    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
+    char **s = backtrace_symbols(arr, length);
+
+    for (int i = length - 1; i >= 1; i--)
+    {
+        *(strrchr(s[i], ')')) = '\0';
+        AvmErrorf("    at %s\n", strchr(s[i], '(') + 1);
+    }
+#else
+    AvmErrorf("%s\n", NoBacktraceMsg);
+#endif
+
+    exit(1);
 }

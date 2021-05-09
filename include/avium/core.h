@@ -158,25 +158,6 @@ AVMAPI void AvmEnableExceptions(void);
 AVMAPI void AvmDisableExceptions(void);
 
 /**
- * @brief Aborts execution, printing a message and location information.
- *
- * @param message The message to print.
- */
-#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
-
-/**
- * @brief Aborts execution, printing a message and location information.
- *
- * @param message The message to be printed.
- * @param function The function name.
- * @param file The file name.
- * @param line The line number.
- *
- * @return This function never returns.
- */
-AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
-
-/**
  * @brief Copies memory from one block to another.
  *
  * This will copy length bytes from source to destination, but not more than

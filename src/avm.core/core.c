@@ -5,6 +5,7 @@
 
 #include "avium/core.h"
 #include "avium/string.h"
+#include "avium/error.h"
 #include "avium/typeinfo.h"
 #include "avium/private/resources.h"
 
@@ -74,75 +75,6 @@ void AvmMemCopy(byte *source, size_t length, byte *destination, size_t size)
     memcpy(destination, source, trueLength);
 }
 
-str AvmTypeGetName(const AvmType *self)
-{
-    if (self == NULL)
-    {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_name;
-}
-
-size_t AvmTypeGetSize(const AvmType *self)
-{
-    if (self == NULL)
-    {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_size;
-}
-
-AvmFunction AvmTypeGetFunction(const AvmType *self, size_t index)
-{
-    if (self == NULL)
-    {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_vptr[index];
-}
-
-const AvmType *AvmTypeGetBase(const AvmType *self)
-{
-    if (self == NULL)
-    {
-        AvmPanic(SelfNullMsg);
-    }
-
-    return self->_baseType;
-}
-
-bool AvmTypeInheritsFrom(const AvmType *self, const AvmType *baseType)
-{
-    if (self == NULL)
-    {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (baseType == NULL)
-    {
-        AvmPanic("Parameter `baseType` was `NULL`.");
-    }
-
-    if (baseType == typeid(object))
-    {
-        return true;
-    }
-
-    for (const AvmType *temp = AvmTypeGetBase(self); temp != typeid(object);
-         temp = AvmTypeGetBase(temp))
-    {
-        if (temp == baseType)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 static str ProgramName = NULL;
 
 str AvmRuntimeGetProgramName(void)
@@ -159,33 +91,6 @@ void AvmRuntimeInit(int argc, str argv[])
 {
     (void)argc;
     ProgramName = argv[0];
-}
-
-#ifdef AVM_LINUX
-#include <execinfo.h>
-#endif
-
-never AvmPanicEx(str message, str function, str file, uint line)
-{
-    AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n", file, line,
-              function, message);
-
-#ifdef AVM_LINUX
-    void *arr[BACKTRACE_MAX_SYMBOLS];
-
-    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
-    char **s = backtrace_symbols(arr, length);
-
-    for (int i = length - 1; i >= 1; i--)
-    {
-        *(strrchr(s[i], ')')) = '\0';
-        AvmErrorf("    at %s\n", strchr(s[i], '(') + 1);
-    }
-#else
-    AvmErrorf("%s\n", NoBacktraceMsg);
-#endif
-
-    exit(1);
 }
 
 void AvmVScanf(str format, va_list args)
