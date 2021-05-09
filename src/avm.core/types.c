@@ -1,79 +1,94 @@
 #include "avium/types.h"
 
-#include <string.h>  // For memcmp
+#include <string.h> // For memcmp
 
-#include "avium/runtime.h"
+#include "avium/core.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
 
-const AvmType* AvmObjectGetType(object self) {
-    if (self == NULL) {
+const AvmType *AvmObjectGetType(object self)
+{
+    if (self == NULL)
+    {
         AvmPanic(SelfNullMsg);
     }
 
     // The first member of an object should be a const AvmType*
     // Look in types.h for AVM_CLASS
-    return *(const AvmType**)self;
+    return *(const AvmType **)self;
 }
 
-bool AvmObjectEquals(object self, object other) {
-    if (self == NULL) {
+bool AvmObjectEquals(object self, object other)
+{
+    if (self == NULL)
+    {
         AvmPanic(SelfNullMsg);
     }
 
-    if (other == NULL) {
+    if (other == NULL)
+    {
         AvmPanic(OtherNullMsg);
     }
 
-    const AvmType* type = AvmObjectGetType(self);
+    const AvmType *type = AvmObjectGetType(self);
     AvmFunction fn = AvmTypeGetFunction(type, FnEntryEquals);
     size_t size = type->_size;
 
-    if (fn == NULL) {
+    if (fn == NULL)
+    {
         return memcmp(self, other, size) == 0;
     }
 
     return ((bool (*)(object, object))fn)(self, other);
 }
 
-void AvmObjectDestroy(object self) {
-    if (self == NULL) {
+void AvmObjectDestroy(object self)
+{
+    if (self == NULL)
+    {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryDtor);
 
-    if (fn != NULL) {
+    if (fn != NULL)
+    {
         ((void (*)(object))fn)(self);
     }
 }
 
-object AvmObjectClone(object self) {
-    if (self == NULL) {
+object AvmObjectClone(object self)
+{
+    if (self == NULL)
+    {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryClone);
 
-    if (fn == NULL) {
+    if (fn == NULL)
+    {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
         box(void) memory = AvmAlloc(size);
-        AvmMemCopy((byte*)self, size, (byte*)memory, size);
+        AvmMemCopy((byte *)self, size, (byte *)memory, size);
         return memory;
     }
 
     return ((object(*)(object))fn)(self);
 }
 
-AvmString AvmObjectToString(object self) {
-    if (self == NULL) {
+AvmString AvmObjectToString(object self)
+{
+    if (self == NULL)
+    {
         AvmPanic(SelfNullMsg);
     }
 
     AvmFunction fn =
         AvmTypeGetFunction(AvmObjectGetType(self), FnEntryToString);
 
-    if (fn == NULL) {
+    if (fn == NULL)
+    {
         return AvmStringFormat("%s [%x]",
                                AvmTypeGetName(AvmObjectGetType(self)), self);
     }

@@ -24,7 +24,7 @@
 #ifndef AVIUM_VERSION_H
 #define AVIUM_VERSION_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 #ifdef DOXYGEN
 /// A type representing a software version in the format: N.N.N
@@ -41,7 +41,7 @@ AVM_CLASS(AvmVersion, object, {
     /// The patch version.
     ushort Patch;
 });
-#endif  // DOXYGEN
+#endif // DOXYGEN
 
 /**
  * @brief Creates a new AvmVersion instance.
@@ -63,6 +63,6 @@ AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 #ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
-#endif  // DOXYGEN
+#endif // DOXYGEN
 
-#endif  // AVIUM_VERSION_H
+#endif // AVIUM_VERSION_H

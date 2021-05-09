@@ -7,7 +7,8 @@
 #include <string.h>
 
 #include "avium/private/resources.h"
-#include "avium/runtime.h"
+#include "avium/core.h"
+#include "avium/error.h"
 #include "avium/testing.h"
 
 #ifdef AVM_HAVE_UCHAR_H

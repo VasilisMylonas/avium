@@ -24,13 +24,14 @@
 #ifndef AVIUM_ERROR_H
 #define AVIUM_ERROR_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
 
 /// Describes the type of the error that occurred.
-typedef enum {
+typedef enum
+{
     /// Received an invalid argument.
     ErrorKindArg,
 
@@ -67,7 +68,7 @@ typedef enum {
  *
  * @return A type that implements AvmError.
  */
-AVMAPI AvmError* AvmErrorGetLast(void);
+AVMAPI AvmError *AvmErrorGetLast(void);
 
 /**
  * @brief Creates an AvmError from an os code.
@@ -77,7 +78,7 @@ AVMAPI AvmError* AvmErrorGetLast(void);
  * @param code The error code.
  * @return The created instance.
  */
-AVMAPI AvmError* AvmErrorFromOSCode(int code);
+AVMAPI AvmError *AvmErrorFromOSCode(int code);
 
 /**
  * @brief Creates an AvmError of a specific kind.
@@ -85,7 +86,7 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  * @param kind The error kind.
  * @return The created instance.
  */
-AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
+AVMAPI AvmError *AvmErrorOfKind(AvmErrorKind kind);
 
 /**
  * @brief Returns the AvmError responsible for this error.
@@ -95,7 +96,7 @@ AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
  * @param self The AvmError instance.
  * @return The source of the error.
  */
-AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError* self);
+AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError *self);
 
 /**
  * @brief Gets a backtrace of the stack during the creation of an error.
@@ -105,6 +106,6 @@ AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError* self);
  * @param self The AvmError instance.
  * @return The backtrace.
  */
-AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
+AVMAPI AvmString AvmErrorGetBacktrace(AvmError *self);
 
-#endif  // AVIUM_ERROR_H
+#endif // AVIUM_ERROR_H

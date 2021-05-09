@@ -5,11 +5,12 @@
 
 #ifdef AVM_USE_IO
 
-#    include "avium/runtime.h"
-#    include "avium/io.h"
+#include "avium/core.h"
+#include "avium/io.h"
 
 /// Determines the mode that a file will be opened with.
-typedef enum {
+typedef enum
+{
     FileAccessRead = 2,
     FileAccessWrite = 4,
     FileAccessAppend = 8,
@@ -17,7 +18,7 @@ typedef enum {
     FileAccessReadAppend = FileAccessRead | FileAccessAppend,
 } AvmFileAccess;
 
-AVMAPI AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error);
+AVMAPI AvmStream *AvmFileOpen(str path, AvmFileAccess access, AvmError **error);
 
 /**
  * @brief Determines whether a file is accessible.
@@ -37,7 +38,7 @@ AVMAPI bool AvmFileExists(str path);
  * @param path The path to the file to delete.
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileDelete(str path);
+AVMAPI AvmError *AvmFileDelete(str path);
 
 /**
  * @brief Moves file to a different location.
@@ -49,7 +50,7 @@ AVMAPI AvmError* AvmFileDelete(str path);
  * @param destination The path to the destination.
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileMove(str source, str destination);
+AVMAPI AvmError *AvmFileMove(str source, str destination);
 
 /**
  * @brief Copies a file to a different location.
@@ -61,7 +62,7 @@ AVMAPI AvmError* AvmFileMove(str source, str destination);
  * @param destination The path to the destination.
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileCopy(str source, str destination);
+AVMAPI AvmError *AvmFileCopy(str source, str destination);
 
 /**
  * @brief Reads the contents of a file to a buffer.
@@ -75,7 +76,7 @@ AVMAPI AvmError* AvmFileCopy(str source, str destination);
  *
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileReadAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError *AvmFileReadAll(str path, size_t length, byte buffer[]);
 
 /**
  * @brief Reads the contents of a buffer to a file.
@@ -89,7 +90,7 @@ AVMAPI AvmError* AvmFileReadAll(str path, size_t length, byte buffer[]);
  *
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileWriteAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError *AvmFileWriteAll(str path, size_t length, byte buffer[]);
 
 /**
  * @brief Appends the contents of a buffer to a file.
@@ -103,12 +104,12 @@ AVMAPI AvmError* AvmFileWriteAll(str path, size_t length, byte buffer[]);
  *
  * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmFileAppendAll(str path, size_t length, byte buffer[]);
+AVMAPI AvmError *AvmFileAppendAll(str path, size_t length, byte buffer[]);
 
-AVMAPI AvmError* AvmFileReadAllText(str path, AvmString* string);
-AVMAPI AvmError* AvmFileWriteAllText(str path, AvmString* string);
-AVMAPI AvmError* AvmFileAppendAllText(str path, AvmString* string);
+AVMAPI AvmError *AvmFileReadAllText(str path, AvmString *string);
+AVMAPI AvmError *AvmFileWriteAllText(str path, AvmString *string);
+AVMAPI AvmError *AvmFileAppendAllText(str path, AvmString *string);
 
-#endif  // AVM_USE_IO
+#endif // AVM_USE_IO
 
-#endif  // AVIUM_FILE_H
+#endif // AVIUM_FILE_H
