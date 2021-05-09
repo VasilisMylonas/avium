@@ -72,7 +72,7 @@ object AvmObjectClone(object self)
     {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
         box(void) memory = AvmAlloc(size);
-        AvmMemCopy((byte *)self, size, (byte *)memory, size);
+        AvmCopy(self, size, (byte *)memory);
         return memory;
     }
 

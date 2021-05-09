@@ -36,7 +36,7 @@ static object AvmStringClone(AvmString *self)
 
     AvmString s = AvmStringFrom(self->_buffer);
     AvmString *ret = AvmAlloc(sizeof(AvmString));
-    AvmMemCopy((byte *)&s, sizeof(AvmString), (byte *)ret, sizeof(AvmString));
+    AvmCopy(&s, sizeof(AvmString), (byte *)ret);
     return ret;
 }
 
@@ -635,7 +635,7 @@ void AvmStringPushChars(AvmString *self, size_t length, str contents)
     byte *const source = (byte *)contents;
     byte *const dest = (byte *)&self->_buffer[self->_length];
 
-    AvmMemCopy(source, length, dest, self->_capacity);
+    memcpy(dest, source, length);
 
     // Don't forget to increase the length.
     self->_length += length;
@@ -1332,7 +1332,7 @@ static void ParseStr(size_t *index, char *buffer, char *ptr, size_t capacity)
 
     size_t length = *index - start;
 
-    AvmMemCopy((byte *)&buffer[start], length, (byte *)ptr, capacity);
+    memcpy(ptr, &buffer[start], length);
 
     if (length < capacity)
     {

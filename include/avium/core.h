@@ -126,6 +126,8 @@ AVMAPI AvmString AvmObjectToString(object self);
 
 AVMAPI void AvmRuntimeInit(int argc, str argv[]);
 AVMAPI str AvmRuntimeGetProgramName(void);
+AVMAPI void AvmRuntimeEnableExceptions(void);
+AVMAPI void AvmRuntimeDisableExceptions(void);
 
 /**
  * @brief Allocates heap memory.
@@ -151,28 +153,17 @@ AVMAPI box(void) AvmRealloc(box(void) memory, size_t size);
  */
 AVMAPI void AvmDealloc(box(void) memory);
 
-/// Enables signal catching.
-AVMAPI void AvmEnableExceptions(void);
-
-/// Disables signal catching.
-AVMAPI void AvmDisableExceptions(void);
-
 /**
- * @brief Copies memory from one block to another.
+ * @brief Copies an object to a memory block.
  *
- * This will copy length bytes from source to destination, but not more than
- * size.
- *
- * @pre Parameter @p source must be not null.
+ * @pre Parameter @p o must be not null.
  * @pre Parameter @p destination must be not null.
  *
- * @param source The memory block to copy from.
- * @param length The length of the source buffer.
- * @param destination The memory block to copy to.
+ * @param o The object to copy.
  * @param size The size of the destination buffer.
+ * @param destination The memory block to copy to.
  */
-AVMAPI void AvmMemCopy(byte *source, size_t length, byte *destination,
-                       size_t size);
+AVMAPI void AvmCopy(object o, size_t size, byte *destination);
 
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);

@@ -7,6 +7,7 @@
 #include "avium/string.h"
 #include "avium/error.h"
 #include "avium/typeinfo.h"
+#include "avium/testing.h"
 #include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC
@@ -45,37 +46,21 @@ static void ExceptionHandler(int exception)
     }
 }
 
-void AvmEnableExceptions(void)
+static str ProgramName = NULL;
+
+void AvmRuntimeEnableExceptions(void)
 {
     signal(SIGSEGV, ExceptionHandler);
     signal(SIGILL, ExceptionHandler);
     signal(SIGFPE, ExceptionHandler);
 }
 
-void AvmDisableExceptions(void)
+void AvmRuntimeDisableExceptions(void)
 {
     signal(SIGSEGV, SIG_DFL);
     signal(SIGILL, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
 }
-
-void AvmMemCopy(byte *source, size_t length, byte *destination, size_t size)
-{
-    if (source == NULL)
-    {
-        AvmPanic(SourceNullMsg);
-    }
-
-    if (destination == NULL)
-    {
-        AvmPanic(DestinationNullMsg);
-    }
-
-    size_t trueLength = length > size ? size : length;
-    memcpy(destination, source, trueLength);
-}
-
-static str ProgramName = NULL;
 
 str AvmRuntimeGetProgramName(void)
 {
@@ -91,6 +76,24 @@ void AvmRuntimeInit(int argc, str argv[])
 {
     (void)argc;
     ProgramName = argv[0];
+}
+
+void AvmCopy(object o, size_t size, byte *destination)
+{
+    pre
+    {
+        assert(o != NULL);
+        assert(destination != NULL);
+    }
+
+    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(o));
+
+    if (objectSize > size)
+    {
+        // TODO: error
+    }
+
+    memcpy(destination, o, objectSize);
 }
 
 void AvmVScanf(str format, va_list args)
