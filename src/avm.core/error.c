@@ -28,8 +28,10 @@ never AvmPanicEx(str message, str function, str file, uint line)
 
     for (int i = length - 1; i >= 1; i--)
     {
-        *(strrchr(s[i], ')')) = '\0';
-        AvmErrorf("    at %s\n", strchr(s[i], '(') + 1);
+        *(strchr(s[i], '+')) = '\0';
+        *(strchr(s[i], '(')) = '@';
+
+        AvmErrorf("    in %s\n", s[i]);
     }
 #else
     AvmErrorf("%s\n", NoBacktraceMsg);
