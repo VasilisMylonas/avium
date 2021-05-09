@@ -4,7 +4,6 @@ add_library(avm.core ${LIB_TYPE}
     string.c
     typeinfo.c
     types.c
-    version.c
 )
 
 if(USE_GC)
