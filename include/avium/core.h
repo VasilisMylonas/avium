@@ -26,6 +26,12 @@
 
 #include "avium/types.h"
 
+#if defined AVM_GNU && defined AVM_LINUX
+#pragma weak AvmAlloc
+#pragma weak AvmRealloc
+#pragma weak AvmDealloc
+#endif
+
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
 
@@ -118,15 +124,24 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-#if defined AVM_GNU && defined AVM_LINUX
-#pragma weak AvmAlloc
-#pragma weak AvmRealloc
-#pragma weak AvmDealloc
-#endif
-
+/**
+ * @brief Initializes the Avium runtime.
+ *
+ * Many Avium functions cannot be called without initializing the runtime
+ * first.
+ *
+ * @param argc The argc parameter from main.
+ * @param argv The argv parameter from main.
+ */
 AVMAPI void AvmRuntimeInit(int argc, str argv[]);
+
+/// Returns the name of the currently running program.
 AVMAPI str AvmRuntimeGetProgramName(void);
+
+/// Enables signal catching.
 AVMAPI void AvmRuntimeEnableExceptions(void);
+
+/// Disables signal catching.
 AVMAPI void AvmRuntimeDisableExceptions(void);
 
 /**
@@ -135,7 +150,7 @@ AVMAPI void AvmRuntimeDisableExceptions(void);
  * @param size The size of the memory block in bytes.
  * @return The allocated memory.
  */
-AVMAPI void *AvmAlloc(size_t size);
+AVMAPI box(void) AvmAlloc(size_t size);
 
 /**
  * @brief Reallocates a heap memory block.

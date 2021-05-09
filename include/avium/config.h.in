@@ -33,6 +33,7 @@
 #ifndef thread_local
 #define thread_local __declspec(thread)
 #endif
+#define never __declspec(noreturn) void
 #else
 #ifndef alignof
 #define alignof _Alignof
@@ -40,6 +41,7 @@
 #ifndef thread_local
 #define thread_local _Thread_local
 #endif
+#define never _Noreturn void
 #endif // AVM_MSVC
 
 #ifdef __cplusplus

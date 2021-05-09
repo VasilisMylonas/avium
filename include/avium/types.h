@@ -42,14 +42,6 @@ typedef const char *str;              ///< Primitive read-only string.
 #define weakptr(T) T *                ///< A weak pointer to a type T.
 #define box(T) T *                    ///< A pointer to a heap-allocated type T.
 
-#ifdef AVM_MSVC
-/// A type signifying that a function never returns.
-#define never __declspec(noreturn) void
-#else
-/// A type signifying that a function never returns.
-#define never _Noreturn void
-#endif // AVM_MSVC
-
 /**
  * @brief Creates an Avium class type.
  *
