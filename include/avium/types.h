@@ -39,14 +39,8 @@ typedef unsigned char byte;           ///< Unsigned 8-bit integer type.
 typedef void *object;                 ///< An unknown object type.
 typedef void (*AvmFunction)(void);    ///< An unknown function type.
 typedef const char *str;              ///< Primitive read-only string.
-
-/// A weak pointer to a type T.
-#define weakptr(T) T *
-
-/// A pointer to a heap-allocated type T.
-#define box(T) T *
-
-typedef struct AvmType AvmType;
+#define weakptr(T) T *                ///< A weak pointer to a type T.
+#define box(T) T *                    ///< A pointer to a heap-allocated type T.
 
 #ifdef AVM_MSVC
 /// A type signifying that a function never returns.
@@ -56,16 +50,96 @@ typedef struct AvmType AvmType;
 #define never _Noreturn void
 #endif // AVM_MSVC
 
-extern const AvmType AVM_TI_NAME(AvmType);
-extern const AvmType AVM_TI_NAME(object);
-extern const AvmType AVM_TI_NAME(size_t);
+/**
+ * @brief Creates an Avium class type.
+ *
+ * @param T The name of the type.
+ * @param B The base class of the type.
+ * @param ... Member declaration in braces ({ ... })
+ */
+#define AVM_CLASS(T, B, ...)             \
+    typedef struct T T;                  \
+    extern const AvmType AVM_TI_NAME(T); \
+    struct T                             \
+    {                                    \
+        union                            \
+        {                                \
+            const AvmType *_type;        \
+            B _base;                     \
+        };                               \
+        struct __VA_ARGS__;              \
+    }
+
+/**
+ * @brief Generates type info for a type.
+ *
+ * @param T The type for which to generate type info.
+ * @param B The base type.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
+#define AVM_TYPE(T, B, ...)          \
+    const AvmType AVM_TI_NAME(T) = { \
+        ._type = typeid(AvmType),    \
+        ._vptr = __VA_ARGS__,        \
+        ._name = #T,                 \
+        ._baseType = typeid(B),      \
+        ._size = sizeof(T),          \
+    }
+
+/**
+ * @brief Creates an Avium interface type.
+ *
+ * @param T The name of the type.
+ */
+#define AVM_INTERFACE(T)      \
+    typedef struct T T;       \
+    struct T                  \
+    {                         \
+        const AvmType *_type; \
+    }
+
+#define AVM_FORWARD_TYPE(T) typedef struct T T
+
+#ifdef AVM_MSVC
+#define typeof(T) decltype(T)
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wkeyword-macro"
+#define typeof(T) __typeof__(T)
+#pragma GCC diagnostic pop
+#endif
+
+#ifndef DOXYGEN
+AVM_FORWARD_TYPE(AvmType);
+AVM_FORWARD_TYPE(AvmError);
+AVM_FORWARD_TYPE(AvmString);
+
+static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(_long);
+
+static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(ulong);
+
+static_assert_s(sizeof(int) == AVM_INT_SIZE);
 extern const AvmType AVM_TI_NAME(int);
+
+static_assert_s(sizeof(uint) == AVM_INT_SIZE);
 extern const AvmType AVM_TI_NAME(uint);
+
+static_assert_s(sizeof(short) == AVM_SHORT_SIZE);
 extern const AvmType AVM_TI_NAME(short);
+
+static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 extern const AvmType AVM_TI_NAME(ushort);
+
+static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 extern const AvmType AVM_TI_NAME(char);
+
+static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 extern const AvmType AVM_TI_NAME(byte);
+
+static_assert_s(sizeof(object) == AVM_OBJECT_SIZE);
+extern const AvmType AVM_TI_NAME(object);
+#endif
 
 #endif // AVIUM_TYPES_H

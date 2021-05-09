@@ -24,8 +24,14 @@
 #ifndef AVIUM_STRING_H
 #define AVIUM_STRING_H
 
-#include "avium/core.h"
-#include "avium/error.h"
+#include "avium/types.h"
+
+/// A dynamic heap-allocated string.
+AVM_CLASS(AvmString, object, {
+    uint _capacity;
+    uint _length;
+    char *_buffer;
+});
 
 #define AvmStringPush(self, x)    \
     _Generic((x),                 \
@@ -759,5 +765,7 @@ AVMAPI void AvmStringParse(const AvmString *self, str format, ...);
  * @param args The va_list with the values to insert into the format string.
  */
 AVMAPI void AvmStringParseV(const AvmString *self, str format, va_list args);
+
+static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
 #endif // AVIUM_STRING_H

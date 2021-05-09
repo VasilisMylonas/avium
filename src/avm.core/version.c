@@ -1,7 +1,8 @@
 #include "avium/version.h"
 
-#include "avium/core.h"              // For typeid
-#include "avium/string.h"            // For AvmStringFormat
+#include "avium/core.h"   // For typeid
+#include "avium/string.h" // For AvmStringFormat
+#include "avium/typeinfo.h"
 #include "avium/private/resources.h" // For VersionFormat
 
 static AvmString AvmVersionToString(AvmVersion *self)

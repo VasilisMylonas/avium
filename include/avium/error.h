@@ -24,7 +24,7 @@
 #ifndef AVIUM_ERROR_H
 #define AVIUM_ERROR_H
 
-#include "avium/core.h"
+#include "avium/types.h"
 
 /// A type representing an error.
 AVM_INTERFACE(AvmError);

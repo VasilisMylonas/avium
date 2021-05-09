@@ -5,6 +5,7 @@
 #include "avium/core.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
+#include "avium/typeinfo.h"
 
 const AvmType *AvmObjectGetType(object self)
 {

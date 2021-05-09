@@ -10,6 +10,7 @@
 #include "avium/core.h"
 #include "avium/error.h"
 #include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 #ifdef AVM_HAVE_UCHAR_H
 #include <uchar.h>

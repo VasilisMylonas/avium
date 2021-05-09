@@ -5,6 +5,7 @@
 
 #include "avium/core.h"
 #include "avium/string.h"
+#include "avium/typeinfo.h"
 #include "avium/private/resources.h"
 
 #ifdef AVM_USE_GC

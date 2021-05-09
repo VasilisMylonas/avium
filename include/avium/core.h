@@ -29,70 +29,26 @@
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
 
-/**
- * @brief Creates an Avium class type.
- *
- * @param T The name of the type.
- * @param B The base class of the type.
- * @param ... Member declaration in braces ({ ... })
- */
-#define AVM_CLASS(T, B, ...)             \
-    typedef struct T T;                  \
-    extern const AvmType AVM_TI_NAME(T); \
-    struct T                             \
-    {                                    \
-        union                            \
-        {                                \
-            const AvmType *_type;        \
-            B _base;                     \
-        };                               \
-        struct __VA_ARGS__;              \
-    }
-
-/**
- * @brief Generates type info for a type.
- *
- * @param T The type for which to generate type info.
- * @param B The base type.
- * @param ... The type vtable enclosed in braces ({...})
- */
-#define AVM_TYPE(T, B, ...)          \
-    const AvmType AVM_TI_NAME(T) = { \
-        ._type = typeid(AvmType),    \
-        ._vptr = __VA_ARGS__,        \
-        ._name = #T,                 \
-        ._baseType = typeid(B),      \
-        ._size = sizeof(T),          \
-    }
-
-/**
- * @brief Creates an Avium interface type.
- *
- * @param T The name of the type.
- */
-#define AVM_INTERFACE(T)      \
-    typedef struct T T;       \
-    struct T                  \
-    {                         \
-        const AvmType *_type; \
-    }
-
-/// A type containing information about an object.
-AVM_CLASS(AvmType, object, {
-    str _name;
-    size_t _size;
-    const AvmType *_baseType;
-    AvmFunction _vptr[AVM_VFT_SIZE];
-});
-
-/// A dynamic heap-allocated string.
-AVM_CLASS(AvmString, object, {
-    uint _capacity;
-    uint _length;
-    char *_buffer;
-});
-
 #define AvmInvalid ((size_t)-1)
+
+/// Represents an entry on the virtual function table.
+typedef enum
+{
+    FnEntryDtor = 0,          ///< The destructor entry.
+    FnEntryToString,          ///< The AvmObjectToString entry.
+    FnEntryClone,             ///< The AvmObjectClone entry.
+    FnEntryEquals,            ///< The AvmObjectEquals entry.
+    FnEntryRead = 16,         ///< The AvmStreamRead entry.
+    FnEntryWrite,             ///< The AvmStreamWrite entry.
+    FnEntrySeek,              ///< The AvmStreamSeek entry.
+    FnEntryFlush,             ///< The AvmStreamFlush entry.
+    FnEntryGetPosition,       ///< The AvmStreamPosition entry.
+    FnEntryGetBacktrace = 16, ///< The AvmErrorGetBacktrace entry.
+    FnEntryGetSource,         ///< The AvmErrorGetSource entry.
+
+    FnEntryGetLength = 12,
+    FnEntryGetCapacity,
+} AvmFnEntry;
 
 /**
  * @brief Gets information about the type of an object.
@@ -160,65 +116,6 @@ AVMAPI object AvmObjectClone(object self);
  * @return The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
-
-/// Represents an entry on the virtual function table.
-typedef enum
-{
-    /// The VFT destructor entry.
-    FnEntryDtor = 0,
-
-    /// The VFT AvmObjectToString entry.
-    FnEntryToString,
-
-    /// The VFT AvmObjectClone entry.
-    FnEntryClone,
-
-    /// The VFT AvmObjectEquals entry.
-    FnEntryEquals,
-
-    // AvmStream
-    FnEntryRead = 16,
-    FnEntryWrite,
-    FnEntrySeek,
-    FnEntryFlush,
-    FnEntryGetPosition,
-
-    FnEntryGetLength = 12,
-    FnEntryGetCapacity,
-
-    /// The VFT AvmErrorGetBacktrace entry.
-    FnEntryGetBacktrace = 16,
-
-    /// The VFT AvmErrorGetSource entry.
-    FnEntryGetSource,
-} AvmFnEntry;
-
-#ifdef AVM_MSVC
-#define typeof(T) decltype(T)
-#else
-#ifdef __clang__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wkeyword-macro"
-#endif
-#define typeof(T) __typeof__(T)
-#ifdef __clang__
-#pragma GCC diagnostic pop
-#endif
-#endif
-
-/// Returns the base type of an object.
-#define baseof(x) ((typeof((x)->_base) *)x)
-
-/// Determines whether an object is of specific type.
-#define istype(T, x) (typeid(T) == AvmObjectGetType(x))
-
-// clang-format off
-#define instanceof(T, x) \
-    (istype(T, x) || AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
-// clang-format on
-
-/// Returns a pointer to the type info of type T.
-#define typeid(T) (&AVM_TI_NAME(T))
 
 #if defined AVM_GNU && defined AVM_LINUX
 #pragma weak AvmAlloc
@@ -313,41 +210,6 @@ AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
 AVMAPI void AvmMemCopy(byte *source, size_t length, byte *destination,
                        size_t size);
 
-/**
- * @brief Gets the name of a type.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmType instance.
- * @return The type's name.
- */
-AVMAPI str AvmTypeGetName(const AvmType *self);
-
-/**
- * @brief Gets the size of a type.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmType instance.
- * @return The type's size.
- */
-AVMAPI size_t AvmTypeGetSize(const AvmType *self);
-
-/**
- * @brief Returns the specified VFT entry of a type.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmType instance.
- * @param index The VFT entry.
- * @return The function pointer.
- */
-AVMAPI AvmFunction AvmTypeGetFunction(const AvmType *self, size_t index);
-
-AVMAPI const AvmType *AvmTypeGetBase(const AvmType *self);
-
-AVMAPI bool AvmTypeInheritsFrom(const AvmType *self, const AvmType *baseType);
-
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);
 AVMAPI void AvmVErrorf(str format, va_list args);
@@ -355,16 +217,5 @@ AVMAPI void AvmVErrorf(str format, va_list args);
 AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
-
-// Ensure type size constraints.
-static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
-static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
-static_assert_s(sizeof(int) == AVM_INT_SIZE);
-static_assert_s(sizeof(uint) == AVM_INT_SIZE);
-static_assert_s(sizeof(short) == AVM_SHORT_SIZE);
-static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
-static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
-static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
-static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 
 #endif // AVIUM_CORE_H
