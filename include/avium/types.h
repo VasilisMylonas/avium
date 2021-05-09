@@ -36,11 +36,11 @@ typedef unsigned AVM_LONG_TYPE ulong; ///< Unsigned 64-bit integer type.
 typedef unsigned int uint;            ///< Unsigned 32-bit integer type.
 typedef unsigned short ushort;        ///< Unsigned 16-bit integer type.
 typedef unsigned char byte;           ///< Unsigned 8-bit integer type.
-typedef void *object;                 ///< An unknown object type.
+typedef void* object;                 ///< An unknown object type.
 typedef void (*AvmFunction)(void);    ///< An unknown function type.
-typedef const char *str;              ///< Primitive read-only string.
-#define weakptr(T) T *                ///< A weak pointer to a type T.
-#define box(T) T *                    ///< A pointer to a heap-allocated type T.
+typedef const char* str;              ///< Primitive read-only string.
+#define weakptr(T) T*                 ///< A weak pointer to a type T.
+#define box(T)     T*                 ///< A pointer to a heap-allocated type T.
 
 /**
  * @brief Creates an Avium class type.
@@ -49,17 +49,16 @@ typedef const char *str;              ///< Primitive read-only string.
  * @param B The base class of the type.
  * @param ... Member declaration in braces ({ ... })
  */
-#define AVM_CLASS(T, B, ...)             \
-    typedef struct T T;                  \
-    extern const AvmType AVM_TI_NAME(T); \
-    struct T                             \
-    {                                    \
-        union                            \
-        {                                \
-            const AvmType *_type;        \
-            B _base;                     \
-        };                               \
-        struct __VA_ARGS__;              \
+#define AVM_CLASS(T, B, ...)                                                   \
+    typedef struct T T;                                                        \
+    extern const AvmType AVM_TI_NAME(T);                                       \
+    struct T                                                                   \
+    {                                                                          \
+        union {                                                                \
+            const AvmType* _type;                                              \
+            B _base;                                                           \
+        };                                                                     \
+        struct __VA_ARGS__;                                                    \
     }
 
 /**
@@ -69,13 +68,13 @@ typedef const char *str;              ///< Primitive read-only string.
  * @param B The base type.
  * @param ... The type vtable enclosed in braces ({...})
  */
-#define AVM_TYPE(T, B, ...)          \
-    const AvmType AVM_TI_NAME(T) = { \
-        ._type = typeid(AvmType),    \
-        ._vptr = __VA_ARGS__,        \
-        ._name = #T,                 \
-        ._baseType = typeid(B),      \
-        ._size = sizeof(T),          \
+#define AVM_TYPE(T, B, ...)                                                    \
+    const AvmType AVM_TI_NAME(T) = {                                           \
+        ._type = typeid(AvmType),                                              \
+        ._vptr = __VA_ARGS__,                                                  \
+        ._name = #T,                                                           \
+        ._baseType = typeid(B),                                                \
+        ._size = sizeof(T),                                                    \
     }
 
 /**
@@ -83,11 +82,11 @@ typedef const char *str;              ///< Primitive read-only string.
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)      \
-    typedef struct T T;       \
-    struct T                  \
-    {                         \
-        const AvmType *_type; \
+#define AVM_INTERFACE(T)                                                       \
+    typedef struct T T;                                                        \
+    struct T                                                                   \
+    {                                                                          \
+        const AvmType* _type;                                                  \
     }
 
 #define AVM_FORWARD_TYPE(T) typedef struct T T

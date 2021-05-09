@@ -3,12 +3,12 @@
 #include <string.h>
 
 #include "avium/core.h"
+#include "avium/error.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
-#include "avium/error.h"
 #include "avium/typeinfo.h"
 
-const AvmType *AvmObjectGetType(object self)
+const AvmType* AvmObjectGetType(object self)
 {
     if (self == NULL)
     {
@@ -17,7 +17,7 @@ const AvmType *AvmObjectGetType(object self)
 
     // The first member of an object should be a const AvmType*
     // Look in types.h for AVM_CLASS
-    return *(const AvmType **)self;
+    return *(const AvmType**)self;
 }
 
 bool AvmObjectEquals(object self, object other)
@@ -32,7 +32,7 @@ bool AvmObjectEquals(object self, object other)
         AvmPanic(OtherNullMsg);
     }
 
-    const AvmType *type = AvmObjectGetType(self);
+    const AvmType* type = AvmObjectGetType(self);
     AvmFunction fn = AvmTypeGetFunction(type, FnEntryEquals);
     size_t size = type->_size;
 
@@ -72,7 +72,7 @@ object AvmObjectClone(object self)
     {
         size_t size = AvmTypeGetSize(AvmObjectGetType(self));
         box(void) memory = AvmAlloc(size);
-        AvmCopy(self, size, (byte *)memory);
+        AvmCopy(self, size, (byte*)memory);
         return memory;
     }
 
@@ -91,8 +91,8 @@ AvmString AvmObjectToString(object self)
 
     if (fn == NULL)
     {
-        return AvmStringFormat("%s [%x]",
-                               AvmTypeGetName(AvmObjectGetType(self)), self);
+        return AvmStringFormat(
+            "%s [%x]", AvmTypeGetName(AvmObjectGetType(self)), self);
     }
 
     return ((AvmString(*)(object))fn)(self);

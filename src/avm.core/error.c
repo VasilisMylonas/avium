@@ -1,15 +1,15 @@
 #include "avium/error.h"
 
 #include "avium/string.h"
-#include "avium/typeinfo.h"
 #include "avium/testing.h"
+#include "avium/typeinfo.h"
 
-#include "avium/private/resources.h"
 #include "avium/private/errors.h"
+#include "avium/private/resources.h"
 
-#include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef AVM_LINUX
 #include <execinfo.h>
@@ -17,14 +17,17 @@
 
 never AvmPanicEx(str message, str function, str file, uint line)
 {
-    AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n", file, line,
-              function, message);
+    AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n",
+              file,
+              line,
+              function,
+              message);
 
 #ifdef AVM_LINUX
-    void *arr[BACKTRACE_MAX_SYMBOLS];
+    void* arr[BACKTRACE_MAX_SYMBOLS];
 
     int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
-    char **s = backtrace_symbols(arr, length);
+    char** s = backtrace_symbols(arr, length);
 
     for (int i = length - 1; i >= 1; i--)
     {
@@ -46,7 +49,7 @@ never AvmPanicEx(str message, str function, str file, uint line)
 
 AVM_CLASS(AvmOSError, AvmError, { int _code; });
 
-static AvmString AvmOSErrorToString(AvmOSError *self)
+static AvmString AvmOSErrorToString(AvmOSError* self)
 {
     pre
     {
@@ -56,18 +59,22 @@ static AvmString AvmOSErrorToString(AvmOSError *self)
     return AvmStringFrom(strerror(self->_code));
 }
 
-AVM_TYPE(AvmOSError, object,
+AVM_TYPE(AvmOSError,
+         object,
          {[FnEntryToString] = (AvmFunction)AvmOSErrorToString});
 
-AvmError *AvmErrorFromOSCode(int code)
+AvmError* AvmErrorFromOSCode(int code)
 {
-    AvmOSError *error = AvmAlloc(sizeof(AvmOSError));
+    AvmOSError* error = AvmAlloc(sizeof(AvmOSError));
     error->_type = typeid(AvmOSError);
     error->_code = code;
-    return (AvmError *)error;
+    return (AvmError*)error;
 }
 
-AvmError *AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
+AvmError* AvmErrorGetLast(void)
+{
+    return AvmErrorFromOSCode(errno);
+}
 
 //
 // AvmSimpleError specific.
@@ -75,7 +82,7 @@ AvmError *AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
 
 AVM_CLASS(AvmSimpleError, AvmError, { AvmErrorKind _kind; });
 
-static AvmString AvmSimpleErrorToString(AvmSimpleError *self)
+static AvmString AvmSimpleErrorToString(AvmSimpleError* self)
 {
     pre
     {
@@ -107,15 +114,16 @@ static AvmString AvmSimpleErrorToString(AvmSimpleError *self)
     }
 }
 
-AVM_TYPE(AvmSimpleError, object,
+AVM_TYPE(AvmSimpleError,
+         object,
          {[FnEntryToString] = (AvmFunction)AvmSimpleErrorToString});
 
-AvmError *AvmErrorOfKind(AvmErrorKind kind)
+AvmError* AvmErrorOfKind(AvmErrorKind kind)
 {
-    AvmSimpleError *error = AvmAlloc(sizeof(AvmSimpleError));
+    AvmSimpleError* error = AvmAlloc(sizeof(AvmSimpleError));
     error->_type = typeid(AvmSimpleError);
     error->_kind = kind;
-    return (AvmError *)error;
+    return (AvmError*)error;
 }
 
 //
@@ -127,7 +135,7 @@ static const AvmOSError NoError = {
     ._code = 0,
 };
 
-weakptr(AvmError) AvmErrorGetSource(AvmError *self)
+weakptr(AvmError) AvmErrorGetSource(AvmError* self)
 {
     pre
     {
@@ -141,13 +149,13 @@ weakptr(AvmError) AvmErrorGetSource(AvmError *self)
     {
         // The return type is weakptr(AvmError) so the user should know not to
         // modify this value.
-        return (AvmError *)&NoError;
+        return (AvmError*)&NoError;
     }
 
-    return ((AvmError * (*)(AvmError *)) func)(self);
+    return ((AvmError * (*)(AvmError*)) func)(self);
 }
 
-AvmString AvmErrorGetBacktrace(AvmError *self)
+AvmString AvmErrorGetBacktrace(AvmError* self)
 {
     pre
     {
@@ -162,5 +170,5 @@ AvmString AvmErrorGetBacktrace(AvmError *self)
         return AvmStringNew(0);
     }
 
-    return ((AvmString(*)(AvmError *))func)(self);
+    return ((AvmString(*)(AvmError*))func)(self);
 }

@@ -48,53 +48,53 @@
 #warning "Avium: C++ is not supported, you may encounter errors."
 #endif // __cplusplus
 
-#define AVM_BYTE_SIZE 1
-#define AVM_CHAR_SIZE 1
-#define AVM_SHORT_SIZE 2
-#define AVM_INT_SIZE 4
-#define AVM_LONG_SIZE 8
-#define AVM_VFT_SIZE 32
-#define AVM_VERSION_SIZE 16
-#define AVM_STRING_SIZE 24
-#define AVM_STREAM_SIZE 8
-#define AVM_OBJECT_SIZE 8
-#define AVM_FILE_STREAM_SIZE 16
-#define AVM_MEMORY_STREAM_SIZE 48
-#define AVM_STRING_GROWTH_FACTOR 2
-#define AVM_ARRAY_LIST_SIZE 32
+#define AVM_BYTE_SIZE                1
+#define AVM_CHAR_SIZE                1
+#define AVM_SHORT_SIZE               2
+#define AVM_INT_SIZE                 4
+#define AVM_LONG_SIZE                8
+#define AVM_VFT_SIZE                 32
+#define AVM_VERSION_SIZE             16
+#define AVM_STRING_SIZE              24
+#define AVM_STREAM_SIZE              8
+#define AVM_OBJECT_SIZE              8
+#define AVM_FILE_STREAM_SIZE         16
+#define AVM_MEMORY_STREAM_SIZE       48
+#define AVM_STRING_GROWTH_FACTOR     2
+#define AVM_ARRAY_LIST_SIZE          32
 #define AVM_ARRAY_LIST_GROWTH_FACTOR 2
-#define AVM_VALUE_SIZE 24
-#define AVM_MAX_STRING_SIZE ((uint)-1)
+#define AVM_VALUE_SIZE               24
+#define AVM_MAX_STRING_SIZE          ((uint)-1)
 
 #ifdef AVM_HAVE_UCHAR_H
 #define AVM_FMT_UNICODE 'U'
 #endif
 
-#define AVM_FMT_INT_DECIMAL 'i'
-#define AVM_FMT_INT_HEX 'x'
-#define AVM_FMT_INT_BINARY 'b'
-#define AVM_FMT_INT_OCTAL 'o'
-#define AVM_FMT_INT_UNSIGNED 'u'
-#define AVM_FMT_INT_SIZE 'z'
-#define AVM_FMT_CHAR 'c'
-#define AVM_FMT_FLOAT 'f'
-#define AVM_FMT_FLOAT_EXP 'e'
-#define AVM_FMT_FLOAT_AUTO 'g'
-#define AVM_FMT_STRING 's'
-#define AVM_FMT_BOOL 't'
-#define AVM_FMT_POINTER 'p'
-#define AVM_FMT_VALUE 'v'
-#define AVM_FMT_TYPE 'T'
-#define AVM_FMT_SIZE 'Z'
-#define AVM_FMT_TRUE "true"
-#define AVM_FMT_FALSE "false"
-#define AVM_FMT_HEX_PREFIX "0x"
-#define AVM_FMT_OCTAL_PREFIX "0o"
-#define AVM_FMT_BINARY_PREFIX "0b"
+#define AVM_FMT_INT_DECIMAL    'i'
+#define AVM_FMT_INT_HEX        'x'
+#define AVM_FMT_INT_BINARY     'b'
+#define AVM_FMT_INT_OCTAL      'o'
+#define AVM_FMT_INT_UNSIGNED   'u'
+#define AVM_FMT_INT_SIZE       'z'
+#define AVM_FMT_CHAR           'c'
+#define AVM_FMT_FLOAT          'f'
+#define AVM_FMT_FLOAT_EXP      'e'
+#define AVM_FMT_FLOAT_AUTO     'g'
+#define AVM_FMT_STRING         's'
+#define AVM_FMT_BOOL           't'
+#define AVM_FMT_POINTER        'p'
+#define AVM_FMT_VALUE          'v'
+#define AVM_FMT_TYPE           'T'
+#define AVM_FMT_SIZE           'Z'
+#define AVM_FMT_TRUE           "true"
+#define AVM_FMT_FALSE          "false"
+#define AVM_FMT_HEX_PREFIX     "0x"
+#define AVM_FMT_OCTAL_PREFIX   "0o"
+#define AVM_FMT_BINARY_PREFIX  "0b"
 #define AVM_FMT_UNICODE_PREFIX "U+"
 
-#define AVM_NM_FN_PREFIX 'T'
-#define AVM_NM_VAR_PREFIX 'D'
+#define AVM_NM_FN_PREFIX    'T'
+#define AVM_NM_VAR_PREFIX   'D'
 #define AVM_NM_CLASS_PREFIX "D_TI_"
 
 #define AVM_TI_NAME(T) _TI_##T

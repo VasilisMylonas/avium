@@ -1,32 +1,40 @@
 #include <signal.h> // For signal and related constants
+#include <stdio.h>  // For vfprintf, vscanf, stderr, stdout
 #include <stdlib.h> // For exit
 #include <string.h> // For memcpy, strchr, strrchr
-#include <stdio.h>  // For vfprintf, vscanf, stderr, stdout
 
 #include "avium/core.h"
-#include "avium/string.h"
 #include "avium/error.h"
-#include "avium/typeinfo.h"
-#include "avium/testing.h"
 #include "avium/private/resources.h"
+#include "avium/string.h"
+#include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 #ifdef AVM_USE_GC
 #include "gc.h"
-#define AVM_ALLOC GC_malloc
+#define AVM_ALLOC   GC_malloc
 #define AVM_REALLOC GC_realloc
 #define AVM_DEALLOC GC_free
 #else
-#define AVM_ALLOC malloc
+#define AVM_ALLOC   malloc
 #define AVM_REALLOC realloc
 #define AVM_DEALLOC free
 #endif
 
-box(void) AvmAlloc(size_t size) { return AVM_ALLOC(size); }
+box(void) AvmAlloc(size_t size)
+{
+    return AVM_ALLOC(size);
+}
+
 box(void) AvmRealloc(box(void) memory, size_t size)
 {
     return AVM_REALLOC(memory, size);
 }
-void AvmDealloc(box(void) memory) { AVM_DEALLOC(memory); }
+
+void AvmDealloc(box(void) memory)
+{
+    AVM_DEALLOC(memory);
+}
 
 static void ExceptionHandler(int exception)
 {
@@ -78,7 +86,7 @@ void AvmRuntimeInit(int argc, str argv[])
     ProgramName = argv[0];
 }
 
-void AvmCopy(object o, size_t size, byte *destination)
+void AvmCopy(object o, size_t size, byte* destination)
 {
     pre
     {

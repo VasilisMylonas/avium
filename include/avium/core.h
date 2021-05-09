@@ -65,7 +65,7 @@ typedef enum
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI const AvmType *AvmObjectGetType(object self);
+AVMAPI const AvmType* AvmObjectGetType(object self);
 
 /**
  * @brief Compares two objects for equality.
@@ -178,7 +178,7 @@ AVMAPI void AvmDealloc(box(void) memory);
  * @param size The size of the destination buffer.
  * @param destination The memory block to copy to.
  */
-AVMAPI void AvmCopy(object o, size_t size, byte *destination);
+AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);

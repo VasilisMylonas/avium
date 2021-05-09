@@ -2,7 +2,7 @@
 #include "avium/error.h"
 #include "avium/private/resources.h"
 
-str AvmTypeGetName(const AvmType *self)
+str AvmTypeGetName(const AvmType* self)
 {
     if (self == NULL)
     {
@@ -12,7 +12,7 @@ str AvmTypeGetName(const AvmType *self)
     return self->_name;
 }
 
-size_t AvmTypeGetSize(const AvmType *self)
+size_t AvmTypeGetSize(const AvmType* self)
 {
     if (self == NULL)
     {
@@ -22,7 +22,7 @@ size_t AvmTypeGetSize(const AvmType *self)
     return self->_size;
 }
 
-AvmFunction AvmTypeGetFunction(const AvmType *self, size_t index)
+AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index)
 {
     if (self == NULL)
     {
@@ -32,7 +32,7 @@ AvmFunction AvmTypeGetFunction(const AvmType *self, size_t index)
     return self->_vptr[index];
 }
 
-const AvmType *AvmTypeGetBase(const AvmType *self)
+const AvmType* AvmTypeGetBase(const AvmType* self)
 {
     if (self == NULL)
     {
@@ -42,7 +42,7 @@ const AvmType *AvmTypeGetBase(const AvmType *self)
     return self->_baseType;
 }
 
-bool AvmTypeInheritsFrom(const AvmType *self, const AvmType *baseType)
+bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType)
 {
     if (self == NULL)
     {
@@ -59,7 +59,7 @@ bool AvmTypeInheritsFrom(const AvmType *self, const AvmType *baseType)
         return true;
     }
 
-    for (const AvmType *temp = AvmTypeGetBase(self); temp != typeid(object);
+    for (const AvmType* temp = AvmTypeGetBase(self); temp != typeid(object);
          temp = AvmTypeGetBase(temp))
     {
         if (temp == baseType)

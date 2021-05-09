@@ -4,7 +4,7 @@
 #include "avium/types.h"
 
 /// Returns the base type of an object.
-#define baseof(x) ((typeof((x)->_base) *)x)
+#define baseof(x) ((typeof((x)->_base)*)x)
 
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
@@ -22,7 +22,7 @@
 AVM_CLASS(AvmType, object, {
     str _name;
     size_t _size;
-    const AvmType *_baseType;
+    const AvmType* _baseType;
     AvmFunction _vptr[AVM_VFT_SIZE];
 });
 
@@ -34,7 +34,7 @@ AVM_CLASS(AvmType, object, {
  * @param self The AvmType instance.
  * @return The type's name.
  */
-AVMAPI str AvmTypeGetName(const AvmType *self);
+AVMAPI str AvmTypeGetName(const AvmType* self);
 
 /**
  * @brief Gets the size of a type.
@@ -44,7 +44,7 @@ AVMAPI str AvmTypeGetName(const AvmType *self);
  * @param self The AvmType instance.
  * @return The type's size.
  */
-AVMAPI size_t AvmTypeGetSize(const AvmType *self);
+AVMAPI size_t AvmTypeGetSize(const AvmType* self);
 
 /**
  * @brief Returns the specified VFT entry of a type.
@@ -55,10 +55,10 @@ AVMAPI size_t AvmTypeGetSize(const AvmType *self);
  * @param index The VFT entry.
  * @return The function pointer.
  */
-AVMAPI AvmFunction AvmTypeGetFunction(const AvmType *self, size_t index);
+AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
 
-AVMAPI const AvmType *AvmTypeGetBase(const AvmType *self);
+AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
 
-AVMAPI bool AvmTypeInheritsFrom(const AvmType *self, const AvmType *baseType);
+AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
 #endif // AVIUM_TYPEINFO_H
