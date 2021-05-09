@@ -34,7 +34,7 @@ bool AvmObjectEquals(object self, object other)
 
     const AvmType* type = AvmObjectGetType(self);
     AvmFunction fn = AvmTypeGetFunction(type, FnEntryEquals);
-    size_t size = type->_size;
+    uint size = type->_size;
 
     if (fn == NULL)
     {
@@ -70,7 +70,7 @@ object AvmObjectClone(object self)
 
     if (fn == NULL)
     {
-        size_t size = AvmTypeGetSize(AvmObjectGetType(self));
+        uint size = AvmTypeGetSize(AvmObjectGetType(self));
         box(void) memory = AvmAlloc(size);
         AvmCopy(self, size, (byte*)memory);
         return memory;
@@ -98,9 +98,7 @@ AvmString AvmObjectToString(object self)
     return ((AvmString(*)(object))fn)(self);
 }
 
-AVM_TYPE(AvmType, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(object, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(size_t, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(_long, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(ulong, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(int, object, {[FnEntryDtor] = NULL});

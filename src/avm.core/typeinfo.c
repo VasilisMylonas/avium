@@ -1,4 +1,5 @@
 #include "avium/typeinfo.h"
+#include "avium/core.h"
 #include "avium/error.h"
 #include "avium/private/resources.h"
 
@@ -12,7 +13,7 @@ str AvmTypeGetName(const AvmType* self)
     return self->_name;
 }
 
-size_t AvmTypeGetSize(const AvmType* self)
+uint AvmTypeGetSize(const AvmType* self)
 {
     if (self == NULL)
     {
@@ -22,7 +23,7 @@ size_t AvmTypeGetSize(const AvmType* self)
     return self->_size;
 }
 
-AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index)
+AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
 {
     if (self == NULL)
     {
@@ -70,3 +71,5 @@ bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType)
 
     return false;
 }
+
+AVM_TYPE(AvmType, object, {[FnEntryDtor] = NULL});

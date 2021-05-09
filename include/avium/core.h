@@ -36,7 +36,7 @@
 #define base (&self->_base)
 
 // TODO
-#define AvmInvalid ((size_t)-1)
+#define AvmInvalid ((uint)-1)
 
 /// Represents an entry on the virtual function table.
 typedef enum

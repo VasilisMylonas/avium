@@ -21,7 +21,7 @@
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
     str _name;
-    size_t _size;
+    uint _size;
     const AvmType* _baseType;
     AvmFunction _vptr[AVM_VFT_SIZE];
 });
@@ -44,7 +44,7 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  * @param self The AvmType instance.
  * @return The type's size.
  */
-AVMAPI size_t AvmTypeGetSize(const AvmType* self);
+AVMAPI uint AvmTypeGetSize(const AvmType* self);
 
 /**
  * @brief Returns the specified VFT entry of a type.
@@ -55,10 +55,14 @@ AVMAPI size_t AvmTypeGetSize(const AvmType* self);
  * @param index The VFT entry.
  * @return The function pointer.
  */
-AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, size_t index);
+AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, uint index);
 
 AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
 
 AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
+
+#ifndef DOXYGEN
+static_assert_s(sizeof(AvmType) == AVM_TYPE_SIZE);
+#endif
 
 #endif // AVIUM_TYPEINFO_H
