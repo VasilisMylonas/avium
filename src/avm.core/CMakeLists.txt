@@ -1,5 +1,4 @@
 add_library(avm.core ${LIB_TYPE}
-    array.c
     error.c
     runtime.c
     string.c

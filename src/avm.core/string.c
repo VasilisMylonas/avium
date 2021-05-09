@@ -57,14 +57,16 @@ AVM_TYPE(AvmString, object,
              [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
          });
 
-void AvmStringEnsureCapacity(AvmString* self, size_t capacity) {
+void AvmStringEnsureCapacity(AvmString *self, size_t capacity)
+{
     pre
     {
         assert(self != NULL);
-        assert(required <= AVM_MAX_STRING_SIZE);
+        assert(capacity <= AVM_MAX_STRING_SIZE);
     }
 
-    if (capacity == 0) {
+    if (capacity == 0)
+    {
         return;
     }
 
@@ -76,7 +78,8 @@ void AvmStringEnsureCapacity(AvmString* self, size_t capacity) {
         // TODO: There may be more efficient ways of doing this
         self->_capacity = newCapacity;
 
-        if (newCapacity < totalRequired) {
+        if (newCapacity < totalRequired)
+        {
             self->_capacity += capacity;
         }
 
@@ -86,7 +89,7 @@ void AvmStringEnsureCapacity(AvmString* self, size_t capacity) {
     post
     {
         assert(self->_capacity >= self->_length);
-        assert(self->_capacity >= required);
+        assert(self->_capacity >= capacity);
     }
 }
 
