@@ -38,25 +38,6 @@
 // TODO
 #define AvmInvalid ((uint)-1)
 
-/// Represents an entry on the virtual function table.
-typedef enum
-{
-    FnEntryDtor = 0,          ///< The destructor entry.
-    FnEntryToString,          ///< The AvmObjectToString entry.
-    FnEntryClone,             ///< The AvmObjectClone entry.
-    FnEntryEquals,            ///< The AvmObjectEquals entry.
-    FnEntryRead = 16,         ///< The AvmStreamRead entry.
-    FnEntryWrite,             ///< The AvmStreamWrite entry.
-    FnEntrySeek,              ///< The AvmStreamSeek entry.
-    FnEntryFlush,             ///< The AvmStreamFlush entry.
-    FnEntryGetPosition,       ///< The AvmStreamPosition entry.
-    FnEntryGetBacktrace = 16, ///< The AvmErrorGetBacktrace entry.
-    FnEntryGetSource,         ///< The AvmErrorGetSource entry.
-
-    FnEntryGetLength = 12,
-    FnEntryGetCapacity,
-} AvmFnEntry;
-
 /**
  * @brief Gets information about the type of an object.
  *

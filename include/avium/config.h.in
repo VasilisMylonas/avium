@@ -42,7 +42,7 @@
 
 #ifdef __cplusplus
 #warning "Avium: C++ is not supported, you may encounter errors."
-#endif // __cplusplus
+#endif
 
 #define AVM_BYTE_SIZE          1
 #define AVM_CHAR_SIZE          1

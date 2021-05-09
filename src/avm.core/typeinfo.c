@@ -1,13 +1,13 @@
 #include "avium/typeinfo.h"
-#include "avium/core.h"
+
 #include "avium/error.h"
-#include "avium/private/resources.h"
+#include "avium/testing.h"
 
 str AvmTypeGetName(const AvmType* self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     return self->_name;
@@ -15,9 +15,9 @@ str AvmTypeGetName(const AvmType* self)
 
 uint AvmTypeGetSize(const AvmType* self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     return self->_size;
@@ -25,9 +25,9 @@ uint AvmTypeGetSize(const AvmType* self)
 
 AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     return self->_vptr[index];
@@ -35,24 +35,19 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
-
     return self->_baseType;
 }
 
 bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (baseType == NULL)
-    {
-        AvmPanic("Parameter `baseType` was `NULL`.");
+        assert(self != NULL);
+        assert(baseType != NULL);
     }
 
     if (baseType == typeid(object))
