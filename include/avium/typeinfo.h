@@ -3,6 +3,9 @@
 
 #include "avium/types.h"
 
+/// Returns the base type of an object.
+#define baseof(x) ((typeof((x)->_base) *)x)
+
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
 
