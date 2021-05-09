@@ -29,6 +29,7 @@
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
 
+// TODO
 #define AvmInvalid ((size_t)-1)
 
 /// Represents an entry on the virtual function table.
@@ -149,24 +150,6 @@ AVMAPI box(void) AvmRealloc(box(void) memory, size_t size);
  * @param memory The memory block to deallocate.
  */
 AVMAPI void AvmDealloc(box(void) memory);
-
-/**
- * @brief Allocates an object on the heap, and initializes it with the provided
- * data.
- *
- * @param size The size of the object.
- * @param data The data to initialize the object with (can be NULL).
- * @return The allocated object.
- */
-AVMAPI object AvmObjectAlloc(size_t size, object data);
-
-/**
- * @brief Shortcut for initializing a heap object.
- *
- * @param T The type of the object.
- * @param ... The object initializer.
- */
-#define heapalloc(T, ...) AvmObjectAlloc(sizeof(T), (T[1]){__VA_ARGS__})
 
 /// Enables signal catching.
 AVMAPI void AvmEnableExceptions(void);

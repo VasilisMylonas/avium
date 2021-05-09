@@ -51,20 +51,20 @@ AVM_TYPE(AvmSimpleError, object,
 
 AvmError *AvmErrorFromOSCode(int code)
 {
-    return heapalloc(AvmOSError, {
-                                     ._type = typeid(AvmOSError),
-                                     ._code = code,
-                                 });
+    AvmOSError *error = AvmAlloc(sizeof(AvmOSError));
+    error->_type = typeid(AvmOSError);
+    error->_code = code;
+    return (AvmError *)error;
 }
 
 AvmError *AvmErrorGetLast(void) { return AvmErrorFromOSCode(errno); }
 
 AvmError *AvmErrorOfKind(AvmErrorKind kind)
 {
-    return heapalloc(AvmSimpleError, {
-                                         ._type = typeid(AvmSimpleError),
-                                         ._kind = kind,
-                                     });
+    AvmSimpleError *error = AvmAlloc(sizeof(AvmSimpleError));
+    error->_type = typeid(AvmSimpleError);
+    error->_kind = kind;
+    return (AvmError *)error;
 }
 
 weakptr(AvmError) AvmErrorGetSource(AvmError *self)

@@ -26,16 +26,6 @@ box(void) AvmRealloc(box(void) memory, size_t size)
 }
 void AvmDealloc(box(void) memory) { AVM_DEALLOC(memory); }
 
-object AvmObjectAlloc(size_t size, object data)
-{
-    object memory = AvmAlloc(size);
-    if (data != NULL)
-    {
-        AvmMemCopy(data, size, memory, size);
-    }
-    return memory;
-}
-
 static void ExceptionHandler(int exception)
 {
     switch (exception)

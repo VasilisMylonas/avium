@@ -1,6 +1,6 @@
 add_library(avm.core ${LIB_TYPE}
     error.c
-    runtime.c
+    core.c
     string.c
     types.c
     version.c
