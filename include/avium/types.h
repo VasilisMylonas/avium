@@ -103,10 +103,14 @@ typedef const char *str;              ///< Primitive read-only string.
 #ifdef AVM_MSVC
 #define typeof(T) decltype(T)
 #else
+#ifdef __clang__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wkeyword-macro"
+#endif
 #define typeof(T) __typeof__(T)
+#ifdef __clang__
 #pragma GCC diagnostic pop
+#endif
 #endif
 
 #ifndef DOXYGEN

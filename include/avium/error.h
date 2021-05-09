@@ -2,8 +2,8 @@
  * @file avium/result.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Result and error types.
- * @version 0.2
- * @date 2021-04-10
+ * @version 0.2.2
+ * @date 2021-05-9
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -32,32 +32,15 @@ AVM_INTERFACE(AvmError);
 /// Describes the type of the error that occurred.
 typedef enum
 {
-    /// Received an invalid argument.
-    ErrorKindArg,
-
-    /// The provided index was out of range.
-    ErrorKindRange,
-
-    /// There was not enough memory to handle the request.
-    ErrorKindMem,
-
-    /// The call was invalid for the current state.
-    ErrorKindInvalidOp,
-
-    /// An IO error occurred.
-    ErrorKindIO,
-
-    /// An unknown system error occurred.
-    ErrorKindSys,
-
-    /// A required resource was unavailable.
-    ErrorKindNotFound,
-
-    /// Could not perform the read operation.
-    ErrorKindRead,
-
-    /// Could not perform the write operation.
-    ErrorKindWrite,
+    ErrorKindArg,       ///< Received an invalid argument.
+    ErrorKindRange,     ///< The provided index was out of range.
+    ErrorKindMem,       ///< There was not enough memory to handle the request.
+    ErrorKindInvalidOp, ///< The call was invalid for the current state.
+    ErrorKindIO,        ///< An IO error occurred.
+    ErrorKindSys,       ///< An unknown system error occurred.
+    ErrorKindNotFound,  ///< A required resource was unavailable.
+    ErrorKindRead,      ///< Could not perform the read operation.
+    ErrorKindWrite,     ///< Could not perform the write operation.
 } AvmErrorKind;
 
 /**
