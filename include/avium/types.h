@@ -90,6 +90,9 @@ typedef const char* str;              ///< Primitive read-only string.
     }
 
 #define AVM_FORWARD_TYPE(T) typedef struct T T
+#define AVM_CONCAT_(a, b)   a##b
+#define AVM_CONCAT(a, b)    AVM_CONCAT_(a, b)
+#define AVM_UNIQUE(name)    AVM_CONCAT(name, __LINE__)
 
 #ifdef AVM_MSVC
 #define typeof(T) decltype(T)

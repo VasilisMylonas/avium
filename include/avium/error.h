@@ -98,6 +98,19 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
  */
 #define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
 
+// clang-format off
+#define try(call)                                                              \
+    AvmError* AVM_UNIQUE(__avmError) = call;                                   \
+    if (AVM_UNIQUE(__avmError) != NULL)                                        \
+    {                                                                          \
+        return AVM_UNIQUE(__avmError);                                         \
+    }
+
+#define catch(var, call)                          \
+    AvmError* var = call; \
+    if (var != NULL)
+// clang-format on
+
 /**
  * @brief Aborts execution, printing a message and location information.
  *
