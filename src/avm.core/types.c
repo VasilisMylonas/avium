@@ -1,18 +1,16 @@
 #include "avium/types.h"
 
-#include <string.h>
-
-#include "avium/core.h"
-#include "avium/error.h"
-#include "avium/private/resources.h"
 #include "avium/string.h"
+#include "avium/testing.h"
 #include "avium/typeinfo.h"
+
+#include <string.h>
 
 const AvmType* AvmObjectGetType(object self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     // The first member of an object should be a const AvmType*
@@ -22,14 +20,10 @@ const AvmType* AvmObjectGetType(object self)
 
 bool AvmObjectEquals(object self, object other)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (other == NULL)
-    {
-        AvmPanic(OtherNullMsg);
+        assert(self != NULL);
+        assert(other != NULL);
     }
 
     const AvmType* type = AvmObjectGetType(self);
@@ -46,9 +40,9 @@ bool AvmObjectEquals(object self, object other)
 
 void AvmObjectDestroy(object self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryDtor);
@@ -61,9 +55,9 @@ void AvmObjectDestroy(object self)
 
 object AvmObjectClone(object self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     AvmFunction fn = AvmTypeGetFunction(AvmObjectGetType(self), FnEntryClone);
@@ -81,9 +75,9 @@ object AvmObjectClone(object self)
 
 AvmString AvmObjectToString(object self)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
+        assert(self != NULL);
     }
 
     AvmFunction fn =

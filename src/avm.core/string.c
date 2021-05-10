@@ -1392,14 +1392,10 @@ static void Parse(char c, uint* index, char* buffer, va_list args)
 
 void AvmStringParse(const AvmString* self, str format, ...)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (format == NULL)
-    {
-        AvmPanic(FormatNullMsg);
+        assert(self != NULL);
+        assert(format != NULL);
     }
 
     va_list args;
@@ -1410,14 +1406,10 @@ void AvmStringParse(const AvmString* self, str format, ...)
 
 void AvmStringParseV(const AvmString* self, str format, va_list args)
 {
-    if (self == NULL)
+    pre
     {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (format == NULL)
-    {
-        AvmPanic(FormatNullMsg);
+        assert(self != NULL);
+        assert(format != NULL);
     }
 
     char* buffer = AvmStringGetBuffer(self);
