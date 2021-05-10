@@ -2,10 +2,11 @@
 
 #include "avium/private/resources.h"
 #include "avium/string.h"
+#include "avium/testing.h"
 
 #include <stdio.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #ifdef AVM_WIN32
 #include <io.h>
@@ -13,11 +14,11 @@
 #include <unistd.h>
 #endif
 
-AvmStream *AvmFileOpen(str path, AvmFileAccess access, AvmError **error)
+AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
 {
-    if (path == NULL)
+    pre
     {
-        AvmPanic(PathNullMsg);
+        assert(path != NULL);
     }
 
     str mode = NULL;
@@ -44,7 +45,7 @@ AvmStream *AvmFileOpen(str path, AvmFileAccess access, AvmError **error)
         AvmPanic(InvalidAccessMsg);
     }
 
-    FILE *file = fopen(path, mode);
+    FILE* file = fopen(path, mode);
 
     if (file == NULL)
     {
@@ -61,9 +62,9 @@ AvmStream *AvmFileOpen(str path, AvmFileAccess access, AvmError **error)
 
 bool AvmFileExists(str path)
 {
-    if (path == NULL)
+    pre
     {
-        AvmPanic(PathNullMsg);
+        assert(path != NULL);
     }
 
 #ifdef AVM_WIN32
@@ -73,11 +74,11 @@ bool AvmFileExists(str path)
 #endif
 }
 
-AvmError *AvmFileDelete(str path)
+AvmError* AvmFileDelete(str path)
 {
-    if (path == NULL)
+    pre
     {
-        AvmPanic(PathNullMsg);
+        assert(path != NULL);
     }
 
     int status = remove(path);
@@ -90,16 +91,12 @@ AvmError *AvmFileDelete(str path)
     return NULL;
 }
 
-AvmError *AvmFileMove(str source, str destination)
+AvmError* AvmFileMove(str source, str destination)
 {
-    if (source == NULL)
+    pre
     {
-        AvmPanic(SourceNullMsg);
-    }
-
-    if (destination == NULL)
-    {
-        AvmPanic(DestinationNullMsg);
+        assert(source != NULL);
+        assert(destination != NULL);
     }
 
     int status = rename(source, destination);
@@ -112,33 +109,27 @@ AvmError *AvmFileMove(str source, str destination)
     return NULL;
 }
 
-AvmError *AvmFileCopy(str source, str destination)
+AvmError* AvmFileCopy(str source, str destination)
 {
-    if (source == NULL)
+    pre
     {
-        AvmPanic(SourceNullMsg);
-    }
-
-    if (destination == NULL)
-    {
-        AvmPanic(DestinationNullMsg);
+        assert(source != NULL);
+        assert(destination != NULL);
     }
 
     // TODO
     AvmPanic(NotImplementedMsg);
 }
 
-static AvmError *AvmFilePerform(str path, size_t length, byte buffer[],
+static AvmError* AvmFilePerform(str path,
+                                size_t length,
+                                byte buffer[],
                                 AvmFileAccess access)
 {
-    if (path == NULL)
+    pre
     {
-        AvmPanic(PathNullMsg);
-    }
-
-    if (buffer == NULL)
-    {
-        AvmPanic(BufferNullMsg);
+        assert(path != NULL);
+        assert(buffer != NULL);
     }
 
     if (length == 0)
@@ -146,8 +137,8 @@ static AvmError *AvmFilePerform(str path, size_t length, byte buffer[],
         return NULL;
     }
 
-    AvmError *error = NULL;
-    AvmStream *stream = AvmFileOpen(path, access, &error);
+    AvmError* error = NULL;
+    AvmStream* stream = AvmFileOpen(path, access, &error);
 
     if (error != NULL)
     {
@@ -172,31 +163,27 @@ static AvmError *AvmFilePerform(str path, size_t length, byte buffer[],
     return error;
 }
 
-AvmError *AvmFileReadAll(str path, size_t length, byte buffer[])
+AvmError* AvmFileReadAll(str path, size_t length, byte buffer[])
 {
     return AvmFilePerform(path, length, buffer, FileAccessRead);
 }
 
-AvmError *AvmFileWriteAll(str path, size_t length, byte buffer[])
+AvmError* AvmFileWriteAll(str path, size_t length, byte buffer[])
 {
     return AvmFilePerform(path, length, buffer, FileAccessWrite);
 }
 
-AvmError *AvmFileAppendAll(str path, size_t length, byte buffer[])
+AvmError* AvmFileAppendAll(str path, size_t length, byte buffer[])
 {
     return AvmFilePerform(path, length, buffer, FileAccessAppend);
 }
 
-AvmError *AvmFileReadAllText(str path, AvmString *string)
+AvmError* AvmFileReadAllText(str path, AvmString* string)
 {
-    if (path == NULL)
+    pre
     {
-        AvmPanic(PathNullMsg);
-    }
-
-    if (string == NULL)
-    {
-        AvmPanic(StringNullMsg);
+        assert(path != NULL);
+        assert(string != NULL);
     }
 
 #ifdef AVM_WIN32
@@ -218,28 +205,31 @@ AvmError *AvmFileReadAllText(str path, AvmString *string)
     AvmStringEnsureCapacity(string, buffer.st_size);
     AvmStringUnsafeSetLength(string, length + buffer.st_size);
 
-    return AvmFileReadAll(path, AvmStringGetCapacity(string),
-                          (byte *)(AvmStringGetBuffer(string) + length));
+    return AvmFileReadAll(path,
+                          AvmStringGetCapacity(string),
+                          (byte*)(AvmStringGetBuffer(string) + length));
 }
 
-AvmError *AvmFileWriteAllText(str path, AvmString *string)
+AvmError* AvmFileWriteAllText(str path, AvmString* string)
 {
-    if (string == NULL)
+    pre
     {
-        AvmPanic(StringNullMsg);
+        assert(path != NULL);
+        assert(string != NULL);
     }
 
-    return AvmFileWriteAll(path, AvmStringGetCapacity(string),
-                           (byte *)AvmStringGetBuffer(string));
+    return AvmFileWriteAll(
+        path, AvmStringGetCapacity(string), (byte*)AvmStringGetBuffer(string));
 }
 
-AvmError *AvmFileAppendAllText(str path, AvmString *string)
+AvmError* AvmFileAppendAllText(str path, AvmString* string)
 {
-    if (string == NULL)
+    pre
     {
-        AvmPanic(StringNullMsg);
+        assert(path != NULL);
+        assert(string != NULL);
     }
 
-    return AvmFileAppendAll(path, AvmStringGetCapacity(string),
-                            (byte *)AvmStringGetBuffer(string));
+    return AvmFileAppendAll(
+        path, AvmStringGetCapacity(string), (byte*)AvmStringGetBuffer(string));
 }

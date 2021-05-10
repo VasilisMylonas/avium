@@ -31,7 +31,7 @@ enable_testing()
 option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
 option(BUILD_TESTS "Generate tests?" ON)
-option(USE_IO "Use the IO library?" OFF)
+option(USE_IO "Use the IO library?" ON)
 option(USE_ARGPARSE "Use the argument parsing library?" OFF)
 option(USE_REFLECT "Use the reflection library?" OFF)
 

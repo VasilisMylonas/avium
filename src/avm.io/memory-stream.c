@@ -1,9 +1,8 @@
 #include "avium/io.h"
-#include "avium/private/resources.h"
-#include "avium/array-list.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "avium/array-list.h"
+#include "avium/private/resources.h"
+#include "avium/typeinfo.h"
 
 AVM_CLASS(AvmMemoryStream, AvmStream, {
     size_t _position;
@@ -12,13 +11,14 @@ AVM_CLASS(AvmMemoryStream, AvmStream, {
 
 static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
 
-static AvmError *AvmMemoryStreamFlush(AvmMemoryStream *self)
+static AvmError* AvmMemoryStreamFlush(AvmMemoryStream* self)
 {
     (void)self;
     return NULL;
 }
 
-static AvmError *AvmMemoryStreamRead(AvmMemoryStream *self, size_t length,
+static AvmError* AvmMemoryStreamRead(AvmMemoryStream* self,
+                                     size_t length,
                                      byte bytes[])
 {
     for (size_t i = 0; i < length; i++)
@@ -30,7 +30,8 @@ static AvmError *AvmMemoryStreamRead(AvmMemoryStream *self, size_t length,
     return NULL;
 }
 
-static AvmError *AvmMemoryStreamWrite(AvmMemoryStream *self, size_t length,
+static AvmError* AvmMemoryStreamWrite(AvmMemoryStream* self,
+                                      size_t length,
                                       byte bytes[])
 {
     for (size_t i = 0; i < length; i++)
@@ -42,7 +43,8 @@ static AvmError *AvmMemoryStreamWrite(AvmMemoryStream *self, size_t length,
     return NULL;
 }
 
-static AvmError *AvmMemoryStreamSeek(AvmMemoryStream *self, _long offset,
+static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
+                                     _long offset,
                                      AvmSeekOrigin origin)
 {
     switch (origin)
@@ -62,8 +64,7 @@ static AvmError *AvmMemoryStreamSeek(AvmMemoryStream *self, _long offset,
         {
             return AvmErrorOfKind(ErrorKindRange);
         }
-        self->_position =
-            AvmArrayListGetCapacity(byte)(&self->_list) + offset;
+        self->_position = AvmArrayListGetCapacity(byte)(&self->_list) + offset;
         break;
     default:
         AvmPanic(InvalidOriginMsg);
@@ -72,22 +73,23 @@ static AvmError *AvmMemoryStreamSeek(AvmMemoryStream *self, _long offset,
     return NULL;
 }
 
-static size_t AvmMemoryStreamGetPosition(AvmMemoryStream *self)
+static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self)
 {
     return self->_position;
 }
 
-static void AvmMemoryStreamDestroy(AvmMemoryStream *self)
+static void AvmMemoryStreamDestroy(AvmMemoryStream* self)
 {
     AvmObjectDestroy(&self->_list);
 }
 
-static size_t AvmMemoryStreamGetLength(AvmMemoryStream *self)
+static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self)
 {
     return AvmArrayListGetCapacity(byte)(&self->_list);
 }
 
-AVM_TYPE(AvmMemoryStream, object,
+AVM_TYPE(AvmMemoryStream,
+         object,
          {
              [FnEntryFlush] = (AvmFunction)AvmMemoryStreamFlush,
              [FnEntryRead] = (AvmFunction)AvmMemoryStreamRead,
@@ -98,11 +100,11 @@ AVM_TYPE(AvmMemoryStream, object,
              [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
          });
 
-AvmStream *AvmStreamFromMemory(size_t capacity)
+AvmStream* AvmStreamFromMemory(size_t capacity)
 {
-    AvmMemoryStream *stream = AvmAlloc(sizeof(AvmMemoryStream));
+    AvmMemoryStream* stream = AvmAlloc(sizeof(AvmMemoryStream));
     stream->_list = AvmArrayListNew(byte)(capacity);
     stream->_type = typeid(AvmMemoryStream);
     stream->_position = 0;
-    return (AvmStream *)stream;
+    return (AvmStream*)stream;
 }
