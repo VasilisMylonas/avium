@@ -1,14 +1,14 @@
-#include <signal.h> // For signal and related constants
-#include <stdio.h>  // For vfprintf, vscanf, stderr, stdout
-#include <stdlib.h> // For exit
-#include <string.h> // For memcpy, strchr, strrchr
-
 #include "avium/core.h"
+
 #include "avium/error.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
+
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef AVM_USE_GC
 #include "gc.h"
@@ -54,8 +54,6 @@ static void ExceptionHandler(int exception)
     }
 }
 
-static str ProgramName = NULL;
-
 void AvmRuntimeEnableExceptions(void)
 {
     signal(SIGSEGV, ExceptionHandler);
@@ -70,20 +68,29 @@ void AvmRuntimeDisableExceptions(void)
     signal(SIGFPE, SIG_DFL);
 }
 
-str AvmRuntimeGetProgramName(void)
-{
-    if (ProgramName == NULL)
-    {
-        AvmPanic("Runtime not initialized! Call AvmRuntimeInit first!");
-    }
+static AvmEnv env;
 
-    return ProgramName;
-}
-
-void AvmRuntimeInit(int argc, str argv[])
+weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[])
 {
     (void)argc;
-    ProgramName = argv[0];
+
+    // TODO
+    env._isInitialized = true;
+    env._programName = argv[0];
+    env._args = &argv[1];
+    env._version =
+        AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
+    return &env;
+}
+
+str AvmRuntimeGetProgramName(void)
+{
+    return env._programName;
+}
+
+AvmVersion AvmRuntimeGetVersion(void)
+{
+    return env._version;
 }
 
 void AvmCopy(object o, size_t size, byte* destination)
@@ -106,20 +113,23 @@ void AvmCopy(object o, size_t size, byte* destination)
 
 void AvmVScanf(str format, va_list args)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
+        assert(args != NULL);
     }
 
     // TODO
     vscanf(format, args);
 }
 
-void AvmVPrintf(str format, va_list args)
+static void AvmFputs(str format, va_list args, FILE* stream)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
+        assert(args != NULL);
+        assert(stream != NULL);
     }
 
     AvmString temp = AvmStringFormatV(format, args);
@@ -127,47 +137,74 @@ void AvmVPrintf(str format, va_list args)
     AvmObjectDestroy(&temp);
 }
 
-void AvmVErrorf(str format, va_list args)
+void AvmVPrintf(str format, va_list args)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
+        assert(args != NULL);
     }
 
-    AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringGetBuffer(&temp), stderr);
-    AvmObjectDestroy(&temp);
+    AvmFputs(format, args, stdout);
+}
+
+void AvmVErrorf(str format, va_list args)
+{
+    pre
+    {
+        assert(format != NULL);
+        assert(args != NULL);
+    }
+
+    AvmFputs(format, args, stderr);
 }
 
 void AvmScanf(str format, ...)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
     }
-    AVM_FORWARD(format, AvmVScanf);
+
+    va_list args;
+    va_start(args, format);
+    AvmVScanf(format, args);
+    va_end(args);
 }
 
 void AvmPrintf(str format, ...)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
     }
-    AVM_FORWARD(format, AvmVPrintf);
+
+    va_list args;
+    va_start(args, format);
+    AvmVPrintf(format, args);
+    va_end(args);
 }
 
 void AvmErrorf(str format, ...)
 {
-    if (format == NULL)
+    pre
     {
-        AvmPanic(FormatNullMsg);
+        assert(format != NULL);
     }
-    AVM_FORWARD(format, AvmVErrorf);
+
+    va_list args;
+    va_start(args, format);
+    AvmVErrorf(format, args);
+    va_end(args);
 }
 
 static AvmString AvmVersionToString(AvmVersion* self)
 {
+    pre
+    {
+        assert(self != NULL);
+    }
+
     return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
 }
 
@@ -183,10 +220,4 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
         .Minor = minor,
         .Patch = patch,
     };
-}
-
-AvmVersion AvmRuntimeGetVersion(void)
-{
-    return AvmVersionFrom(
-        AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 }

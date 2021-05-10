@@ -119,6 +119,16 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
+AVM_CLASS(AvmEnv, object, {
+    bool _isInitialized;
+    uint _flags;
+    str _name;
+    str _libPath;
+    AvmVersion _version;
+    str _programName;
+    str* _args;
+});
+
 /**
  * @brief Initializes the Avium runtime.
  *
@@ -127,8 +137,9 @@ AVMAPI AvmString AvmObjectToString(object self);
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
+ * @return The runtime environment.
  */
-AVMAPI void AvmRuntimeInit(int argc, str argv[]);
+AVMAPI weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[]);
 
 /// Returns the name of the currently running program.
 AVMAPI str AvmRuntimeGetProgramName(void);
