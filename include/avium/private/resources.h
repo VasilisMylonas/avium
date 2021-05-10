@@ -11,9 +11,7 @@ static const str LongMinRepr = "-9223372036854775808";
 static const str NumericBaseOutOfRangeMsg =
     "Parameter `numericBase` was out of range.";
 static const str InvalidOriginMsg = "Parameter `origin` was invalid.";
-static const str NotImplementedMsg = "Not implemented.";
 static const str InvalidAccessMsg = "Parameter `access` was invalid.";
-static const str InternalErrorMsg = "Internal error.";
 static const str InvalidPtrDerefMsg = "Invalid pointer dereference.";
 static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";

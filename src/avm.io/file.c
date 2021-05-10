@@ -1,5 +1,6 @@
 #include "avium/file.h"
 
+#include "avium/private/errors.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
 #include "avium/testing.h"
@@ -118,7 +119,7 @@ AvmError* AvmFileCopy(str source, str destination)
     }
 
     // TODO
-    AvmPanic(NotImplementedMsg);
+    AvmPanic(InternalError);
 }
 
 static AvmError* AvmFilePerform(str path,
@@ -155,7 +156,7 @@ static AvmError* AvmFilePerform(str path,
         error = AvmStreamWrite(stream, length, buffer);
         break;
     default:
-        AvmPanic(InternalErrorMsg);
+        AvmPanic(InternalError);
         break;
     }
 
