@@ -118,6 +118,9 @@ AvmError* AvmFileCopy(str source, str destination)
         assert(destination != NULL);
     }
 
+    (void)source;
+    (void)destination;
+
     // TODO
     AvmPanic(InternalError);
 }
