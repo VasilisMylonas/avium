@@ -134,7 +134,7 @@ static void AvmFputs(str format, va_list args, FILE* stream)
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringGetBuffer(&temp), stdout);
+    fputs(AvmStringGetBuffer(&temp), stream);
     AvmObjectDestroy(&temp);
 }
 
