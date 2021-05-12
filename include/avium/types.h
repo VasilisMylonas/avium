@@ -42,6 +42,8 @@ typedef const char* str;              ///< Primitive read-only string.
 #define weakptr(T) T*                 ///< A weak pointer to a type T.
 #define box(T)     T*                 ///< A pointer to a heap-allocated type T.
 
+#define main AvmMain
+
 /**
  * @brief Creates an Avium class type.
  *

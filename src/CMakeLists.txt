@@ -1,6 +1,6 @@
 include(GenerateExportHeader)
 
-add_library(avm ${LIB_TYPE} module.c)
+add_library(avm ${LIB_TYPE} init.c)
 
 generate_export_header(avm
     BASE_NAME AVM
