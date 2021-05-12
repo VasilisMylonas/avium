@@ -15,5 +15,6 @@ static const str InvalidAccessMsg = "Parameter `access` was invalid.";
 static const str InvalidPtrDerefMsg = "Invalid pointer dereference.";
 static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";
+static const str NoBacktraceMsg = "No backtrace is available.";
 
 #endif // AVIUM_RESOURCES_H
