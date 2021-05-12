@@ -5,3 +5,4 @@ function(run_test TEST)
 endfunction()
 
 run_test(string)
+run_test(reflect)
