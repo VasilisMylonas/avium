@@ -107,7 +107,7 @@ typedef uint (*DistanceFunc)(object);
 uint PointDistance(object self) {
     // There are plans to make this simpler. But for now this how it is done.
 
-    AvmType* type = AvmObjectGetType(self);
+    const AvmType* type = AvmObjectGetType(self);
     return ((DistanceFunc)AvmTypeGetFunction(type, DistanceEntry))(self);
 }
 

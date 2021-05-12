@@ -28,14 +28,15 @@
 
 #ifdef AVM_USE_IO
 
-#    include "avium/runtime.h"
-#    include "avium/error.h"
+#include "avium/core.h"
+#include "avium/error.h"
 
 /// Represents a C file handle.
-typedef void* AvmFileHandle;
+typedef void *AvmFileHandle;
 
 /// Defines the origin point for a seek operation.
-typedef enum {
+typedef enum
+{
     /// Seek from the beginning of the stream.
     SeekOriginBegin = 0,
 
@@ -57,7 +58,7 @@ AVM_INTERFACE(AvmStream);
  * @param handle The file handle.
  * @return The created stream.
  */
-AVMAPI AvmStream* AvmStreamFromHandle(AvmFileHandle handle);
+AVMAPI AvmStream *AvmStreamFromHandle(AvmFileHandle handle);
 
 /**
  * @brief Creates a stream from heap memory.
@@ -65,10 +66,10 @@ AVMAPI AvmStream* AvmStreamFromHandle(AvmFileHandle handle);
  * @param capacity The initial capacity of the stream.
  * @return The created stream.
  */
-AVMAPI AvmStream* AvmStreamFromMemory(size_t capacity);
+AVMAPI AvmStream *AvmStreamFromMemory(size_t capacity);
 
 // TODO
-AVMAPI AvmStream* AvmStreamFromRaw(size_t length, byte array[]);
+AVMAPI AvmStream *AvmStreamFromRaw(size_t length, byte array[]);
 
 /**
  * @brief Reads bytes from an AvmStream.
@@ -82,7 +83,7 @@ AVMAPI AvmStream* AvmStreamFromRaw(size_t length, byte array[]);
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[]);
+AVMAPI AvmError *AvmStreamRead(AvmStream *self, size_t length, byte buffer[]);
 
 /**
  * @brief Writes bytes to an AvmStream.
@@ -96,7 +97,7 @@ AVMAPI AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[]);
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]);
+AVMAPI AvmError *AvmStreamWrite(AvmStream *self, size_t length, byte buffer[]);
 
 /**
  * @brief Flushes a stream, writing buffered data to the underlying device.
@@ -106,7 +107,7 @@ AVMAPI AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]);
  * @param self The AvmStream instance.
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamFlush(AvmStream* self);
+AVMAPI AvmError *AvmStreamFlush(AvmStream *self);
 
 /**
  * @brief Seeks to a position in a stream.
@@ -124,7 +125,7 @@ AVMAPI AvmError* AvmStreamFlush(AvmStream* self);
  *
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamSeek(AvmStream* self, _long offset,
+AVMAPI AvmError *AvmStreamSeek(AvmStream *self, _long offset,
                                AvmSeekOrigin origin);
 
 /**
@@ -135,7 +136,7 @@ AVMAPI AvmError* AvmStreamSeek(AvmStream* self, _long offset,
  * @param self The AvmStream instance.
  * @return The current position of the stream.
  */
-AVMAPI size_t AvmStreamGetPosition(AvmStream* self);
+AVMAPI size_t AvmStreamGetPosition(AvmStream *self);
 
 /**
  * @brief Returns the length of an AvmStream.
@@ -145,7 +146,7 @@ AVMAPI size_t AvmStreamGetPosition(AvmStream* self);
  * @param self The AvmStream instance.
  * @return The length of the stream.
  */
-AVMAPI size_t AvmStreamGetLength(AvmStream* self);
+AVMAPI size_t AvmStreamGetLength(AvmStream *self);
 
 /**
  * @brief Reads a single byte from an AvmStream.
@@ -156,7 +157,7 @@ AVMAPI size_t AvmStreamGetLength(AvmStream* self);
  * @param[out] error Any error that occurs.
  * @return The byte.
  */
-AVMAPI byte AvmStreamReadByte(AvmStream* self, AvmError** error);
+AVMAPI byte AvmStreamReadByte(AvmStream *self, AvmError **error);
 
 /**
  * @brief Writes a single byte to an AvmStream.
@@ -167,7 +168,7 @@ AVMAPI byte AvmStreamReadByte(AvmStream* self, AvmError** error);
  * @param value The byte to write.
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamWriteByte(AvmStream* self, byte value);
+AVMAPI AvmError *AvmStreamWriteByte(AvmStream *self, byte value);
 
 /**
  * @brief Reads a single character from an AvmStream.
@@ -178,7 +179,7 @@ AVMAPI AvmError* AvmStreamWriteByte(AvmStream* self, byte value);
  * @param[out] error Any error that occurs.
  * @return The character.
  */
-AVMAPI char AvmStreamReadChar(AvmStream* self, AvmError** error);
+AVMAPI char AvmStreamReadChar(AvmStream *self, AvmError **error);
 
 /**
  * @brief Writes a single character to an AvmStream.
@@ -189,7 +190,7 @@ AVMAPI char AvmStreamReadChar(AvmStream* self, AvmError** error);
  * @param value The character to write.
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamWriteChar(AvmStream* self, char value);
+AVMAPI AvmError *AvmStreamWriteChar(AvmStream *self, char value);
 
 /**
  * @brief Reads a line of text from an AvmStream.
@@ -200,7 +201,7 @@ AVMAPI AvmError* AvmStreamWriteChar(AvmStream* self, char value);
  * @param[out] error Any error that occurs.
  * @return The result of the IO operation.
  */
-AVMAPI AvmString AvmStreamReadLine(AvmStream* self, AvmError** error);
+AVMAPI AvmString AvmStreamReadLine(AvmStream *self, AvmError **error);
 
 /**
  * @brief Writes a line of text from an AvmStream.
@@ -212,11 +213,11 @@ AVMAPI AvmString AvmStreamReadLine(AvmStream* self, AvmError** error);
  * @param string The AvmString to write.s
  * @return The result of the IO operation.
  */
-AVMAPI AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string);
+AVMAPI AvmError *AvmStreamWriteLine(AvmStream *self, AvmString *string);
 
 // Ensure type size constraints.
 static_assert_s(sizeof(AvmStream) == AVM_STREAM_SIZE);
 
-#endif  // AVM_USE_IO
+#endif // AVM_USE_IO
 
-#endif  // AVIUM_IO_H
+#endif // AVIUM_IO_H

@@ -64,6 +64,9 @@ AVMAPI long AvmEnumGetValueOf(AvmEnum* self, str name);
             ._members = __VA_ARGS__,  \
         }
 
+AVMAPI AvmArrayList(AvmString)
+    __AvmGetSymbolList(str path, str nmCommandTemplate);
+
 #endif  // AVM_USE_REFLECT
 
 #endif  // AVIUM_REFLECT_H

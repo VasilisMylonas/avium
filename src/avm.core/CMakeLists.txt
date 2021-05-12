@@ -1,10 +1,10 @@
 add_library(avm.core
     array.c
     error.c
-    runtime.c
+    core.c
     string.c
+    typeinfo.c
     types.c
-    version.c
 )
 
 if(USE_GC)

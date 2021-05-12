@@ -1,52 +1,98 @@
 #include "avium/string.h"
 
-#include "avium/private/resources.h"
-#include "avium/runtime.h"
-
 #include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "avium/core.h"
+#include "avium/error.h"
+#include "avium/private/resources.h"
+#include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 #ifdef AVM_HAVE_UCHAR_H
-#    include <uchar.h>
+#include <uchar.h>
 #endif
 
-static AvmString AvmStringToString(AvmString* self) {
+static AvmString AvmStringToString(AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    // TODO: self->_buffer may be null.
     return AvmStringFrom(self->_buffer);
 }
 
-static object AvmStringClone(AvmString* self) {
+static object AvmStringClone(AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     AvmString s = AvmStringFrom(self->_buffer);
     AvmString* ret = AvmAlloc(sizeof(AvmString));
-    AvmMemCopy((byte*)&s, sizeof(AvmString), (byte*)ret, sizeof(AvmString));
+    AvmCopy(&s, sizeof(AvmString), (byte*)ret);
     return ret;
 }
 
-static void AvmStringDestroy(AvmString* self) { AvmDealloc(self->_buffer); }
-
-AVM_TYPE(AvmString, object,
-         {[FnEntryDtor] = (AvmFunction)AvmStringDestroy,
-          [FnEntryClone] = (AvmFunction)AvmStringClone,
-          [FnEntryToString] = (AvmFunction)AvmStringToString,
-          [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
-          [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity});
-
-// Helpful macro for null checks.
-#define AVM_SELF_NULL_CHECK()  \
-    if (self == NULL) {        \
-        AvmPanic(SelfNullMsg); \
+static void AvmStringDestroy(AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
-static void AvmStringReallocate(AvmString* self, size_t required) {
-    AVM_SELF_NULL_CHECK();
+    AvmDealloc(self->_buffer);
+}
 
-    if (self->_length + required > self->_capacity) {
+AVM_TYPE(AvmString,
+         object,
+         {
+             [FnEntryDtor] = (AvmFunction)AvmStringDestroy,
+             [FnEntryClone] = (AvmFunction)AvmStringClone,
+             [FnEntryToString] = (AvmFunction)AvmStringToString,
+             [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
+             [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
+         });
+
+void AvmStringEnsureCapacity(AvmString* self, uint capacity)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(capacity <= AVM_MAX_STRING_SIZE);
+    }
+
+    if (capacity == 0)
+    {
+        return;
+    }
+
+    const uint totalRequired = self->_length + capacity;
+    const uint newCapacity = self->_capacity * AVM_STRING_GROWTH_FACTOR;
+
+    if (totalRequired > self->_capacity)
+    {
         // TODO: There may be more efficient ways of doing this
-        self->_capacity *= AVM_STRING_GROWTH_FACTOR;
-        self->_capacity += required;
+        self->_capacity = newCapacity;
+
+        if (newCapacity < totalRequired)
+        {
+            self->_capacity += capacity;
+        }
+
         self->_buffer = AvmRealloc(self->_buffer, self->_capacity);
+    }
+
+    post
+    {
+        assert(self->_capacity >= self->_length);
+        assert(self->_capacity >= capacity);
     }
 }
 
@@ -54,7 +100,13 @@ static void AvmStringReallocate(AvmString* self, size_t required) {
 // Constructors.
 //
 
-AvmString AvmStringNew(size_t capacity) {
+AvmString AvmStringNew(uint capacity)
+{
+    pre
+    {
+        assert(capacity <= AVM_MAX_STRING_SIZE);
+    }
+
     return (AvmString){
         ._type = typeid(AvmString),
         ._length = 0,
@@ -64,99 +116,157 @@ AvmString AvmStringNew(size_t capacity) {
     };
 }
 
-AvmString AvmStringFrom(str contents) {
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
+AvmString AvmStringFrom(str contents)
+{
+    pre
+    {
+        assert(contents != NULL);
     }
 
-    return AvmStringFromChars(strlen(contents), contents);
-}
+    const uint length = strlen(contents);
 
-AvmString AvmStringFromChars(size_t length, str contents) {
-    if (length == 0) {
+    if (length == 0)
+    {
         return AvmStringNew(0);
     }
 
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
+    AvmString self = AvmStringFromChars(length, contents);
+
+    post
+    {
+        assert(self._length == length);
+        assert(self._capacity == length * AVM_STRING_GROWTH_FACTOR);
+        assert(self._buffer != NULL);
+    }
+
+    return self;
+}
+
+AvmString AvmStringFromChars(uint length, str contents)
+{
+    pre
+    {
+        assert(contents != NULL);
+    }
+
+    if (length == 0)
+    {
+        return AvmStringNew(0);
     }
 
     // We allocate more memory upfront to reduce reallocations.
-    AvmString s = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
-    AvmStringPushChars(&s, length, contents);
+    AvmString self = AvmStringNew(length * AVM_STRING_GROWTH_FACTOR);
+    AvmStringPushChars(&self, length, contents);
 
-    return s;
+    post
+    {
+        assert(self._length == length);
+        assert(self._capacity == length * AVM_STRING_GROWTH_FACTOR);
+        assert(self._buffer != NULL);
+    }
+
+    return self;
 }
 
-AvmString AvmStringFromInt(_long value) {
-    if (value == INTMAX_MIN) {
+AvmString AvmStringFromInt(_long value)
+{
+    if (value == INTMAX_MIN)
+    {
         return AvmStringFrom(LongMinRepr);
     }
 
     const bool isNegative = value < 0;
-    if (isNegative) {
+    if (isNegative)
+    {
         value = -value;
     }
 
     AvmString s = AvmStringNew(8);
 
-    size_t i = 0;
-    for (; value != 0; i++, value /= 10) {
+    uint i = 0;
+    for (; value != 0; i++, value /= 10)
+    {
         _long r = value % 10;
         AvmStringPushChar(&s, '0' + r);
     }
 
-    if (i == 0) {
+    if (i == 0)
+    {
         AvmStringPushChar(&s, '0');
         i++;
     }
 
-    if (isNegative) {
+    if (isNegative)
+    {
         AvmStringPushChar(&s, '-');
         i++;
     }
 
     AvmStringReverse(&s);
+
+    post
+    {
+        assert(s._buffer != NULL);
+        assert(s._length != 0);
+        assert(s._capacity != 0);
+    }
+
     return s;
 }
 
-AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase) {
-    switch (numericBase) {
-        case NumericBaseBinary:
-        case NumericBaseOctal:
-        case NumericBaseDecimal:
-        case NumericBaseHex:
-            break;
-        default:
-            AvmPanic(NumericBaseOutOfRangeMsg);
+AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
+{
+    switch (numericBase)
+    {
+    case NumericBaseBinary:
+    case NumericBaseOctal:
+    case NumericBaseDecimal:
+    case NumericBaseHex:
+        break;
+    default:
+        AvmPanic(NumericBaseOutOfRangeMsg);
     }
 
     AvmString s = AvmStringNew(8);
 
-    size_t i = 0;
-    for (; value != 0; i++, value /= numericBase) {
+    uint i = 0;
+    for (; value != 0; i++, value /= numericBase)
+    {
         _long r = value % numericBase;
 
-        if (r >= 10) {
+        if (r >= 10)
+        {
             AvmStringPushChar(&s, 'A' + (r - 10));
-        } else {
+        }
+        else
+        {
             AvmStringPushChar(&s, '0' + r);
         }
     }
 
-    if (i == 0) {
+    if (i == 0)
+    {
         AvmStringPushChar(&s, '0');
         i++;
     }
 
     AvmStringReverse(&s);
+
+    post
+    {
+        assert(s._buffer != NULL);
+        assert(s._length != 0);
+        assert(s._capacity != 0);
+    }
+
     return s;
 }
 
 typedef union {
     float value;
 
-    struct {
+    struct
+    {
         uint mantissaLow : 16;
         uint mantissaHigh : 7;
         uint exponent : 8;
@@ -164,24 +274,28 @@ typedef union {
     };
 } Float;
 
-AvmString AvmStringFromFloat2(float value) {
+AvmString AvmStringFromFloat2(float value)
+{
     Float f = {.value = value};
 
-    int8_t exponent = f.exponent - 127;  // Biased exponent.
+    int8_t exponent = f.exponent - 127; // Biased exponent.
 
-    if (exponent > 18) {
+    if (exponent > 18)
+    {
         // Too big.
         return AvmStringFrom("inf");
     }
 
-    if (exponent < -3) {
+    if (exponent < -3)
+    {
         // Too small.
         return AvmStringFrom("0");
     }
 
     AvmString s = AvmStringNew(8);
 
-    if (f.isNegative) {
+    if (f.isNegative)
+    {
         AvmStringPushChar(&s, '-');
     }
 
@@ -195,112 +309,186 @@ AvmString AvmStringFromFloat2(float value) {
 
     AvmStringPushChar(&s, '.');
 
-    switch (0x7 & (mantissa >> (20 - exponent))) {
-        case 0:
-            AvmStringPushStr(&s, "000");
-            break;
-        case 1:
-            AvmStringPushStr(&s, "125");
-            break;
-        case 2:
-            AvmStringPushStr(&s, "250");
-            break;
-        case 3:
-            AvmStringPushStr(&s, "375");
-            break;
-        case 4:
-            AvmStringPushStr(&s, "500");
-            break;
-        case 5:
-            AvmStringPushStr(&s, "625");
-            break;
-        case 6:
-            AvmStringPushStr(&s, "750");
-            break;
-        case 7:
-            AvmStringPushStr(&s, "875");
-            break;
+    switch (0x7 & (mantissa >> (20 - exponent)))
+    {
+    case 0:
+        AvmStringPushStr(&s, "000");
+        break;
+    case 1:
+        AvmStringPushStr(&s, "125");
+        break;
+    case 2:
+        AvmStringPushStr(&s, "250");
+        break;
+    case 3:
+        AvmStringPushStr(&s, "375");
+        break;
+    case 4:
+        AvmStringPushStr(&s, "500");
+        break;
+    case 5:
+        AvmStringPushStr(&s, "625");
+        break;
+    case 6:
+        AvmStringPushStr(&s, "750");
+        break;
+    case 7:
+        AvmStringPushStr(&s, "875");
+        break;
+    }
+
+    post
+    {
+        assert(s._buffer != NULL);
+        assert(s._length != 0);
+        assert(s._capacity != 0);
     }
 
     return s;
 }
 
-AvmString AvmStringFromFloat(double value) {
-    size_t length = snprintf(NULL, 0, "%lf", value);
+AvmString AvmStringFromFloat(double value)
+{
+    uint length = snprintf(NULL, 0, "%lf", value);
     AvmString s = AvmStringNew(length);
-    char* buffer = AvmStringAsPtr(&s);
+    char* buffer = AvmStringGetBuffer(&s);
     snprintf(buffer, length + 1, "%lf", value);
     AvmStringUnsafeSetLength(&s, length);
+
+    post
+    {
+        assert(s._buffer != NULL);
+        assert(s._length != 0);
+        assert(s._capacity != 0);
+    }
+
     return s;
 }
 
-AvmString AvmStringRepeat(str contents, size_t count) {
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
+AvmString AvmStringRepeat(str contents, uint count)
+{
+    pre
+    {
+        assert(contents != NULL);
     }
 
-    if (count == 0) {
+    if (count == 0)
+    {
         return AvmStringNew(0);
     }
 
-    return AvmStringRepeatChars(strlen(contents), contents, count);
-}
-
-AvmString AvmStringRepeatChars(size_t length, str contents, size_t count) {
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
+    if (count == 1)
+    {
+        return AvmStringFrom(contents);
     }
 
-    if (length == 0 || count == 0) {
+    const uint length = strlen(contents);
+
+    if (length == 0)
+    {
+        return AvmStringNew(0);
+    }
+
+    AvmString self = AvmStringRepeatChars(length, contents, count);
+
+    post
+    {
+        assert(self._buffer != NULL);
+        assert(self._length != 0);
+        assert(self._capacity == length * count * AVM_STRING_GROWTH_FACTOR);
+    }
+
+    return self;
+}
+
+AvmString AvmStringRepeatChars(uint length, str contents, uint count)
+{
+    pre
+    {
+        assert(contents != NULL);
+    }
+
+    if (length == 0 || count == 0)
+    {
         return AvmStringNew(0);
     }
 
     // Allocate all the memory upfront, + some extra to avoid reallocations.
-    AvmString s = AvmStringNew(length * count * AVM_STRING_GROWTH_FACTOR);
+    AvmString self = AvmStringNew(length * count * AVM_STRING_GROWTH_FACTOR);
 
-    for (size_t i = 0; i < count; i++) {
-        AvmStringPushChars(&s, length, contents);
+    for (uint i = 0; i < count; i++)
+    {
+        AvmStringPushChars(&self, length, contents);
     }
 
-    return s;
+    post
+    {
+        assert(self._buffer != NULL);
+        assert(self._length != 0);
+        assert(self._capacity == length * count * AVM_STRING_GROWTH_FACTOR);
+    }
+
+    return self;
 }
 
 //
 // Accessors.
 //
 
-size_t AvmStringGetLength(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringGetLength(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_length;
 }
 
-char* AvmStringAsPtr(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+weakptr(char) AvmStringGetBuffer(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_buffer;
 }
 
-size_t AvmStringGetCapacity(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringGetCapacity(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_capacity;
 }
 
-bool AvmStringIsEmpty(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringIsEmpty(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_length == 0;
 }
 
-char AvmStringCharAt(AvmString* self, size_t index, AvmError** error) {
-    AVM_SELF_NULL_CHECK();
+char AvmStringCharAt(const AvmString* self, uint index, AvmError** error)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    if (index < self->_length) {
+    if (index < self->_length)
+    {
         return self->_buffer[index];
     }
 
-    if (error != NULL) {
+    if (error != NULL)
+    {
         *error = AvmErrorOfKind(ErrorKindRange);
     }
 
@@ -311,26 +499,30 @@ char AvmStringCharAt(AvmString* self, size_t index, AvmError** error) {
 // ForEach and overloads.
 //
 
-void AvmStringForEach(AvmString* self, void (*function)(char)) {
-    AVM_SELF_NULL_CHECK();
-
-    if (self == NULL) {
-        AvmPanic(FunctionNullMsg);
+void AvmStringForEach(const AvmString* self, void (*function)(char))
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(function != NULL);
     }
 
-    for (size_t i = 0; i < self->_length; i++) {
+    for (uint i = 0; i < self->_length; i++)
+    {
         function(self->_buffer[i]);
     }
 }
 
-void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t)) {
-    AVM_SELF_NULL_CHECK();
-
-    if (self == NULL) {
-        AvmPanic(FunctionNullMsg);
+void AvmStringForEachEx(const AvmString* self, void (*function)(char, uint))
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(function != NULL);
     }
 
-    for (size_t i = 0; i < self->_length; i++) {
+    for (uint i = 0; i < self->_length; i++)
+    {
         function(self->_buffer[i], i);
     }
 }
@@ -339,38 +531,44 @@ void AvmStringForEachEx(AvmString* self, void (*function)(char, size_t)) {
 // Map and overloads.
 //
 
-void AvmStringMap(AvmString* self, char (*function)(char)) {
-    AVM_SELF_NULL_CHECK();
-
-    if (self == NULL) {
-        AvmPanic(FunctionNullMsg);
+void AvmStringMap(const AvmString* self, char (*function)(char))
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(function != NULL);
     }
 
-    for (size_t i = 0; i < self->_length; i++) {
+    for (uint i = 0; i < self->_length; i++)
+    {
         self->_buffer[i] = function(self->_buffer[i]);
     }
 }
 
-void AvmStringMapEx(AvmString* self, char (*function)(char, size_t)) {
-    AVM_SELF_NULL_CHECK();
-
-    if (self == NULL) {
-        AvmPanic(FunctionNullMsg);
+void AvmStringMapEx(const AvmString* self, char (*function)(char, uint))
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(function != NULL);
     }
 
-    for (size_t i = 0; i < self->_length; i++) {
+    for (uint i = 0; i < self->_length; i++)
+    {
         self->_buffer[i] = function(self->_buffer[i], i);
     }
 }
 
-void AvmStringMapCompat(AvmString* self, int (*function)(int)) {
-    AVM_SELF_NULL_CHECK();
-
-    if (self == NULL) {
-        AvmPanic(FunctionNullMsg);
+void AvmStringMapCompat(const AvmString* self, int (*function)(int))
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(function != NULL);
     }
 
-    for (size_t i = 0; i < self->_length; i++) {
+    for (uint i = 0; i < self->_length; i++)
+    {
         self->_buffer[i] = (char)function((int)self->_buffer[i]);
     }
 }
@@ -379,63 +577,115 @@ void AvmStringMapCompat(AvmString* self, int (*function)(int)) {
 // Push and overloads.
 //
 
-void AvmStringPushChar(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
-
-    AvmStringReallocate(self, 1);
-    self->_buffer[self->_length] = character;
-    self->_length++;
-}
-
-void AvmStringPushStr(AvmString* self, str contents) {
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
+void AvmStringPushChar(AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
-    AvmStringPushChars(self, strlen(contents), contents);
+    AvmStringEnsureCapacity(self, 1);
+    self->_buffer[self->_length] = character;
+    self->_length++;
+
+    post
+    {
+        assert(self->_capacity >= 1);
+        assert(self->_length >= 1);
+        assert(self->_buffer != NULL);
+        assert(self->_buffer[self->_length - 1] == character);
+    }
 }
 
-void AvmStringPushChars(AvmString* self, size_t length, str contents) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringPushStr(AvmString* self, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(contents != NULL);
+    }
 
-    if (length == 0) {
+    const uint length = strlen(contents);
+    AvmStringPushChars(self, length, contents);
+
+    post
+    {
+        assert(self->_capacity >= length);
+        assert(self->_length >= length);
+        assert(self->_buffer != NULL);
+        assert(self->_buffer[self->_length - 1] == contents[length - 1]);
+    }
+}
+
+void AvmStringPushChars(AvmString* self, uint length, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(contents != NULL);
+    }
+
+    if (length == 0)
+    {
         return;
     }
 
-    if (contents == NULL) {
-        AvmPanic(ContentsNullMsg);
-    }
-
-    AvmStringReallocate(self, length);
+    AvmStringEnsureCapacity(self, length);
 
     byte* const source = (byte*)contents;
     byte* const dest = (byte*)&self->_buffer[self->_length];
 
-    AvmMemCopy(source, length, dest, self->_capacity);
+    memcpy(dest, source, length);
 
     // Don't forget to increase the length.
     self->_length += length;
+
+    post
+    {
+        assert(self->_capacity >= length);
+        assert(self->_length >= length);
+        assert(self->_buffer != NULL);
+    }
 }
 
-void AvmStringPushString(AvmString* self, AvmString* other) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringPushString(AvmString* self, const AvmString* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
 
-    if (other == NULL) {
-        AvmPanic(OtherNullMsg);
+    if (other->_length == 0)
+    {
+        return;
     }
 
     AvmStringPushChars(self, other->_length, other->_buffer);
+
+    post
+    {
+        assert(self->_capacity >= other->_length);
+        assert(self->_length >= other->_length);
+        assert(self->_buffer != NULL);
+    }
 }
 
 //
 // IndexOf, Find and overloads.
 //
 
-size_t AvmStringIndexOf(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringIndexOf(const AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    for (size_t i = 0; i < self->_length; i++) {
-        if (self->_buffer[i] == character) {
+    for (uint i = 0; i < self->_length; i++)
+    {
+        if (self->_buffer[i] == character)
+        {
             return i;
         }
     }
@@ -443,12 +693,18 @@ size_t AvmStringIndexOf(AvmString* self, char character) {
     return AvmInvalid;
 }
 
-size_t AvmStringLastIndexOf(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringLastIndexOf(const AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     // Same as IndexOf but we loop in reverse.
-    for (size_t i = self->_length; i > 0; i--) {
-        if (self->_buffer[i - 1] == character) {
+    for (uint i = self->_length; i > 0; i--)
+    {
+        if (self->_buffer[i - 1] == character)
+        {
             return i - 1;
         }
     }
@@ -458,38 +714,45 @@ size_t AvmStringLastIndexOf(AvmString* self, char character) {
 
 // TODO: Implement Find for AvmString and Chars.
 
-size_t AvmStringFind(AvmString* self, str substring) {
-    AVM_SELF_NULL_CHECK();
-
-    if (substring == NULL) {
-        AvmPanic(SubstringNullMsg);
+uint AvmStringFind(const AvmString* self, str substring)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(substring != NULL);
     }
 
     char* c = strstr(self->_buffer, substring);
 
-    if (c == NULL) {
+    if (c == NULL)
+    {
         return AvmInvalid;
     }
 
-    return (size_t)(c - self->_buffer);
+    return (uint)(c - self->_buffer);
 }
 
-size_t AvmStringFindLast(AvmString* self, str substring) {
-    AVM_SELF_NULL_CHECK();
-
-    if (substring == NULL) {
-        AvmPanic(SubstringNullMsg);
+uint AvmStringFindLast(const AvmString* self, str substring)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(substring != NULL);
     }
 
-    size_t length = strlen(substring);
+    uint length = strlen(substring);
 
-    if (length > self->_length) {
+    if (length > self->_length)
+    {
         return AvmInvalid;
     }
 
     for (char* end = self->_buffer + self->_length - length;
-         end != self->_buffer; end--) {
-        if (strncmp(end, substring, length) == 0) {
+         end != self->_buffer;
+         end--)
+    {
+        if (strncmp(end, substring, length) == 0)
+        {
             return end - self->_buffer;
         }
     }
@@ -501,11 +764,19 @@ size_t AvmStringFindLast(AvmString* self, str substring) {
 // Replace and overloads.
 //
 
-size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringReplace(const AvmString* self,
+                      char oldCharacter,
+                      char newCharacter)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    for (size_t i = 0; i < self->_length; i++) {
-        if (self->_buffer[i] == oldCharacter) {
+    for (uint i = 0; i < self->_length; i++)
+    {
+        if (self->_buffer[i] == oldCharacter)
+        {
             self->_buffer[i] = newCharacter;
             return i;
         }
@@ -514,14 +785,22 @@ size_t AvmStringReplace(AvmString* self, char oldCharacter, char newCharacter) {
     return AvmInvalid;
 }
 
-size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
-                         char newCharacter) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringReplaceN(const AvmString* self,
+                       uint count,
+                       char oldCharacter,
+                       char newCharacter)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    size_t realCount = 0;
+    uint realCount = 0;
 
-    for (size_t i = 0; i < self->_length && realCount < count; i++) {
-        if (self->_buffer[i] == oldCharacter) {
+    for (uint i = 0; i < self->_length && realCount < count; i++)
+    {
+        if (self->_buffer[i] == oldCharacter)
+        {
             self->_buffer[i] = newCharacter;
             realCount++;
         }
@@ -530,14 +809,22 @@ size_t AvmStringReplaceN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
-                             char newCharacter) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringReplaceLastN(const AvmString* self,
+                           uint count,
+                           char oldCharacter,
+                           char newCharacter)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    size_t realCount = 0;
+    uint realCount = 0;
 
-    for (size_t i = self->_length - 1; i + 1 > 0 && realCount < count; i--) {
-        if (self->_buffer[i] == oldCharacter) {
+    for (uint i = self->_length - 1; i + 1 > 0 && realCount < count; i--)
+    {
+        if (self->_buffer[i] == oldCharacter)
+        {
             self->_buffer[i] = newCharacter;
             realCount++;
         }
@@ -546,12 +833,19 @@ size_t AvmStringReplaceLastN(AvmString* self, size_t count, char oldCharacter,
     return realCount;
 }
 
-size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
-                            char newCharacter) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringReplaceLast(const AvmString* self,
+                          char oldCharacter,
+                          char newCharacter)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    for (size_t i = self->_length - 1; i + 1 > 0; i--) {
-        if (self->_buffer[i] == oldCharacter) {
+    for (uint i = self->_length - 1; i + 1 > 0; i--)
+    {
+        if (self->_buffer[i] == oldCharacter)
+        {
             self->_buffer[i] = newCharacter;
             return i;
         }
@@ -560,14 +854,21 @@ size_t AvmStringReplaceLast(AvmString* self, char oldCharacter,
     return AvmInvalid;
 }
 
-size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
-                           char newCharacter) {
-    AVM_SELF_NULL_CHECK();
+uint AvmStringReplaceAll(const AvmString* self,
+                         char oldCharacter,
+                         char newCharacter)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    size_t count = 0;
+    uint count = 0;
 
-    for (size_t i = 0; i < self->_length; i++) {
-        if (self->_buffer[i] == oldCharacter) {
+    for (uint i = 0; i < self->_length; i++)
+    {
+        if (self->_buffer[i] == oldCharacter)
+        {
             self->_buffer[i] = newCharacter;
             count++;
         }
@@ -580,31 +881,50 @@ size_t AvmStringReplaceAll(AvmString* self, char oldCharacter,
 // String manipulations.
 //
 
-void AvmStringReverse(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringReverse(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    char* start = AvmStringAsPtr(self);
-    char* end = AvmStringAsPtr(self) + self->_length - 1;
+    char* start = AvmStringGetBuffer(self);
+    char* end = AvmStringGetBuffer(self) + self->_length - 1;
 
-    for (char temp = 0; start < end; start++, end--) {
+    for (char temp = 0; start < end; start++, end--)
+    {
         temp = *start;
         *start = *end;
         *end = temp;
     }
 }
 
-void AvmStringToUpper(AvmString* self) { AvmStringMapCompat(self, toupper); }
+void AvmStringToUpper(const AvmString* self)
+{
+    AvmStringMapCompat(self, toupper);
+}
 
-void AvmStringToLower(AvmString* self) { AvmStringMapCompat(self, tolower); }
+void AvmStringToLower(const AvmString* self)
+{
+    AvmStringMapCompat(self, tolower);
+}
 
-void AvmStringClear(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringClear(AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     self->_length = 0;
 }
 
-void AvmStringErase(AvmString* self) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringErase(AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     memset(self->_buffer, 0, self->_length);
     self->_length = 0;
@@ -614,30 +934,44 @@ void AvmStringErase(AvmString* self) {
 // Unsafe functions.
 //
 
-void AvmStringUnsafeSetLength(AvmString* self, size_t length) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringUnsafeSetLength(AvmString* self, uint length)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     self->_length = length;
 }
 
-void AvmStringUnsafeDestruct(AvmString* self, size_t* capacity, size_t* length,
-                             char** buffer) {
-    AVM_SELF_NULL_CHECK();
+void AvmStringUnsafeDestruct(const AvmString* self,
+                             uint* capacity,
+                             uint* length,
+                             char** buffer)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    if (capacity != NULL) {
+    if (capacity != NULL)
+    {
         *capacity = self->_capacity;
     }
 
-    if (length != NULL) {
+    if (length != NULL)
+    {
         *length = self->_length;
     }
 
-    if (buffer != NULL) {
+    if (buffer != NULL)
+    {
         *buffer = self->_buffer;
     }
 }
 
-AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
+AvmString AvmStringUnsafeFromRaw(uint capacity, uint length, char* buffer)
+{
     return (AvmString){
         ._buffer = buffer,
         ._capacity = capacity,
@@ -650,14 +984,22 @@ AvmString AvmStringUnsafeFromRaw(size_t capacity, size_t length, char* buffer) {
 // Contains and overloads.
 //
 
-bool AvmStringContainsChar(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringContainsChar(const AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return AvmStringIndexOf(self, character) != AvmInvalid;
 }
 
-bool AvmStringContainsStr(AvmString* self, str contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringContainsStr(const AvmString* self, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return AvmStringFind(self, contents) != AvmInvalid;
 }
@@ -666,31 +1008,47 @@ bool AvmStringContainsStr(AvmString* self, str contents) {
 // StartsWith and overloads.
 //
 
-bool AvmStringStartsWithChar(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringStartsWithChar(const AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_buffer[0] == character;
 }
 
-bool AvmStringStartsWithChars(AvmString* self, size_t length, str contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringStartsWithChars(const AvmString* self, uint length, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    if (self->_length < length) {
+    if (self->_length < length)
+    {
         return false;
     }
 
     return strncmp(self->_buffer, contents, length) == 0;
 }
 
-bool AvmStringStartsWithStr(AvmString* self, str contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringStartsWithStr(const AvmString* self, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return AvmStringStartsWithChars(self, strlen(contents), contents);
 }
 
-bool AvmStringStartsWithString(AvmString* self, AvmString* contents) {
-    AVM_SELF_NULL_CHECK();
-
+bool AvmStringStartsWithString(const AvmString* self, const AvmString* contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
     return AvmStringStartsWithChars(self, contents->_length, contents->_buffer);
 }
 
@@ -698,37 +1056,211 @@ bool AvmStringStartsWithString(AvmString* self, AvmString* contents) {
 // EndsWith and overloads.
 //
 
-bool AvmStringEndsWithChar(AvmString* self, char character) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringEndsWithChar(const AvmString* self, char character)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return self->_buffer[self->_length - 1] == character;
 }
 
-bool AvmStringEndsWithStr(AvmString* self, str contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringEndsWithStr(const AvmString* self, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return AvmStringEndsWithChars(self, strlen(contents), contents);
 }
 
-bool AvmStringEndsWithChars(AvmString* self, size_t length, str contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringEndsWithChars(const AvmString* self, uint length, str contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-    if (self->_length < length) {
+    if (self->_length < length)
+    {
         return false;
     }
 
-    size_t index = self->_length - length;
+    uint index = self->_length - length;
 
     return strncmp(self->_buffer + index, contents, length) == 0;
 }
 
-bool AvmStringEndsWithString(AvmString* self, AvmString* contents) {
-    AVM_SELF_NULL_CHECK();
+bool AvmStringEndsWithString(const AvmString* self, const AvmString* contents)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
     return AvmStringEndsWithChars(self, contents->_length, contents->_buffer);
 }
 
-AvmString AvmStringFormat(str format, ...) {
+void AvmStringPushInt(AvmString* self, _long value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString temp = AvmStringFromInt(value);
+    AvmStringPushString(self, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+void AvmStringPushUint(AvmString* self, ulong value, AvmNumericBase numericBase)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString temp = AvmStringFromUint(value, numericBase);
+    switch (numericBase)
+    {
+    case NumericBaseBinary:
+        AvmStringPushStr(self, AVM_FMT_BINARY_PREFIX);
+        break;
+    case NumericBaseOctal:
+        AvmStringPushStr(self, AVM_FMT_OCTAL_PREFIX);
+        break;
+    case NumericBaseHex:
+        AvmStringPushStr(self, AVM_FMT_HEX_PREFIX);
+        break;
+    default:
+        break;
+    }
+    AvmStringPushString(self, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    switch (repr)
+    {
+    case FloatReprSimple: {
+        AvmString temp = AvmStringFromFloat(value);
+        AvmStringPushString(self, &temp);
+        AvmObjectDestroy(&temp);
+        break;
+    }
+    case FloatReprScientific: {
+        char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
+        snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le", value);
+        AvmStringPushStr(self, buffer);
+        break;
+    }
+    case FloatReprAuto: {
+        char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
+        snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg", value);
+        AvmStringPushStr(self, buffer);
+    }
+    default:
+        // TODO
+        break;
+    }
+}
+
+void AvmStringPushValue(AvmString* self, object value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString temp = AvmObjectToString(value);
+    AvmStringPushString(self, &temp);
+    AvmObjectDestroy(&temp);
+}
+
+//
+// AvmStringFormat, AvmStringFormatV
+//
+
+static void Format(char c, AvmString* string, va_list args)
+{
+    switch (c)
+    {
+#ifdef AVM_HAVE_UCHAR_H
+    case AVM_FMT_UNICODE:
+        AvmStringPushStr(string, AVM_FMT_UNICODE_PREFIX);
+        AvmStringPushUint(string, va_arg(args, char32_t), NumericBaseDecimal);
+        break;
+#endif
+    case AVM_FMT_INT_SIZE:
+    case AVM_FMT_INT_UNSIGNED:
+        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseDecimal);
+        break;
+    case AVM_FMT_INT_DECIMAL:
+        AvmStringPushInt(string, va_arg(args, _long));
+        break;
+    case AVM_FMT_INT_OCTAL:
+        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseOctal);
+        break;
+    case AVM_FMT_POINTER:
+    case AVM_FMT_INT_HEX:
+        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseHex);
+        break;
+    case AVM_FMT_INT_BINARY:
+        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseBinary);
+        break;
+    case AVM_FMT_FLOAT:
+        AvmStringPushFloat(string, va_arg(args, double), FloatReprSimple);
+        break;
+    case AVM_FMT_FLOAT_EXP:
+        AvmStringPushFloat(string, va_arg(args, double), FloatReprScientific);
+        break;
+    case AVM_FMT_FLOAT_AUTO:
+        AvmStringPushFloat(string, va_arg(args, double), FloatReprAuto);
+        break;
+    case AVM_FMT_CHAR:
+        AvmStringPushChar(string, (char)va_arg(args, int));
+        break;
+    case AVM_FMT_STRING:
+        AvmStringPushStr(string, va_arg(args, char*));
+        break;
+    case AVM_FMT_BOOL:
+        AvmStringPushStr(
+            string, (bool)va_arg(args, uint) ? AVM_FMT_TRUE : AVM_FMT_FALSE);
+        break;
+    case AVM_FMT_TYPE:
+        AvmStringPushStr(
+            string, AvmTypeGetName(AvmObjectGetType(va_arg(args, object))));
+        break;
+    case AVM_FMT_SIZE:
+        AvmStringPushUint(
+            string,
+            AvmTypeGetSize(AvmObjectGetType(va_arg(args, object))),
+            NumericBaseDecimal);
+        break;
+    case AVM_FMT_VALUE:
+        AvmStringPushValue(string, va_arg(args, object));
+        break;
+    default:
+        AvmStringPushChar(string, c);
+        break;
+    }
+}
+
+AvmString AvmStringFormat(str format, ...)
+{
+    pre
+    {
+        assert(format != NULL);
+    }
+
     va_list args;
     va_start(args, format);
     AvmString s = AvmStringFormatV(format, args);
@@ -736,152 +1268,134 @@ AvmString AvmStringFormat(str format, ...) {
     return s;
 }
 
-AvmString AvmStringFormatV(str format, va_list args) {
-    if (format == NULL) {
-        AvmPanic(FormatNullMsg);
-    }
-
-    if (args == NULL) {
-        AvmPanic(ArgsNullMsg);
+AvmString AvmStringFormatV(str format, va_list args)
+{
+    pre
+    {
+        assert(format != NULL);
+        assert(args != NULL);
     }
 
     AvmString s = AvmStringNew(8);
 
-    for (size_t i = 0; format[i] != '\0'; i++) {
-        if (format[i] != '%') {
+    for (uint i = 0; format[i] != '\0'; i++)
+    {
+        if (format[i] != '%')
+        {
             AvmStringPushChar(&s, format[i]);
             continue;
         }
 
         i++;
 
-        switch (format[i]) {
-#ifdef AVM_HAVE_UCHAR_H
-            case AVM_FMT_UNICODE: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, char32_t), NumericBaseHex);
-                AvmStringPushStr(&s, AVM_FMT_UNICODE_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-#endif
-            case AVM_FMT_INT_DECIMAL: {
-                AvmString temp = AvmStringFromInt(va_arg(args, _long));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_INT_OCTAL: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseOctal);
-                AvmStringPushStr(&s, AVM_FMT_OCTAL_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseHex);
-                AvmStringPushStr(&s, AVM_FMT_HEX_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_INT_BINARY: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseBinary);
-                AvmStringPushStr(&s, AVM_FMT_BINARY_PREFIX);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_FLOAT: {
-                AvmString temp = AvmStringFromFloat(va_arg(args, double));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_FLOAT_EXP: {
-                char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-                snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le",
-                         va_arg(args, double));
-                AvmStringPushStr(&s, buffer);
-                break;
-            }
-            case AVM_FMT_FLOAT_AUTO: {
-                char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-                snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg",
-                         va_arg(args, double));
-                AvmStringPushStr(&s, buffer);
-                break;
-            }
-            case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED: {
-                AvmString temp =
-                    AvmStringFromUint(va_arg(args, ulong), NumericBaseDecimal);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_CHAR:
-                AvmStringPushChar(&s, (char)va_arg(args, int));
-                break;
-            case AVM_FMT_STRING:
-                AvmStringPushStr(&s, va_arg(args, char*));
-                break;
-            case AVM_FMT_BOOL:
-                AvmStringPushStr(&s, (bool)va_arg(args, uint) ? AVM_FMT_TRUE
-                                                              : AVM_FMT_FALSE);
-                break;
-            case AVM_FMT_TYPE: {
-                const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                AvmStringPushStr(&s, AvmTypeGetName(type));
-                break;
-            }
-            case AVM_FMT_SIZE: {
-                const AvmType* type = AvmObjectGetType(va_arg(args, object));
-                AvmString temp =
-                    AvmStringFromUint(AvmTypeGetSize(type), NumericBaseDecimal);
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            case AVM_FMT_VALUE: {
-                AvmString temp = AvmObjectToString(va_arg(args, object));
-                AvmStringPushString(&s, &temp);
-                AvmObjectDestroy(&temp);
-                break;
-            }
-            default:
-                AvmStringPushChar(&s, format[i]);
-                break;
-        }
+        Format(format[i], &s, args);
     }
 
     return s;
 }
 
-static void SkipWord(char* buffer, size_t* index) {
-    while (buffer[*index] != ' ' && buffer[*index] != '\0') {
+//
+// AvmStringParse, AvmStringParseV
+//
+
+static void SkipWord(char* buffer, uint* index)
+{
+    while (buffer[*index] != ' ' && buffer[*index] != '\0')
+    {
         (*index)++;
     }
 }
 
-#define UINT_CASE(base)       \
-    char* start = &buffer[j]; \
-    SkipWord(buffer, &j);     \
-    char* end = &buffer[j];   \
-    *((ulong*)va_arg(args, ulong*)) = strtoull(start, &end, base)
+static void ParseUint(uint* index,
+                      char* buffer,
+                      ulong* ptr,
+                      AvmNumericBase numericBase)
+{
+    char* start = &buffer[*index];
+    SkipWord(buffer, index);
+    char* end = &buffer[*index];
+    *ptr = strtoull(start, &end, numericBase);
+}
 
-void AvmStringParse(AvmString* self, str format, ...) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+static void ParseInt(uint* index, char* buffer, _long* ptr)
+{
+    char* start = &buffer[*index];
+    SkipWord(buffer, index);
+    char* end = &buffer[*index];
+    *ptr = strtoll(start, &end, 10);
+}
+
+static void ParseBool(uint* index, char* buffer, bool* ptr)
+{
+    *ptr = strncmp(&buffer[*index], AVM_FMT_TRUE, 4) == 0;
+    SkipWord(buffer, index);
+}
+
+static void ParseStr(uint* index, char* buffer, char* ptr, uint capacity)
+{
+    uint start = *index;
+    SkipWord(buffer, index);
+
+    uint length = *index - start;
+
+    memcpy(ptr, &buffer[start], length);
+
+    if (length < capacity)
+    {
+        ptr[length] = '\0';
     }
+    else
+    {
+        ptr[capacity - 1] = '\0';
+    }
+}
 
-    if (format == NULL) {
-        AvmPanic(FormatNullMsg);
+static void ParseChar(uint* index, char* buffer, char* ptr)
+{
+    *ptr = buffer[*index];
+    (*index)++;
+}
+
+static void Parse(char c, uint* index, char* buffer, va_list args)
+{
+    switch (c)
+    {
+    case AVM_FMT_CHAR:
+        ParseChar(index, buffer, va_arg(args, char*));
+        break;
+    case AVM_FMT_BOOL:
+        ParseBool(index, buffer, va_arg(args, bool*));
+        break;
+    case AVM_FMT_INT_DECIMAL:
+        ParseInt(index, buffer, va_arg(args, _long*));
+        break;
+    case AVM_FMT_INT_BINARY:
+        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseBinary);
+        break;
+    case AVM_FMT_INT_OCTAL:
+        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseOctal);
+        break;
+    case AVM_FMT_INT_SIZE:
+    case AVM_FMT_INT_UNSIGNED:
+        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseDecimal);
+        break;
+    case AVM_FMT_POINTER:
+    case AVM_FMT_INT_HEX:
+        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseHex);
+        break;
+    case AVM_FMT_STRING:
+        ParseStr(index, buffer, va_arg(args, char*), va_arg(args, uint));
+    default:
+        break;
+    }
+}
+
+void AvmStringParse(const AvmString* self, str format, ...)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(format != NULL);
     }
 
     va_list args;
@@ -890,82 +1404,25 @@ void AvmStringParse(AvmString* self, str format, ...) {
     va_end(args);
 }
 
-void AvmStringParseV(AvmString* self, str format, va_list args) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+void AvmStringParseV(const AvmString* self, str format, va_list args)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(format != NULL);
     }
 
-    if (format == NULL) {
-        AvmPanic(FormatNullMsg);
-    }
+    char* buffer = AvmStringGetBuffer(self);
 
-    char* buffer = AvmStringAsPtr(self);
-
-    for (size_t i = 0, j = 0; format[i] != '\0'; i++) {
-        if (format[i] != '%') {
+    for (uint i = 0, j = 0; format[i] != '\0'; i++)
+    {
+        if (format[i] != '%')
+        {
             continue;
         }
 
         i++;
-
-        switch (format[i]) {
-            case AVM_FMT_CHAR: {
-                char* c = va_arg(args, char*);
-                *c = buffer[j];
-                j++;
-                break;
-            }
-            case AVM_FMT_BOOL: {
-                *((bool*)va_arg(args, bool*)) =
-                    strncmp(&buffer[j], AVM_FMT_TRUE, 4) == 0;
-                SkipWord(buffer, &j);
-                break;
-            }
-            case AVM_FMT_INT_DECIMAL: {
-                char* start = &buffer[j];
-                SkipWord(buffer, &j);
-                char* end = &buffer[j];
-                *((_long*)va_arg(args, _long*)) = strtoll(start, &end, 10);
-                break;
-            }
-            case AVM_FMT_INT_BINARY: {
-                UINT_CASE(2);
-                break;
-            }
-            case AVM_FMT_INT_OCTAL: {
-                UINT_CASE(8);
-                break;
-            }
-            case AVM_FMT_INT_SIZE:
-            case AVM_FMT_INT_UNSIGNED: {
-                UINT_CASE(10);
-                break;
-            }
-            case AVM_FMT_POINTER:
-            case AVM_FMT_INT_HEX: {
-                UINT_CASE(16);
-                break;
-            }
-            case AVM_FMT_STRING: {
-                char* s = va_arg(args, char*);
-                size_t start = j;
-                SkipWord(buffer, &j);
-
-                size_t capacity = va_arg(args, size_t);
-                size_t length = j - start;
-
-                AvmMemCopy((byte*)&buffer[start], length, (byte*)s, capacity);
-
-                if (length < capacity) {
-                    s[length] = '\0';
-                } else {
-                    s[capacity - 1] = '\0';
-                }
-            }
-            default:
-                break;
-        }
-
+        Parse(format[i], &j, buffer, args);
         j++;
     }
 }

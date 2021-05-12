@@ -2,123 +2,157 @@
 
 #include "avium/private/resources.h"
 #include "avium/string.h"
+#include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 typedef AvmError* (*ReadWriteFunc)(AvmStream*, size_t, byte[]);
 
-#define RESULT_CAST(result, TFrom, TTo)                             \
-    AvmIsFailure(TFrom)(result) ? AvmFailure(TTo)((result)->_error) \
-                                : AvmSuccess(TTo)((TTo)(result)->_value)
-
-AvmError* AvmStreamFlush(AvmStream* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+AvmError* AvmStreamFlush(AvmStream* self)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryFlush];
     return ((AvmError * (*)(AvmStream*)) func)(self);
 }
 
-AvmError* AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+AvmError* AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
-    if (origin == SeekOriginEnd && offset > 0) {
-        AvmPanic(
-            "Parameter `offset` must be smaller or equal to 0, if "
-            "SeekOriginEnd is specified.");
+    if (origin == SeekOriginEnd && offset > 0)
+    {
+        AvmPanic("Parameter `offset` must be smaller or equal to 0, if "
+                 "SeekOriginEnd is specified.");
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntrySeek];
-    return ((AvmError * (*)(AvmStream*, _long, AvmSeekOrigin)) func)(
-        self, offset, origin);
+    return ((AvmError * (*)(AvmStream*, _long, AvmSeekOrigin))
+                func)(self, offset, origin);
 }
 
-size_t AvmStreamGetLength(AvmStream* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+size_t AvmStreamGetLength(AvmStream* self)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetLength];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
-size_t AvmStreamGetPosition(AvmStream* self) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+size_t AvmStreamGetPosition(AvmStream* self)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetPosition];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
-AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[]) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (buffer == NULL) {
-        AvmPanic(BufferNullMsg);
+AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[])
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(buffer != NULL);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryRead];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
-AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[]) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
-    }
-
-    if (buffer == NULL) {
-        AvmPanic(BufferNullMsg);
+AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[])
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(buffer != NULL);
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryWrite];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
-byte AvmStreamReadByte(AvmStream* self, AvmError** error) {
+byte AvmStreamReadByte(AvmStream* self, AvmError** error)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     byte temp;
     AvmError* result = AvmStreamRead(self, 1, &temp);
 
-    if (error != NULL) {
+    if (error != NULL)
+    {
         *error = result;
     }
 
     return temp;
 }
 
-AvmError* AvmStreamWriteByte(AvmStream* self, byte value) {
+AvmError* AvmStreamWriteByte(AvmStream* self, byte value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     AvmStreamWrite(self, 1, &value);
     return NULL;
 }
 
-char AvmStreamReadChar(AvmStream* self, AvmError** error) {
+char AvmStreamReadChar(AvmStream* self, AvmError** error)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     return (char)AvmStreamReadByte(self, error);
 }
 
-AvmError* AvmStreamWriteChar(AvmStream* self, char value) {
+AvmError* AvmStreamWriteChar(AvmStream* self, char value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     return AvmStreamWriteByte(self, (byte)value);
 }
 
-AvmString AvmStreamReadLine(AvmStream* self, AvmError** error) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+AvmString AvmStreamReadLine(AvmStream* self, AvmError** error)
+{
+    pre
+    {
+        assert(self != NULL);
     }
 
     AvmString s = AvmStringNew(READ_LINE_CAPACITY);
 
     char c = AvmStreamReadChar(self, error);
-    if (*error != NULL) {
+    if (*error != NULL)
+    {
         AvmObjectDestroy(&s);
         return AvmStringNew(0);
     }
 
-    while (c != '\n') {
+    while (c != '\n')
+    {
         AvmStringPushChar(&s, c);
         c = AvmStreamReadChar(self, error);
-        if (*error != NULL) {
+        if (*error != NULL)
+        {
             AvmObjectDestroy(&s);
             return AvmStringNew(0);
         }
@@ -127,19 +161,19 @@ AvmString AvmStreamReadLine(AvmStream* self, AvmError** error) {
     return s;
 }
 
-AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string) {
-    if (self == NULL) {
-        AvmPanic(SelfNullMsg);
+AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(string != NULL);
     }
 
-    if (string == NULL) {
-        AvmPanic(StringNullMsg);
-    }
+    AvmError* result = AvmStreamWrite(
+        self, AvmStringGetLength(string), (byte*)AvmStringGetBuffer(string));
 
-    AvmError* result = AvmStreamWrite(self, AvmStringGetLength(string),
-                                      (byte*)AvmStringAsPtr(string));
-
-    if (result != NULL) {
+    if (result != NULL)
+    {
         return result;
     }
 
