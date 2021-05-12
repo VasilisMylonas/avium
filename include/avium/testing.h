@@ -24,7 +24,7 @@
 #ifndef AVIUM_TESTING_H
 #define AVIUM_TESTING_H
 
-#include "avium/runtime.h"
+#include "avium/core.h"
 
 #include <assert.h>
 

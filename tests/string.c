@@ -1,5 +1,5 @@
-#include <avium/testing.h>
 #include <avium/string.h>
+#include <avium/testing.h>
 
 #include <string.h> // For strcmp
 
@@ -15,7 +15,7 @@ static void TestFrom()
     AvmObjectDestroy(&s);
 }
 
-int main()
+void main()
 {
     TestFrom();
 }

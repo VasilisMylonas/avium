@@ -1,0 +1,7 @@
+BasedOnStyle: Microsoft
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+ColumnLimit: '80'
+DerivePointerAlignment: 'false'
+PointerAlignment: Left
+AlignConsecutiveMacros: 'true'
