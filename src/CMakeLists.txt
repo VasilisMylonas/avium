@@ -17,4 +17,9 @@ if(USE_IO)
     target_link_libraries(avm avm.io)
 endif()
 
+if(USE_REFLECT)
+    add_subdirectory(avm.reflect)
+    target_link_libraries(avm avm.reflect)
+endif()
+
 install(TARGETS avm DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})

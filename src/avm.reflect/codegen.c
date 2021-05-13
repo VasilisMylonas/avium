@@ -15,7 +15,7 @@ AVM_TYPE(AvmTypeBuilder,
          object,
          {[FnEntryDtor] = (AvmFunction)AvmTypeBuilderDestroy});
 
-AvmTypeBuilder* AvmTypeBuilderBasedOn(AvmType* type)
+AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
 {
     pre
     {
@@ -52,7 +52,7 @@ void AvmTypeBuilderSetDtor(AvmTypeBuilder* self, AvmDtor dtor)
     base->_vptr[FnEntryDtor] = (AvmFunction)dtor;
 }
 
-void AvmTypeBuilderAddMember(AvmTypeBuilder* self, AvmType* type)
+void AvmTypeBuilderAddMember(AvmTypeBuilder* self, const AvmType* type)
 {
     pre
     {

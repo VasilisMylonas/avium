@@ -140,6 +140,17 @@ extern const AvmType AVM_TI_NAME(byte);
 
 static_assert_s(sizeof(object) == AVM_OBJECT_SIZE);
 extern const AvmType AVM_TI_NAME(object);
+
+// TODO
+static_assert_s(sizeof(float) == AVM_INT_SIZE);
+extern const AvmType AVM_TI_NAME(float);
+
+static_assert_s(sizeof(double) == AVM_LONG_SIZE);
+extern const AvmType AVM_TI_NAME(double);
+
+static_assert_s(sizeof(str) == AVM_OBJECT_SIZE);
+extern const AvmType AVM_TI_NAME(str);
+
 #endif
 
 #endif // AVIUM_TYPES_H

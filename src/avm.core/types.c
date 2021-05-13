@@ -101,3 +101,6 @@ AVM_TYPE(short, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(ushort, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(char, object, {[FnEntryDtor] = NULL});
 AVM_TYPE(byte, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(str, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(float, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(double, object, {[FnEntryDtor] = NULL});

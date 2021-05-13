@@ -25,6 +25,7 @@
 #define AVIUM_CODEGEN_H
 
 #include "avium/core.h"
+#include "avium/typeinfo.h"
 
 #ifdef AVM_USE_REFLECT
 
