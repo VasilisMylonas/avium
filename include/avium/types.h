@@ -64,22 +64,6 @@ typedef const char* str;              ///< Primitive read-only string.
     }
 
 /**
- * @brief Generates type info for a type.
- *
- * @param T The type for which to generate type info.
- * @param B The base type.
- * @param ... The type vtable enclosed in braces ({...})
- */
-#define AVM_TYPE(T, B, ...)                                                    \
-    const AvmType AVM_TI_NAME(T) = {                                           \
-        ._type = typeid(AvmType),                                              \
-        ._vptr = __VA_ARGS__,                                                  \
-        ._name = #T,                                                           \
-        ._baseType = typeid(B),                                                \
-        ._size = sizeof(T),                                                    \
-    }
-
-/**
  * @brief Creates an Avium interface type.
  *
  * @param T The name of the type.
@@ -111,6 +95,7 @@ typedef const char* str;              ///< Primitive read-only string.
 
 #ifndef DOXYGEN
 AVM_FORWARD_TYPE(AvmType);
+AVM_FORWARD_TYPE(AvmEnum);
 AVM_FORWARD_TYPE(AvmError);
 AVM_FORWARD_TYPE(AvmString);
 
@@ -150,7 +135,6 @@ extern const AvmType AVM_TI_NAME(double);
 
 static_assert_s(sizeof(str) == AVM_OBJECT_SIZE);
 extern const AvmType AVM_TI_NAME(str);
-
 #endif
 
 #endif // AVIUM_TYPES_H

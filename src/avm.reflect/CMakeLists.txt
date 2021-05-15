@@ -1,5 +1,3 @@
-add_library(avm.reflect codegen.c reflect.c)
+add_library(avm.reflect codegen.c)
 
-# include(TCC)
-
-target_link_libraries(avm.reflect avm.core ${LIBTCC} dl basename)
+target_link_libraries(avm.reflect avm.core dl basename)
