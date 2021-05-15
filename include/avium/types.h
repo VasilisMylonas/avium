@@ -75,6 +75,16 @@ typedef const char* str;              ///< Primitive read-only string.
         const AvmType* _type;                                                  \
     }
 
+/**
+ * @brief Creates an Avium enum type.
+ *
+ * @param T The name of the enum.
+ * @param ... The enum constants enclosed in braces ({...}).
+ */
+#define AVM_ENUM(T, ...)                                                       \
+    typedef enum T __VA_ARGS__ T;                                              \
+    extern const AvmEnum AVM_TI_NAME(T)
+
 #define AVM_FORWARD_TYPE(T) typedef struct T T
 #define AVM_CONCAT_(a, b)   a##b
 #define AVM_CONCAT(a, b)    AVM_CONCAT_(a, b)

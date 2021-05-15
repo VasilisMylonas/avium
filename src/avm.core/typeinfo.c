@@ -92,7 +92,7 @@ static AvmString AvmTypeToString(AvmType* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("class %s (%z bytes)", self->_name, self->_size);
+    return AvmStringFormat("class %s (%u bytes)", self->_name, self->_size);
 }
 
 AVM_TYPE(AvmType, object, {[FnEntryToString] = (AvmFunction)AvmTypeToString});
@@ -187,4 +187,14 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
     AvmPanic(EnumConstantNotPresentError);
 }
 
-AVM_TYPE(AvmEnum, object, {[FnEntryDtor] = NULL});
+static AvmString AvmEnumToString(AvmEnum* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("enum %s (%u bytes)", self->_name, self->_size);
+}
+
+AVM_TYPE(AvmEnum, object, {[FnEntryToString] = (AvmFunction)AvmEnumToString});

@@ -163,7 +163,7 @@ AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
  * @param T The enum for which to generate type info.
  * @param ... The enum members enclosed in braces ({...})
  */
-#define AVM_ENUM(T, ...)                                                       \
+#define AVM_ENUM_TYPE(T, ...)                                                  \
     const AvmEnum AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmEnum),                                              \
         ._name = #T,                                                           \
