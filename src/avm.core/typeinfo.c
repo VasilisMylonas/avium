@@ -1,6 +1,7 @@
 #include "avium/typeinfo.h"
 
 #include "avium/error.h"
+#include "avium/string.h"
 #include "avium/testing.h"
 
 str AvmTypeGetName(const AvmType* self)
@@ -67,4 +68,28 @@ bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType)
     return false;
 }
 
-AVM_TYPE(AvmType, object, {[FnEntryDtor] = NULL});
+static AvmString AvmTypeToString(AvmType* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("class %s (%z bytes)", self->_name, self->_size);
+}
+
+static AvmString AvmLocationToString(AvmLocation* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("%s:%u", self->File, self->Line);
+}
+
+AVM_TYPE(AvmType, object, {[FnEntryToString] = (AvmFunction)AvmTypeToString});
+
+AVM_TYPE(AvmLocation,
+         object,
+         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
