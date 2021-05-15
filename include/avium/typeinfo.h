@@ -171,9 +171,6 @@ AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
         ._members = __VA_ARGS__,                                               \
     }
 
-// TODO
-#define AVM_MAX_ENUM_MEMBERS 64
-
 /// A type containing information about an enum.
 AVM_CLASS(AvmEnum, object, {
     str _name;

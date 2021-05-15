@@ -124,7 +124,7 @@ bool AvmEnumIsDefined(const AvmEnum* self, _long value)
         assert(self != NULL);
     }
 
-    for (size_t i = 0; true; i++)
+    for (uint i = 0; true; i++)
     {
         if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
         {
@@ -147,7 +147,7 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
         assert(self != NULL);
     }
 
-    for (size_t i = 0; true; i++)
+    for (uint i = 0; true; i++)
     {
         if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
         {
@@ -171,7 +171,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
         assert(name != NULL);
     }
 
-    for (size_t i = 0; true; i++)
+    for (uint i = 0; true; i++)
     {
         if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
         {
