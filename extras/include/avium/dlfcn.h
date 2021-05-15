@@ -3,22 +3,21 @@
 
 #include "avium/types.h"
 
-extern void* AvmDlopen(str filename, int mode);
-extern int AvmDlclose(void* handle);
-extern void* AvmDlsym(void* handle, str name);
-extern char* AvmDlerror(void);
-
 #ifdef AVM_WIN32
-#    define RTLD_LAZY         0
-#    define RTLD_NOW          0
-#    define RTLD_BINDING_MASK 0
-#    define RTLD_NOLOAD       0
-#    define RTLD_DEEPBIND     0
-#    define RTLD_GLOBAL       0
-#    define RTLD_LOCAL        0
-#    define RTLD_NODELETE     0
+#define RTLD_LAZY         0
+#define RTLD_NOW          0
+#define RTLD_BINDING_MASK 0
+#define RTLD_NOLOAD       0
+#define RTLD_DEEPBIND     0
+#define RTLD_GLOBAL       0
+#define RTLD_LOCAL        0
+#define RTLD_NODELETE     0
+extern void* dlopen(const char* filename, int mode);
+extern int dlclose(void* handle);
+extern void* dlsym(void* handle, const char* name);
+extern char* dlerror(void);
 #else
-#    include <dlfcn.h>
+#include <dlfcn.h>
 #endif
 
-#endif  // AVIUM_DLFCN_H
+#endif // AVIUM_DLFCN_H
