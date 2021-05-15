@@ -152,6 +152,16 @@ AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
  */
 AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
+/**
+ * @brief Constructs an object from an AvmType instance.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmType instance.
+ * @return The constructed object.
+ */
+AVMAPI object AvmTypeConstruct(const AvmType* self);
+
 #define AVM_ENUM_MEMBER(V)                                                     \
     {                                                                          \
 #V, V                                                                  \

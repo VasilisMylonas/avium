@@ -85,6 +85,18 @@ bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType)
     return false;
 }
 
+object AvmTypeConstruct(const AvmType* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    object o = AvmAlloc(self->_size);
+    *(const AvmType**)o = self;
+    return o;
+}
+
 static AvmString AvmTypeToString(AvmType* self)
 {
     pre
