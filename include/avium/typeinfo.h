@@ -49,7 +49,7 @@ typedef enum
 #define baseof(x) ((typeof((x)->_base)*)x)
 
 /// Returns a pointer to the type info of type T.
-#define typeid(T) (&AVM_TI_NAME(T))
+#define typeid(T) ((object)&AVM_TI_NAME(T))
 
 // clang-format off
 
@@ -73,6 +73,22 @@ AVM_CLASS(AvmLocation, object, {
     {                                                                          \
         .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
         ._type = typeid(AvmLocation),                                          \
+    }
+
+/**
+ * @brief Generates type info for a type.
+ *
+ * @param T The type for which to generate type info.
+ * @param B The base type.
+ * @param ... The type vtable enclosed in braces ({...})
+ */
+#define AVM_TYPE(T, B, ...)                                                    \
+    const AvmType AVM_TI_NAME(T) = {                                           \
+        ._type = typeid(AvmType),                                              \
+        ._vptr = __VA_ARGS__,                                                  \
+        ._name = #T,                                                           \
+        ._baseType = typeid(B),                                                \
+        ._size = sizeof(T),                                                    \
     }
 
 /// A type containing information about an object.
@@ -136,8 +152,92 @@ AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
  */
 AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
-#ifndef DOXYGEN
-static_assert_s(sizeof(AvmType) == AVM_TYPE_SIZE);
-#endif
+#define AVM_ENUM_MEMBER(V)                                                     \
+    {                                                                          \
+#V, V                                                                  \
+    }
+
+/**
+ * @brief Generates type info for an enum.
+ *
+ * @param T The enum for which to generate type info.
+ * @param ... The enum members enclosed in braces ({...})
+ */
+#define AVM_ENUM(T, ...)                                                       \
+    const AvmEnum AVM_TI_NAME(T) = {                                           \
+        ._type = typeid(AvmEnum),                                              \
+        ._name = #T,                                                           \
+        ._size = sizeof(T),                                                    \
+        ._members = __VA_ARGS__,                                               \
+    }
+
+// TODO
+#define AVM_MAX_ENUM_MEMBERS 64
+
+/// A type containing information about an enum.
+AVM_CLASS(AvmEnum, object, {
+    str _name;
+    uint _size;
+    struct
+    {
+        str _name;
+        _long _value;
+    } _members[AVM_MAX_ENUM_MEMBERS];
+});
+
+/**
+ * @brief Returns the name of an enum.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmEnum instance.
+ * @return The enum name.
+ */
+AVMAPI str AvmEnumGetName(const AvmEnum* self);
+
+/**
+ * @brief Returns the size of an enum.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmEnum instance.
+ * @return The enum size.
+ */
+AVMAPI uint AvmEnumGetSize(const AvmEnum* self);
+
+/**
+ * @brief Determines whether a value is defined for an enum.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmEnum instance.
+ * @param value The value.
+ * @return true if a constant with the provided value is defined for the enum,
+ *         otherwise false.
+ */
+AVMAPI bool AvmEnumIsDefined(const AvmEnum* self, _long value);
+
+/**
+ * @brief Returns the name of the enum constant with the specified value.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmEnum instance.
+ * @param value The value of the constant.
+ * @return The name of the constant.
+ */
+AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
+
+/**
+ * @brief Returns the value of the enum constant with the specified name.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmEnum instance.
+ * @param name The name of the constant.
+ * @return The value of the constant.
+ */
+AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
 
 #endif // AVIUM_TYPEINFO_H
