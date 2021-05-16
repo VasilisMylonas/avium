@@ -26,7 +26,7 @@ AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
     self->_type = typeid(AvmTypeBuilder);
     base->_baseType = type;
     base->_size = AvmTypeGetSize(type);
-    base->_vptr[FnEntryDtor] = NULL;
+    base->_vPtr[FnEntryDtor] = NULL;
     return self;
 }
 
@@ -49,7 +49,7 @@ void AvmTypeBuilderSetDtor(AvmTypeBuilder* self, AvmDtor dtor)
         assert(dtor != NULL);
     }
 
-    base->_vptr[FnEntryDtor] = (AvmFunction)dtor;
+    base->_vPtr[FnEntryDtor] = (AvmFunction)dtor;
 }
 
 void AvmTypeBuilderAddMember(AvmTypeBuilder* self, const AvmType* type)

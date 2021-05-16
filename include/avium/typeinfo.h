@@ -86,9 +86,10 @@ AVM_CLASS(AvmLocation, object, {
     static AvmFunction AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
     const AvmType AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmType),                                              \
-        ._vptr = AVM_VT_NAME(T),                                               \
+        ._vPtr = AVM_VT_NAME(T),                                               \
         ._name = #T,                                                           \
         ._baseType = typeid(B),                                                \
+        ._vSize = sizeof(AVM_VT_NAME(T)),                                      \
         ._size = sizeof(T),                                                    \
     }
 
@@ -96,10 +97,11 @@ AVM_CLASS(AvmLocation, object, {
 
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
+    const AvmType* _baseType;
     str _name;
     uint _size;
-    const AvmType* _baseType;
-    AvmFunction* _vptr;
+    uint _vSize;
+    AvmFunction* _vPtr;
 });
 
 /**

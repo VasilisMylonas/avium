@@ -142,7 +142,7 @@ weakptr(AvmError) AvmErrorGetSource(AvmError* self)
         assert(self != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetSource];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetSource];
 
     // No need to panic if there is not GetSource function.
     if (func == NULL)
@@ -162,7 +162,7 @@ AvmString AvmErrorGetBacktrace(AvmError* self)
         assert(self != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetBacktrace];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetBacktrace];
 
     // A backtrace may not be supported.
     if (func == NULL)

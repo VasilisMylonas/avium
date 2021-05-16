@@ -14,7 +14,7 @@ AvmError* AvmStreamFlush(AvmStream* self)
         assert(self != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryFlush];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryFlush];
     return ((AvmError * (*)(AvmStream*)) func)(self);
 }
 
@@ -31,7 +31,7 @@ AvmError* AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin)
                  "SeekOriginEnd is specified.");
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntrySeek];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntrySeek];
     return ((AvmError * (*)(AvmStream*, _long, AvmSeekOrigin))
                 func)(self, offset, origin);
 }
@@ -43,7 +43,7 @@ size_t AvmStreamGetLength(AvmStream* self)
         assert(self != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetLength];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetLength];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
@@ -54,7 +54,7 @@ size_t AvmStreamGetPosition(AvmStream* self)
         assert(self != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryGetPosition];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetPosition];
     return ((size_t(*)(AvmStream*))func)(self);
 }
 
@@ -66,7 +66,7 @@ AvmError* AvmStreamRead(AvmStream* self, size_t length, byte buffer[])
         assert(buffer != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryRead];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryRead];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 
@@ -78,7 +78,7 @@ AvmError* AvmStreamWrite(AvmStream* self, size_t length, byte buffer[])
         assert(buffer != NULL);
     }
 
-    AvmFunction func = AvmObjectGetType(self)->_vptr[FnEntryWrite];
+    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryWrite];
     return ((ReadWriteFunc)func)(self, length, buffer);
 }
 

@@ -48,7 +48,7 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
-    return self->_vptr[index];
+    return self->_vPtr[index];
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
