@@ -1,6 +1,5 @@
-#include "avium/codegen.h"
+#include "avium/reflect.h"
 
 void main()
 {
-    AvmPrintf("Hello\n");
 }
