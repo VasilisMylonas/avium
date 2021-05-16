@@ -92,6 +92,6 @@
 #define AVM_FMT_UNICODE_PREFIX "U+"
 
 #define AVM_TI_NAME(T) _TI_##T
-#define AVM_EI_NAME(T) _TI_##T
+#define AVM_VT_NAME(T) _VT_##T
 
 #endif // AVIUM_CONFIG_H

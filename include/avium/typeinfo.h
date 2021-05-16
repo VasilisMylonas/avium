@@ -83,20 +83,23 @@ AVM_CLASS(AvmLocation, object, {
  * @param ... The type vtable enclosed in braces ({...})
  */
 #define AVM_TYPE(T, B, ...)                                                    \
+    static AvmFunction AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
     const AvmType AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmType),                                              \
-        ._vptr = __VA_ARGS__,                                                  \
+        ._vptr = AVM_VT_NAME(T),                                               \
         ._name = #T,                                                           \
         ._baseType = typeid(B),                                                \
         ._size = sizeof(T),                                                    \
     }
+
+// AVM_CLASS(AvmInterface, object, { str _name; });
 
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
     str _name;
     uint _size;
     const AvmType* _baseType;
-    AvmFunction _vptr[AVM_VFT_SIZE];
+    AvmFunction* _vptr;
 });
 
 /**
