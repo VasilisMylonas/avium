@@ -93,8 +93,6 @@ AVM_CLASS(AvmLocation, object, {
         ._size = sizeof(T),                                                    \
     }
 
-// AVM_CLASS(AvmInterface, object, { str _name; });
-
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
     const AvmType* _baseType;
