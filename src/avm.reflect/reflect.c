@@ -29,3 +29,40 @@ const AvmType* AvmReflectLoadType(str name)
 
     return t;
 }
+
+#ifdef AVM_LINUX
+#include <stdio.h>
+#include <string.h>
+
+#define LINE_MAX_LENGTH 128
+
+static const str Command = "cat /proc/self/maps | awk '!/\\[/ { print $6 }'";
+
+void AvmReflectPrintLoadedLibs()
+{
+    FILE* f = popen(Command, "r");
+
+    AvmString s = AvmStringNew(256);
+
+    char previous[LINE_MAX_LENGTH];
+    char buffer[LINE_MAX_LENGTH];
+
+    for (size_t i = 0; true; i++)
+    {
+        if (fgets(buffer, LINE_MAX_LENGTH, f) == NULL)
+        {
+            break;
+        }
+
+        if (strlen(buffer) != 1 && strcmp(buffer, previous) != 0 && i > 0)
+        {
+            AvmStringPushStr(&s, buffer);
+        }
+
+        memcpy(previous, buffer, LINE_MAX_LENGTH);
+    }
+
+    AvmPrintf("%v", &s);
+    AvmObjectDestroy(&s);
+}
+#endif
