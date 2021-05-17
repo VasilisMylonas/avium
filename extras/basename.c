@@ -10,14 +10,17 @@ const char AvmPathSeparator = '/';
 const char AvmPathAltSeparator = '/';
 #endif
 
-str AvmBasename(str path) {
-    str name = strrchr(path, AvmPathSeparator);
+str AvmBasename(str path)
+{
+    str name = strrchr(path, AvmPathSeparator) + 1;
 
-    if (name == NULL) {
-        name = strrchr(path, AvmPathAltSeparator);
+    if (name == NULL)
+    {
+        name = strrchr(path, AvmPathAltSeparator) + 1;
     }
 
-    if (name == NULL) {
+    if (name == NULL)
+    {
         name = path;
     }
 
