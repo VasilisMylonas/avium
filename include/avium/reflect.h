@@ -38,6 +38,7 @@
  */
 AVMAPI const AvmType* AvmReflectLoadType(str name);
 
+/// Represents a loaded shared object.
 AVM_CLASS(AvmModule, object, {
     void* _handle;
     str _name;
@@ -82,8 +83,40 @@ AVMAPI str AvmModuleGetName(const AvmModule* self);
  */
 AVMAPI bool AvmModuleHasSymbol(const AvmModule* self, str name);
 
+/**
+ * @brief Gets an AvmType instance from a module.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmModule instance.
+ * @param name The name of the type.
+ * @return The AvmType instance.
+ */
 AVMAPI const AvmType* AvmModuleGetType(const AvmModule* self, str name);
+
+/**
+ * @brief Gets a function from a module.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmModule instance.
+ * @param name The name of the function.
+ * @return The function.
+ */
 AVMAPI AvmFunction AvmModuleGetFunction(const AvmModule* self, str name);
+
+/**
+ * @brief Gets a variable from a module.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmModule instance.
+ * @param name The name of the variable.
+ * @return A pointer to the variable.
+ */
 AVMAPI void* AvmModuleGetVariable(const AvmModule* self, str name);
 
 #endif // AVIUM_REFLECT_H
