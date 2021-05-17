@@ -38,4 +38,17 @@
  */
 AVMAPI const AvmType* AvmReflectLoadType(str name);
 
+AVM_CLASS(AvmModule, object, {
+    void* _handle;
+    str _name;
+});
+
+AVMAPI AvmModule AvmModuleLoad(str path);
+AVMAPI const AvmModule* AvmModuleGetCurrent(void);
+AVMAPI str AvmModuleGetName(const AvmModule* self);
+AVMAPI bool AvmModuleHasSymbol(const AvmModule* self, str name);
+AVMAPI const AvmType* AvmModuleGetType(const AvmModule* self, str name);
+AVMAPI AvmFunction AvmModuleGetFunction(const AvmModule* self, str name);
+AVMAPI void* AvmModuleGetVariable(const AvmModule* self, str name);
+
 #endif // AVIUM_REFLECT_H
