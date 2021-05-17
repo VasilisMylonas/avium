@@ -29,9 +29,6 @@
 
 #ifdef AVM_USE_REFLECT
 
-/// Represents an object destructor.
-typedef void (*AvmDtor)(object);
-
 /// A helper object for creating AvmType instances.
 AVM_CLASS(AvmTypeBuilder, AvmType, { uint _reserved; });
 
@@ -57,16 +54,18 @@ AVMAPI AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type);
 AVMAPI void AvmTypeBuilderSetName(AvmTypeBuilder* self, str name);
 
 /**
- * @brief Sets the destructor for the AvmType to be created by an
- * AvmTypeBuilder.
+ * @brief Sets the VFT for the AvmType to be created by an AvmTypeBuilder.
  *
  * @pre Parameter @p self must be not null.
- * @pre Parameter @p dtor must be not null.
+ * @pre Parameter @p vft must be not null.
  *
  * @param self The AvmTypeBuilder instance.
- * @param dtor The destructor for the type.
+ * @param legnth The length of the VFT.
+ * @param vft The VFT for the type.
  */
-AVMAPI void AvmTypeBuilderSetDtor(AvmTypeBuilder* self, AvmDtor dtor);
+AVMAPI void AvmTypeBuilderSetVFT(AvmTypeBuilder* self,
+                                 uint length,
+                                 AvmFunction vft[]);
 
 /**
  * @brief Adds a member to an AvmTypeBuilder.

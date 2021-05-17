@@ -41,15 +41,16 @@ void AvmTypeBuilderSetName(AvmTypeBuilder* self, str name)
     base->_name = name;
 }
 
-void AvmTypeBuilderSetDtor(AvmTypeBuilder* self, AvmDtor dtor)
+void AvmTypeBuilderSetVFT(AvmTypeBuilder* self, uint length, AvmFunction vft[])
 {
     pre
     {
         assert(self != NULL);
-        assert(dtor != NULL);
+        assert(vft != NULL);
     }
 
-    base->_vPtr[FnEntryDtor] = (AvmFunction)dtor;
+    base->_vSize = length * sizeof(AvmFunction);
+    base->_vPtr = vft;
 }
 
 void AvmTypeBuilderAddMember(AvmTypeBuilder* self, const AvmType* type)
