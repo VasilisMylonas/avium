@@ -43,10 +43,45 @@ AVM_CLASS(AvmModule, object, {
     str _name;
 });
 
+/**
+ * @brief Loads the shared object at the specified path.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path to the share object file.
+ * @return The loaded module.
+ */
 AVMAPI AvmModule AvmModuleLoad(str path);
+
+/**
+ * @brief Gets a pointer to the currently running module.
+ *
+ * @return The currently running module.
+ */
 AVMAPI const AvmModule* AvmModuleGetCurrent(void);
+
+/**
+ * @brief Gets the name of a module.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmModule instance.
+ * @return The name of the module.
+ */
 AVMAPI str AvmModuleGetName(const AvmModule* self);
+
+/**
+ * @brief Determines whether a symbol exists on the specified module.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmModule instance.
+ * @param name The name of the symbol.
+ * @return true if the symbol exists, otherwise false.
+ */
 AVMAPI bool AvmModuleHasSymbol(const AvmModule* self, str name);
+
 AVMAPI const AvmType* AvmModuleGetType(const AvmModule* self, str name);
 AVMAPI AvmFunction AvmModuleGetFunction(const AvmModule* self, str name);
 AVMAPI void* AvmModuleGetVariable(const AvmModule* self, str name);
