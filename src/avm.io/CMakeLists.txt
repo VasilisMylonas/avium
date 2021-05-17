@@ -1,4 +1,4 @@
-add_library(avm.io ${LIB_TYPE}
+add_library(avm.io
     file-stream.c
     file.c
     io.c

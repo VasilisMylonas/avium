@@ -1,6 +1,6 @@
 include(GenerateExportHeader)
 
-add_library(avm ${LIB_TYPE} init.c)
+add_library(avm init.c)
 
 generate_export_header(avm
     BASE_NAME AVM
@@ -15,6 +15,11 @@ target_link_libraries(avm avm.core)
 if(USE_IO)
     add_subdirectory(avm.io)
     target_link_libraries(avm avm.io)
+endif()
+
+if(USE_REFLECT)
+    add_subdirectory(avm.reflect)
+    target_link_libraries(avm avm.reflect)
 endif()
 
 install(TARGETS avm DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})

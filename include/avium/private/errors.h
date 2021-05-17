@@ -13,5 +13,7 @@ static const str NotFoundError = "A required resource was unavailable.";
 static const str ReadError = "Could not perform the read operation.";
 static const str WriteError = "Could not perform the write operation.";
 static const str InternalError = "An internal error occurred.";
+static const str EnumConstantNotPresentError =
+    "The specified constant was not present in the enum.";
 
 #endif // AVIUM_ERRORS_H

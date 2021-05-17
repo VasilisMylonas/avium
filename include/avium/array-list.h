@@ -58,7 +58,7 @@
  * @param B The base type.
  * @param ... The type vtable enclosed in braces ({...})
  */
-#define AVM_INLINE_TYPE(T, B, ...) static AVM_TYPE(T, B, __VA_ARGS__)
+#define AVM_INLINE_TYPE(T, B, ...) AVM_TYPE(T, B, __VA_ARGS__)
 
 /// Convieniece macro for type-generic types.
 #define AVM_GENERIC(name, T) name##_##T

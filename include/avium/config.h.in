@@ -50,7 +50,6 @@
 #define AVM_INT_SIZE           4
 #define AVM_LONG_SIZE          8
 #define AVM_OBJECT_SIZE        8
-#define AVM_TYPE_SIZE          (AVM_VFT_SIZE * 8 + 32)
 #define AVM_STRING_SIZE        24
 #define AVM_VERSION_SIZE       16
 #define AVM_STREAM_SIZE        8
@@ -62,7 +61,7 @@
 #define AVM_STRING_GROWTH_FACTOR     2
 #define AVM_ARRAY_LIST_GROWTH_FACTOR 2
 
-#define AVM_VFT_SIZE 32
+#define AVM_MAX_ENUM_MEMBERS 64
 
 #ifdef AVM_HAVE_UCHAR_H
 #define AVM_FMT_UNICODE 'U'
@@ -92,5 +91,6 @@
 #define AVM_FMT_UNICODE_PREFIX "U+"
 
 #define AVM_TI_NAME(T) _TI_##T
+#define AVM_VT_NAME(T) _VT_##T
 
 #endif // AVIUM_CONFIG_H

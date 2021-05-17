@@ -14,12 +14,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_OUT_DIR ${CMAKE_BINARY_DIR}/include)
-set(BDWGC_TAG v8.0.4)
-set(BDWGC_URL https://github.com/ivmai/bdwgc)
-set(BDWGC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/bdwgc-src/include)
-set(TCC_URL https://github.com/LuaDist/tcc)
-set(TCC_TAG 0.9.25-Ubuntu-x86_64)
-set(TCC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/tcc-src/include)
+set(INCLUDE_EXTRAS_DIR ${CMAKE_SOURCE_DIR}/extras/include)
+
 set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
 set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
@@ -29,23 +25,11 @@ include(FetchContent)
 enable_testing()
 
 option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
-option(BUILD_DYNAMIC "Build dynamic library instead?" OFF)
+option(BUILD_SHARED_LIBS "Build dynamic library instead?" OFF)
 option(BUILD_TESTS "Generate tests?" ON)
 option(USE_IO "Use the IO library?" ON)
-option(USE_ARGPARSE "Use the argument parsing library?" OFF)
-option(USE_REFLECT "Use the reflection library?" OFF)
-
-if(USE_GC)
-    FetchContent_Declare(bdwgc GIT_REPOSITORY ${BDWGC_URL} GIT_TAG ${BDWGC_TAG})
-    FetchContent_MakeAvailable(bdwgc)
-    include_directories(${BDWGC_INCLUDE_DIR})
-endif()
-
-if(USE_REFLECT)
-    FetchContent_Declare(tcc GIT_REPOSITORY ${TCC_URL} GIT_TAG ${TCC_TAG})
-    FetchContent_MakeAvailable(tcc)
-    include_directories(${TCC_INCLUDE_DIR})
-endif()
+option(USE_ARGPARSE "Use the argument parsing library?" ON)
+option(USE_REFLECT "Use the reflection library?" ON)
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
@@ -78,14 +62,9 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-deprecated)
 endif()
 
-if(BUILD_DYNAMIC)
-    set(LIB_TYPE SHARED)
-else()
-    set(LIB_TYPE STATIC)
-endif()
+include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR} ${INCLUDE_EXTRAS_DIR})
 
-include_directories(${INCLUDE_DIR} ${INCLUDE_OUT_DIR})
-
+add_subdirectory(extras)
 add_subdirectory(include)
 add_subdirectory(src)
 
