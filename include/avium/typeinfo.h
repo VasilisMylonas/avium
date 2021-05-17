@@ -43,6 +43,12 @@ typedef enum
 
     FnEntryGetLength = 12,
     FnEntryGetCapacity,
+
+    FnEntryRemove = 16,
+    FnEntryInsert,
+    FnEntryItemAt,
+    FnEntryGetItemType,
+    FnEntryClear,
 } AvmFnEntry;
 
 /// Returns the base type of an object.

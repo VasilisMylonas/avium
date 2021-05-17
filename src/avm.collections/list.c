@@ -1,7 +1,7 @@
 #include "avium/collections/list.h"
 
-#include "avium/runtime.h"
 #include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 uint AvmListGetLength(AvmList* self)
 {

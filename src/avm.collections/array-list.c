@@ -1,7 +1,7 @@
 #include "avium/collections/array-list.h"
 
-#include "avium/runtime.h"
 #include "avium/testing.h"
+#include "avium/typeinfo.h"
 
 #include <string.h>
 
