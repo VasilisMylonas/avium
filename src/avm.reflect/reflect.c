@@ -20,12 +20,12 @@ const AvmType* AvmReflectLoadType(str name)
     char* buffer = AvmStringGetBuffer(&temp);
     buffer[index] = '\0';
 
-#if defined AVM_LINUX
-    AvmString library = AvmStringFormat("lib%s.so", buffer);
-#elif defined AVM_WIN32
+#if defined AVM_WIN32
     AvmString library = AvmStringFormat("%s.dll", buffer);
+#elif defined AVM_DARWIN
+    AvmString library = AvmStringFormat("lib%s.dylib", buffer);
 #else
-    AvmPanic("TODO: Not implemented!");
+    AvmString library = AvmStringFormat("lib%s.so", buffer);
 #endif
 
     AvmString symbol = AvmStringFormat("_TI_%s", &buffer[index + 1]);
