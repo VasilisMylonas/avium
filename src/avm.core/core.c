@@ -37,7 +37,7 @@ void AvmDealloc(box(void) memory)
     AVM_DEALLOC(memory);
 }
 
-static void ExceptionHandler(int exception)
+static void AvmHandleException(int exception)
 {
     switch (exception)
     {
@@ -55,11 +55,26 @@ static void ExceptionHandler(int exception)
     }
 }
 
+static struct
+{
+    str* _args;
+    AvmVersion _version;
+} AvmState;
+
+void AvmRuntimeInit(int argc, str argv[])
+{
+    (void)argc;
+
+    AvmState._args = argv;
+    AvmState._version =
+        AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
+}
+
 void AvmRuntimeEnableExceptions(void)
 {
-    signal(SIGSEGV, ExceptionHandler);
-    signal(SIGILL, ExceptionHandler);
-    signal(SIGFPE, ExceptionHandler);
+    signal(SIGSEGV, AvmHandleException);
+    signal(SIGILL, AvmHandleException);
+    signal(SIGFPE, AvmHandleException);
 }
 
 void AvmRuntimeDisableExceptions(void)
@@ -69,30 +84,57 @@ void AvmRuntimeDisableExceptions(void)
     signal(SIGFPE, SIG_DFL);
 }
 
-static AvmEnv env;
-
-weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[])
-{
-    (void)argc;
-
-    // TODO
-    env._isInitialized = true;
-    env._programName = argv[0];
-    env._args = &argv[1];
-    env._version =
-        AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
-    return &env;
-}
-
 str AvmRuntimeGetProgramName(void)
 {
-    return env._programName;
+    return AvmState._args[0];
 }
 
 AvmVersion AvmRuntimeGetVersion(void)
 {
-    return env._version;
+    return AvmState._version;
 }
+
+str* AvmRuntimeGetArgs(void)
+{
+    return AvmState._args + 1;
+}
+
+#ifdef AVM_USE_GC
+void AvmGCForceCollect(void)
+{
+    GC_gcollect();
+}
+
+void AvmGCDisable(void)
+{
+    GC_disable();
+}
+
+void AvmGCEnable(void)
+{
+    GC_enable();
+}
+
+ulong AvmGCGetTotalBytes(void)
+{
+    return GC_get_total_bytes();
+}
+
+ulong AvmGCGetFreeBytes(void)
+{
+    return GC_get_free_bytes();
+}
+
+ulong AvmGCGetUsedBytes(void)
+{
+    return GC_get_memory_use();
+}
+
+ulong AvmGCGetHeapSize(void)
+{
+    return GC_get_heap_size();
+}
+#endif
 
 void AvmCopy(object o, size_t size, byte* destination)
 {

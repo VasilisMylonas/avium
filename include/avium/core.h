@@ -73,13 +73,6 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Return an AvmVersion indicating the current runtime version.
- *
- * @return The current runtime version.
- */
-AVMAPI AvmVersion AvmRuntimeGetVersion(void);
-
-/**
  * @brief Destroys an object.
  *
  * This function tries to use the FnEntryDtor virtual function entry. If no
@@ -119,16 +112,6 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-AVM_CLASS(AvmEnv, object, {
-    bool _isInitialized;
-    uint _flags;
-    str _name;
-    str _libPath;
-    AvmVersion _version;
-    str _programName;
-    str* _args;
-});
-
 /**
  * @brief Initializes the Avium runtime.
  *
@@ -137,18 +120,45 @@ AVM_CLASS(AvmEnv, object, {
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
- * @return The runtime environment.
  */
-AVMAPI weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[]);
+AVMAPI void AvmRuntimeInit(int argc, str argv[]);
 
-/// Returns the name of the currently running program.
+/**
+ * @brief Returns the name of the currently running program.
+ *
+ * @return The name of the currently running program.
+ */
 AVMAPI str AvmRuntimeGetProgramName(void);
+
+/**
+ * @brief Returns the current runtime version.
+ *
+ * @return The current runtime version.
+ */
+AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 /// Enables signal catching.
 AVMAPI void AvmRuntimeEnableExceptions(void);
 
 /// Disables signal catching.
 AVMAPI void AvmRuntimeDisableExceptions(void);
+
+/**
+ * @brief Returns a pointer to the program arguments.
+ *
+ * @return The program arguments.
+ */
+AVMAPI str* AvmRuntimeGetArgs(void);
+
+#ifdef AVM_USE_GC
+AVMAPI void AvmGCForceCollect(void);
+AVMAPI void AvmGCDisable(void);
+AVMAPI void AvmGCEnable(void);
+AVMAPI ulong AvmGCGetTotalBytes(void);
+AVMAPI ulong AvmGCGetFreeBytes(void);
+AVMAPI ulong AvmGCGetUsedBytes(void);
+AVMAPI ulong AvmGCGetHeapSize(void);
+#endif
 
 /**
  * @brief Allocates heap memory.
