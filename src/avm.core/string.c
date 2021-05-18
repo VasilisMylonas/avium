@@ -23,8 +23,14 @@ static AvmString AvmStringToString(AvmString* self)
         assert(self != NULL);
     }
 
-    // TODO: self->_buffer may be null.
-    return AvmStringFrom(self->_buffer);
+    if (self->_buffer == NULL)
+    {
+        return AvmStringFrom("");
+    }
+    else
+    {
+        return AvmStringFrom(self->_buffer);
+    }
 }
 
 static object AvmStringClone(AvmString* self)
