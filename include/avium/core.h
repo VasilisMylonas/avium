@@ -166,8 +166,7 @@ AVMAPI ulong AvmGCGetHeapSize(void);
  * @param size The size of the memory block in bytes.
  * @return The allocated memory.
  */
-AVMAPI
-box(void) AvmAlloc(size_t size);
+AVMAPI box(void) AvmAlloc(size_t size);
 
 /**
  * @brief Reallocates a heap memory block.
