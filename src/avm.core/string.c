@@ -16,6 +16,22 @@
 #include <uchar.h>
 #endif
 
+static bool AvmStringEquals(AvmString* self, AvmString* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    if (self->_length != other->_length)
+    {
+        return false;
+    }
+
+    return memcmp(self->_buffer, other->_buffer, self->_length) == 0;
+}
+
 static AvmString AvmStringToString(AvmString* self)
 {
     pre
@@ -64,6 +80,7 @@ AVM_TYPE(AvmString,
              [FnEntryToString] = (AvmFunction)AvmStringToString,
              [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
              [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
+             [FnEntryEquals] = (AvmFunction)AvmStringEquals,
          });
 
 void AvmStringEnsureCapacity(AvmString* self, uint capacity)
