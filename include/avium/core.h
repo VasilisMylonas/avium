@@ -204,6 +204,22 @@ AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
+/// alloca style function macro using a VLA.
+#define AVM_ALLOCA(size) ((void*)((byte[size]){0}))
+
+/**
+ * @brief Creates an array from a va_list.
+ *
+ * @pre Parameter @p N must be not zero.
+ * @pre Parameter @p args must be not null.
+ *
+ * @param T The type of the array elements.
+ * @param N The length of the array.
+ * @param args The va_list.
+ */
+#define va_array(T, N, args)                                                   \
+    (T*)__AvmVaListToArray(AVM_ALLOCA(sizeof(T) * N), args, sizeof(T), N);
+
 /**
  * @brief Creates a new AvmVersion instance.
  *
@@ -214,6 +230,8 @@ AVMAPI void AvmErrorf(str format, ...);
  * @return The created instance.
  */
 AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
+
+AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
 
 #ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
