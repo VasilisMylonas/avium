@@ -204,9 +204,6 @@ AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
-/// alloca style function macro using a VLA.
-#define AVM_ALLOCA(size) ((void*)((byte[size]){0}))
-
 /**
  * @brief Creates an array from a va_list.
  *
@@ -220,7 +217,7 @@ AVMAPI void AvmErrorf(str format, ...);
  * @return The created array.
  */
 #define va_array(T, N, args)                                                   \
-    (T*)__AvmVaListToArray(AVM_ALLOCA(sizeof(T) * N), args, sizeof(T), N);
+    (T*)__AvmVaListToArray(AvmAlloc(sizeof(T) * N), args, sizeof(T), N);
 
 /**
  * @brief Creates a new AvmVersion instance.
