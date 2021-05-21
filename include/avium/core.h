@@ -216,6 +216,8 @@ AVMAPI void AvmErrorf(str format, ...);
  * @param T The type of the array elements.
  * @param N The length of the array.
  * @param args The va_list.
+ *
+ * @return The created array.
  */
 #define va_array(T, N, args)                                                   \
     (T*)__AvmVaListToArray(AVM_ALLOCA(sizeof(T) * N), args, sizeof(T), N);
