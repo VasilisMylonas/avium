@@ -780,7 +780,7 @@ AVMAPI void AvmStringParse(const AvmString* self, str format, ...);
  */
 AVMAPI void AvmStringParseV(const AvmString* self, str format, va_list args);
 
-AVMAPI str AvmStringAsStr(const AvmString* self);
+AVMAPI str AvmStringToStr(const AvmString* self);
 
 static_assert_s(sizeof(AvmString) == AVM_STRING_SIZE);
 

@@ -1450,13 +1450,16 @@ void AvmStringParseV(const AvmString* self, str format, va_list args)
     }
 }
 
-str AvmStringAsStr(const AvmString* self)
+str AvmStringToStr(const AvmString* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    AvmStringPushChar(self, '\0');
-    return AvmStringGetBuffer(&self);
+    char* s = AvmAlloc(self->_length + 1);
+
+    memcpy(s, self->_buffer, self->_length);
+    s[self->_length] = '\0';
+    return s;
 }
