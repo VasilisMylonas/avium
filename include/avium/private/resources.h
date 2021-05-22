@@ -17,4 +17,10 @@ static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";
 static const str NoBacktraceMsg = "No backtrace is available.";
 
+#ifdef AVM_WIN32
+static const str HomeEnvVar = "%HOMEDRIVE%%HOMEPATH%"
+#else
+static const str HomeEnvVar = "HOME";
+#endif
+
 #endif // AVIUM_RESOURCES_H

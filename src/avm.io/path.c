@@ -2,12 +2,19 @@
 
 #include "avium/basename.h"
 #include "avium/error.h"
+#include "avium/private/errors.h"
+#include "avium/private/resources.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include <string.h>
 
 #include <limits.h>
+#include <stdio.h>
 #include <stdlib.h>
+
+#ifdef AVM_WIN32
+#include <shlwapi.h>
+#endif
 
 char AvmPathGetSeparator(void)
 {
@@ -37,6 +44,20 @@ bool AvmPathIsRooted(str path)
     }
 
     return path[0] == AvmPathGetSeparator();
+}
+
+bool AvmPathIsValid(str path)
+{
+    pre
+    {
+        assert(path != NULL);
+    }
+
+#ifdef AVM_WIN32
+    return PathFileExistsA(path);
+#else
+    return strstr(path, "//") == NULL;
+#endif
 }
 
 AvmString AvmPathGetFileName(str path)
@@ -110,6 +131,22 @@ AvmString AvmPathGetFullPath(str path)
 
     // TODO: error
     AvmPanic("TODO");
+}
+
+str AvmPathGetTempDir(void)
+{
+    return P_tmpdir;
+}
+
+str AvmPathGetHomeDir(void)
+{
+    str home = getenv(HomeEnvVar);
+    if (home != NULL)
+    {
+        return home;
+    }
+
+    AvmPanic(HomeDirNotDeterminedError);
 }
 
 AvmString AvmPathCombine(size_t length, str paths[])

@@ -7,14 +7,14 @@ AVMAPI char AvmPathGetSeparator(void);
 
 AVMAPI bool AvmPathHasExtension(str path);
 AVMAPI bool AvmPathIsRooted(str path);
+AVMAPI bool AvmPathIsValid(str path);
 
 AVMAPI AvmString AvmPathGetFileName(str path);
 AVMAPI AvmString AvmPathGetExtension(str path);
 AVMAPI AvmString AvmPathGetDirName(str path);
 
-// AVMAPI str AvmPathGetHomeDir(void);
-// AVMAPI str AvmPathGetTempDir(void);
-// AVMAPI str AvmPathGetRandomFileName(void);
+AVMAPI str AvmPathGetHomeDir(void);
+AVMAPI str AvmPathGetTempDir(void);
 
 AVMAPI AvmString AvmPathGetFullPath(str path);
 
