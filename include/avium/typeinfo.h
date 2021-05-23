@@ -27,7 +27,6 @@
 #include "avium/types.h"
 
 /// Represents an entry on the virtual function table.
-;
 typedef enum
 {
     FnEntryDtor = 0,          ///< The destructor entry.
