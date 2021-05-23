@@ -61,9 +61,9 @@ void TestPathCombine()
     AvmString expected1 = AvmStringFrom("/some/other/path");
     AvmString expected2 = AvmStringFrom("/some/path");
     AvmString expected3 = AvmStringFrom("/some/other/big/path");
-    AvmString a = AvmPathCombine(3, (str[]){"/some", "/other", "/path"});
-    AvmString b = AvmPathCombine(2, (str[]){"/some", "./path"});
-    AvmString c = AvmPathCombine(4, (str[]){"/some", "/other", "big", "path"});
+    AvmString a = AvmPathCombineV("/some", "/other", "/path");
+    AvmString b = AvmPathCombineV("/some", "./path");
+    AvmString c = AvmPathCombineV("/some", "/other", "big", "path");
 
     assert(AvmObjectEquals(&a, &expected1));
     assert(AvmObjectEquals(&b, &expected2));

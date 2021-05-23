@@ -18,10 +18,10 @@ AVMAPI str AvmPathGetTempDir(void);
 
 AVMAPI AvmString AvmPathGetFullPath(str path);
 
-AVMAPI AvmString AvmPathCombine(size_t length, str paths[]);
+AVMAPI AvmString AvmPathCombine(uint length, str paths[]);
+#define AvmPathCombineV(...) AvmPathCombine(AVM_VA_ARGS(str, __VA_ARGS__))
+
 AVMAPI AvmString AvmPathCombine2(str path1, str path2);
 AVMAPI AvmString AvmPathCombine3(str path1, str path2, str path3);
-AVMAPI AvmString AvmPathJoin(size_t count, ...);
-AVMAPI AvmString AvmPathVJoin(size_t count, va_list args);
 
 #endif // AVIUM_PATH_H

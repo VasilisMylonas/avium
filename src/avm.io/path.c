@@ -149,7 +149,7 @@ str AvmPathGetHomeDir(void)
     AvmPanic(HomeDirNotDeterminedError);
 }
 
-AvmString AvmPathCombine(size_t length, str paths[])
+AvmString AvmPathCombine(uint length, str paths[])
 {
     pre
     {
@@ -233,37 +233,4 @@ AvmString AvmPathCombine2(str path1, str path2)
         AvmStringPush(&temp, path2);
 
     return temp;
-}
-
-AvmString AvmPathJoin(size_t count, ...)
-{
-    pre
-    {
-        assert(count != 0);
-    }
-
-    va_list args;
-    va_start(args, count);
-    AvmString result = AvmPathVJoin(count, args);
-    va_end(args);
-    return result;
-}
-
-AvmString AvmPathVJoin(size_t count, va_list args)
-{
-    pre
-    {
-        assert(count != 0);
-        assert(args != NULL);
-    }
-
-    if (count == 1)
-    {
-        return AvmStringFrom(va_arg(args, str));
-    }
-
-    str* a = va_array(str, count, args);
-    AvmString s = AvmPathCombine(count, a);
-    AvmDealloc(a);
-    return s;
 }

@@ -90,6 +90,12 @@ typedef const char* str;              ///< Primitive read-only string.
 #define AVM_CONCAT(a, b)    AVM_CONCAT_(a, b)
 #define AVM_UNIQUE(name)    AVM_CONCAT(name, __LINE__)
 
+#define AVM_VA_ARGS(T, ...)                                                    \
+    (sizeof((T[]){__VA_ARGS__}) / sizeof(T)), (T[])                            \
+    {                                                                          \
+        __VA_ARGS__                                                            \
+    }
+
 #ifdef AVM_MSVC
 #define typeof(T) decltype(T)
 #else
