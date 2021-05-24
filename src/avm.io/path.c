@@ -1,16 +1,16 @@
 #include "avium/path.h"
 
-#include "avium/basename.h"
 #include "avium/error.h"
+#include "avium/private/basename.h"
 #include "avium/private/errors.h"
 #include "avium/private/resources.h"
 #include "avium/string.h"
 #include "avium/testing.h"
-#include <string.h>
 
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef AVM_WIN32
 #include <shlwapi.h>
@@ -23,6 +23,11 @@ char AvmPathGetSeparator(void)
 #else
     return '/';
 #endif
+}
+
+char AvmPathGetAltSeparator(void)
+{
+    return '/';
 }
 
 bool AvmPathHasExtension(str path)
@@ -203,9 +208,11 @@ AvmString AvmPathCombine2(str path1, str path2)
     }
 
     const char sep = AvmPathGetSeparator();
+    const char alt = AvmPathGetAltSeparator();
     const size_t length1 = strlen(path1);
     const size_t length2 = strlen(path2);
 
+    // If a string is empty then just return the other.
     if (length1 == 0)
     {
         return AvmStringFrom(path2);
@@ -216,21 +223,37 @@ AvmString AvmPathCombine2(str path1, str path2)
         return AvmStringFrom(path1);
     }
 
+    // Preallocate with the total length.
     AvmString temp = AvmStringNew(length1 + length2);
 
+    // Start with the first path.
     AvmStringPush(&temp, path1);
 
+    // Add the separator if needed.
     if (path1[length1 - 1] != sep)
     {
         AvmStringPush(&temp, sep);
     }
 
-    if (path2[0] == '.' && path2[1] == sep)
-        AvmStringPush(&temp, path2 + 2);
-    else if (path2[0] == sep)
-        AvmStringPush(&temp, path2 + 1);
-    else
-        AvmStringPush(&temp, path2);
+    uint offset = 0;
+
+    if (path2[0] == '.' && (path2[1] == sep || path2[1] == alt))
+    {
+        // If the second path starts with ./
+        offset = 2;
+    }
+    else if (path2[0] == sep || path2[0] == alt)
+    {
+        // If the second path starts with / ignore it.
+        offset = 1;
+    }
+
+    AvmStringPush(&temp, path2 + offset);
+
+#ifdef AVM_WIN32
+    // Replace / with \ on windows.
+    AvmStringReplaceAll(&temp, alt, sep);
+#endif
 
     return temp;
 }

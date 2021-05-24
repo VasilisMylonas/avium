@@ -1,5 +1,5 @@
-#ifndef AVIUM_RESOURCES_H
-#define AVIUM_RESOURCES_H
+#ifndef AVIUM_PRIVATE_RESOURCES_H
+#define AVIUM_PRIVATE_RESOURCES_H
 
 #include "avium/types.h"
 
@@ -23,4 +23,4 @@ static const str HomeEnvVar = "%HOMEDRIVE%%HOMEPATH%"
 static const str HomeEnvVar = "HOME";
 #endif
 
-#endif // AVIUM_RESOURCES_H
+#endif // AVIUM_PRIVATE_RESOURCES_H

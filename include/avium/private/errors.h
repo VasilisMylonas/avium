@@ -1,5 +1,5 @@
-#ifndef AVIUM_ERRORS_H
-#define AVIUM_ERRORS_H
+#ifndef AVIUM_PRIVATE_ERRORS_H
+#define AVIUM_PRIVATE_ERRORS_H
 
 #include "avium/types.h"
 
@@ -18,4 +18,4 @@ static const str EnumConstantNotPresentError =
 static const str HomeDirNotDeterminedError =
     "Could not determine the home directory.";
 
-#endif // AVIUM_ERRORS_H
+#endif // AVIUM_PRIVATE_ERRORS_H
