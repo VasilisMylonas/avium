@@ -19,7 +19,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef AVIUM_PATH_H
@@ -27,16 +26,84 @@
 
 #include "avium/types.h"
 
+/**
+ * @brief Gets the character used as a path separator.
+ *
+ * @return The path separator.
+ */
 AVMAPI char AvmPathGetSeparator(void);
+
+/**
+ * @brief Gets the alternative character used as a path separator.
+ *
+ * @return The alternative path separator.
+ */
 AVMAPI char AvmPathGetAltSeparator(void);
 
+/**
+ * @brief Determines whether a path has an extension.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return true if the path has an extension, otherwise false.
+ */
 AVMAPI bool AvmPathHasExtension(str path);
-AVMAPI bool AvmPathIsRooted(str path);
+
+/**
+ * @brief Determines whether a path is absolute.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return true if the path is absolute, otherwise false.
+ */
+AVMAPI bool AvmPathIsAbsolute(str path);
+
+/**
+ * @brief Determines whether a path is relative.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return true if the path is relative, otherwise false.
+ */
+AVMAPI bool AvmPathIsRelative(str path);
+
+/**
+ * @brief Determines whether a path is valid.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return true if the path is valid, otherwise false.
+ */
 AVMAPI bool AvmPathIsValid(str path);
 
-AVMAPI AvmString AvmPathGetFileName(str path);
+/**
+ * @brief Returns the name of the file or directory represented by a given path.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return The file or directory name.
+ */
+AVMAPI AvmString AvmPathGetName(str path);
+
+/**
+ * @brief Returns the file extension component of a path, or an empty string if
+ *        it does not represent a file.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return The file extension.
+ */
 AVMAPI AvmString AvmPathGetExtension(str path);
-AVMAPI AvmString AvmPathGetDirName(str path);
+
+AVMAPI AvmString AvmPathGetParent(str path);
+
+AVMAPI bool AvmPathIsDir(str path);
 
 AVMAPI str AvmPathGetHomeDir(void);
 AVMAPI str AvmPathGetTempDir(void);

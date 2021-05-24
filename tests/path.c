@@ -73,25 +73,20 @@ void TestPathCombine()
 void TestPathGetExtension()
 {
     AvmString expected = AvmStringFrom("txt");
-    AvmString ext = AvmPathGetExtension("/some.f/file.txt");
+    AvmString ext = AvmPathGetExtension("/some/file.txt");
 
     assert(AvmObjectEquals(&ext, &expected));
 }
 
-void TestPathGetDirName()
+void TestPathGetName()
 {
-    AvmString expected = AvmStringFrom("/some/dir/");
-    AvmString name = AvmPathGetDirName("/some/dir/name");
+    AvmString expected1 = AvmStringFrom("file.txt");
+    AvmString expected2 = AvmStringFrom("name");
+    AvmString name1 = AvmPathGetName("/some/dir/file.txt");
+    AvmString name2 = AvmPathGetName("/some/dir/name");
 
-    assert(AvmObjectEquals(&name, &expected));
-}
-
-void TestPathGetFileName()
-{
-    AvmString expected = AvmStringFrom("file.txt");
-    AvmString name = AvmPathGetFileName("/some/dir/file.txt");
-
-    assert(AvmObjectEquals(&name, &expected));
+    assert(AvmObjectEquals(&name1, &expected1));
+    assert(AvmObjectEquals(&name2, &expected2));
 }
 
 void main()
@@ -100,6 +95,5 @@ void main()
     TestPathCombine3();
     TestPathCombine();
     TestPathGetExtension();
-    TestPathGetDirName();
-    TestPathGetFileName();
+    TestPathGetName();
 }

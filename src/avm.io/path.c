@@ -41,14 +41,26 @@ bool AvmPathHasExtension(str path)
     return strrchr(name, '.') != NULL;
 }
 
-bool AvmPathIsRooted(str path)
+bool AvmPathIsAbsolute(str path)
 {
     pre
     {
         assert(path != NULL);
     }
 
-    return path[0] == AvmPathGetSeparator();
+    return path[0] == AvmPathGetSeparator() ||
+           path[0] == AvmPathGetAltSeparator();
+}
+
+bool AvmPathIsRelative(str path)
+{
+    pre
+    {
+        assert(path != NULL);
+    }
+
+    return path[0] == '.' && (path[1] == AvmPathGetSeparator() ||
+                              path[1] == AvmPathGetAltSeparator());
 }
 
 bool AvmPathIsValid(str path)
@@ -65,14 +77,35 @@ bool AvmPathIsValid(str path)
 #endif
 }
 
-AvmString AvmPathGetFileName(str path)
+bool AvmPathIsDir(str path)
 {
     pre
     {
         assert(path != NULL);
     }
 
-    return AvmStringFrom(AvmBasename(path));
+    const uint length = strlen(path);
+    const char sep = AvmPathGetSeparator();
+    const char alt = AvmPathGetAltSeparator();
+
+    return path[length - 1] == sep || path[length - 1] == alt;
+}
+
+AvmString AvmPathGetName(str path)
+{
+    pre
+    {
+        assert(path != NULL);
+    }
+
+    AvmString s = AvmStringFrom(AvmBasename(path));
+
+    if (AvmPathIsDir(path))
+    {
+        s._length--;
+    }
+
+    return s;
 }
 
 AvmString AvmPathGetExtension(str path)
@@ -82,7 +115,7 @@ AvmString AvmPathGetExtension(str path)
         assert(path != NULL);
     }
 
-    AvmString name = AvmPathGetFileName(path);
+    AvmString name = AvmPathGetName(path);
     uint index = AvmStringLastIndexOf(&name, '.');
 
     if (index == AvmInvalid)
@@ -97,23 +130,37 @@ AvmString AvmPathGetExtension(str path)
     return AvmStringFromChars(length, buffer);
 }
 
-AvmString AvmPathGetDirName(str path)
+AvmString AvmPathGetParent(str path)
 {
     pre
     {
         assert(path != NULL);
     }
 
-    char* ptr = strrchr(path, AvmPathGetSeparator());
+    AvmString s = AvmStringFrom(path);
 
-    if (ptr == NULL)
+    if (AvmPathIsDir(path))
     {
-        return AvmStringNew(0);
+        s._length--;
     }
 
-    const uint length = (uint)(ptr - path) + 1;
+    const char sep = AvmPathGetSeparator();
 
-    return AvmStringFromChars(length, path);
+#ifdef AVM_WIN32
+    const char alt = AvmPathGetAltSeparator();
+    AvmStringReplaceAll(&s, alt, sep);
+#endif
+
+    uint index = AvmStringLastIndexOf(&s, sep);
+
+    if (index == AvmInvalid)
+    {
+        return s;
+    }
+
+    s._length = index;
+
+    return s;
 }
 
 AvmString AvmPathGetFullPath(str path)
