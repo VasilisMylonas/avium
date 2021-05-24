@@ -45,7 +45,7 @@ static AvmString AvmStringToString(AvmString* self)
     }
     else
     {
-        return AvmStringFrom(self->_buffer);
+        return AvmStringFromChars(self->_length, self->_buffer);
     }
 }
 
