@@ -39,7 +39,7 @@ AVM_INTERFACE(AvmList);
  * @return The length of the AvmList.
  */
 AVMINLINE uint AvmListGetLength(const AvmList* self)
-    __virtual(uint, FnEntryGetLength);
+    __virtual(uint, FnEntryGetLength, self);
 
 /**
  * @brief Returns the capacity of an AvmList.
@@ -50,7 +50,7 @@ AVMINLINE uint AvmListGetLength(const AvmList* self)
  * @return The capacity of the AvmList.
  */
 AVMINLINE uint AvmListGetCapacity(const AvmList* self)
-    __virtual(uint, FnEntryGetCapacity);
+    __virtual(uint, FnEntryGetCapacity, self);
 
 /**
  * @brief Returns the type of the contained items.
@@ -61,7 +61,7 @@ AVMINLINE uint AvmListGetCapacity(const AvmList* self)
  * @return The type of the contained items.
  */
 AVMINLINE const AvmType* AvmListGetItemType(const AvmList* self)
-    __virtual(const AvmType*, FnEntryGetItemType);
+    __virtual(const AvmType*, FnEntryGetItemType, self);
 
 /**
  * @brief Returns a reference to the object at the specified index in an
@@ -76,7 +76,7 @@ AVMINLINE const AvmType* AvmListGetItemType(const AvmList* self)
  * @return A reference to the object at the specified index.
  */
 AVMINLINE object AvmListItemAt(const AvmList* self, uint index)
-    __virtual(object, FnEntryGetItemType, index);
+    __virtual(object, FnEntryGetItemType, self, index);
 
 /**
  * @brief Inserts an object at the specified index in an AvmList.
@@ -93,7 +93,7 @@ AVMINLINE object AvmListItemAt(const AvmList* self, uint index)
  * @return Any error that occurred.
  */
 AVMINLINE AvmError* AvmListInsert(AvmList* self, uint index, object value)
-    __virtual(AvmError*, FnEntryInsert, index, value);
+    __virtual(AvmError*, FnEntryInsert, self, index, value);
 
 /**
  * @brief Removes the object at the specified index from an AvmList, calling
@@ -108,7 +108,7 @@ AVMINLINE AvmError* AvmListInsert(AvmList* self, uint index, object value)
  * @return Any error that occurred.
  */
 AVMINLINE AvmError* AvmListRemove(AvmList* self, uint index)
-    __virtual(AvmError*, FnEntryRemove, index);
+    __virtual(AvmError*, FnEntryRemove, self, index);
 
 /**
  * @brief Removes all objects from an AvmList, calling finalizers.
@@ -117,7 +117,7 @@ AVMINLINE AvmError* AvmListRemove(AvmList* self, uint index)
  *
  * @param self The AvmList instance.
  */
-AVMINLINE void AvmListClear(AvmList* self) __virtual(void, FnEntryClear);
+AVMINLINE void AvmListClear(AvmList* self) __virtual(void, FnEntryClear, self);
 
 /**
  * @brief Inserts a value at the end of an AvmList.
