@@ -22,6 +22,8 @@
 
 #define static_assert_s(condition) _Static_assert(condition, "")
 
+#define AVMINLINE static inline
+
 #ifdef AVM_MSVC
 #ifndef alignof
 #define alignof __alignof
