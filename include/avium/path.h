@@ -81,6 +81,16 @@ AVMAPI bool AvmPathIsRelative(str path);
 AVMAPI bool AvmPathIsValid(str path);
 
 /**
+ * @brief Determines whether a path represents a directory.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return true if the path represents a directory, otherwise false.
+ */
+AVMAPI bool AvmPathIsDir(str path);
+
+/**
  * @brief Returns the name of the file or directory represented by a given path.
  *
  * @pre Parameter @p path must be not null.
@@ -101,19 +111,65 @@ AVMAPI AvmString AvmPathGetName(str path);
  */
 AVMAPI AvmString AvmPathGetExtension(str path);
 
+/**
+ * @brief Returns the parent directory of a path.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The path.
+ * @return The parent directory.
+ */
 AVMAPI AvmString AvmPathGetParent(str path);
 
-AVMAPI bool AvmPathIsDir(str path);
+/**
+ * @brief Returns the path to the user home directory.
+ *
+ * @return The home directory path.
+ */
+AVMAPI AvmString AvmPathGetHomeDir(void);
 
-AVMAPI str AvmPathGetHomeDir(void);
-AVMAPI str AvmPathGetTempDir(void);
+/**
+ * @brief Returns a path to a directory suitable for storing temporary files.
+ *
+ * @return The temporary directory path.
+ */
+AVMAPI AvmString AvmPathGetTempDir(void);
 
+/**
+ * @brief Expands a path to its absolute equivalent.
+ *
+ * @pre Parameter @p path must be not null.
+ *
+ * @param path The relative path.
+ * @return The expanded path.
+ */
 AVMAPI AvmString AvmPathGetFullPath(str path);
 
+/**
+ * @brief Combines an array of paths components to a single path.
+ *
+ * @pre Parameter @p length must be not 0.
+ * @pre Parameter @p paths must be not null.
+ *
+ * @param length The length of the array.
+ * @param paths The paths.
+ * @return The combined path.
+ */
 AVMAPI AvmString AvmPathCombine(uint length, str paths[]);
+
+/// Equivalent to AvmPathCombine but taking variadic arguments.
 #define AvmPathCombineV(...) AvmPathCombine(AVM_VA_ARGS(str, __VA_ARGS__))
 
+/**
+ * @brief Combines two paths into one.
+ *
+ * @pre Parameter @p path1 must be not null.
+ * @pre Parameter @p path2 must be not null.
+ *
+ * @param path1 The first path.
+ * @param path2 The second path.
+ * @return The combined path.
+ */
 AVMAPI AvmString AvmPathCombine2(str path1, str path2);
-AVMAPI AvmString AvmPathCombine3(str path1, str path2, str path3);
 
 #endif // AVIUM_PATH_H

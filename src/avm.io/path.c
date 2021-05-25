@@ -139,9 +139,13 @@ AvmString AvmPathGetParent(str path)
 
     AvmString s = AvmStringFrom(path);
 
-    if (AvmPathIsDir(path))
+#ifdef AVM_WIN32
+    if (s._length == 3)
+#else
+    if (s._length == 1)
+#endif
     {
-        s._length--;
+        return s;
     }
 
     const char sep = AvmPathGetSeparator();
@@ -158,7 +162,7 @@ AvmString AvmPathGetParent(str path)
         return s;
     }
 
-    s._length = index;
+    s._length = index + 1;
 
     return s;
 }
@@ -185,17 +189,17 @@ AvmString AvmPathGetFullPath(str path)
     AvmPanic("TODO");
 }
 
-str AvmPathGetTempDir(void)
+AvmString AvmPathGetTempDir(void)
 {
-    return P_tmpdir;
+    return AvmStringFrom(P_tmpdir);
 }
 
-str AvmPathGetHomeDir(void)
+AvmString AvmPathGetHomeDir(void)
 {
     str home = getenv(HomeEnvVar);
     if (home != NULL)
     {
-        return home;
+        return AvmStringFrom(home);
     }
 
     AvmPanic(HomeDirNotDeterminedError);
@@ -229,21 +233,6 @@ AvmString AvmPathCombine(uint length, str paths[])
     }
 
     return prev;
-}
-
-AvmString AvmPathCombine3(str path1, str path2, str path3)
-{
-    pre
-    {
-        assert(path1 != NULL);
-        assert(path2 != NULL);
-        assert(path3 != NULL);
-    }
-
-    AvmString temp = AvmPathCombine2(path1, path2);
-    AvmString ret = AvmPathCombine2(AvmStringGetBuffer(&temp), path3);
-    AvmObjectDestroy(&temp);
-    return ret;
 }
 
 AvmString AvmPathCombine2(str path1, str path2)

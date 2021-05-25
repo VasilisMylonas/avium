@@ -88,7 +88,7 @@ AVMAPI void AvmObjectDestroy(object self);
  * @brief Clones an object, creating an exact copy.
  *
  * This function tries to use the FnEntryClone virtual function entry. If no
- * such virtual function is available then a the object is simple copied to
+ * such virtual function is available then a the object is simply copied to
  * heap memory.
  *
  * @pre Parameter @p self must be not null.

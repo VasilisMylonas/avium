@@ -20,42 +20,6 @@ void TestPathCombine2()
     assert(AvmObjectEquals(&a, &expected));
 }
 
-void TestPathCombine3()
-{
-    AvmString expected = AvmStringFrom("/some/other/path");
-    AvmString a = AvmPathCombine3("/some", "/other", "/path");
-    AvmString b = AvmPathCombine3("/some", "/other", "./path");
-    AvmString c = AvmPathCombine3("/some", "/other", "path");
-    AvmString d = AvmPathCombine3("/some/", "/other", "/path");
-    AvmString e = AvmPathCombine3("/some/", "/other", "./path");
-    AvmString f = AvmPathCombine3("/some/", "/other", "path");
-    AvmString g = AvmPathCombine3("/some", "/other/", "/path");
-    AvmString h = AvmPathCombine3("/some", "/other/", "./path");
-    AvmString i = AvmPathCombine3("/some", "/other/", "path");
-    AvmString j = AvmPathCombine3("/some", "other", "/path");
-    AvmString k = AvmPathCombine3("/some", "other", "./path");
-    AvmString l = AvmPathCombine3("/some", "other", "path");
-    AvmString m = AvmPathCombine3("/some", "./other", "/path");
-    AvmString n = AvmPathCombine3("/some", "./other", "./path");
-    AvmString o = AvmPathCombine3("/some", "./other", "path");
-
-    assert(AvmObjectEquals(&a, &b));
-    assert(AvmObjectEquals(&a, &c));
-    assert(AvmObjectEquals(&a, &d));
-    assert(AvmObjectEquals(&a, &e));
-    assert(AvmObjectEquals(&a, &f));
-    assert(AvmObjectEquals(&a, &g));
-    assert(AvmObjectEquals(&a, &h));
-    assert(AvmObjectEquals(&a, &i));
-    assert(AvmObjectEquals(&a, &j));
-    assert(AvmObjectEquals(&a, &k));
-    assert(AvmObjectEquals(&a, &l));
-    assert(AvmObjectEquals(&a, &m));
-    assert(AvmObjectEquals(&a, &n));
-    assert(AvmObjectEquals(&a, &o));
-    assert(AvmObjectEquals(&a, &expected));
-}
-
 void TestPathCombine()
 {
     AvmString expected1 = AvmStringFrom("/some/other/path");
@@ -89,11 +53,26 @@ void TestPathGetName()
     assert(AvmObjectEquals(&name2, &expected2));
 }
 
+void TestPathGetParent()
+{
+    AvmString expected1_2 = AvmStringFrom("/some/dir/");
+    AvmString expected3_4 = AvmStringFrom("/");
+    AvmString name1 = AvmPathGetParent("/some/dir/probably");
+    AvmString name2 = AvmPathGetParent("/some/dir/probably.or.not");
+    AvmString name3 = AvmPathGetParent("/dir");
+    AvmString name4 = AvmPathGetParent("/");
+
+    assert(AvmObjectEquals(&name1, &expected1_2));
+    assert(AvmObjectEquals(&name2, &expected1_2));
+    assert(AvmObjectEquals(&name3, &expected3_4));
+    assert(AvmObjectEquals(&name4, &expected3_4));
+}
+
 void main()
 {
     TestPathCombine2();
-    TestPathCombine3();
     TestPathCombine();
     TestPathGetExtension();
     TestPathGetName();
+    TestPathGetParent();
 }
