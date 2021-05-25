@@ -27,7 +27,7 @@ object AvmListPop(AvmList* self)
     return item;
 }
 
-bool AvmListContains(AvmList* self, object value)
+bool AvmListContains(const AvmList* self, object value)
 {
     pre
     {
@@ -48,7 +48,7 @@ bool AvmListContains(AvmList* self, object value)
     return false;
 }
 
-uint AvmListIndexOf(AvmList* self, object value)
+uint AvmListIndexOf(const AvmList* self, object value)
 {
     pre
     {

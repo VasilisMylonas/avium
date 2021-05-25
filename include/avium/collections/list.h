@@ -123,6 +123,7 @@ AVMINLINE void AvmListClear(AvmList* self) __virtual(void, FnEntryClear, self);
  * @brief Inserts a value at the end of an AvmList.
  *
  * @pre Parameter @p self must be not null.
+ * @pre Parameter @p value must be not null.
  *
  * @param self The AvmList instance.
  * @param value The value to push.
@@ -130,8 +131,38 @@ AVMINLINE void AvmListClear(AvmList* self) __virtual(void, FnEntryClear, self);
  */
 AVMAPI AvmError* AvmListPush(AvmList* self, object value);
 
+/**
+ * @brief Removes a value from the end of an AvmList.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmList instance.
+ * @return A reference to a heap allocated clone of the value.
+ */
 AVMAPI object AvmListPop(AvmList* self);
-AVMAPI bool AvmListContains(AvmList* self, object value);
-AVMAPI uint AvmListIndexOf(AvmList* self, object value);
+
+/**
+ * @brief Determines whether an AvmList contains a specified value.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p value must be not null.
+ *
+ * @param self The AvmList instance.
+ * @param value The value.
+ * @return true if the AvmList contains the value, otherwise false.
+ */
+AVMAPI bool AvmListContains(const AvmList* self, object value);
+
+/**
+ * @brief Returns the index of the first occurrence of a value in an AvmList.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p value must be not null.
+ *
+ * @param self The AvmList instance.
+ * @param value The value.
+ * @return The index of the value, or AvmInvalid.
+ */
+AVMAPI uint AvmListIndexOf(const AvmList* self, object value);
 
 #endif // AVIUM_COLLECTIONS_LIST_H
