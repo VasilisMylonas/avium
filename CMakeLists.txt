@@ -41,6 +41,7 @@ if(MSVC)
 
     # Disable silly warnings.
     add_compile_options(/wd4710) # Function not inlined.
+    add_compile_options(/wd4098) # Returning void.
     add_compile_options(/wd4201) # Nameless struct/union.
     add_compile_options(/wd5045) # Spectre mitigation.
     add_compile_options(/wd4668) # <macro> not defined as preprocessor macro, replacing with 0.
