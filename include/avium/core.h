@@ -88,7 +88,7 @@ AVMAPI void AvmObjectDestroy(object self);
  * @brief Clones an object, creating an exact copy.
  *
  * This function tries to use the FnEntryClone virtual function entry. If no
- * such virtual function is available then a the object is simple copied to
+ * such virtual function is available then a the object is simply copied to
  * heap memory.
  *
  * @pre Parameter @p self must be not null.
@@ -205,6 +205,21 @@ AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
 /**
+ * @brief Creates an array from a va_list.
+ *
+ * @pre Parameter @p N must be not zero.
+ * @pre Parameter @p args must be not null.
+ *
+ * @param T The type of the array elements.
+ * @param N The length of the array.
+ * @param args The va_list.
+ *
+ * @return The created array.
+ */
+#define va_array(T, N, args)                                                   \
+    (T*)__AvmVaListToArray(AvmAlloc(sizeof(T) * N), args, sizeof(T), N);
+
+/**
  * @brief Creates a new AvmVersion instance.
  *
  * @param major The version major number (incremented at breaking changes).
@@ -214,6 +229,8 @@ AVMAPI void AvmErrorf(str format, ...);
  * @return The created instance.
  */
 AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
+
+AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
 
 #ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);

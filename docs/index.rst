@@ -5,18 +5,17 @@ Welcome to Avium's documentation!
    :maxdepth: 2
    :caption: Files:
 
-   array-list
-   array
-   fmt
-   options
+   codegen
+   core
    error
-   runtime
+   file
+   io
+   path
+   reflect
    string
    testing
+   typeinfo
    types
-   value
-   version
-
 
 Indices and tables
 ==================

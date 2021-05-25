@@ -176,7 +176,7 @@ static void AvmFputs(str format, va_list args, FILE* stream)
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringGetBuffer(&temp), stream);
+    fwrite(AvmStringGetBuffer(&temp), sizeof(char), temp._length, stream);
     AvmObjectDestroy(&temp);
 }
 
@@ -263,4 +263,37 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
         .Minor = minor,
         .Patch = patch,
     };
+}
+
+#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
+    for (size_t i = 0; i < length; i++)                                        \
+    {                                                                          \
+        ((T1*)stack)[i] = (T1)va_arg(args, T2);                                \
+    }                                                                          \
+                                                                               \
+    return stack;
+
+void* __AvmVaListToArray(void* stack, va_list args, uint size, uint length)
+{
+    pre
+    {
+        assert(stack != NULL);
+        assert(args != NULL);
+        assert(size != 0);
+        assert(length != 0);
+    }
+
+    switch (size)
+    {
+    case 1:
+        VA_LIST_TO_ARRAY_IMPL(byte, uint);
+    case 2:
+        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
+    case 4:
+        VA_LIST_TO_ARRAY_IMPL(uint, uint);
+    case 8:
+        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
+    default:
+        return NULL; // TODO: ERROR
+    }
 }

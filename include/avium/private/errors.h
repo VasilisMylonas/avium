@@ -1,5 +1,5 @@
-#ifndef AVIUM_ERRORS_H
-#define AVIUM_ERRORS_H
+#ifndef AVIUM_PRIVATE_ERRORS_H
+#define AVIUM_PRIVATE_ERRORS_H
 
 #include "avium/types.h"
 
@@ -15,5 +15,7 @@ static const str WriteError = "Could not perform the write operation.";
 static const str InternalError = "An internal error occurred.";
 static const str EnumConstantNotPresentError =
     "The specified constant was not present in the enum.";
+static const str HomeDirNotDeterminedError =
+    "Could not determine the home directory.";
 
-#endif // AVIUM_ERRORS_H
+#endif // AVIUM_PRIVATE_ERRORS_H
