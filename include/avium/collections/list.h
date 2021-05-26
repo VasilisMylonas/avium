@@ -24,6 +24,7 @@
 #ifndef AVIUM_COLLECTIONS_LIST_H
 #define AVIUM_COLLECTIONS_LIST_H
 
+#include "avium/core.h"
 #include "avium/error.h"
 #include "avium/typeinfo.h"
 
