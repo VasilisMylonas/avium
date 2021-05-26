@@ -52,7 +52,7 @@ typedef enum
 } AvmFnEntry;
 
 /// Returns the base type of an object.
-#define baseof(x) ((typeof((x)->_base)*)x)
+#define baseof(x) (&(x)->_base)
 
 /// Returns a pointer to the type info of type T.
 #define typeid(T) ((object)&AVM_TI_NAME(T))
