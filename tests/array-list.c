@@ -3,6 +3,7 @@
 
 #include "avium/core.h"
 #include "avium/string.h"
+#include "avium/typeinfo.h"
 
 void main()
 {
