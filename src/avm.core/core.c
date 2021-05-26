@@ -22,17 +22,17 @@
 #define AVM_DEALLOC free
 #endif
 
-box(void) AvmAlloc(size_t size)
+void* AvmAlloc(size_t size)
 {
     return AVM_ALLOC(size);
 }
 
-box(void) AvmRealloc(box(void) memory, size_t size)
+void* AvmRealloc(void* memory, size_t size)
 {
     return AVM_REALLOC(memory, size);
 }
 
-void AvmDealloc(box(void) memory)
+void AvmDealloc(void* memory)
 {
     AVM_DEALLOC(memory);
 }

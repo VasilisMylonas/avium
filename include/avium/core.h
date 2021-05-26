@@ -156,7 +156,7 @@ AVMAPI void AvmRuntimeDisableExceptions(void);
  * @param size The size of the memory block in bytes.
  * @return The allocated memory.
  */
-AVMAPI box(void) AvmAlloc(size_t size);
+AVMAPI void* AvmAlloc(size_t size);
 
 /**
  * @brief Reallocates a heap memory block.
@@ -165,14 +165,14 @@ AVMAPI box(void) AvmAlloc(size_t size);
  * @param size The new size of the memory block in bytes.
  * @return The reallocated memory.
  */
-AVMAPI box(void) AvmRealloc(box(void) memory, size_t size);
+AVMAPI void* AvmRealloc(void* memory, size_t size);
 
 /**
  * @brief Deallocates heap memory.
  *
  * @param memory The memory block to deallocate.
  */
-AVMAPI void AvmDealloc(box(void) memory);
+AVMAPI void AvmDealloc(void* memory);
 
 /**
  * @brief Copies an object to a memory block.

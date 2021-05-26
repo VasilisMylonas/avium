@@ -40,7 +40,6 @@ typedef void* object;                 ///< An unknown object type.
 typedef void (*AvmFunction)(void);    ///< An unknown function type.
 typedef const char* str;              ///< Primitive read-only string.
 #define weakptr(T) T*                 ///< A weak pointer to a type T.
-#define box(T)     T*                 ///< A pointer to a heap-allocated type T.
 
 #define main AvmMain
 
