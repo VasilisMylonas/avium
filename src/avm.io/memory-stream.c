@@ -4,7 +4,7 @@
 #include "avium/private/resources.h"
 #include "avium/typeinfo.h"
 
-AVM_CLASS(AvmMemoryStream, AvmStream, {
+AVM_CLASS(AvmMemoryStream, object, {
     size_t _position;
     AvmArrayList _list;
 });

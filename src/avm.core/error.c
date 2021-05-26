@@ -47,7 +47,7 @@ never AvmPanicEx(str message, str function, str file, uint line)
 // AvmOSError specific.
 //
 
-AVM_CLASS(AvmOSError, AvmError, { int _code; });
+AVM_CLASS(AvmOSError, object, { int _code; });
 
 static AvmString AvmOSErrorToString(AvmOSError* self)
 {
@@ -80,7 +80,7 @@ AvmError* AvmErrorGetLast(void)
 // AvmSimpleError specific.
 //
 
-AVM_CLASS(AvmSimpleError, AvmError, { AvmErrorKind _kind; });
+AVM_CLASS(AvmSimpleError, object, { AvmErrorKind _kind; });
 
 static AvmString AvmSimpleErrorToString(AvmSimpleError* self)
 {

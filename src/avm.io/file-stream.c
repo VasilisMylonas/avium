@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-AVM_CLASS(AvmFileStream, AvmStream, { AvmFileHandle _handle; });
+AVM_CLASS(AvmFileStream, object, { AvmFileHandle _handle; });
 
 static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
 
