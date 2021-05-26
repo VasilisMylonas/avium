@@ -16,7 +16,7 @@ uint AvmListGetCapacity(const AvmList* self)
 
 const AvmType* AvmListGetItemType(const AvmList* self)
 {
-    VIRTUAL_CALL(const AvmType*, FnEntryInsert, self);
+    VIRTUAL_CALL(const AvmType*, FnEntryGetItemType, self);
 }
 
 object AvmListItemAt(const AvmList* self, uint index)
