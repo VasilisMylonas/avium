@@ -1,7 +1,43 @@
 #include "avium/collections/list.h"
 
+#include "avium/private/resources.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
+
+uint AvmListGetLength(const AvmList* self)
+{
+    VIRTUAL_CALL(uint, FnEntryGetLength, self);
+}
+
+uint AvmListGetCapacity(const AvmList* self)
+{
+    VIRTUAL_CALL(uint, FnEntryGetCapacity, self);
+}
+
+const AvmType* AvmListGetItemType(const AvmList* self)
+{
+    VIRTUAL_CALL(const AvmType*, FnEntryInsert, self);
+}
+
+object AvmListItemAt(const AvmList* self, uint index)
+{
+    VIRTUAL_CALL(object, FnEntryItemAt, self, index);
+}
+
+AvmError* AvmListInsert(AvmList* self, uint index, object value)
+{
+    VIRTUAL_CALL(AvmError*, FnEntryInsert, self, index, value);
+}
+
+AvmError* AvmListRemove(AvmList* self, uint index)
+{
+    VIRTUAL_CALL(AvmError*, FnEntryRemove, self, index);
+}
+
+void AvmListClear(AvmList* self)
+{
+    VIRTUAL_CALL(void, FnEntryClear, self);
+}
 
 AvmError* AvmListPush(AvmList* self, object value)
 {

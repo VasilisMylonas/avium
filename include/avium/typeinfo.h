@@ -256,25 +256,4 @@ AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
  */
 AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
 
-#ifdef AVM_GNU
-#define AVM_VIRTUAL(TReturn, E, ...)                                           \
-    {                                                                          \
-        _Pragma("GCC diagnostic push")                                         \
-            _Pragma("GCC diagnostic ignored \"-Wpedantic\"")                   \
-                AvmFunction __virtualFunc =                                    \
-                    AvmTypeGetFunction(AvmObjectGetType((object)self), E);     \
-        return ((TReturn(*)())__virtualFunc)(__VA_ARGS__);                     \
-        _Pragma("GCC diagnostic pop");                                         \
-    }                                                                          \
-    void* AVM_UNIQUE(__AvmVirtualStub)
-#else
-#define AVM_VIRTUAL(TReturn, E, ...)                                           \
-    {                                                                          \
-        AvmFunction __virtualFunc =                                            \
-            AvmTypeGetFunction(AvmObjectGetType((object)self), E);             \
-        return ((TReturn(*)())__virtualFunc)((object)self, ##__VA_ARGS__);     \
-    }                                                                          \
-    void* AVM_UNIQUE(__AvmVirtualStub)
-#endif
-
 #endif // AVIUM_TYPEINFO_H
