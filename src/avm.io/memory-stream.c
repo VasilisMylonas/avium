@@ -1,6 +1,7 @@
 #include "avium/io.h"
 
 #include "avium/collections/array-list.h"
+#include "avium/collections/list.h"
 #include "avium/private/resources.h"
 #include "avium/typeinfo.h"
 
@@ -36,7 +37,7 @@ static AvmError* AvmMemoryStreamWrite(AvmMemoryStream* self,
 {
     for (size_t i = 0; i < length; i++)
     {
-        AvmArrayListPush(&self->_list, bytes + i);
+        AvmListPush(&self->_list, bytes + i);
         self->_position++;
     }
 
@@ -64,7 +65,7 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
         {
             return AvmErrorOfKind(ErrorKindRange);
         }
-        self->_position = AvmArrayListGetCapacity(&self->_list) + offset;
+        self->_position = AvmListGetCapacity(&self->_list) + offset;
         break;
     default:
         AvmPanic(InvalidOriginMsg);
@@ -85,7 +86,7 @@ static void AvmMemoryStreamDestroy(AvmMemoryStream* self)
 
 static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self)
 {
-    return AvmArrayListGetCapacity(&self->_list);
+    return AvmListGetCapacity(&self->_list);
 }
 
 AVM_TYPE(AvmMemoryStream,

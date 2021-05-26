@@ -1,63 +1,15 @@
 #include "avium/collections/array-list.h"
 
+#include "avium/collections/list.h"
+#include "avium/error.h"
+#include "avium/private/errors.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 #include <string.h>
 
-static AvmString AvmArrayListToString(AvmArrayList* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    AvmString s = AvmStringNew(self->_length * 2);
-
-    AvmStringPushStr(&s, "[ ");
-    for (uint i = 0; i < self->_length; i++)
-    {
-        AvmStringPushValue(&s, AvmArrayListItemAt(self, i));
-        if (i < self->_length - 1)
-        {
-            AvmStringPushStr(&s, ", ");
-        }
-    }
-    AvmStringPushStr(&s, " ]");
-    return s;
-}
-
-AVM_TYPE(AvmArrayList,
-         object,
-         {
-             [FnEntryGetLength] = (AvmFunction)AvmArrayListGetLength,
-             [FnEntryGetCapacity] = (AvmFunction)AvmArrayListGetCapacity,
-             [FnEntryGetItemType] = (AvmFunction)AvmArrayListGetItemType,
-             [FnEntryInsert] = (AvmFunction)AvmArrayListInsert,
-             [FnEntryRemove] = (AvmFunction)AvmArrayListRemove,
-             [FnEntryItemAt] = (AvmFunction)AvmArrayListItemAt,
-             [FnEntryClear] = (AvmFunction)AvmArrayListClear,
-             [FnEntryToString] = (AvmFunction)AvmArrayListToString,
-         });
-
-AvmArrayList AvmArrayListNew(const AvmType* type, uint capacity)
-{
-    pre
-    {
-        assert(type != NULL);
-    }
-
-    return (AvmArrayList){
-        ._type = typeid(AvmArrayList),
-        ._itemType = type,
-        ._length = 0,
-        ._items = capacity == 0 ? NULL : AvmAlloc(capacity * type->_size),
-        ._capacity = capacity,
-    };
-}
-
-uint AvmArrayListGetLength(const AvmArrayList* self)
+static uint AvmArrayListGetLength(const AvmArrayList* self)
 {
     pre
     {
@@ -67,7 +19,7 @@ uint AvmArrayListGetLength(const AvmArrayList* self)
     return self->_length;
 }
 
-uint AvmArrayListGetCapacity(const AvmArrayList* self)
+static uint AvmArrayListGetCapacity(const AvmArrayList* self)
 {
     pre
     {
@@ -77,7 +29,7 @@ uint AvmArrayListGetCapacity(const AvmArrayList* self)
     return self->_capacity;
 }
 
-const AvmType* AvmArrayListGetItemType(const AvmArrayList* self)
+static const AvmType* AvmArrayListGetItemType(const AvmArrayList* self)
 {
     pre
     {
@@ -85,6 +37,21 @@ const AvmType* AvmArrayListGetItemType(const AvmArrayList* self)
     }
 
     return self->_itemType;
+}
+
+static object AvmArrayListItemAt(const AvmArrayList* self, uint index)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    if (index >= self->_length)
+    {
+        AvmPanic(RangeError);
+    }
+
+    return self->_items + index * self->_itemType->_size;
 }
 
 // The following code is straight up copied from avm.core/string.c with minor
@@ -125,7 +92,7 @@ static void AvmArrayListEnsureCapacity(AvmArrayList* self, uint capacity)
     }
 }
 
-AvmError* AvmArrayListInsert(AvmArrayList* self, uint index, object value)
+static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 {
     pre
     {
@@ -135,7 +102,7 @@ AvmError* AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
     if (index > self->_length)
     {
-        return AvmErrorOfKind(ErrorKindRange);
+        AvmPanic(RangeError);
     }
 
     AvmArrayListEnsureCapacity(self, 1);
@@ -150,39 +117,20 @@ AvmError* AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
     memcpy(dest, value, size);
     self->_length++;
-    return NULL;
 }
 
-AvmError* AvmArrayListPush(AvmArrayList* self, object value)
+static void AvmArrayListDropItem(AvmArrayList* self, uint index)
 {
-    pre
-    {
-        assert(self != NULL);
-        assert(value != NULL);
-    }
+    AvmFunction fn = AvmTypeGetFunction(self->_itemType, FnEntryDtor);
+    object item = AvmArrayListItemAt(self, index);
 
-    return AvmArrayListInsert(self, self->_length, value);
+    if (fn != NULL)
+    {
+        ((void (*)(object))fn)(item);
+    }
 }
 
-AvmError* AvmArrayListRemove(AvmArrayList* self, uint index)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    if (index >= self->_length)
-    {
-        return AvmErrorOfKind(ErrorKindRange);
-    }
-
-    const size_t size = self->_itemType->_size;
-    byte* const ptr = self->_items + index * size;
-    memmove(ptr, ptr + size, size); // Shift elements in.
-    return NULL;
-}
-
-object AvmArrayListItemAt(AvmArrayList* self, uint index)
+static void AvmArrayListRemove(AvmArrayList* self, uint index)
 {
     pre
     {
@@ -191,30 +139,99 @@ object AvmArrayListItemAt(AvmArrayList* self, uint index)
 
     if (index >= self->_length)
     {
-        // TODO
-        AvmPanic("TODO");
+        AvmPanic(RangeError);
     }
 
-    return self->_items + index * self->_itemType->_size;
+    AvmArrayListDropItem(self, index);
+    self->_length--;
+
+    // If we remove the last item then no need to compact.
+    if (index == self->_length)
+    {
+        return;
+    }
+
+    const size_t itemSize = self->_itemType->_size;
+    const size_t freeSize = (self->_length - index) * itemSize;
+    byte* const objectPtr = self->_items + index * itemSize;
+
+    memmove(objectPtr, objectPtr + itemSize, freeSize); // Shift elements in.
 }
 
-void AvmArrayListClear(AvmArrayList* self)
+static AvmString AvmArrayListToString(AvmArrayList* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    self->_length = 0;
+    AvmString s = AvmStringNew(self->_length * 2);
+
+    AvmStringPushStr(&s, "[ ");
+    for (uint i = 0; i < self->_length; i++)
+    {
+        object item = AvmArrayListItemAt(self, i);
+
+        if (self->_itemType->_size > sizeof(AvmType*)) // Type is not primitive.
+            AvmStringPushValue(&s, AvmArrayListItemAt(self, i));
+        else if (self->_itemType == typeid(float))
+            AvmStringPushFloat(&s, *(float*)item, FloatReprAuto);
+        else if (self->_itemType == typeid(double))
+            AvmStringPushFloat(&s, *(double*)item, FloatReprAuto);
+        else if (self->_itemType == typeid(str))
+            AvmStringPushStr(&s, *(str*)item);
+        else if (self->_itemType == typeid(byte))
+            AvmStringPushUint(&s, *(byte*)item, NumericBaseDecimal);
+        else if (self->_itemType == typeid(ushort))
+            AvmStringPushUint(&s, *(ushort*)item, NumericBaseDecimal);
+        else if (self->_itemType == typeid(uint))
+            AvmStringPushUint(&s, *(uint*)item, NumericBaseDecimal);
+        else if (self->_itemType == typeid(ulong))
+            AvmStringPushUint(&s, *(ulong*)item, NumericBaseDecimal);
+        else if (self->_itemType == typeid(char))
+            AvmStringPushChar(&s, *(char*)item);
+        else if (self->_itemType == typeid(short))
+            AvmStringPushInt(&s, *(short*)item);
+        else if (self->_itemType == typeid(int))
+            AvmStringPushInt(&s, *(int*)item);
+        else if (self->_itemType == typeid(_long))
+            AvmStringPushInt(&s, *(_long*)item);
+        else
+            AvmPanic(InternalError);
+
+        if (i < self->_length - 1)
+        {
+            AvmStringPushStr(&s, ", ");
+        }
+    }
+    AvmStringPushStr(&s, " ]");
+    return s;
 }
 
-void AvmArrayListErase(AvmArrayList* self)
+AVM_TYPE(AvmArrayList,
+         object,
+         {
+             [FnEntryGetLength] = (AvmFunction)AvmArrayListGetLength,
+             [FnEntryGetCapacity] = (AvmFunction)AvmArrayListGetCapacity,
+             [FnEntryGetItemType] = (AvmFunction)AvmArrayListGetItemType,
+             [FnEntryInsert] = (AvmFunction)AvmArrayListInsert,
+             [FnEntryRemove] = (AvmFunction)AvmArrayListRemove,
+             [FnEntryItemAt] = (AvmFunction)AvmArrayListItemAt,
+             [FnEntryToString] = (AvmFunction)AvmArrayListToString,
+         });
+
+AvmArrayList AvmArrayListNew(const AvmType* type, uint capacity)
 {
     pre
     {
-        assert(self != NULL);
+        assert(type != NULL);
     }
 
-    memset(self->_items, 0, self->_length * self->_itemType->_size);
-    self->_length = 0;
+    return (AvmArrayList){
+        ._type = typeid(AvmArrayList),
+        ._itemType = type,
+        ._length = 0,
+        ._items = capacity == 0 ? NULL : AvmAlloc(capacity * type->_size),
+        ._capacity = capacity,
+    };
 }

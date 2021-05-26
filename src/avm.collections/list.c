@@ -24,39 +24,38 @@ object AvmListItemAt(const AvmList* self, uint index)
     VIRTUAL_CALL(object, FnEntryItemAt, self, index);
 }
 
-AvmError* AvmListInsert(AvmList* self, uint index, object value)
+void AvmListInsert(AvmList* self, uint index, object value)
 {
-    VIRTUAL_CALL(AvmError*, FnEntryInsert, self, index, value);
+    VIRTUAL_CALL(void, FnEntryInsert, self, index, value);
 }
 
-AvmError* AvmListRemove(AvmList* self, uint index)
+void AvmListRemove(AvmList* self, uint index)
 {
-    VIRTUAL_CALL(AvmError*, FnEntryRemove, self, index);
+    VIRTUAL_CALL(void, FnEntryRemove, self, index);
 }
 
 void AvmListClear(AvmList* self)
 {
-    VIRTUAL_CALL(void, FnEntryClear, self);
-}
-
-AvmError* AvmListPush(AvmList* self, object value)
-{
     pre
     {
         assert(self != NULL);
-        assert(value != NULL);
     }
 
-    return AvmListInsert(self, AvmListGetLength(self), value);
+    uint length = AvmListGetLength(self);
+
+    for (uint i = length; i > 1; i--)
+    {
+        AvmListRemove(self, i - 1);
+    }
+}
+
+void AvmListPush(AvmList* self, object value)
+{
+    AvmListInsert(self, AvmListGetLength(self), value);
 }
 
 object AvmListPop(AvmList* self)
 {
-    pre
-    {
-        assert(self != NULL);
-    }
-
     const uint length = AvmListGetLength(self);
     object item = AvmObjectClone(AvmListItemAt(self, length - 1));
     AvmListRemove(self, length - 1);
@@ -65,33 +64,11 @@ object AvmListPop(AvmList* self)
 
 bool AvmListContains(const AvmList* self, object value)
 {
-    pre
-    {
-        assert(self != NULL);
-        assert(value != NULL);
-    }
-
-    const uint length = AvmListGetLength(self);
-    for (uint i = 0; i < length; i++)
-    {
-        object temp = AvmListItemAt(self, i);
-        if (AvmObjectEquals(temp, value))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return AvmListIndexOf(self, value) != AvmInvalid;
 }
 
 uint AvmListIndexOf(const AvmList* self, object value)
 {
-    pre
-    {
-        assert(self != NULL);
-        assert(value != NULL);
-    }
-
     const uint length = AvmListGetLength(self);
     for (uint i = 0; i < length; i++)
     {

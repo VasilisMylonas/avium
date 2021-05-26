@@ -84,10 +84,8 @@ AVMAPI object AvmListItemAt(const AvmList* self, uint index);
  * @param self The AvmList instance.
  * @param index The index to insert the object at.
  * @param value The object to insert.
- *
- * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmListInsert(AvmList* self, uint index, object value);
+AVMAPI void AvmListInsert(AvmList* self, uint index, object value);
 
 /**
  * @brief Removes the object at the specified index from an AvmList, calling
@@ -99,9 +97,8 @@ AVMAPI AvmError* AvmListInsert(AvmList* self, uint index, object value);
  *
  * @param self The AvmList instance.
  * @param index The object index.
- * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmListRemove(AvmList* self, uint index);
+AVMAPI void AvmListRemove(AvmList* self, uint index);
 
 /**
  * @brief Removes all objects from an AvmList, calling finalizers.
@@ -120,9 +117,8 @@ AVMAPI void AvmListClear(AvmList* self);
  *
  * @param self The AvmList instance.
  * @param value The value to push.
- * @return Any error that occurred.
  */
-AVMAPI AvmError* AvmListPush(AvmList* self, object value);
+AVMAPI void AvmListPush(AvmList* self, object value);
 
 /**
  * @brief Removes a value from the end of an AvmList.

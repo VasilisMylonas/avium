@@ -48,7 +48,6 @@ typedef enum
     FnEntryInsert,
     FnEntryItemAt,
     FnEntryGetItemType,
-    FnEntryClear,
 } AvmFnEntry;
 
 /// Returns the base type of an object.
