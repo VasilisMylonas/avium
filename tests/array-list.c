@@ -9,7 +9,7 @@ void main()
     AvmString s = AvmStringFrom("Hello");
 
     AvmArrayList arrayList = AvmArrayListNew(typeid(AvmString), 20);
-    AvmList* list = (AvmList*)&arrayList;
+    AvmList* list = &arrayList;
     AvmListPush(list, &s);
     AvmListPush(list, &s);
     AvmListPush(list, &s);
