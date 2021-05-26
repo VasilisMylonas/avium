@@ -48,7 +48,12 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
-    return self->_vPtr[index];
+    if (index < self->_vSize)
+    {
+        return self->_vPtr[index];
+    }
+
+    AvmPanic(VirtualFuncError);
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
