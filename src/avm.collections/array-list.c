@@ -1,9 +1,32 @@
 #include "avium/collections/array-list.h"
 
+#include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 #include <string.h>
+
+static AvmString AvmArrayListToString(AvmArrayList* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString s = AvmStringNew(self->_length * 2);
+
+    AvmStringPushStr(&s, "[ ");
+    for (uint i = 0; i < self->_length; i++)
+    {
+        AvmStringPushValue(&s, AvmArrayListItemAt(self, i));
+        if (i < self->_length - 1)
+        {
+            AvmStringPushStr(&s, ", ");
+        }
+    }
+    AvmStringPushStr(&s, " ]");
+    return s;
+}
 
 AVM_TYPE(AvmArrayList,
          object,
@@ -15,6 +38,7 @@ AVM_TYPE(AvmArrayList,
              [FnEntryRemove] = (AvmFunction)AvmArrayListRemove,
              [FnEntryItemAt] = (AvmFunction)AvmArrayListItemAt,
              [FnEntryClear] = (AvmFunction)AvmArrayListClear,
+             [FnEntryToString] = (AvmFunction)AvmArrayListToString,
          });
 
 AvmArrayList AvmArrayListNew(const AvmType* type, uint capacity)
@@ -33,7 +57,7 @@ AvmArrayList AvmArrayListNew(const AvmType* type, uint capacity)
     };
 }
 
-uint AvmArrayListGetLength(AvmArrayList* self)
+uint AvmArrayListGetLength(const AvmArrayList* self)
 {
     pre
     {
@@ -43,7 +67,7 @@ uint AvmArrayListGetLength(AvmArrayList* self)
     return self->_length;
 }
 
-uint AvmArrayListGetCapacity(AvmArrayList* self)
+uint AvmArrayListGetCapacity(const AvmArrayList* self)
 {
     pre
     {
@@ -53,7 +77,7 @@ uint AvmArrayListGetCapacity(AvmArrayList* self)
     return self->_capacity;
 }
 
-const AvmType* AvmArrayListGetItemType(AvmArrayList* self)
+const AvmType* AvmArrayListGetItemType(const AvmArrayList* self)
 {
     pre
     {
@@ -158,7 +182,7 @@ AvmError* AvmArrayListRemove(AvmArrayList* self, uint index)
     return NULL;
 }
 
-object AvmArrayListItemAt(AvmArrayList* self, uint index, AvmError** error)
+object AvmArrayListItemAt(AvmArrayList* self, uint index)
 {
     pre
     {
@@ -167,10 +191,8 @@ object AvmArrayListItemAt(AvmArrayList* self, uint index, AvmError** error)
 
     if (index >= self->_length)
     {
-        if (error != NULL)
-        {
-            *error = AvmErrorOfKind(ErrorKindRange);
-        }
+        // TODO
+        AvmPanic("TODO");
     }
 
     return self->_items + index * self->_itemType->_size;
