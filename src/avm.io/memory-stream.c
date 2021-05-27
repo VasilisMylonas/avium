@@ -2,6 +2,7 @@
 
 #include "avium/collections/array-list.h"
 #include "avium/collections/list.h"
+#include "avium/private/errors.h"
 #include "avium/private/resources.h"
 #include "avium/typeinfo.h"
 
@@ -56,14 +57,18 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
     case SeekOriginBegin:
         if (offset < 0)
         {
-            return AvmErrorOfKind(ErrorKindRange);
+            // TODO
+            AvmPanic(RangeError);
+            // return AvmErrorOfKind(ErrorKindRange);
         }
         self->_position = offset;
         break;
     case SeekOriginEnd:
         if (offset > 0)
         {
-            return AvmErrorOfKind(ErrorKindRange);
+            // TODO
+            AvmPanic(RangeError);
+            // return AvmErrorOfKind(ErrorKindRange);
         }
         self->_position = AvmListGetCapacity(&self->_list) + offset;
         break;

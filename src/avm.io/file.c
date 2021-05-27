@@ -5,6 +5,7 @@
 #include "avium/string.h"
 #include "avium/testing.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -53,7 +54,7 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
         // Set the error indicator if it is not null.
         if (error != NULL)
         {
-            *error = AvmErrorGetLast();
+            *error = AvmErrorFromOSCode(errno);
         }
         return NULL;
     }
@@ -194,13 +195,13 @@ AvmError* AvmFileReadAllText(str path, AvmString* string)
     struct _stat buffer;
     if (_stat(path, &buffer) != 0)
     {
-        return AvmErrorGetLast();
+        return AvmErrorFromOSCode(errno);
     }
 #else
     struct stat buffer;
     if (stat(path, &buffer) != 0)
     {
-        return AvmErrorGetLast();
+        return AvmErrorFromOSCode(errno);
     }
 #endif
 

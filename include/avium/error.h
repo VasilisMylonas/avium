@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Result and error types.
  * @version 0.2.2
- * @date 2021-05-9
+ * @date 2021-05-27
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -29,32 +29,18 @@
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
 
-/// Describes the type of the error that occurred.
-typedef enum
-{
-    ErrorKindArg,       ///< Received an invalid argument.
-    ErrorKindRange,     ///< The provided index was out of range.
-    ErrorKindMem,       ///< There was not enough memory to handle the request.
-    ErrorKindInvalidOp, ///< The call was invalid for the current state.
-    ErrorKindIO,        ///< An IO error occurred.
-    ErrorKindSys,       ///< An unknown system error occurred.
-    ErrorKindNotFound,  ///< A required resource was unavailable.
-    ErrorKindRead,      ///< Could not perform the read operation.
-    ErrorKindWrite,     ///< Could not perform the write operation.
-} AvmErrorKind;
-
 /**
- * @brief Returns the last error that occurred.
+ * @brief Creates an AvmError with a message.
  *
- * The error is created based on the errno value and may create a 'successful'
- * error.
+ * @pre Parameter @p message must be not null.
  *
- * @return A type that implements AvmError.
+ * @param message The error message.
+ * @return The created instance.
  */
-AVMAPI AvmError* AvmErrorGetLast(void);
+AVMAPI AvmError* AvmErrorNew(str message);
 
 /**
- * @brief Creates an AvmError from an os code.
+ * @brief Creates an AvmError from an OS code.
  *
  * If the code is 0 then a 'successful' error is created.
  *
@@ -63,33 +49,10 @@ AVMAPI AvmError* AvmErrorGetLast(void);
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
-/**
- * @brief Creates an AvmError of a specific kind.
- *
- * @param kind The error kind.
- * @return The created instance.
- */
-AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
+typedef void (*AvmThrowCallback)(object, AvmString);
 
-/**
- * @brief Returns the AvmError responsible for this error.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmError instance.
- * @return The source of the error.
- */
-AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError* self);
-
-/**
- * @brief Gets a backtrace of the stack during the creation of an error.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmError instance.
- * @return The backtrace.
- */
-AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
+AVMAPI void AvmThrow(object value);
+AVMAPI void AvmCatch(AvmThrowCallback handler);
 
 /**
  * @brief Aborts execution, printing a message and location information.
@@ -97,19 +60,6 @@ AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
  * @param message The message to print.
  */
 #define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
-
-// clang-format off
-#define try(call)                                                              \
-    AvmError* AVM_UNIQUE(__avmError) = call;                                   \
-    if (AVM_UNIQUE(__avmError) != NULL)                                        \
-    {                                                                          \
-        return AVM_UNIQUE(__avmError);                                         \
-    }
-
-#define catch(var, call)                          \
-    AvmError* var = call; \
-    if (var != NULL)
-// clang-format on
 
 /**
  * @brief Aborts execution, printing a message and location information.

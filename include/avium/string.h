@@ -240,13 +240,10 @@ AVMAPI bool AvmStringIsEmpty(const AvmString* self);
  *
  * @param self The AvmString instance.
  * @param index The index of the character to get.
- * @param error Any error that occurred.
  *
  * @return The character at the specified index.
  */
-AVMAPI char AvmStringCharAt(const AvmString* self,
-                            uint index,
-                            AvmError** error);
+AVMAPI char AvmStringCharAt(const AvmString* self, uint index);
 
 /**
  * @brief Calls a function for each character in an AvmString.

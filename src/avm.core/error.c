@@ -1,15 +1,78 @@
 #include "avium/error.h"
 
+#include "avium/core.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
-#include "avium/private/errors.h"
-#include "avium/private/resources.h"
-
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+//
+// AvmNativeError
+//
+
+AVM_CLASS(AvmNativeError, object, { int _code; });
+
+static AvmString AvmNativeErrorToString(const AvmNativeError* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFrom(strerror(self->_code));
+}
+
+AVM_TYPE(AvmNativeError,
+         object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmNativeErrorToString,
+         });
+
+AvmError* AvmErrorFromOSCode(int code)
+{
+    AvmNativeError* e = AvmAlloc(sizeof(AvmNativeError));
+    e->_type = typeid(AvmNativeError);
+    e->_code = code;
+    return e;
+}
+
+//
+// AvmDetailedError
+//
+
+AVM_CLASS(AvmDetailedError, object, { str _message; });
+
+static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFrom(self->_message);
+}
+
+AVM_TYPE(AvmDetailedError,
+         object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmDetailedErrorToString,
+         });
+
+AvmError* AvmErrorNew(str message)
+{
+    pre
+    {
+        assert(message != NULL);
+    }
+
+    AvmDetailedError* e = AvmAlloc(sizeof(AvmDetailedError));
+    e->_type = typeid(AvmDetailedError);
+    e->_message = message;
+    return e;
+}
 
 never AvmPanicEx(str message, str function, str file, uint line)
 {
@@ -24,132 +87,22 @@ never AvmPanicEx(str message, str function, str file, uint line)
     exit(1);
 }
 
-//
-// AvmOSError specific.
-//
+static thread_local AvmThrowCallback AvmThrowHandler;
 
-AVM_CLASS(AvmOSError, object, { int _code; });
-
-static AvmString AvmOSErrorToString(AvmOSError* self)
+void AvmCatch(AvmThrowCallback handler)
 {
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFrom(strerror(self->_code));
+    AvmThrowHandler = handler;
 }
 
-AVM_TYPE(AvmOSError,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmOSErrorToString});
-
-AvmError* AvmErrorFromOSCode(int code)
+void AvmThrow(object value)
 {
-    AvmOSError* error = AvmAlloc(sizeof(AvmOSError));
-    error->_type = typeid(AvmOSError);
-    error->_code = code;
-    return (AvmError*)error;
-}
+    AvmString s = AvmRuntimeGetBacktrace();
 
-AvmError* AvmErrorGetLast(void)
-{
-    return AvmErrorFromOSCode(errno);
-}
-
-//
-// AvmSimpleError specific.
-//
-
-AVM_CLASS(AvmSimpleError, object, { AvmErrorKind _kind; });
-
-static AvmString AvmSimpleErrorToString(AvmSimpleError* self)
-{
-    pre
+    if (AvmThrowHandler != NULL)
     {
-        assert(self != NULL);
+        AvmThrowHandler(value, s);
     }
 
-    switch (self->_kind)
-    {
-    case ErrorKindArg:
-        return AvmStringFrom(ArgError);
-    case ErrorKindRange:
-        return AvmStringFrom(RangeError);
-    case ErrorKindMem:
-        return AvmStringFrom(MemError);
-    case ErrorKindInvalidOp:
-        return AvmStringFrom(InvalidOpError);
-    case ErrorKindIO:
-        return AvmStringFrom(IOError);
-    case ErrorKindSys:
-        return AvmStringFrom(SysError);
-    case ErrorKindNotFound:
-        return AvmStringFrom(NotFoundError);
-    case ErrorKindRead:
-        return AvmStringFrom(ReadError);
-    case ErrorKindWrite:
-        return AvmStringFrom(WriteError);
-    default:
-        return AvmStringNew(0);
-    }
-}
-
-AVM_TYPE(AvmSimpleError,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmSimpleErrorToString});
-
-AvmError* AvmErrorOfKind(AvmErrorKind kind)
-{
-    AvmSimpleError* error = AvmAlloc(sizeof(AvmSimpleError));
-    error->_type = typeid(AvmSimpleError);
-    error->_kind = kind;
-    return (AvmError*)error;
-}
-
-//
-// Virtual functions.
-//
-
-static const AvmOSError NoError = {
-    ._type = typeid(AvmOSError),
-    ._code = 0,
-};
-
-weakptr(AvmError) AvmErrorGetSource(AvmError* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetSource];
-
-    // No need to panic if there is not GetSource function.
-    if (func == NULL)
-    {
-        // The return type is weakptr(AvmError) so the user should know not to
-        // modify this value.
-        return (AvmError*)&NoError;
-    }
-
-    return ((AvmError * (*)(AvmError*)) func)(self);
-}
-
-AvmString AvmErrorGetBacktrace(AvmError* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntryGetBacktrace];
-
-    // A backtrace may not be supported.
-    if (func == NULL)
-    {
-        return AvmStringNew(0);
-    }
-
-    return ((AvmString(*)(AvmError*))func)(self);
+    AvmErrorf("Uncaught object of type %T.\n\n%v\n%v\n", value, value, &s);
+    exit(EXIT_FAILURE);
 }
