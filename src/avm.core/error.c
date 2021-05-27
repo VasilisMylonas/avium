@@ -11,10 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef AVM_LINUX
-#include <execinfo.h>
-#endif
-
 never AvmPanicEx(str message, str function, str file, uint line)
 {
     AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n",
@@ -23,23 +19,8 @@ never AvmPanicEx(str message, str function, str file, uint line)
               function,
               message);
 
-#ifdef AVM_LINUX
-    void* arr[BACKTRACE_MAX_SYMBOLS];
-
-    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
-    char** s = backtrace_symbols(arr, length);
-
-    for (int i = length - 1; i >= 1; i--)
-    {
-        *(strchr(s[i], '+')) = '\0';
-        *(strchr(s[i], '(')) = '@';
-
-        AvmErrorf("    in %s\n", s[i]);
-    }
-#else
-    AvmErrorf("%s\n", NoBacktraceMsg);
-#endif
-
+    AvmString s = AvmRuntimeGetBacktrace();
+    AvmErrorf("%v\n", &s);
     exit(1);
 }
 

@@ -22,6 +22,10 @@
 #define AVM_DEALLOC free
 #endif
 
+#ifdef AVM_LINUX
+#include <execinfo.h>
+#endif
+
 void* AvmAlloc(size_t size)
 {
     return AVM_ALLOC(size);
@@ -67,6 +71,32 @@ void AvmRuntimeDisableExceptions(void)
     signal(SIGSEGV, SIG_DFL);
     signal(SIGILL, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
+}
+
+AvmString AvmRuntimeGetBacktrace(void)
+{
+#ifdef AVM_LINUX
+    void* arr[BACKTRACE_MAX_SYMBOLS];
+
+    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
+    char** s = backtrace_symbols(arr, length);
+
+    AvmString bt = AvmStringNew(length * 10);
+
+    for (int i = length - 1; i >= 1; i--)
+    {
+        *(strchr(s[i], '+')) = '\0';
+        *(strchr(s[i], '(')) = '@';
+
+        AvmStringPushStr(&bt, "    in ");
+        AvmStringPushStr(&bt, s[i]);
+    }
+
+    free(s);
+    return bt;
+#else
+    return AvmStringFrom(NoBacktraceMsg);
+#endif
 }
 
 static AvmEnv env;

@@ -151,6 +151,13 @@ AVMAPI void AvmRuntimeEnableExceptions(void);
 AVMAPI void AvmRuntimeDisableExceptions(void);
 
 /**
+ * @brief Captures a backtrace, if available.
+ *
+ * @return The backtrace, or a symbolic string.
+ */
+AVMAPI AvmString AvmRuntimeGetBacktrace(void);
+
+/**
  * @brief Allocates heap memory.
  *
  * @param size The size of the memory block in bytes.
