@@ -90,6 +90,10 @@ AvmString AvmRuntimeGetBacktrace(void)
 
         AvmStringPushStr(&bt, "    in ");
         AvmStringPushStr(&bt, s[i]);
+        if (i != 1)
+        {
+            AvmStringPushChar(&bt, '\n');
+        }
     }
 
     free(s);
