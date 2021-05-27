@@ -5,7 +5,17 @@
 #include "avium/string.h"
 #include "avium/testing.h"
 
+#include <stdlib.h>
 #include <string.h>
+
+object __AvmRuntimeCastFail(object value, const AvmType* type)
+{
+    AvmErrorf("Tried to cast object <%x> of type %T to type %s.\n",
+              value,
+              value,
+              AvmTypeGetName(type));
+    exit(EXIT_FAILURE);
+}
 
 static AvmString AvmLocationToString(AvmLocation* self)
 {

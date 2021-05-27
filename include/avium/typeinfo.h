@@ -63,6 +63,11 @@ typedef enum
     (typeid(T) == AvmObjectGetType(x) || \
      AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
 
+#ifdef AVM_EXIT_ON_CAST_FAIL
+#define cast(T, x) (T*)(instanceof(T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
+#else
+#define cast(T, x) (T*)(instanceof(T, x) ? x : NULL)
+#endif
 // clang-format on
 
 /// Represents a location in source code.
@@ -254,5 +259,7 @@ AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
  * @return The value of the constant.
  */
 AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
+
+AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
 #endif // AVIUM_TYPEINFO_H
