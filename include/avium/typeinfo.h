@@ -54,7 +54,7 @@ typedef enum
 #define baseof(x) (&(x)->_base)
 
 /// Returns a pointer to the type info of type T.
-#define typeid(T) ((object)&AVM_TI_NAME(T))
+#define typeid(T) (&AVM_TI_NAME(T))
 
 // clang-format off
 
