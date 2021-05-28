@@ -1,6 +1,5 @@
 #include "avium/core.h"
 #include "avium/error.h"
-#include <stdlib.h>
 
 #undef main
 
@@ -20,7 +19,8 @@ int main(int argc, str argv[])
     else
     {
         AvmErrorf("Unhandled exception: TODO\n");
-        exit(-1);
+        return 1;
     }
+
     return 0;
 }

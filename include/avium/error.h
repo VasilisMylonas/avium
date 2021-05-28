@@ -69,8 +69,8 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
 AVM_CLASS(AvmThrowContext, object, {
     AvmThrowContext* _prev;
-    jmp_buf _jumpBuffer;
     object _thrownObject;
+    jmp_buf _jumpBuffer;
 });
 
 AVMAPI never __AvmRuntimeThrow(object value);
