@@ -27,6 +27,8 @@
 #include "avium/typeinfo.h"
 #include "avium/types.h"
 
+#include <setjmp.h>
+
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
 
@@ -65,19 +67,7 @@ AVMAPI AvmError* AvmErrorNew(str message);
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
-#include <setjmp.h>
-
-AVM_CLASS(AvmThrowContext, object, {
-    AvmThrowContext* _prev;
-    object _thrownObject;
-    jmp_buf _jumpBuffer;
-});
-
-AVMAPI never __AvmRuntimeThrow(object value);
-AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
-AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
-AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
-
+/// Begins a try block.
 #define try                                                                    \
     AvmThrowContext AVM_UNIQUE(__avmThrownContext);                            \
     __AvmRuntimePushThrowContext(&AVM_UNIQUE(__avmThrownContext));             \
@@ -94,7 +84,9 @@ AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
         else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
 
 // clang-format off
-#define catch(T, name)                                                               \
+
+/// Begins a catch block for type T.
+#define catch(T, name)                                                         \
     else if (instanceof(T, __AvmRuntimeGetThrowContext()->_thrownObject) &&    \
                  __AvmRuntimeGetThrowContext() != NULL &&                      \
                  (__avmTLC = 2) ==                                             \
@@ -102,8 +94,31 @@ AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
                                  __AvmRuntimePopThrowContext()->_thrownObject; \
                              name != NULL;                                     \
                              name = NULL)
+
 // clang-format on
 
+/**
+ * @brief Throws an object.
+ *
+ * The object must be heap-allocated.
+ *
+ * @pre Parameter @p value must be not null.
+ *
+ * @param value The object to throw.
+ */
 #define throw(value) __AvmRuntimeThrow(value)
+
+#ifndef DOXYGEN
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    object _thrownObject;
+    jmp_buf _jumpBuffer;
+});
+
+AVMAPI never __AvmRuntimeThrow(object value);
+AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
+AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
+AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+#endif
 
 #endif // AVIUM_ERROR_H
