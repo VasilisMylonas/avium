@@ -186,7 +186,7 @@ AvmString AvmPathGetFullPath(str path)
     }
 
     // TODO: error
-    AvmPanic("TODO");
+    throw(AvmErrorNew("TODO"));
 }
 
 AvmString AvmPathGetTempDir(void)
@@ -202,7 +202,7 @@ AvmString AvmPathGetHomeDir(void)
         return AvmStringFrom(home);
     }
 
-    AvmPanic(HomeDirNotDeterminedError);
+    throw(AvmErrorNew(HomeDirNotDeterminedError));
 }
 
 AvmString AvmPathCombine(uint length, str paths[])

@@ -120,8 +120,6 @@ AvmString AvmRuntimeGetBacktrace(void)
 #endif
 }
 
-static AvmEnv env;
-
 str AvmRuntimeGetProgramName(void)
 {
     return AvmState._args[0];
