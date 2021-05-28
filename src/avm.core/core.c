@@ -46,13 +46,13 @@ static void ExceptionHandler(int exception)
     switch (exception)
     {
     case SIGSEGV:
-        AvmPanic(InvalidPtrDerefMsg);
+        AvmThrowError(InvalidPtrDerefMsg);
         break;
     case SIGILL:
-        AvmPanic(IllegalInstructionMsg);
+        AvmThrowError(IllegalInstructionMsg);
         break;
     case SIGFPE:
-        AvmPanic(ArithmeticExceptionMsg);
+        AvmThrowError(ArithmeticExceptionMsg);
         break;
     default:
         break;

@@ -27,8 +27,8 @@ AvmError* AvmStreamSeek(AvmStream* self, _long offset, AvmSeekOrigin origin)
 
     if (origin == SeekOriginEnd && offset > 0)
     {
-        AvmPanic("Parameter `offset` must be smaller or equal to 0, if "
-                 "SeekOriginEnd is specified.");
+        AvmThrowError("Parameter `offset` must be smaller or equal to 0, if "
+                      "SeekOriginEnd is specified.");
     }
 
     AvmFunction func = AvmObjectGetType(self)->_vPtr[FnEntrySeek];

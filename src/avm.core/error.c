@@ -74,35 +74,90 @@ AvmError* AvmErrorNew(str message)
     return e;
 }
 
-never AvmPanicEx(str message, str function, str file, uint line)
+//
+// AvmLocation
+//
+
+static AvmString AvmLocationToString(AvmLocation* self)
 {
-    AvmErrorf("Panic in file %s:%u in function %s()\n\n%s\n",
-              file,
-              line,
-              function,
-              message);
-
-    AvmString s = AvmRuntimeGetBacktrace();
-    AvmErrorf("%v\n", &s);
-    exit(1);
-}
-
-static thread_local AvmThrowCallback AvmThrowHandler;
-
-void AvmCatch(AvmThrowCallback handler)
-{
-    AvmThrowHandler = handler;
-}
-
-void AvmThrow(object value)
-{
-    AvmString s = AvmRuntimeGetBacktrace();
-
-    if (AvmThrowHandler != NULL)
+    pre
     {
-        AvmThrowHandler(value, s);
+        assert(self != NULL);
     }
 
-    AvmErrorf("Uncaught object of type %T.\n\n%v\n%v\n", value, value, &s);
+    return AvmStringFormat("%s:%u", self->File, self->Line);
+}
+
+AVM_TYPE(AvmLocation,
+         object,
+         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
+
+typedef struct
+{
+    const AvmType* _filter;
+    AvmThrowCallback _handler;
+} CatchEntry;
+
+#define AVM_MAX_CATCH_HOOKS 32
+
+static thread_local uint CatchEntryCount = 0;
+static thread_local CatchEntry CatchEntries[AVM_MAX_CATCH_HOOKS];
+
+void AvmCatch(const AvmType* type, AvmThrowCallback handler)
+{
+    if (CatchEntryCount > AVM_MAX_CATCH_HOOKS)
+    {
+        CatchEntryCount--;
+    }
+
+    CatchEntries[CatchEntryCount]._filter = type;
+    CatchEntries[CatchEntryCount]._handler = handler;
+    CatchEntryCount++;
+}
+
+static void DefaultThrowHandler(AvmLocation location,
+                                object value,
+                                AvmString backtrace)
+{
+
+    AvmErrorf("Uncaught object of type %T thrown from %v.\n\n%v\n%v\n",
+              value,
+              &location,
+              value,
+              &backtrace);
+
     exit(EXIT_FAILURE);
+}
+
+static AvmThrowCallback FindHandler(const AvmType* type)
+{
+    for (size_t i = 0; i < CatchEntryCount; i++)
+    {
+        const AvmType* filter = CatchEntries[i]._filter;
+        if (filter == type || AvmTypeInheritsFrom(type, filter))
+        {
+            if (CatchEntries[i]._handler != NULL)
+            {
+                return CatchEntries[i]._handler;
+            };
+        }
+    }
+
+    return DefaultThrowHandler;
+}
+
+void AvmThrow(AvmLocation location, object value)
+{
+    pre
+    {
+        assert(value != NULL);
+    }
+
+    const AvmType* type = AvmObjectGetType(value);
+    AvmThrowCallback callback = FindHandler(type);
+
+    if (callback != NULL)
+    {
+        callback(location, value, AvmRuntimeGetBacktrace());
+    }
 }

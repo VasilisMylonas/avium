@@ -24,10 +24,26 @@
 #ifndef AVIUM_ERROR_H
 #define AVIUM_ERROR_H
 
+#include "avium/typeinfo.h"
 #include "avium/types.h"
 
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
+
+/// Represents a location in source code.
+AVM_CLASS(AvmLocation, object, {
+    str File;
+    uint Line;
+    uint Column;
+});
+
+/// Expands to an AvmLocation instance for the current location.
+#define here                                                                   \
+    (AvmLocation)                                                              \
+    {                                                                          \
+        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
+        ._type = typeid(AvmLocation),                                          \
+    }
 
 /**
  * @brief Creates an AvmError with a message.
@@ -49,28 +65,30 @@ AVMAPI AvmError* AvmErrorNew(str message);
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
-typedef void (*AvmThrowCallback)(object, AvmString);
-
-AVMAPI void AvmThrow(object value);
-AVMAPI void AvmCatch(AvmThrowCallback handler);
+/// The callback function used by AvmCatch, ideally it should never return.
+typedef void (*AvmThrowCallback)(AvmLocation, object, AvmString);
 
 /**
- * @brief Aborts execution, printing a message and location information.
+ * @brief Throws an object to be caught by a handler, or the runtime itself.
  *
- * @param message The message to print.
- */
-#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
-
-/**
- * @brief Aborts execution, printing a message and location information.
+ * @pre Parameter @p value must be not null.
  *
- * @param message The message to be printed.
- * @param function The function name.
- * @param file The file name.
- * @param line The line number.
- *
+ * @param location The location from which the object is thrown, typically here.
+ * @param value The object to be thrown.
  * @return This function never returns.
  */
-AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
+AVMAPI never AvmThrow(AvmLocation location, object value);
+
+/**
+ * @brief Sets a handler to catch incoming thrown objects.
+ *
+ * If @p handler is NULL, the default handler is restored.
+ *
+ * @param type The type of objects to catch.
+ * @param handler The handler.
+ */
+AVMAPI void AvmCatch(const AvmType* type, AvmThrowCallback handler);
+
+#define AvmThrowError(message) AvmThrow(here, AvmErrorNew(message))
 
 #endif // AVIUM_ERROR_H

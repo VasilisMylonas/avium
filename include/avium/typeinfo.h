@@ -68,21 +68,6 @@ typedef enum
 #endif
 // clang-format on
 
-/// Represents a location in source code.
-AVM_CLASS(AvmLocation, object, {
-    str File;
-    uint Line;
-    uint Column;
-});
-
-/// Expands to an AvmLocation instance for the current location.
-#define here                                                                   \
-    (AvmLocation)                                                              \
-    {                                                                          \
-        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
-        ._type = typeid(AvmLocation),                                          \
-    }
-
 /**
  * @brief Generates type info for a type.
  *

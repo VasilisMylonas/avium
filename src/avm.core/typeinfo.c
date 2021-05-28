@@ -17,20 +17,6 @@ object __AvmRuntimeCastFail(object value, const AvmType* type)
     exit(EXIT_FAILURE);
 }
 
-static AvmString AvmLocationToString(AvmLocation* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFormat("%s:%u", self->File, self->Line);
-}
-
-AVM_TYPE(AvmLocation,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
-
 str AvmTypeGetName(const AvmType* self)
 {
     pre
@@ -63,7 +49,7 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         return self->_vPtr[index];
     }
 
-    AvmPanic(VirtualFuncError);
+    AvmThrowError(VirtualFuncError);
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
@@ -187,7 +173,7 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
         }
     }
 
-    AvmPanic(EnumConstantNotPresentError);
+    AvmThrowError(EnumConstantNotPresentError);
 }
 
 _long AvmEnumGetValueOf(const AvmEnum* self, str name)
@@ -211,7 +197,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
         }
     }
 
-    AvmPanic(EnumConstantNotPresentError);
+    AvmThrowError(EnumConstantNotPresentError);
 }
 
 static AvmString AvmEnumToString(AvmEnum* self)

@@ -225,7 +225,7 @@ AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
     case NumericBaseHex:
         break;
     default:
-        AvmPanic(NumericBaseOutOfRangeMsg);
+        AvmThrowError(NumericBaseOutOfRangeMsg);
     }
 
     AvmString s = AvmStringNew(8);
@@ -488,7 +488,7 @@ char AvmStringCharAt(const AvmString* self, uint index)
         return self->_buffer[index];
     }
 
-    AvmPanic(RangeError);
+    AvmThrowError(RangeError);
 }
 
 //
