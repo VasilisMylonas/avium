@@ -29,7 +29,6 @@
 #ifdef AVM_USE_IO
 
 #include "avium/core.h"
-#include "avium/error.h"
 
 /// Represents a C file handle.
 typedef void* AvmFileHandle;

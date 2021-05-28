@@ -1,5 +1,4 @@
 #include "avium/core.h"
-#include "avium/error.h"
 
 #undef main
 

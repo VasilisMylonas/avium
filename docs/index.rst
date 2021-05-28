@@ -7,7 +7,6 @@ Welcome to Avium's documentation!
 
    codegen
    core
-   error
    file
    io
    path

@@ -1,5 +1,3 @@
-#include "avium/error.h"
-
 #include "avium/core.h"
 #include "avium/string.h"
 #include "avium/testing.h"

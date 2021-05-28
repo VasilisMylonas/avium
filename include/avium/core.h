@@ -24,6 +24,7 @@
 #ifndef AVIUM_CORE_H
 #define AVIUM_CORE_H
 
+#include "avium/typeinfo.h"
 #include "avium/types.h"
 
 #if defined AVM_GNU && defined AVM_LINUX
@@ -237,9 +238,100 @@ AVMAPI void AvmErrorf(str format, ...);
  */
 AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
 
-AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
+/// A type representing an error.
+AVM_INTERFACE(AvmError);
+
+/// Represents a location in source code.
+AVM_CLASS(AvmLocation, object, {
+    str File;
+    uint Line;
+    uint Column;
+});
+
+/// Expands to an AvmLocation instance for the current location.
+#define here                                                                   \
+    (AvmLocation)                                                              \
+    {                                                                          \
+        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
+        ._type = typeid(AvmLocation),                                          \
+    }
+
+/**
+ * @brief Creates an AvmError with a message.
+ *
+ * @pre Parameter @p message must be not null.
+ *
+ * @param message The error message.
+ * @return The created instance.
+ */
+AVMAPI AvmError* AvmErrorNew(str message);
+
+/**
+ * @brief Creates an AvmError from an OS code.
+ *
+ * If the code is 0 then a 'successful' error is created.
+ *
+ * @param code The error code.
+ * @return The created instance.
+ */
+AVMAPI AvmError* AvmErrorFromOSCode(int code);
+
+#include <setjmp.h>
+
+/// Begins a try block.
+#define try                                                                    \
+    AvmThrowContext AVM_UNIQUE(__avmThrownContext);                            \
+    __AvmRuntimePushThrowContext(&AVM_UNIQUE(__avmThrownContext));             \
+    for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)                          \
+        if (__avmTLC == 1)                                                     \
+        {                                                                      \
+            if (__AvmRuntimeGetThrowContext()->_thrownObject == NULL)          \
+            {                                                                  \
+                __AvmRuntimePopThrowContext();                                 \
+                break;                                                         \
+            }                                                                  \
+            __AvmRuntimeThrow(__AvmRuntimePopThrowContext()->_thrownObject);   \
+        }                                                                      \
+        else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
+
+// clang-format off
+
+/// Begins a catch block for type T.
+#define catch(T, name)                                                         \
+    else if (instanceof(T, __AvmRuntimeGetThrowContext()->_thrownObject) &&    \
+                 __AvmRuntimeGetThrowContext() != NULL &&                      \
+                 (__avmTLC = 2) ==                                             \
+                     2) for (object name =                                     \
+                                 __AvmRuntimePopThrowContext()->_thrownObject; \
+                             name != NULL;                                     \
+                             name = NULL)
+
+// clang-format on
+
+/**
+ * @brief Throws an object.
+ *
+ * The object must be heap-allocated.
+ *
+ * @pre Parameter @p value must be not null.
+ *
+ * @param value The object to throw.
+ */
+#define throw(value) __AvmRuntimeThrow(value)
 
 #ifndef DOXYGEN
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    object _thrownObject;
+    jmp_buf _jumpBuffer;
+});
+
+AVMAPI never __AvmRuntimeThrow(object value);
+AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
+AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
+AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+
+AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 #endif // DOXYGEN
 

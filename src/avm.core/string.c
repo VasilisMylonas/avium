@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "avium/core.h"
-#include "avium/error.h"
 #include "avium/private/errors.h"
 #include "avium/private/resources.h"
 #include "avium/testing.h"
