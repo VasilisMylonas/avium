@@ -10,15 +10,14 @@ int main(int argc, str argv[])
 {
     AvmRuntimeInit(argc, argv);
 
-    AvmThrowContext context;
-    __AvmRuntimePushThrowContext(&context);
-    if (setjmp(context._jumpBuffer) == 0)
+    try
     {
         AvmMain();
     }
-    else
+    catch (object, e)
     {
         AvmErrorf("Unhandled exception: TODO\n");
+        AvmErrorf("%v\n", e);
         return 1;
     }
 
