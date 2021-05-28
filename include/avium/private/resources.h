@@ -18,6 +18,8 @@
 #define VIRTUAL_CALL(TReturn, E, ...) VIRTUAL_CALL_(TReturn, E, __VA_ARGS__)
 #endif
 
+#define AVM_RUNTIME_NAME "Avium x86_64 Runtime Environment"
+
 #define BACKTRACE_MAX_SYMBOLS 128
 #define AVM_FLOAT_BUFFER_SIZE 128
 #define READ_LINE_CAPACITY    32

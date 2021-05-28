@@ -2,7 +2,6 @@ add_library(avm.core
     core.c
     string.c
     typeinfo.c
-    types.c
 )
 
 if(USE_GC)

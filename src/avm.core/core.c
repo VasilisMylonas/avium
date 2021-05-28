@@ -26,68 +26,216 @@
 #include <execinfo.h>
 #endif
 
-void* AvmAlloc(size_t size)
+const AvmType* AvmObjectGetType(object self)
 {
-    return AVM_ALLOC(size);
-}
-
-void* AvmRealloc(void* memory, size_t size)
-{
-    return AVM_REALLOC(memory, size);
-}
-
-void AvmDealloc(void* memory)
-{
-    AVM_DEALLOC(memory);
-}
-
-static void AvmHandleException(int exception)
-{
-    switch (exception)
+    pre
     {
-    case SIGSEGV:
-        AvmErrorf("%s\n", InvalidPtrDerefMsg);
-        break;
-    case SIGILL:
-        AvmErrorf("%s\n", IllegalInstructionMsg);
-        break;
-    case SIGFPE:
-        AvmErrorf("%s\n", ArithmeticExceptionMsg);
-        break;
-    default:
-        break;
+        assert(self != NULL);
     }
 
-    exit(EXIT_FAILURE);
+    // The first member of an object should be a const AvmType*
+    // Look in types.h for AVM_CLASS
+    return *(const AvmType**)self;
 }
 
-static struct
+//
+// Virtual calls.
+//
+
+bool AvmObjectEquals(object self, object other)
 {
-    str* _args;
-    AvmVersion _version;
-} AvmState;
+    VIRTUAL_CALL(bool, FnEntryEquals, self, other);
+}
+
+void AvmObjectDestroy(object self)
+{
+    VIRTUAL_CALL(void, FnEntryDtor, self);
+}
+
+object AvmObjectClone(object self)
+{
+    VIRTUAL_CALL(object, FnEntryClone, self);
+}
+
+AvmString AvmObjectToString(object self)
+{
+    VIRTUAL_CALL(AvmString, FnEntryToString, self);
+}
+
+//
+// Default implementations.
+//
+
+static void AvmObjectDestroyDefault(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    (void)self;
+}
+
+static bool AvmObjectEqualsDefault(object self, object other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    const size_t size = AvmTypeGetSize(AvmObjectGetType(self));
+    return memcmp(self, other, size) == 0;
+}
+
+static object AvmObjectCloneDefault(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    uint size = AvmTypeGetSize(AvmObjectGetType(self));
+    void* memory = AvmAlloc(size);
+    AvmCopy(self, size, (byte*)memory);
+    return memory;
+}
+
+static AvmString AvmObjectToStringDefault(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(
+        "%s [%x]", AvmTypeGetName(AvmObjectGetType(self)), self);
+}
+
+//
+// Type info for primitive types.
+//
+
+AVM_TYPE(object,
+         object,
+         {
+             [FnEntryDtor] = (AvmFunction)AvmObjectDestroyDefault,
+             [FnEntryEquals] = (AvmFunction)AvmObjectEqualsDefault,
+             [FnEntryClone] = (AvmFunction)AvmObjectCloneDefault,
+             [FnEntryToString] = (AvmFunction)AvmObjectToStringDefault,
+         });
+
+// TODO: Override functions.
+AVM_TYPE(_long, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(ulong, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(int, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(uint, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(short, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(ushort, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(char, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(byte, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(str, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(float, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(double, object, {[FnEntryDtor] = NULL});
+
+//
+// AvmLocation type.
+//
+
+static AvmString AvmLocationToString(AvmLocation* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("%s:%u", self->File, self->Line);
+}
+
+AVM_TYPE(AvmLocation,
+         object,
+         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
+
+AvmLocation AvmLocationFrom(str file, uint line, uint column)
+{
+    pre
+    {
+        assert(file != NULL);
+    }
+
+    return (AvmLocation){
+        ._type = typeid(AvmLocation),
+        .File = file,
+        .Line = line,
+        .Column = column,
+    };
+}
+
+//
+// AvmVersion type.
+//
+
+static AvmString AvmVersionToString(AvmVersion* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
+}
+
+AVM_TYPE(AvmVersion,
+         object,
+         {[FnEntryToString] = (AvmFunction)AvmVersionToString});
+
+AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
+{
+    return (AvmVersion){
+        ._type = typeid(AvmVersion),
+        .Major = major,
+        .Minor = minor,
+        .Patch = patch,
+    };
+}
+
+//
+// Builtin runtime functions.
+//
+
+// TODO: Properly implement.
+AVM_TYPE(AvmRuntime, object, {[FnEntryDtor] = NULL});
+
+static thread_local AvmRuntime __AvmRuntimeState;
 
 void AvmRuntimeInit(int argc, str argv[])
 {
-    (void)argc;
-
-    AvmState._args = argv;
-    AvmState._version =
+    __AvmRuntimeState._type = typeid(AvmRuntime);
+    __AvmRuntimeState._argc = (uint)(argc - 1);
+    __AvmRuntimeState._argv = argv + 1;
+    __AvmRuntimeState._name = AVM_RUNTIME_NAME;
+    __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 }
 
-void AvmRuntimeEnableExceptions(void)
+str AvmRuntimeGetProgramName(void)
 {
-    signal(SIGSEGV, AvmHandleException);
-    signal(SIGILL, AvmHandleException);
-    signal(SIGFPE, AvmHandleException);
+    return __AvmRuntimeState._argv[0];
 }
 
-void AvmRuntimeDisableExceptions(void)
+AvmVersion AvmRuntimeGetVersion(void)
 {
-    signal(SIGSEGV, SIG_DFL);
-    signal(SIGILL, SIG_DFL);
-    signal(SIGFPE, SIG_DFL);
+    return __AvmRuntimeState._version;
+}
+
+uint AvmRuntimeGetArgCount(void)
+{
+    return __AvmRuntimeState._argc;
+}
+
+str* AvmRuntimeGetArgs(void)
+{
+    return __AvmRuntimeState._argv;
 }
 
 AvmString AvmRuntimeGetBacktrace(void)
@@ -120,57 +268,24 @@ AvmString AvmRuntimeGetBacktrace(void)
 #endif
 }
 
-str AvmRuntimeGetProgramName(void)
+//
+// Allocation functions.
+//
+
+void* AvmAlloc(size_t size)
 {
-    return AvmState._args[0];
+    return AVM_ALLOC(size);
 }
 
-AvmVersion AvmRuntimeGetVersion(void)
+void* AvmRealloc(void* memory, size_t size)
 {
-    return AvmState._version;
+    return AVM_REALLOC(memory, size);
 }
 
-str* AvmRuntimeGetArgs(void)
+void AvmDealloc(void* memory)
 {
-    return AvmState._args + 1;
+    AVM_DEALLOC(memory);
 }
-
-#ifdef AVM_USE_GC
-void AvmGCForceCollect(void)
-{
-    GC_gcollect();
-}
-
-void AvmGCDisable(void)
-{
-    GC_disable();
-}
-
-void AvmGCEnable(void)
-{
-    GC_enable();
-}
-
-ulong AvmGCGetTotalBytes(void)
-{
-    return GC_get_total_bytes();
-}
-
-ulong AvmGCGetFreeBytes(void)
-{
-    return GC_get_free_bytes();
-}
-
-ulong AvmGCGetUsedBytes(void)
-{
-    return GC_get_memory_use();
-}
-
-ulong AvmGCGetHeapSize(void)
-{
-    return GC_get_heap_size();
-}
-#endif
 
 void AvmCopy(object o, size_t size, byte* destination)
 {
@@ -277,63 +392,6 @@ void AvmErrorf(str format, ...)
     va_end(args);
 }
 
-static AvmString AvmVersionToString(AvmVersion* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
-}
-
-AVM_TYPE(AvmVersion,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmVersionToString});
-
-AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
-{
-    return (AvmVersion){
-        ._type = typeid(AvmVersion),
-        .Major = major,
-        .Minor = minor,
-        .Patch = patch,
-    };
-}
-
-#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
-    for (size_t i = 0; i < length; i++)                                        \
-    {                                                                          \
-        ((T1*)stack)[i] = (T1)va_arg(args, T2);                                \
-    }                                                                          \
-                                                                               \
-    return stack;
-
-void* __AvmVaListToArray(void* stack, va_list args, uint size, uint length)
-{
-    pre
-    {
-        assert(stack != NULL);
-        assert(args != NULL);
-        assert(size != 0);
-        assert(length != 0);
-    }
-
-    switch (size)
-    {
-    case 1:
-        VA_LIST_TO_ARRAY_IMPL(byte, uint);
-    case 2:
-        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
-    case 4:
-        VA_LIST_TO_ARRAY_IMPL(uint, uint);
-    case 8:
-        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
-    default:
-        return NULL; // TODO: ERROR
-    }
-}
-
 //
 // AvmNativeError
 //
@@ -399,24 +457,6 @@ AvmError* AvmErrorNew(str message)
     return e;
 }
 
-//
-// AvmLocation
-//
-
-static AvmString AvmLocationToString(AvmLocation* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFormat("%s:%u", self->File, self->Line);
-}
-
-AVM_TYPE(AvmLocation,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
-
 static thread_local AvmThrowContext* AvmGlobalThrowContext;
 
 AVM_TYPE(AvmThrowContext, object, {[FnEntryDtor] = NULL});
@@ -451,3 +491,74 @@ never __AvmRuntimeThrow(object value)
     AvmGlobalThrowContext->_thrownObject = value;
     longjmp(AvmGlobalThrowContext->_jumpBuffer, 1);
 }
+
+// static void AvmHandleException(int exception)
+// {
+//     switch (exception)
+//     {
+//     case SIGSEGV:
+//         AvmErrorf("%s\n", InvalidPtrDerefMsg);
+//         break;
+//     case SIGILL:
+//         AvmErrorf("%s\n", IllegalInstructionMsg);
+//         break;
+//     case SIGFPE:
+//         AvmErrorf("%s\n", ArithmeticExceptionMsg);
+//         break;
+//     default:
+//         break;
+//     }
+
+//     exit(EXIT_FAILURE);
+// }
+
+// void AvmRuntimeEnableExceptions(void)
+// {
+//     signal(SIGSEGV, AvmHandleException);
+//     signal(SIGILL, AvmHandleException);
+//     signal(SIGFPE, AvmHandleException);
+// }
+
+// void AvmRuntimeDisableExceptions(void)
+// {
+//     signal(SIGSEGV, SIG_DFL);
+//     signal(SIGILL, SIG_DFL);
+//     signal(SIGFPE, SIG_DFL);
+// }
+
+// #ifdef AVM_USE_GC
+// void AvmGCForceCollect(void)
+// {
+//     GC_gcollect();
+// }
+
+// void AvmGCDisable(void)
+// {
+//     GC_disable();
+// }
+
+// void AvmGCEnable(void)
+// {
+//     GC_enable();
+// }
+
+// ulong AvmGCGetTotalBytes(void)
+// {
+//     return GC_get_total_bytes();
+// }
+
+// ulong AvmGCGetFreeBytes(void)
+// {
+//     return GC_get_free_bytes();
+// }
+
+// ulong AvmGCGetUsedBytes(void)
+// {
+//     return GC_get_memory_use();
+// }
+
+// ulong AvmGCGetHeapSize(void)
+// {
+//     return GC_get_heap_size();
+// }
+// #endif

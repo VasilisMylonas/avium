@@ -44,14 +44,16 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
+    // TODO!!!
+    // BUG: very likely
     if (index < self->_vSize)
     {
-        if (self->_vPtr[index] == NULL)
+        if (self->_vPtr[index] != NULL || self == typeid(object))
         {
-            return AvmTypeGetFunction(self->_baseType, index);
+            return self->_vPtr[index];
         }
 
-        return self->_vPtr[index];
+        return AvmTypeGetFunction(self->_baseType, index);
     }
 
     throw(AvmErrorNew(VirtualFuncError));

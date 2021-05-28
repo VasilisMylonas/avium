@@ -2,8 +2,8 @@
  * @file avium/core.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Avium core runtime utilities.
- * @version 0.3
- * @date 2021-05-09
+ * @version 0.3.5
+ * @date 2021-05-28
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -27,18 +27,13 @@
 #include "avium/typeinfo.h"
 #include "avium/types.h"
 
+#include <setjmp.h>
+
 #if defined AVM_GNU && defined AVM_LINUX
 #pragma weak AvmAlloc
 #pragma weak AvmRealloc
 #pragma weak AvmDealloc
 #endif
-
-/// A type representing a software version in the format: N.N.N
-AVM_CLASS(AvmVersion, object, {
-    ushort Major; ///< The major version.
-    ushort Minor; ///< The minor version.
-    ushort Patch; ///< The patch version.
-});
 
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
@@ -47,7 +42,31 @@ AVM_CLASS(AvmVersion, object, {
 #define AvmInvalid ((uint)-1)
 
 /**
+ * @defgroup AvmObjectFunctions Universal object instance functions.
+ *
+ * These functions provide the basic facilities for the rest of the Avium type
+ * system.
+ *
+ * @{
+ */
+
+/**
  * @brief Gets information about the type of an object.
+ *
+ * You should use this function to get the type of an object. This assumes that
+ * the ._type field is correctly initialized by the object constructor.
+ *
+ * This function returns the actual runtime type of an object bypassing any base
+ * types. That is, for an object of type T where T inherits from another type B,
+ * this function will always return typeid(T) regardless if the object is passed
+ * as a T* or a B*.
+ *
+ * To check if an object is an instance of a type (possibly derived) use the
+ * instanceof macro.
+ *
+ * To handle the returning AvmType instance, you may need to include typeinfo.h
+ *
+ * This function is not overridable.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -59,9 +78,13 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 /**
  * @brief Compares two objects for equality.
  *
- * This function tries to use the FnEntryEquals virtual function entry. If no
- * such virtual function is available then the objects are compared
- * byte-by-byte.
+ * This function compares 2 objects for value equality, that is both objects
+ * in-memory representation must be exactly the same for this function to return
+ * true.
+ *
+ * Overriding this function may be especially desirable for non-trivial types.
+ *
+ * This function is overridable by the FnEntryEquals entry in the VFT.
  *
  * @pre Parameter @p self must be not null.
  * @pre Parameter @p other must be not null.
@@ -76,8 +99,13 @@ AVMAPI bool AvmObjectEquals(object self, object other);
 /**
  * @brief Destroys an object.
  *
- * This function tries to use the FnEntryDtor virtual function entry. If no
- * such virtual function then this function does nothing.
+ * This function is called automatically if the garbage collector is used to
+ * allocate an object, otherwise this should be called when an object is no
+ * longer needed.
+ *
+ * This function is overridable by the FnEntryDtor entry in the VFT.
+ *
+ * The default implementation does nothing.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -88,9 +116,12 @@ AVMAPI void AvmObjectDestroy(object self);
 /**
  * @brief Clones an object, creating an exact copy.
  *
- * This function tries to use the FnEntryClone virtual function entry. If no
- * such virtual function is available then a the object is simply copied to
- * heap memory.
+ * Creates an exact clone of an objects such as that AvmObjectEquals returns
+ * true by copying the object to heap memory.
+ *
+ * This function should be overriden if an object contains pointers.
+ *
+ * This function is overridable by the FnEntryClone entry in the VFT.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -102,9 +133,10 @@ AVMAPI object AvmObjectClone(object self);
 /**
  * @brief Creates a string representation of an object.
  *
- * This function tries to use the FnEntryToString virtual function entry. If
- * no such virtual function is available then a default representation is
- * returned.
+ * This function creates a simple object-identifying string. Overriding this
+ * function to provided a more helpful representation may be useful.
+ *
+ * This function is overridable by the FnEntryToString entry in the VFT.
  *
  * @pre Parameter @p self must be not null.
  *
@@ -113,11 +145,77 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
+/// @}
+
+/**
+ * @defgroup AvmMiscTypes Miscellaneous value types.
+ *
+ * Types for things such as source code locations and program versions.
+ *
+ * @{
+ */
+
+/// Represents a location in source code.
+AVM_CLASS(AvmLocation, object, {
+    str File;    ///< The file name.
+    uint Line;   ///< The line number.
+    uint Column; ///< The column number.
+});
+
+/**
+ * @brief Creates a new AvmLocation instance.
+ *
+ * @param file The file name.
+ * @param line The line number.
+ * @param column The column.
+ *
+ * @return The created instance.
+ */
+AVMAPI AvmLocation AvmLocationFrom(str file, uint line, uint column);
+
+/// A type representing a software version in the format: N.N.N
+AVM_CLASS(AvmVersion, object, {
+    ushort Major; ///< The major version.
+    ushort Minor; ///< The minor version.
+    ushort Patch; ///< The patch version.
+});
+
+/**
+ * @brief Creates a new AvmVersion instance.
+ *
+ * @param major The version major number (incremented at breaking changes).
+ * @param minor The version minor number (incremented at non-breaking changes).
+ * @param patch The version patch number (incremented at bug fixes).
+ *
+ * @return The created instance.
+ */
+AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
+
+/// @}
+
+/**
+ * @defgroup AvmRuntimeFunctions Builtin runtime functions.
+ *
+ * These functions provide the core features of the Avium runtime.
+ *
+ * @{
+ */
+
+/// Holds the state for the Avium runtime.
+AVM_CLASS(AvmRuntime, object, {
+    uint _argc;
+    str* _argv;
+    str _name;
+    AvmVersion _version;
+});
+
 /**
  * @brief Initializes the Avium runtime.
  *
  * Many Avium functions cannot be called without initializing the runtime
  * first.
+ *
+ * When using the whole framework, this function is called automatically.
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
@@ -132,41 +230,35 @@ AVMAPI void AvmRuntimeInit(int argc, str argv[]);
 AVMAPI str AvmRuntimeGetProgramName(void);
 
 /**
- * @brief Returns the current runtime version.
- *
- * @return The current runtime version.
- */
-AVMAPI AvmVersion AvmRuntimeGetVersion(void);
-
-/// Enables signal catching.
-AVMAPI void AvmRuntimeEnableExceptions(void);
-
-/// Disables signal catching.
-AVMAPI void AvmRuntimeDisableExceptions(void);
-
-/**
- * @brief Captures a backtrace, if available.
- *
- * @return The backtrace, or a symbolic string.
- */
-AVMAPI AvmString AvmRuntimeGetBacktrace(void);
-
-/**
  * @brief Returns a pointer to the program arguments.
  *
  * @return The program arguments.
  */
 AVMAPI str* AvmRuntimeGetArgs(void);
 
-#ifdef AVM_USE_GC
-AVMAPI void AvmGCForceCollect(void);
-AVMAPI void AvmGCDisable(void);
-AVMAPI void AvmGCEnable(void);
-AVMAPI ulong AvmGCGetTotalBytes(void);
-AVMAPI ulong AvmGCGetFreeBytes(void);
-AVMAPI ulong AvmGCGetUsedBytes(void);
-AVMAPI ulong AvmGCGetHeapSize(void);
-#endif
+/**
+ * @brief Captures a stack backtrace, if available.
+ *
+ * @return The backtrace, or a symbolic string.
+ */
+AVMAPI AvmString AvmRuntimeGetBacktrace(void);
+
+/**
+ * @brief Returns the current runtime version.
+ *
+ * @return The current runtime version.
+ */
+AVMAPI AvmVersion AvmRuntimeGetVersion(void);
+
+/// @}
+
+/**
+ * @defgroup AvmAllocationFunctions Memory allocation functions.
+ *
+ * These functions provide access to the memory allocator.
+ *
+ * @{
+ */
 
 /**
  * @brief Allocates heap memory.
@@ -192,17 +284,15 @@ AVMAPI void* AvmRealloc(void* memory, size_t size);
  */
 AVMAPI void AvmDealloc(void* memory);
 
+/// @}
+
 /**
- * @brief Copies an object to a memory block.
+ * @defgroup AvmFundamentalIO Fundamental IO functions.
  *
- * @pre Parameter @p o must be not null.
- * @pre Parameter @p destination must be not null.
- *
- * @param o The object to copy.
- * @param size The size of the destination buffer.
- * @param destination The memory block to copy to.
+ * @{
  */
-AVMAPI void AvmCopy(object o, size_t size, byte* destination);
+
+// TODO: Document this finally.
 
 AVMAPI void AvmVScanf(str format, va_list args);
 AVMAPI void AvmVPrintf(str format, va_list args);
@@ -212,49 +302,16 @@ AVMAPI void AvmScanf(str format, ...);
 AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
-/**
- * @brief Creates an array from a va_list.
- *
- * @pre Parameter @p N must be not zero.
- * @pre Parameter @p args must be not null.
- *
- * @param T The type of the array elements.
- * @param N The length of the array.
- * @param args The va_list.
- *
- * @return The created array.
- */
-#define va_array(T, N, args)                                                   \
-    (T*)__AvmVaListToArray(AvmAlloc(sizeof(T) * N), args, sizeof(T), N);
+/// @}
 
 /**
- * @brief Creates a new AvmVersion instance.
+ * @defgroup AvmErrorHandling Error handling utilities.
  *
- * @param major The version major number (incremented at breaking changes).
- * @param minor The version minor number (incremented at non-breaking changes).
- * @param patch The version patch number (incremented at bug fixes).
- *
- * @return The created instance.
+ * @{
  */
-AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
 
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
-
-/// Represents a location in source code.
-AVM_CLASS(AvmLocation, object, {
-    str File;
-    uint Line;
-    uint Column;
-});
-
-/// Expands to an AvmLocation instance for the current location.
-#define here                                                                   \
-    (AvmLocation)                                                              \
-    {                                                                          \
-        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
-        ._type = typeid(AvmLocation),                                          \
-    }
 
 /**
  * @brief Creates an AvmError with a message.
@@ -275,8 +332,6 @@ AVMAPI AvmError* AvmErrorNew(str message);
  * @return The created instance.
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
-
-#include <setjmp.h>
 
 /// Begins a try block.
 #define try                                                                    \
@@ -319,6 +374,20 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  */
 #define throw(value) __AvmRuntimeThrow(value)
 
+/// @}
+
+/**
+ * @brief Copies an object to a memory block.
+ *
+ * @pre Parameter @p o must be not null.
+ * @pre Parameter @p destination must be not null.
+ *
+ * @param o The object to copy.
+ * @param size The size of the destination buffer.
+ * @param destination The memory block to copy to.
+ */
+AVMAPI void AvmCopy(object o, size_t size, byte* destination);
+
 #ifndef DOXYGEN
 AVM_CLASS(AvmThrowContext, object, {
     AvmThrowContext* _prev;
@@ -331,8 +400,17 @@ AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
 
-AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 #endif // DOXYGEN
+
+// #ifdef AVM_USE_GC
+// AVMAPI void AvmGCForceCollect(void);
+// AVMAPI void AvmGCDisable(void);
+// AVMAPI void AvmGCEnable(void);
+// AVMAPI ulong AvmGCGetTotalBytes(void);
+// AVMAPI ulong AvmGCGetFreeBytes(void);
+// AVMAPI ulong AvmGCGetUsedBytes(void);
+// AVMAPI ulong AvmGCGetHeapSize(void);
+// #endif
 
 #endif // AVIUM_CORE_H
