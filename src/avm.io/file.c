@@ -44,7 +44,7 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
         mode = "a+";
         break;
     default:
-        AvmThrowError(InvalidAccessMsg);
+        throw(AvmErrorNew(InvalidAccessMsg));
     }
 
     FILE* file = fopen(path, mode);
@@ -123,7 +123,7 @@ AvmError* AvmFileCopy(str source, str destination)
     (void)destination;
 
     // TODO
-    AvmThrowError(InternalError);
+    throw(AvmErrorNew(InternalError));
 }
 
 static AvmError* AvmFilePerform(str path,
@@ -160,7 +160,7 @@ static AvmError* AvmFilePerform(str path,
         error = AvmStreamWrite(stream, length, buffer);
         break;
     default:
-        AvmThrowError(InternalError);
+        throw(AvmErrorNew(InternalError));
         break;
     }
 

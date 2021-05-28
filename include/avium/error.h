@@ -65,30 +65,45 @@ AVMAPI AvmError* AvmErrorNew(str message);
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
-/// The callback function used by AvmCatch, ideally it should never return.
-typedef void (*AvmThrowCallback)(AvmLocation, object, AvmString);
+#include <setjmp.h>
 
-/**
- * @brief Throws an object to be caught by a handler, or the runtime itself.
- *
- * @pre Parameter @p value must be not null.
- *
- * @param location The location from which the object is thrown, typically here.
- * @param value The object to be thrown.
- * @return This function never returns.
- */
-AVMAPI never AvmThrow(AvmLocation location, object value);
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    jmp_buf _jumpBuffer;
+    object _thrownObject;
+});
 
-/**
- * @brief Sets a handler to catch incoming thrown objects.
- *
- * If @p handler is NULL, the default handler is restored.
- *
- * @param type The type of objects to catch.
- * @param handler The handler.
- */
-AVMAPI void AvmCatch(const AvmType* type, AvmThrowCallback handler);
+AVMAPI never __AvmRuntimeThrow(object value);
+AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
+AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
+AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
 
-#define AvmThrowError(message) AvmThrow(here, AvmErrorNew(message))
+#define try                                                                    \
+    AvmThrowContext AVM_UNIQUE(__avmThrownContext);                            \
+    __AvmRuntimePushThrowContext(&AVM_UNIQUE(__avmThrownContext));             \
+    for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)                          \
+        if (__avmTLC == 1)                                                     \
+        {                                                                      \
+            if (__AvmRuntimeGetThrowContext()->_thrownObject == NULL)          \
+            {                                                                  \
+                __AvmRuntimePopThrowContext();                                 \
+                break;                                                         \
+            }                                                                  \
+            __AvmRuntimeThrow(__AvmRuntimePopThrowContext()->_thrownObject);   \
+        }                                                                      \
+        else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
+
+// clang-format off
+#define catch(T, name)                                                               \
+    else if (instanceof(T, __AvmRuntimeGetThrowContext()->_thrownObject) &&    \
+                 __AvmRuntimeGetThrowContext() != NULL &&                      \
+                 (__avmTLC = 2) ==                                             \
+                     2) for (object name =                                     \
+                                 __AvmRuntimePopThrowContext()->_thrownObject; \
+                             name != NULL;                                     \
+                             name = NULL)
+// clang-format on
+
+#define throw(value) __AvmRuntimeThrow(value)
 
 #endif // AVIUM_ERROR_H

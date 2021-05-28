@@ -92,72 +92,112 @@ AVM_TYPE(AvmLocation,
          object,
          {[FnEntryToString] = (AvmFunction)AvmLocationToString});
 
-typedef struct
+// typedef struct
+// {
+//     const AvmType* _filter;
+//     AvmThrowCallback _handler;
+// } CatchEntry;
+
+// #define AVM_MAX_CATCH_HOOKS 32
+
+// static thread_local uint CatchEntryCount = 0;
+// static thread_local CatchEntry CatchEntries[AVM_MAX_CATCH_HOOKS];
+
+// void AvmCatch(const AvmType* type, AvmThrowCallback handler)
+// {
+//     if (CatchEntryCount > AVM_MAX_CATCH_HOOKS)
+//     {
+//         CatchEntryCount--;
+//     }
+
+//     CatchEntries[CatchEntryCount]._filter = type;
+//     CatchEntries[CatchEntryCount]._handler = handler;
+//     CatchEntryCount++;
+// }
+
+// static void DefaultThrowHandler(AvmLocation location,
+//                                 object value,
+//                                 AvmString backtrace)
+// {
+
+//     AvmErrorf("Uncaught object of type %T thrown from %v.\n\n%v\n%v\n",
+//               value,
+//               &location,
+//               value,
+//               &backtrace);
+
+//     exit(EXIT_FAILURE);
+// }
+
+// static AvmThrowCallback FindHandler(const AvmType* type)
+// {
+//     for (size_t i = 0; i < CatchEntryCount; i++)
+//     {
+//         const AvmType* filter = CatchEntries[i]._filter;
+//         if (filter == type || AvmTypeInheritsFrom(type, filter))
+//         {
+//             if (CatchEntries[i]._handler != NULL)
+//             {
+//                 return CatchEntries[i]._handler;
+//             };
+//         }
+//     }
+
+//     return DefaultThrowHandler;
+// }
+
+// void AvmThrow(AvmLocation location, object value)
+// {
+//     pre
+//     {
+//         assert(value != NULL);
+//     }
+
+//     const AvmType* type = AvmObjectGetType(value);
+//     AvmThrowCallback callback = FindHandler(type);
+
+//     if (callback != NULL)
+//     {
+//         callback(location, value, AvmRuntimeGetBacktrace());
+//     }
+
+//     // TODO: Should be impossible but we can't guarantee that the user
+//     callback
+//     // will never return.
+//     exit(EXIT_FAILURE);
+// }
+
+static thread_local AvmThrowContext* AvmGlobalThrowContext;
+
+AVM_TYPE(AvmThrowContext, object, {[FnEntryDtor] = NULL});
+
+AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {
-    const AvmType* _filter;
-    AvmThrowCallback _handler;
-} CatchEntry;
-
-#define AVM_MAX_CATCH_HOOKS 32
-
-static thread_local uint CatchEntryCount = 0;
-static thread_local CatchEntry CatchEntries[AVM_MAX_CATCH_HOOKS];
-
-void AvmCatch(const AvmType* type, AvmThrowCallback handler)
-{
-    if (CatchEntryCount > AVM_MAX_CATCH_HOOKS)
-    {
-        CatchEntryCount--;
-    }
-
-    CatchEntries[CatchEntryCount]._filter = type;
-    CatchEntries[CatchEntryCount]._handler = handler;
-    CatchEntryCount++;
+    return AvmGlobalThrowContext;
 }
 
-static void DefaultThrowHandler(AvmLocation location,
-                                object value,
-                                AvmString backtrace)
+void __AvmRuntimePushThrowContext(AvmThrowContext* context)
 {
-
-    AvmErrorf("Uncaught object of type %T thrown from %v.\n\n%v\n%v\n",
-              value,
-              &location,
-              value,
-              &backtrace);
-
-    exit(EXIT_FAILURE);
+    context->_type = typeid(AvmThrowContext);
+    context->_thrownObject = NULL;
+    context->_prev = AvmGlobalThrowContext;
+    AvmGlobalThrowContext = context;
 }
 
-static AvmThrowCallback FindHandler(const AvmType* type)
+AvmThrowContext* __AvmRuntimePopThrowContext(void)
 {
-    for (size_t i = 0; i < CatchEntryCount; i++)
-    {
-        const AvmType* filter = CatchEntries[i]._filter;
-        if (filter == type || AvmTypeInheritsFrom(type, filter))
-        {
-            if (CatchEntries[i]._handler != NULL)
-            {
-                return CatchEntries[i]._handler;
-            };
-        }
-    }
-
-    return DefaultThrowHandler;
+    AvmThrowContext* retval = AvmGlobalThrowContext;
+    AvmGlobalThrowContext = retval->_prev;
+    return retval;
 }
 
-void AvmThrow(AvmLocation location, object value)
+never __AvmRuntimeThrow(object value)
 {
     pre
     {
         assert(value != NULL);
     }
 
-    const AvmType* type = AvmObjectGetType(value);
-    AvmThrowCallback callback = FindHandler(type);
-
-    if (callback != NULL)
-    {
-        callback(location, value, AvmRuntimeGetBacktrace());
-    }
+    AvmGlobalThrowContext->_thrownObject = value;
+    longjmp(AvmGlobalThrowContext->_jumpBuffer, 1);
 }

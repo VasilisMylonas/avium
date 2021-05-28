@@ -48,7 +48,7 @@ static object AvmArrayListItemAt(const AvmArrayList* self, uint index)
 
     if (index >= self->_length)
     {
-        AvmThrowError(RangeError);
+        throw(AvmErrorNew(RangeError));
     }
 
     return self->_items + index * self->_itemType->_size;
@@ -102,7 +102,7 @@ static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
     if (index > self->_length)
     {
-        AvmThrowError(RangeError);
+        throw(AvmErrorNew(RangeError));
     }
 
     AvmArrayListEnsureCapacity(self, 1);
@@ -139,7 +139,7 @@ static void AvmArrayListRemove(AvmArrayList* self, uint index)
 
     if (index >= self->_length)
     {
-        AvmThrowError(RangeError);
+        throw(AvmErrorNew(RangeError));
     }
 
     AvmArrayListDropItem(self, index);
@@ -197,7 +197,7 @@ static AvmString AvmArrayListToString(AvmArrayList* self)
         else if (self->_itemType == typeid(_long))
             AvmStringPushInt(&s, *(_long*)item);
         else
-            AvmThrowError(InternalError);
+            throw(AvmErrorNew(InternalError));
 
         if (i < self->_length - 1)
         {

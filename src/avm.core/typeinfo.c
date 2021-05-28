@@ -49,7 +49,7 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         return self->_vPtr[index];
     }
 
-    AvmThrowError(VirtualFuncError);
+    throw(AvmErrorNew(VirtualFuncError));
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
@@ -173,7 +173,7 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
         }
     }
 
-    AvmThrowError(EnumConstantNotPresentError);
+    throw(AvmErrorNew(EnumConstantNotPresentError));
 }
 
 _long AvmEnumGetValueOf(const AvmEnum* self, str name)
@@ -197,7 +197,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
         }
     }
 
-    AvmThrowError(EnumConstantNotPresentError);
+    throw(AvmErrorNew(EnumConstantNotPresentError));
 }
 
 static AvmString AvmEnumToString(AvmEnum* self)

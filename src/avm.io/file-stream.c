@@ -64,7 +64,7 @@ static AvmError* AvmFileStreamSeek(AvmFileStream* self,
         status = fseek(self->_handle, (long)offset, SEEK_END);
         break;
     default:
-        AvmThrowError(InvalidOriginMsg);
+        throw(AvmErrorNew(InvalidOriginMsg));
     }
 
     if (status != 0)

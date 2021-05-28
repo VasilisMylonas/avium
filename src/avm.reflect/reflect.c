@@ -58,7 +58,7 @@ static AvmModule AvmModuleLoadImpl(str path)
 
     if (handle == NULL)
     {
-        AvmThrowError(dlerror());
+        throw(AvmErrorNew(dlerror()));
     }
 
     return (AvmModule){

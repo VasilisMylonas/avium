@@ -46,17 +46,19 @@ static void ExceptionHandler(int exception)
     switch (exception)
     {
     case SIGSEGV:
-        AvmThrowError(InvalidPtrDerefMsg);
+        AvmErrorf("%s\n", InvalidPtrDerefMsg);
         break;
     case SIGILL:
-        AvmThrowError(IllegalInstructionMsg);
+        AvmErrorf("%s\n", IllegalInstructionMsg);
         break;
     case SIGFPE:
-        AvmThrowError(ArithmeticExceptionMsg);
+        AvmErrorf("%s\n", ArithmeticExceptionMsg);
         break;
     default:
         break;
     }
+
+    exit(EXIT_FAILURE);
 }
 
 void AvmRuntimeEnableExceptions(void)

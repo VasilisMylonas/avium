@@ -58,7 +58,7 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
         if (offset < 0)
         {
             // TODO
-            AvmThrowError(RangeError);
+            throw(AvmErrorNew(RangeError));
             // return AvmErrorOfKind(ErrorKindRange);
         }
         self->_position = offset;
@@ -67,13 +67,13 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
         if (offset > 0)
         {
             // TODO
-            AvmThrowError(RangeError);
+            throw(AvmErrorNew(RangeError));
             // return AvmErrorOfKind(ErrorKindRange);
         }
         self->_position = AvmListGetCapacity(&self->_list) + offset;
         break;
     default:
-        AvmThrowError(InvalidOriginMsg);
+        throw(AvmErrorNew(InvalidOriginMsg));
     }
 
     return NULL;
