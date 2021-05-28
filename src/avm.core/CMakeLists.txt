@@ -1,5 +1,4 @@
 add_library(avm.core
-    error.c
     core.c
     string.c
     typeinfo.c
