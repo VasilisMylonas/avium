@@ -3,7 +3,7 @@
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Result and error types.
  * @version 0.2.2
- * @date 2021-05-9
+ * @date 2021-05-27
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -24,37 +24,41 @@
 #ifndef AVIUM_ERROR_H
 #define AVIUM_ERROR_H
 
+#include "avium/typeinfo.h"
 #include "avium/types.h"
+
+#include <setjmp.h>
 
 /// A type representing an error.
 AVM_INTERFACE(AvmError);
 
-/// Describes the type of the error that occurred.
-typedef enum
-{
-    ErrorKindArg,       ///< Received an invalid argument.
-    ErrorKindRange,     ///< The provided index was out of range.
-    ErrorKindMem,       ///< There was not enough memory to handle the request.
-    ErrorKindInvalidOp, ///< The call was invalid for the current state.
-    ErrorKindIO,        ///< An IO error occurred.
-    ErrorKindSys,       ///< An unknown system error occurred.
-    ErrorKindNotFound,  ///< A required resource was unavailable.
-    ErrorKindRead,      ///< Could not perform the read operation.
-    ErrorKindWrite,     ///< Could not perform the write operation.
-} AvmErrorKind;
+/// Represents a location in source code.
+AVM_CLASS(AvmLocation, object, {
+    str File;
+    uint Line;
+    uint Column;
+});
+
+/// Expands to an AvmLocation instance for the current location.
+#define here                                                                   \
+    (AvmLocation)                                                              \
+    {                                                                          \
+        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
+        ._type = typeid(AvmLocation),                                          \
+    }
 
 /**
- * @brief Returns the last error that occurred.
+ * @brief Creates an AvmError with a message.
  *
- * The error is created based on the errno value and may create a 'successful'
- * error.
+ * @pre Parameter @p message must be not null.
  *
- * @return A type that implements AvmError.
+ * @param message The error message.
+ * @return The created instance.
  */
-AVMAPI AvmError* AvmErrorGetLast(void);
+AVMAPI AvmError* AvmErrorNew(str message);
 
 /**
- * @brief Creates an AvmError from an os code.
+ * @brief Creates an AvmError from an OS code.
  *
  * If the code is 0 then a 'successful' error is created.
  *
@@ -63,64 +67,58 @@ AVMAPI AvmError* AvmErrorGetLast(void);
  */
 AVMAPI AvmError* AvmErrorFromOSCode(int code);
 
-/**
- * @brief Creates an AvmError of a specific kind.
- *
- * @param kind The error kind.
- * @return The created instance.
- */
-AVMAPI AvmError* AvmErrorOfKind(AvmErrorKind kind);
-
-/**
- * @brief Returns the AvmError responsible for this error.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmError instance.
- * @return The source of the error.
- */
-AVMAPI weakptr(AvmError) AvmErrorGetSource(AvmError* self);
-
-/**
- * @brief Gets a backtrace of the stack during the creation of an error.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The AvmError instance.
- * @return The backtrace.
- */
-AVMAPI AvmString AvmErrorGetBacktrace(AvmError* self);
-
-/**
- * @brief Aborts execution, printing a message and location information.
- *
- * @param message The message to print.
- */
-#define AvmPanic(message) AvmPanicEx(message, __func__, __FILE__, __LINE__)
+/// Begins a try block.
+#define try                                                                    \
+    AvmThrowContext AVM_UNIQUE(__avmThrownContext);                            \
+    __AvmRuntimePushThrowContext(&AVM_UNIQUE(__avmThrownContext));             \
+    for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)                          \
+        if (__avmTLC == 1)                                                     \
+        {                                                                      \
+            if (__AvmRuntimeGetThrowContext()->_thrownObject == NULL)          \
+            {                                                                  \
+                __AvmRuntimePopThrowContext();                                 \
+                break;                                                         \
+            }                                                                  \
+            __AvmRuntimeThrow(__AvmRuntimePopThrowContext()->_thrownObject);   \
+        }                                                                      \
+        else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
 
 // clang-format off
-#define try(call)                                                              \
-    AvmError* AVM_UNIQUE(__avmError) = call;                                   \
-    if (AVM_UNIQUE(__avmError) != NULL)                                        \
-    {                                                                          \
-        return AVM_UNIQUE(__avmError);                                         \
-    }
 
-#define catch(var, call)                          \
-    AvmError* var = call; \
-    if (var != NULL)
+/// Begins a catch block for type T.
+#define catch(T, name)                                                         \
+    else if (instanceof(T, __AvmRuntimeGetThrowContext()->_thrownObject) &&    \
+                 __AvmRuntimeGetThrowContext() != NULL &&                      \
+                 (__avmTLC = 2) ==                                             \
+                     2) for (object name =                                     \
+                                 __AvmRuntimePopThrowContext()->_thrownObject; \
+                             name != NULL;                                     \
+                             name = NULL)
+
 // clang-format on
 
 /**
- * @brief Aborts execution, printing a message and location information.
+ * @brief Throws an object.
  *
- * @param message The message to be printed.
- * @param function The function name.
- * @param file The file name.
- * @param line The line number.
+ * The object must be heap-allocated.
  *
- * @return This function never returns.
+ * @pre Parameter @p value must be not null.
+ *
+ * @param value The object to throw.
  */
-AVMAPI never AvmPanicEx(str message, str function, str file, uint line);
+#define throw(value) __AvmRuntimeThrow(value)
+
+#ifndef DOXYGEN
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    object _thrownObject;
+    jmp_buf _jumpBuffer;
+});
+
+AVMAPI never __AvmRuntimeThrow(object value);
+AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
+AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
+AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+#endif
 
 #endif // AVIUM_ERROR_H

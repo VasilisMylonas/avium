@@ -5,6 +5,7 @@
 #include "avium/string.h"
 #include "avium/testing.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -43,7 +44,7 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
         mode = "a+";
         break;
     default:
-        AvmPanic(InvalidAccessMsg);
+        throw(AvmErrorNew(InvalidAccessMsg));
     }
 
     FILE* file = fopen(path, mode);
@@ -53,7 +54,7 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
         // Set the error indicator if it is not null.
         if (error != NULL)
         {
-            *error = AvmErrorGetLast();
+            *error = AvmErrorFromOSCode(errno);
         }
         return NULL;
     }
@@ -122,7 +123,7 @@ AvmError* AvmFileCopy(str source, str destination)
     (void)destination;
 
     // TODO
-    AvmPanic(InternalError);
+    throw(AvmErrorNew(InternalError));
 }
 
 static AvmError* AvmFilePerform(str path,
@@ -159,7 +160,7 @@ static AvmError* AvmFilePerform(str path,
         error = AvmStreamWrite(stream, length, buffer);
         break;
     default:
-        AvmPanic(InternalError);
+        throw(AvmErrorNew(InternalError));
         break;
     }
 
@@ -194,13 +195,13 @@ AvmError* AvmFileReadAllText(str path, AvmString* string)
     struct _stat buffer;
     if (_stat(path, &buffer) != 0)
     {
-        return AvmErrorGetLast();
+        return AvmErrorFromOSCode(errno);
     }
 #else
     struct stat buffer;
     if (stat(path, &buffer) != 0)
     {
-        return AvmErrorGetLast();
+        return AvmErrorFromOSCode(errno);
     }
 #endif
 

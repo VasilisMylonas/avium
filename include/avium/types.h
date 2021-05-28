@@ -40,7 +40,6 @@ typedef void* object;                 ///< An unknown object type.
 typedef void (*AvmFunction)(void);    ///< An unknown function type.
 typedef const char* str;              ///< Primitive read-only string.
 #define weakptr(T) T*                 ///< A weak pointer to a type T.
-#define box(T)     T*                 ///< A pointer to a heap-allocated type T.
 
 #define main AvmMain
 
@@ -68,12 +67,7 @@ typedef const char* str;              ///< Primitive read-only string.
  *
  * @param T The name of the type.
  */
-#define AVM_INTERFACE(T)                                                       \
-    typedef struct T T;                                                        \
-    struct T                                                                   \
-    {                                                                          \
-        const AvmType* _type;                                                  \
-    }
+#define AVM_INTERFACE(T) typedef void T
 
 /**
  * @brief Creates an Avium enum type.
@@ -85,10 +79,9 @@ typedef const char* str;              ///< Primitive read-only string.
     typedef enum T __VA_ARGS__ T;                                              \
     extern const AvmEnum AVM_TI_NAME(T)
 
-#define AVM_FORWARD_TYPE(T) typedef struct T T
-#define AVM_CONCAT_(a, b)   a##b
-#define AVM_CONCAT(a, b)    AVM_CONCAT_(a, b)
-#define AVM_UNIQUE(name)    AVM_CONCAT(name, __LINE__)
+#define AVM_CONCAT_(a, b) a##b
+#define AVM_CONCAT(a, b)  AVM_CONCAT_(a, b)
+#define AVM_UNIQUE(name)  AVM_CONCAT(name, __LINE__)
 
 #define AVM_VA_ARGS(T, ...)                                                    \
     (sizeof((T[]){__VA_ARGS__}) / sizeof(T)), (T[])                            \
@@ -110,10 +103,10 @@ typedef const char* str;              ///< Primitive read-only string.
 #endif
 
 #ifndef DOXYGEN
-AVM_FORWARD_TYPE(AvmType);
-AVM_FORWARD_TYPE(AvmEnum);
-AVM_FORWARD_TYPE(AvmError);
-AVM_FORWARD_TYPE(AvmString);
+typedef struct AvmType AvmType;
+typedef struct AvmEnum AvmEnum;
+typedef void AvmError;
+typedef struct AvmString AvmString;
 
 static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(_long);

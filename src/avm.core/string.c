@@ -8,6 +8,7 @@
 
 #include "avium/core.h"
 #include "avium/error.h"
+#include "avium/private/errors.h"
 #include "avium/private/resources.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
@@ -247,7 +248,7 @@ AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
     case NumericBaseHex:
         break;
     default:
-        AvmPanic(NumericBaseOutOfRangeMsg);
+        throw(AvmErrorNew(NumericBaseOutOfRangeMsg));
     }
 
     AvmString s = AvmStringNew(8);
@@ -498,7 +499,7 @@ bool AvmStringIsEmpty(const AvmString* self)
     return self->_length == 0;
 }
 
-char AvmStringCharAt(const AvmString* self, uint index, AvmError** error)
+char AvmStringCharAt(const AvmString* self, uint index)
 {
     pre
     {
@@ -510,12 +511,7 @@ char AvmStringCharAt(const AvmString* self, uint index, AvmError** error)
         return self->_buffer[index];
     }
 
-    if (error != NULL)
-    {
-        *error = AvmErrorOfKind(ErrorKindRange);
-    }
-
-    return '\0';
+    throw(AvmErrorNew(RangeError));
 }
 
 //

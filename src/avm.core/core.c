@@ -22,17 +22,21 @@
 #define AVM_DEALLOC free
 #endif
 
-box(void) AvmAlloc(size_t size)
+#ifdef AVM_LINUX
+#include <execinfo.h>
+#endif
+
+void* AvmAlloc(size_t size)
 {
     return AVM_ALLOC(size);
 }
 
-box(void) AvmRealloc(box(void) memory, size_t size)
+void* AvmRealloc(void* memory, size_t size)
 {
     return AVM_REALLOC(memory, size);
 }
 
-void AvmDealloc(box(void) memory)
+void AvmDealloc(void* memory)
 {
     AVM_DEALLOC(memory);
 }
@@ -42,17 +46,19 @@ static void AvmHandleException(int exception)
     switch (exception)
     {
     case SIGSEGV:
-        AvmPanic(InvalidPtrDerefMsg);
+        AvmErrorf("%s\n", InvalidPtrDerefMsg);
         break;
     case SIGILL:
-        AvmPanic(IllegalInstructionMsg);
+        AvmErrorf("%s\n", IllegalInstructionMsg);
         break;
     case SIGFPE:
-        AvmPanic(ArithmeticExceptionMsg);
+        AvmErrorf("%s\n", ArithmeticExceptionMsg);
         break;
     default:
         break;
     }
+
+    exit(EXIT_FAILURE);
 }
 
 static struct
@@ -83,6 +89,38 @@ void AvmRuntimeDisableExceptions(void)
     signal(SIGILL, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
 }
+
+AvmString AvmRuntimeGetBacktrace(void)
+{
+#ifdef AVM_LINUX
+    void* arr[BACKTRACE_MAX_SYMBOLS];
+
+    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
+    char** s = backtrace_symbols(arr, length);
+
+    AvmString bt = AvmStringNew(length * 10);
+
+    for (int i = length - 1; i >= 1; i--)
+    {
+        *(strchr(s[i], '+')) = '\0';
+        *(strchr(s[i], '(')) = '@';
+
+        AvmStringPushStr(&bt, "    in ");
+        AvmStringPushStr(&bt, s[i]);
+        if (i != 1)
+        {
+            AvmStringPushChar(&bt, '\n');
+        }
+    }
+
+    free(s);
+    return bt;
+#else
+    return AvmStringFrom(NoBacktraceMsg);
+#endif
+}
+
+static AvmEnv env;
 
 str AvmRuntimeGetProgramName(void)
 {

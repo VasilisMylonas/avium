@@ -5,21 +5,17 @@
 #include "avium/string.h"
 #include "avium/testing.h"
 
+#include <stdlib.h>
 #include <string.h>
 
-static AvmString AvmLocationToString(AvmLocation* self)
+object __AvmRuntimeCastFail(object value, const AvmType* type)
 {
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFormat("%s:%u", self->File, self->Line);
+    AvmErrorf("Tried to cast object [%x] of type %T to type %s.\n",
+              value,
+              value,
+              AvmTypeGetName(type));
+    exit(EXIT_FAILURE);
 }
-
-AVM_TYPE(AvmLocation,
-         object,
-         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
 
 str AvmTypeGetName(const AvmType* self)
 {
@@ -48,7 +44,12 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
-    return self->_vPtr[index];
+    if (index < self->_vSize)
+    {
+        return self->_vPtr[index];
+    }
+
+    throw(AvmErrorNew(VirtualFuncError));
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
@@ -172,7 +173,7 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
         }
     }
 
-    AvmPanic(EnumConstantNotPresentError);
+    throw(AvmErrorNew(EnumConstantNotPresentError));
 }
 
 _long AvmEnumGetValueOf(const AvmEnum* self, str name)
@@ -196,7 +197,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
         }
     }
 
-    AvmPanic(EnumConstantNotPresentError);
+    throw(AvmErrorNew(EnumConstantNotPresentError));
 }
 
 static AvmString AvmEnumToString(AvmEnum* self)

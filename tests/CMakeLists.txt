@@ -6,4 +6,5 @@ endfunction()
 
 run_test(string)
 run_test(reflect)
+run_test(array-list)
 run_test(path)

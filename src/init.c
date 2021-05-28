@@ -1,4 +1,5 @@
 #include "avium/core.h"
+#include "avium/error.h"
 
 #undef main
 
@@ -8,6 +9,17 @@ extern void AvmMain();
 int main(int argc, str argv[])
 {
     AvmRuntimeInit(argc, argv);
-    AvmMain();
+
+    try
+    {
+        AvmMain();
+    }
+    catch (object, e)
+    {
+        AvmErrorf("Unhandled exception: TODO\n");
+        AvmErrorf("%v\n", e);
+        return 1;
+    }
+
     return 0;
 }

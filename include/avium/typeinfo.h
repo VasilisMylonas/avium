@@ -29,27 +29,30 @@
 /// Represents an entry on the virtual function table.
 typedef enum
 {
-    FnEntryDtor = 0,          ///< The destructor entry.
-    FnEntryToString,          ///< The AvmObjectToString entry.
-    FnEntryClone,             ///< The AvmObjectClone entry.
-    FnEntryEquals,            ///< The AvmObjectEquals entry.
-    FnEntryRead = 16,         ///< The AvmStreamRead entry.
-    FnEntryWrite,             ///< The AvmStreamWrite entry.
-    FnEntrySeek,              ///< The AvmStreamSeek entry.
-    FnEntryFlush,             ///< The AvmStreamFlush entry.
-    FnEntryGetPosition,       ///< The AvmStreamPosition entry.
-    FnEntryGetBacktrace = 16, ///< The AvmErrorGetBacktrace entry.
-    FnEntryGetSource,         ///< The AvmErrorGetSource entry.
+    FnEntryDtor = 0,    ///< The destructor entry.
+    FnEntryToString,    ///< The AvmObjectToString entry.
+    FnEntryClone,       ///< The AvmObjectClone entry.
+    FnEntryEquals,      ///< The AvmObjectEquals entry.
+    FnEntryRead = 16,   ///< The AvmStreamRead entry.
+    FnEntryWrite,       ///< The AvmStreamWrite entry.
+    FnEntrySeek,        ///< The AvmStreamSeek entry.
+    FnEntryFlush,       ///< The AvmStreamFlush entry.
+    FnEntryGetPosition, ///< The AvmStreamPosition entry.
 
     FnEntryGetLength = 12,
     FnEntryGetCapacity,
+
+    FnEntryRemove = 16,
+    FnEntryInsert,
+    FnEntryItemAt,
+    FnEntryGetItemType,
 } AvmFnEntry;
 
 /// Returns the base type of an object.
-#define baseof(x) ((typeof((x)->_base)*)x)
+#define baseof(x) (&(x)->_base)
 
 /// Returns a pointer to the type info of type T.
-#define typeid(T) ((object)&AVM_TI_NAME(T))
+#define typeid(T) (&AVM_TI_NAME(T))
 
 // clang-format off
 
@@ -58,22 +61,12 @@ typedef enum
     (typeid(T) == AvmObjectGetType(x) || \
      AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
 
+#ifdef AVM_EXIT_ON_CAST_FAIL
+#define cast(T, x) (T*)(instanceof(T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
+#else
+#define cast(T, x) (T*)(instanceof(T, x) ? x : NULL)
+#endif
 // clang-format on
-
-/// Represents a location in source code.
-AVM_CLASS(AvmLocation, object, {
-    str File;
-    uint Line;
-    uint Column;
-});
-
-/// Expands to an AvmLocation instance for the current location.
-#define here                                                                   \
-    (AvmLocation)                                                              \
-    {                                                                          \
-        .Column = 0, .File = __FILE__, .Line = __LINE__,                       \
-        ._type = typeid(AvmLocation),                                          \
-    }
 
 /**
  * @brief Generates type info for a type.
@@ -249,5 +242,7 @@ AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
  * @return The value of the constant.
  */
 AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
+
+AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
 #endif // AVIUM_TYPEINFO_H
