@@ -17,6 +17,22 @@
 #include <uchar.h>
 #endif
 
+static bool AvmStringEquals(AvmString* self, AvmString* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    if (self->_length != other->_length)
+    {
+        return false;
+    }
+
+    return memcmp(self->_buffer, other->_buffer, self->_length) == 0;
+}
+
 static AvmString AvmStringToString(AvmString* self)
 {
     pre
@@ -24,8 +40,14 @@ static AvmString AvmStringToString(AvmString* self)
         assert(self != NULL);
     }
 
-    // TODO: self->_buffer may be null.
-    return AvmStringFrom(self->_buffer);
+    if (self->_buffer == NULL)
+    {
+        return AvmStringFrom("");
+    }
+    else
+    {
+        return AvmStringFromChars(self->_length, self->_buffer);
+    }
 }
 
 static object AvmStringClone(AvmString* self)
@@ -59,6 +81,7 @@ AVM_TYPE(AvmString,
              [FnEntryToString] = (AvmFunction)AvmStringToString,
              [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
              [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
+             [FnEntryEquals] = (AvmFunction)AvmStringEquals,
          });
 
 void AvmStringEnsureCapacity(AvmString* self, uint capacity)
@@ -1421,4 +1444,18 @@ void AvmStringParseV(const AvmString* self, str format, va_list args)
         Parse(format[i], &j, buffer, args);
         j++;
     }
+}
+
+str AvmStringToStr(const AvmString* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    char* s = AvmAlloc(self->_length + 1);
+
+    memcpy(s, self->_buffer, self->_length);
+    s[self->_length] = '\0';
+    return s;
 }

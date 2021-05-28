@@ -1,8 +1,8 @@
 #include "avium/reflect.h"
 
-#include "avium/basename.h"
 #include "avium/dlfcn.h"
 #include "avium/error.h"
+#include "avium/private/basename.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"

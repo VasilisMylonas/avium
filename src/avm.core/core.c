@@ -41,7 +41,7 @@ void AvmDealloc(void* memory)
     AVM_DEALLOC(memory);
 }
 
-static void ExceptionHandler(int exception)
+static void AvmHandleException(int exception)
 {
     switch (exception)
     {
@@ -61,11 +61,26 @@ static void ExceptionHandler(int exception)
     exit(EXIT_FAILURE);
 }
 
+static struct
+{
+    str* _args;
+    AvmVersion _version;
+} AvmState;
+
+void AvmRuntimeInit(int argc, str argv[])
+{
+    (void)argc;
+
+    AvmState._args = argv;
+    AvmState._version =
+        AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
+}
+
 void AvmRuntimeEnableExceptions(void)
 {
-    signal(SIGSEGV, ExceptionHandler);
-    signal(SIGILL, ExceptionHandler);
-    signal(SIGFPE, ExceptionHandler);
+    signal(SIGSEGV, AvmHandleException);
+    signal(SIGILL, AvmHandleException);
+    signal(SIGFPE, AvmHandleException);
 }
 
 void AvmRuntimeDisableExceptions(void)
@@ -107,28 +122,57 @@ AvmString AvmRuntimeGetBacktrace(void)
 
 static AvmEnv env;
 
-weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[])
-{
-    (void)argc;
-
-    // TODO
-    env._isInitialized = true;
-    env._programName = argv[0];
-    env._args = &argv[1];
-    env._version =
-        AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
-    return &env;
-}
-
 str AvmRuntimeGetProgramName(void)
 {
-    return env._programName;
+    return AvmState._args[0];
 }
 
 AvmVersion AvmRuntimeGetVersion(void)
 {
-    return env._version;
+    return AvmState._version;
 }
+
+str* AvmRuntimeGetArgs(void)
+{
+    return AvmState._args + 1;
+}
+
+#ifdef AVM_USE_GC
+void AvmGCForceCollect(void)
+{
+    GC_gcollect();
+}
+
+void AvmGCDisable(void)
+{
+    GC_disable();
+}
+
+void AvmGCEnable(void)
+{
+    GC_enable();
+}
+
+ulong AvmGCGetTotalBytes(void)
+{
+    return GC_get_total_bytes();
+}
+
+ulong AvmGCGetFreeBytes(void)
+{
+    return GC_get_free_bytes();
+}
+
+ulong AvmGCGetUsedBytes(void)
+{
+    return GC_get_memory_use();
+}
+
+ulong AvmGCGetHeapSize(void)
+{
+    return GC_get_heap_size();
+}
+#endif
 
 void AvmCopy(object o, size_t size, byte* destination)
 {
@@ -170,7 +214,7 @@ static void AvmFputs(str format, va_list args, FILE* stream)
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fputs(AvmStringGetBuffer(&temp), stream);
+    fwrite(AvmStringGetBuffer(&temp), sizeof(char), temp._length, stream);
     AvmObjectDestroy(&temp);
 }
 
@@ -257,4 +301,37 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
         .Minor = minor,
         .Patch = patch,
     };
+}
+
+#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
+    for (size_t i = 0; i < length; i++)                                        \
+    {                                                                          \
+        ((T1*)stack)[i] = (T1)va_arg(args, T2);                                \
+    }                                                                          \
+                                                                               \
+    return stack;
+
+void* __AvmVaListToArray(void* stack, va_list args, uint size, uint length)
+{
+    pre
+    {
+        assert(stack != NULL);
+        assert(args != NULL);
+        assert(size != 0);
+        assert(length != 0);
+    }
+
+    switch (size)
+    {
+    case 1:
+        VA_LIST_TO_ARRAY_IMPL(byte, uint);
+    case 2:
+        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
+    case 4:
+        VA_LIST_TO_ARRAY_IMPL(uint, uint);
+    case 8:
+        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
+    default:
+        return NULL; // TODO: ERROR
+    }
 }

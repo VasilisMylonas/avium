@@ -1,5 +1,5 @@
-#ifndef AVIUM_RESOURCES_H
-#define AVIUM_RESOURCES_H
+#ifndef AVIUM_PRIVATE_RESOURCES_H
+#define AVIUM_PRIVATE_RESOURCES_H
 
 #include "avium/types.h"
 
@@ -32,4 +32,10 @@ static const str IllegalInstructionMsg = "Illegal instruction.";
 static const str ArithmeticExceptionMsg = "Arithmetic exception.";
 static const str NoBacktraceMsg = "No backtrace is available.";
 
-#endif // AVIUM_RESOURCES_H
+#ifdef AVM_WIN32
+static const str HomeEnvVar = "%HOMEDRIVE%%HOMEPATH%"
+#else
+static const str HomeEnvVar = "HOME";
+#endif
+
+#endif // AVIUM_PRIVATE_RESOURCES_H

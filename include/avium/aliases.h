@@ -104,4 +104,22 @@
 #define StringContainsChars    AvmStringContainsChars
 #define StringContainsString   AvmStringContainsString
 
+// path.h
+#define PathGetSeparator    AvmPathGetSeparator
+#define PathGetAltSeparator AvmPathGetAltSeparator
+#define PathHasExtension    AvmPathHasExtension
+#define PathIsAbsolute      AvmPathIsAbsolute
+#define PathIsRelative      AvmPathIsRelative
+#define PathIsValid         AvmPathIsValid
+#define PathIsDir           AvmPathIsDir
+#define PathGetName         AvmPathGetName
+#define PathGetExtension    AvmPathGetExtension
+#define PathGetParent       AvmPathGetParent
+#define PathGetHomeDir      AvmPathGetHomeDir
+#define PathGetTempDir      AvmPathGetTempDir
+#define PathGetFullPath     AvmPathGetFullPath
+#define PathCombine         AvmPathCombine
+#define PathCombineV        AvmPathCombineV
+#define PathCombine2        AvmPathCombine2
+
 #endif // AVIUM_ALIASES_H

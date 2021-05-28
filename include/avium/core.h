@@ -73,13 +73,6 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Return an AvmVersion indicating the current runtime version.
- *
- * @return The current runtime version.
- */
-AVMAPI AvmVersion AvmRuntimeGetVersion(void);
-
-/**
  * @brief Destroys an object.
  *
  * This function tries to use the FnEntryDtor virtual function entry. If no
@@ -95,7 +88,7 @@ AVMAPI void AvmObjectDestroy(object self);
  * @brief Clones an object, creating an exact copy.
  *
  * This function tries to use the FnEntryClone virtual function entry. If no
- * such virtual function is available then a the object is simple copied to
+ * such virtual function is available then a the object is simply copied to
  * heap memory.
  *
  * @pre Parameter @p self must be not null.
@@ -119,16 +112,6 @@ AVMAPI object AvmObjectClone(object self);
  */
 AVMAPI AvmString AvmObjectToString(object self);
 
-AVM_CLASS(AvmEnv, object, {
-    bool _isInitialized;
-    uint _flags;
-    str _name;
-    str _libPath;
-    AvmVersion _version;
-    str _programName;
-    str* _args;
-});
-
 /**
  * @brief Initializes the Avium runtime.
  *
@@ -137,12 +120,22 @@ AVM_CLASS(AvmEnv, object, {
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
- * @return The runtime environment.
  */
-AVMAPI weakptr(AvmEnv) AvmRuntimeInit(int argc, str argv[]);
+AVMAPI void AvmRuntimeInit(int argc, str argv[]);
 
-/// Returns the name of the currently running program.
+/**
+ * @brief Returns the name of the currently running program.
+ *
+ * @return The name of the currently running program.
+ */
 AVMAPI str AvmRuntimeGetProgramName(void);
+
+/**
+ * @brief Returns the current runtime version.
+ *
+ * @return The current runtime version.
+ */
+AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 /// Enables signal catching.
 AVMAPI void AvmRuntimeEnableExceptions(void);
@@ -156,6 +149,23 @@ AVMAPI void AvmRuntimeDisableExceptions(void);
  * @return The backtrace, or a symbolic string.
  */
 AVMAPI AvmString AvmRuntimeGetBacktrace(void);
+
+/**
+ * @brief Returns a pointer to the program arguments.
+ *
+ * @return The program arguments.
+ */
+AVMAPI str* AvmRuntimeGetArgs(void);
+
+#ifdef AVM_USE_GC
+AVMAPI void AvmGCForceCollect(void);
+AVMAPI void AvmGCDisable(void);
+AVMAPI void AvmGCEnable(void);
+AVMAPI ulong AvmGCGetTotalBytes(void);
+AVMAPI ulong AvmGCGetFreeBytes(void);
+AVMAPI ulong AvmGCGetUsedBytes(void);
+AVMAPI ulong AvmGCGetHeapSize(void);
+#endif
 
 /**
  * @brief Allocates heap memory.
@@ -202,6 +212,21 @@ AVMAPI void AvmPrintf(str format, ...);
 AVMAPI void AvmErrorf(str format, ...);
 
 /**
+ * @brief Creates an array from a va_list.
+ *
+ * @pre Parameter @p N must be not zero.
+ * @pre Parameter @p args must be not null.
+ *
+ * @param T The type of the array elements.
+ * @param N The length of the array.
+ * @param args The va_list.
+ *
+ * @return The created array.
+ */
+#define va_array(T, N, args)                                                   \
+    (T*)__AvmVaListToArray(AvmAlloc(sizeof(T) * N), args, sizeof(T), N);
+
+/**
  * @brief Creates a new AvmVersion instance.
  *
  * @param major The version major number (incremented at breaking changes).
@@ -211,6 +236,8 @@ AVMAPI void AvmErrorf(str format, ...);
  * @return The created instance.
  */
 AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
+
+AVMAPI void* __AvmVaListToArray(void*, va_list, uint, uint);
 
 #ifndef DOXYGEN
 static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
