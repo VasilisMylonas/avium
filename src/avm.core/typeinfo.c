@@ -46,6 +46,11 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
 
     if (index < self->_vSize)
     {
+        if (self->_vPtr[index] == NULL)
+        {
+            return AvmTypeGetFunction(self->_baseType, index);
+        }
+
         return self->_vPtr[index];
     }
 
