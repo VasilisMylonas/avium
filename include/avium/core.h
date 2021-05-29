@@ -201,11 +201,20 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
  * @{
  */
 
+/// Represents the context of a thrown object.
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    object _thrownObject;
+    AvmLocation _location;
+    jmp_buf _jumpBuffer;
+});
+
 /// Holds the state for the Avium runtime.
 AVM_CLASS(AvmRuntime, object, {
     uint _argc;
     str* _argv;
     str _name;
+    AvmThrowContext* _throwContext;
     AvmVersion _version;
 });
 
@@ -230,6 +239,20 @@ AVMAPI void AvmRuntimeInit(int argc, str argv[]);
 AVMAPI str AvmRuntimeGetProgramName(void);
 
 /**
+ * @brief Returns the current runtime version.
+ *
+ * @return The current runtime version.
+ */
+AVMAPI AvmVersion AvmRuntimeGetVersion(void);
+
+/**
+ * @brief Returns the number of argument that the program received.
+ *
+ * @return The number of arguments.
+ */
+AVMAPI uint AvmRuntimeGetArgCount(void);
+
+/**
  * @brief Returns a pointer to the program arguments.
  *
  * @return The program arguments.
@@ -242,13 +265,6 @@ AVMAPI str* AvmRuntimeGetArgs(void);
  * @return The backtrace, or a symbolic string.
  */
 AVMAPI AvmString AvmRuntimeGetBacktrace(void);
-
-/**
- * @brief Returns the current runtime version.
- *
- * @return The current runtime version.
- */
-AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 /// @}
 
@@ -345,7 +361,8 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
                 __AvmRuntimePopThrowContext();                                 \
                 break;                                                         \
             }                                                                  \
-            __AvmRuntimeThrow(__AvmRuntimePopThrowContext()->_thrownObject);   \
+            __AvmRuntimeThrow(__AvmRuntimeGetThrowContext()->_thrownObject,    \
+                              __AvmRuntimePopThrowContext()->_location);       \
         }                                                                      \
         else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
 
@@ -372,7 +389,8 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  *
  * @param value The object to throw.
  */
-#define throw(value) __AvmRuntimeThrow(value)
+#define throw(value)                                                           \
+    __AvmRuntimeThrow(value, AvmLocationFrom(__FILE__, __LINE__, 0))
 
 /// @}
 
@@ -389,13 +407,7 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
 AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
 #ifndef DOXYGEN
-AVM_CLASS(AvmThrowContext, object, {
-    AvmThrowContext* _prev;
-    object _thrownObject;
-    jmp_buf _jumpBuffer;
-});
-
-AVMAPI never __AvmRuntimeThrow(object value);
+AVMAPI never __AvmRuntimeThrow(object value, AvmLocation location);
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);

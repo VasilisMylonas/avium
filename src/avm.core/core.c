@@ -203,8 +203,21 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
 // Builtin runtime functions.
 //
 
-// TODO: Properly implement.
-AVM_TYPE(AvmRuntime, object, {[FnEntryDtor] = NULL});
+static AvmString AvmRuntimeToString(const AvmRuntime* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat("%s v%v", self->_name, &self->_version);
+}
+
+AVM_TYPE(AvmRuntime,
+         object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmRuntimeToString,
+         });
 
 static thread_local AvmRuntime __AvmRuntimeState;
 
@@ -214,6 +227,7 @@ void AvmRuntimeInit(int argc, str argv[])
     __AvmRuntimeState._argc = (uint)(argc - 1);
     __AvmRuntimeState._argv = argv + 1;
     __AvmRuntimeState._name = AVM_RUNTIME_NAME;
+    __AvmRuntimeState._throwContext = NULL;
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 }
@@ -287,35 +301,9 @@ void AvmDealloc(void* memory)
     AVM_DEALLOC(memory);
 }
 
-void AvmCopy(object o, size_t size, byte* destination)
-{
-    pre
-    {
-        assert(o != NULL);
-        assert(destination != NULL);
-    }
-
-    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(o));
-
-    if (objectSize > size)
-    {
-        // TODO: error
-    }
-
-    memcpy(destination, o, objectSize);
-}
-
-void AvmVScanf(str format, va_list args)
-{
-    pre
-    {
-        assert(format != NULL);
-        assert(args != NULL);
-    }
-
-    // TODO
-    vscanf(format, args);
-}
+//
+// Fundamental IO.
+//
 
 static void AvmFputs(str format, va_list args, FILE* stream)
 {
@@ -329,6 +317,18 @@ static void AvmFputs(str format, va_list args, FILE* stream)
     AvmString temp = AvmStringFormatV(format, args);
     fwrite(AvmStringGetBuffer(&temp), sizeof(char), temp._length, stream);
     AvmObjectDestroy(&temp);
+}
+
+void AvmVScanf(str format, va_list args)
+{
+    pre
+    {
+        assert(format != NULL);
+        assert(args != NULL);
+    }
+
+    // TODO: Ideally we should have a custom implementation.
+    vscanf(format, args);
 }
 
 void AvmVPrintf(str format, va_list args)
@@ -352,6 +352,8 @@ void AvmVErrorf(str format, va_list args)
 
     AvmFputs(format, args, stderr);
 }
+
+// These just forward to the V- equivalents.
 
 void AvmScanf(str format, ...)
 {
@@ -457,39 +459,60 @@ AvmError* AvmErrorNew(str message)
     return e;
 }
 
-static thread_local AvmThrowContext* AvmGlobalThrowContext;
+//
+// Exception implementation.
+//
 
 AVM_TYPE(AvmThrowContext, object, {[FnEntryDtor] = NULL});
 
 AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {
-    return AvmGlobalThrowContext;
+    return __AvmRuntimeState._throwContext;
 }
 
 void __AvmRuntimePushThrowContext(AvmThrowContext* context)
 {
     context->_type = typeid(AvmThrowContext);
     context->_thrownObject = NULL;
-    context->_prev = AvmGlobalThrowContext;
-    AvmGlobalThrowContext = context;
+    context->_prev = __AvmRuntimeState._throwContext;
+    __AvmRuntimeState._throwContext = context;
 }
 
 AvmThrowContext* __AvmRuntimePopThrowContext(void)
 {
-    AvmThrowContext* retval = AvmGlobalThrowContext;
-    AvmGlobalThrowContext = retval->_prev;
+    AvmThrowContext* retval = __AvmRuntimeState._throwContext;
+    __AvmRuntimeState._throwContext = retval->_prev;
     return retval;
 }
 
-never __AvmRuntimeThrow(object value)
+never __AvmRuntimeThrow(object value, AvmLocation location)
 {
     pre
     {
         assert(value != NULL);
     }
 
-    AvmGlobalThrowContext->_thrownObject = value;
-    longjmp(AvmGlobalThrowContext->_jumpBuffer, 1);
+    __AvmRuntimeState._throwContext->_location = location;
+    __AvmRuntimeState._throwContext->_thrownObject = value;
+    longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
+}
+
+void AvmCopy(object o, size_t size, byte* destination)
+{
+    pre
+    {
+        assert(o != NULL);
+        assert(destination != NULL);
+    }
+
+    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(o));
+
+    if (objectSize > size)
+    {
+        // TODO: error
+    }
+
+    memcpy(destination, o, objectSize);
 }
 
 // static void AvmHandleException(int exception)

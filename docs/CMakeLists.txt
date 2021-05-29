@@ -19,7 +19,6 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
         DOXYGEN
         AVMAPI=extern
         static_assert=static_assert
-        static_assert_s=static_assert
         AVM_PTR_TYPE=long
         AVM_LONG_TYPE=long
     )
