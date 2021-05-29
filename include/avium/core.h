@@ -181,10 +181,10 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Disables finalization of an object.
+ * @brief Disables the destructor of an object.
  *
- * When called makes runtime ignore finalization of the object. This may be
- * useful if writing functions that deterministically destroy an object.
+ * When called makes the runtime ignore destruction of the object. This may be
+ * useful if writing functions that deterministically destroys an object.
  *
  * This function is not overridable.
  *
@@ -192,7 +192,7 @@ AVMAPI bool AvmObjectEquals(object self, object other);
  *
  * @param self The object instance.
  */
-AVMAPI void AvmObjectDisableFinalizer(object self);
+AVMAPI void AvmObjectDisableDtor(object self);
 
 /**
  * @brief Clones an object, creating an exact copy.

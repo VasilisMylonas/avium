@@ -54,7 +54,7 @@ const AvmType* AvmObjectGetType(object self)
     return *(const AvmType**)self;
 }
 
-void AvmObjectDisableFinalizer(object self)
+void AvmObjectDisableDtor(object self)
 {
     pre
     {
