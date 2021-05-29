@@ -24,7 +24,6 @@ include(FetchContent)
 
 enable_testing()
 
-option(USE_GC "Use garbage collector? (requires libgc/bdwgc)" ON)
 option(BUILD_SHARED_LIBS "Build dynamic library instead?" OFF)
 option(BUILD_TESTS "Generate tests?" ON)
 option(USE_IO "Use the IO library?" ON)

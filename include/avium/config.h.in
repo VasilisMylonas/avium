@@ -13,7 +13,6 @@
 #cmakedefine AVM_DARWIN
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
-#cmakedefine AVM_USE_GC
 #cmakedefine AVM_USE_ARGPARSE
 #cmakedefine AVM_USE_REFLECT
 #cmakedefine AVM_USE_IO

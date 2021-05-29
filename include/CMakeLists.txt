@@ -31,10 +31,6 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-if(USE_GC)
-    set(AVM_USE_GC ON)
-endif()
-
 if(USE_ARGPARSE)
     set(AVM_USE_ARGPARSE ON)
 endif()

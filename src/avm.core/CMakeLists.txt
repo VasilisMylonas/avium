@@ -4,7 +4,5 @@ add_library(avm.core
     typeinfo.c
 )
 
-if(USE_GC)
-    include(GC)
-    target_link_libraries(avm.core ${LIBGC})
-endif()
+include(GC)
+target_link_libraries(avm.core ${LIBGC})
