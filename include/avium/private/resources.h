@@ -3,6 +3,10 @@
 
 #include "avium/core.h"
 
+#define RAW_MEMORY        ((void*)0)
+#define AVM_OBJECT        ((void*)1)
+#define ALREADY_FINALIZED ((void*)2)
+
 #define VIRTUAL_CALL_(TReturn, E, ...)                                         \
     AvmFunction __virtualFunc =                                                \
         AvmTypeGetFunction(AvmObjectGetType((object)self), E);                 \

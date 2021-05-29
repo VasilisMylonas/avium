@@ -181,21 +181,18 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Destroys an object.
+ * @brief Disables finalization of an object.
  *
- * This function is called automatically if the garbage collector is used to
- * allocate an object, otherwise this should be called when an object is no
- * longer needed.
+ * When called makes runtime ignore finalization of the object. This may be
+ * useful if writing functions that deterministically destroy an object.
  *
- * This function is overridable by the FnEntryDtor entry in the VFT.
- *
- * The default implementation does nothing.
+ * This function is not overridable.
  *
  * @pre Parameter @p self must be not null.
  *
  * @param self The object instance.
  */
-AVMAPI void AvmObjectDestroy(object self);
+AVMAPI void AvmObjectDisableFinalizer(object self);
 
 /**
  * @brief Clones an object, creating an exact copy.

@@ -17,35 +17,12 @@
 #include <execinfo.h>
 #endif
 
-//
-// Allocation functions.
-//
-
-#define RAW_MEMORY ((void*)0)
-#define AVM_OBJECT ((void*)1)
-
-static void __AvmRuntimeFinalize(object o, void* kind)
+static void AvmRuntimeFinalize(object self, void* kind)
 {
     if (kind == AVM_OBJECT)
     {
-        AvmObjectDestroy(o);
+        VIRTUAL_CALL(void, FnEntryDtor, self);
     }
-}
-
-void* AvmAlloc(size_t size)
-{
-    void* mem = GC_malloc(size);
-    if (mem == NULL)
-    {
-        GC_abort_on_oom();
-    }
-    GC_register_finalizer(mem, __AvmRuntimeFinalize, RAW_MEMORY, NULL, NULL);
-    return mem;
-}
-
-void* AvmRealloc(void* memory, size_t size)
-{
-    return GC_realloc(memory, size);
 }
 
 //
@@ -60,7 +37,7 @@ object AvmObjectNew(const AvmType* type)
     }
 
     object o = AvmAlloc(AvmTypeGetSize(type));
-    GC_register_finalizer(o, __AvmRuntimeFinalize, AVM_OBJECT, NULL, NULL);
+    GC_register_finalizer(o, AvmRuntimeFinalize, AVM_OBJECT, NULL, NULL);
     *(const AvmType**)o = type;
     return o;
 }
@@ -77,6 +54,17 @@ const AvmType* AvmObjectGetType(object self)
     return *(const AvmType**)self;
 }
 
+void AvmObjectDisableFinalizer(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    GC_register_finalizer(
+        self, AvmRuntimeFinalize, ALREADY_FINALIZED, NULL, NULL);
+}
+
 //
 // Virtual calls.
 //
@@ -84,11 +72,6 @@ const AvmType* AvmObjectGetType(object self)
 bool AvmObjectEquals(object self, object other)
 {
     VIRTUAL_CALL(bool, FnEntryEquals, self, other);
-}
-
-void AvmObjectDestroy(object self)
-{
-    VIRTUAL_CALL(void, FnEntryDtor, self);
 }
 
 object AvmObjectClone(object self)
@@ -357,6 +340,26 @@ never AvmRuntimeThrow(object value, AvmLocation location)
     __AvmRuntimeState._throwContext->_location = location;
     __AvmRuntimeState._throwContext->_thrownObject = value;
     longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
+}
+
+//
+// Allocation functions.
+//
+
+void* AvmAlloc(size_t size)
+{
+    void* mem = GC_malloc(size);
+    if (mem == NULL)
+    {
+        GC_abort_on_oom();
+    }
+    GC_register_finalizer(mem, AvmRuntimeFinalize, RAW_MEMORY, NULL, NULL);
+    return mem;
+}
+
+void* AvmRealloc(void* memory, size_t size)
+{
+    return GC_realloc(memory, size);
 }
 
 //
