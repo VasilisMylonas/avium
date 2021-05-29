@@ -10,11 +10,16 @@
 
 object __AvmRuntimeCastFail(object value, const AvmType* type)
 {
-    AvmErrorf("Tried to cast object [%x] of type %T to type %s.\n",
-              value,
-              value,
-              AvmTypeGetName(type));
-    exit(EXIT_FAILURE);
+    AvmString temp =
+        AvmStringFormat("Tried to cast object [%x] of type %T to type %s.",
+                        value,
+                        value,
+                        AvmTypeGetName(type));
+
+    str msg = AvmStringToStr(&temp);
+    AvmObjectDestroy(&temp);
+
+    throw(AvmErrorNew(msg));
 }
 
 str AvmTypeGetName(const AvmType* self)
