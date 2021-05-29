@@ -36,7 +36,6 @@ object __AvmRuntimeCastFail(object value, const AvmType* type)
                         AvmTypeGetName(type));
 
     str msg = AvmStringToStr(&temp);
-    AvmObjectDestroy(&temp);
 
     throw(AvmErrorNew(msg));
 }

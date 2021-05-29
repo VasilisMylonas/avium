@@ -164,7 +164,6 @@ static AvmError* AvmFilePerform(str path,
         break;
     }
 
-    AvmObjectDestroy(stream);
     return error;
 }
 

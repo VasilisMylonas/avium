@@ -62,20 +62,9 @@ static object AvmStringClone(AvmString* self)
     return ret;
 }
 
-static void AvmStringDestroy(AvmString* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    AvmDealloc(self->_buffer);
-}
-
 AVM_TYPE(AvmString,
          object,
          {
-             [FnEntryDtor] = (AvmFunction)AvmStringDestroy,
              [FnEntryClone] = (AvmFunction)AvmStringClone,
              [FnEntryToString] = (AvmFunction)AvmStringToString,
              [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
@@ -328,7 +317,6 @@ AvmString AvmStringFromFloat2(float value)
 
     AvmString intPart = AvmStringFromInt(mantissa >> (23 - exponent));
     AvmStringPushString(&s, &intPart);
-    AvmObjectDestroy(&intPart);
 
     AvmStringPushChar(&s, '.');
 
@@ -1130,7 +1118,6 @@ void AvmStringPushInt(AvmString* self, _long value)
 
     AvmString temp = AvmStringFromInt(value);
     AvmStringPushString(self, &temp);
-    AvmObjectDestroy(&temp);
 }
 
 void AvmStringPushUint(AvmString* self, ulong value, AvmNumericBase numericBase)
@@ -1156,7 +1143,6 @@ void AvmStringPushUint(AvmString* self, ulong value, AvmNumericBase numericBase)
         break;
     }
     AvmStringPushString(self, &temp);
-    AvmObjectDestroy(&temp);
 }
 
 void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr)
@@ -1171,7 +1157,6 @@ void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr)
     case FloatReprSimple: {
         AvmString temp = AvmStringFromFloat(value);
         AvmStringPushString(self, &temp);
-        AvmObjectDestroy(&temp);
         break;
     }
     case FloatReprScientific: {
@@ -1200,7 +1185,6 @@ void AvmStringPushValue(AvmString* self, object value)
 
     AvmString temp = AvmObjectToString(value);
     AvmStringPushString(self, &temp);
-    AvmObjectDestroy(&temp);
 }
 
 //

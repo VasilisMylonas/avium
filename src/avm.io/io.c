@@ -144,7 +144,6 @@ AvmString AvmStreamReadLine(AvmStream* self, AvmError** error)
     char c = AvmStreamReadChar(self, error);
     if (*error != NULL)
     {
-        AvmObjectDestroy(&s);
         return AvmStringNew(0);
     }
 
@@ -154,7 +153,6 @@ AvmString AvmStreamReadLine(AvmStream* self, AvmError** error)
         c = AvmStreamReadChar(self, error);
         if (*error != NULL)
         {
-            AvmObjectDestroy(&s);
             return AvmStringNew(0);
         }
     }

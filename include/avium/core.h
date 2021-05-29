@@ -32,6 +32,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+/**
+ * @defgroup AvmCoreTypes Avium core types.
+ *
+ * @{
+ */
+
 typedef AVM_LONG_TYPE _long;          ///< Signed 64-bit integer type.
 typedef unsigned AVM_LONG_TYPE ulong; ///< Unsigned 64-bit integer type.
 typedef unsigned int uint;            ///< Unsigned 32-bit integer type.
@@ -43,10 +49,9 @@ typedef const char* str;              ///< Primitive read-only string.
 #define weakptr(T) T*                 ///< A weak pointer to a type T.
 typedef struct AvmType AvmType;
 typedef struct AvmEnum AvmEnum;
-typedef void AvmError;
 typedef struct AvmString AvmString;
 
-#define main AvmMain
+/// @}
 
 /**
  * @brief Creates an Avium class type.
@@ -87,15 +92,13 @@ typedef struct AvmString AvmString;
 #define AVM_CONCAT_(a, b) a##b
 #define AVM_CONCAT(a, b)  AVM_CONCAT_(a, b)
 #define AVM_UNIQUE(name)  AVM_CONCAT(name, __LINE__)
-
 #define AVM_VA_ARGS(T, ...)                                                    \
     (sizeof((T[]){__VA_ARGS__}) / sizeof(T)), (T[])                            \
     {                                                                          \
         __VA_ARGS__                                                            \
     }
 
-/// Refers to the base type in a function with a self parameter.
-#define base (&self->_base)
+#define main AvmMain
 
 // TODO
 #define AvmInvalid ((uint)-1)
@@ -370,6 +373,8 @@ AVMAPI never AvmRuntimeThrow(object value, AvmLocation location);
  */
 AVMAPI void* AvmAlloc(size_t size);
 
+AVMAPI object AvmObjectNew(const AvmType* type);
+
 /**
  * @brief Reallocates a heap memory block.
  *
@@ -389,7 +394,7 @@ AVMAPI void AvmDealloc(void* memory);
 /// @}
 
 /**
- * @defgroup AvmFundamentalIO Fundamental IO functions.
+ * @defgroup AvmCoreIO Fundamental IO functions.
  *
  * @{
  */
@@ -496,19 +501,6 @@ AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
-
-extern const AvmType AVM_TI_NAME(_long);
-extern const AvmType AVM_TI_NAME(ulong);
-extern const AvmType AVM_TI_NAME(int);
-extern const AvmType AVM_TI_NAME(uint);
-extern const AvmType AVM_TI_NAME(short);
-extern const AvmType AVM_TI_NAME(ushort);
-extern const AvmType AVM_TI_NAME(char);
-extern const AvmType AVM_TI_NAME(byte);
-extern const AvmType AVM_TI_NAME(object);
-extern const AvmType AVM_TI_NAME(float);
-extern const AvmType AVM_TI_NAME(double);
-extern const AvmType AVM_TI_NAME(str);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

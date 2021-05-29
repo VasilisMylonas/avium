@@ -225,9 +225,6 @@ AvmString AvmPathCombine(uint length, str paths[])
 
         // Combine the previous and the current paths.
         AvmString temp = AvmPathCombine2(AvmStringGetBuffer(&prev), paths[i]);
-
-        // Replace the old string.
-        AvmObjectDestroy(&prev);
         prev = temp;
     }
 

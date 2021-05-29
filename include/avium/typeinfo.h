@@ -111,6 +111,9 @@ AVM_ENUM(AvmFnEntry,
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
 
+/// Refers to the base type in a function with a self parameter.
+#define base (&self->_base)
+
 // clang-format off
 
 /// Determines whether an object is an instance of another type.
@@ -244,5 +247,21 @@ AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
 AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
 
 AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
+
+#ifndef DOXYGEN
+#define DOXYGEN
+extern const AvmType AVM_TI_NAME(_long);
+extern const AvmType AVM_TI_NAME(ulong);
+extern const AvmType AVM_TI_NAME(int);
+extern const AvmType AVM_TI_NAME(uint);
+extern const AvmType AVM_TI_NAME(short);
+extern const AvmType AVM_TI_NAME(ushort);
+extern const AvmType AVM_TI_NAME(char);
+extern const AvmType AVM_TI_NAME(byte);
+extern const AvmType AVM_TI_NAME(object);
+extern const AvmType AVM_TI_NAME(float);
+extern const AvmType AVM_TI_NAME(double);
+extern const AvmType AVM_TI_NAME(str);
+#endif // DOXYGEN
 
 #endif // AVIUM_TYPEINFO_H

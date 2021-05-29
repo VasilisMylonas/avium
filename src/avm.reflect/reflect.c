@@ -32,10 +32,6 @@ const AvmType* AvmReflectLoadType(str name)
     void* handle = dlopen(AvmStringGetBuffer(&library), RTLD_LAZY);
     const AvmType* t = dlsym(handle, AvmStringGetBuffer(&symbol));
 
-    AvmObjectDestroy(&library);
-    AvmObjectDestroy(&symbol);
-    AvmObjectDestroy(&temp);
-
     return t;
 }
 
@@ -123,7 +119,6 @@ const AvmType* AvmModuleGetType(const AvmModule* self, str name)
 
     AvmString symbolName = AvmStringFormat("_TI_%s%c", name, '\0');
     const AvmType* type = dlsym(self->_handle, AvmStringGetBuffer(&symbolName));
-    AvmObjectDestroy(&symbolName);
 
     return type;
 }

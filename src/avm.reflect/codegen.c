@@ -1,19 +1,7 @@
 #include "avium/codegen.h"
 #include "avium/testing.h"
 
-static void AvmTypeBuilderDestroy(AvmTypeBuilder* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    AvmDealloc(self);
-}
-
-AVM_TYPE(AvmTypeBuilder,
-         object,
-         {[FnEntryDtor] = (AvmFunction)AvmTypeBuilderDestroy});
+AVM_TYPE(AvmTypeBuilder, object, {[FnEntryDtor] = NULL});
 
 AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
 {

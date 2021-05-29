@@ -11,16 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef AVM_USE_GC
 #include "gc.h"
-#define AVM_ALLOC   GC_malloc
-#define AVM_REALLOC GC_realloc
-#define AVM_DEALLOC GC_free
-#else
-#define AVM_ALLOC   malloc
-#define AVM_REALLOC realloc
-#define AVM_DEALLOC free
-#endif
 
 #ifdef AVM_LINUX
 #include <execinfo.h>
@@ -231,14 +222,27 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
-    try
-    {
-        entry();
-    }
+    AvmThrowContext __avmThrownContext;
+    __AvmRuntimePushThrowContext(&__avmThrownContext);
+    for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)
+        if (__avmTLC == 1)
+        {
+            if (__AvmRuntimeGetThrowContext()->_thrownObject == NULL)
+            {
+                __AvmRuntimePopThrowContext();
+                break;
+            }
+            AvmRuntimeThrow(__AvmRuntimeGetThrowContext()->_thrownObject,
+                            __AvmRuntimePopThrowContext()->_location);
+        }
+        else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
+        {
+            entry();
+        }
     catch (object, e)
     {
         AvmErrorf("Uncaught thrown object of type %T: %v\n", e, e);
-        AvmErrorf("Thrown from %v\n", &__avmThrownContext234._location);
+        AvmErrorf("Thrown from %v\n", __avmThrownContext._location);
         return EXIT_FAILURE;
     }
 
@@ -311,19 +315,48 @@ never AvmRuntimeThrow(object value, AvmLocation location)
 // Allocation functions.
 //
 
+#define RAW_MEMORY ((void*)0)
+#define AVM_OBJECT ((void*)1)
+
+static void __AvmRuntimeFinalize(object o, void* kind)
+{
+    if (kind == RAW_MEMORY)
+    {
+        AvmPrintf("Finalizer called for (raw memory)\n");
+        return;
+    }
+
+    AvmPrintf("Finalizer called for %v\n", o);
+}
+
+object AvmObjectNew(const AvmType* type)
+{
+    pre
+    {
+        assert(type != NULL);
+    }
+
+    object o = GC_malloc(AvmTypeGetSize(type));
+    GC_register_finalizer(o, __AvmRuntimeFinalize, AVM_OBJECT, NULL, NULL);
+    *(const AvmType**)o = type;
+    return o;
+}
+
 void* AvmAlloc(size_t size)
 {
-    return AVM_ALLOC(size);
+    void* mem = GC_malloc(size);
+    GC_register_finalizer(mem, __AvmRuntimeFinalize, RAW_MEMORY, NULL, NULL);
+    return mem;
 }
 
 void* AvmRealloc(void* memory, size_t size)
 {
-    return AVM_REALLOC(memory, size);
+    return GC_realloc(memory, size);
 }
 
 void AvmDealloc(void* memory)
 {
-    AVM_DEALLOC(memory);
+    GC_free(memory);
 }
 
 //
@@ -341,7 +374,6 @@ static void AvmFputs(str format, va_list args, FILE* stream)
 
     AvmString temp = AvmStringFormatV(format, args);
     fwrite(AvmStringGetBuffer(&temp), sizeof(char), temp._length, stream);
-    AvmObjectDestroy(&temp);
 }
 
 void AvmVScanf(str format, va_list args)
