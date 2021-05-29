@@ -26,10 +26,7 @@ void TestListPush()
     assert(AvmListGetItemType(&arrayList) == expectedType);
 }
 
-#include "gc.h"
-
 void main()
 {
     TestListPush();
-    GC_gcollect();
 }
