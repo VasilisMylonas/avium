@@ -221,7 +221,7 @@ AVM_TYPE(AvmRuntime,
 
 static thread_local AvmRuntime __AvmRuntimeState;
 
-void AvmRuntimeInit(int argc, str argv[])
+int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     __AvmRuntimeState._type = typeid(AvmRuntime);
     __AvmRuntimeState._argc = (uint)(argc - 1);
@@ -230,6 +230,19 @@ void AvmRuntimeInit(int argc, str argv[])
     __AvmRuntimeState._throwContext = NULL;
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
+
+    try
+    {
+        entry();
+    }
+    catch (object, e)
+    {
+        AvmErrorf("Uncaught thrown object of type %T: %v\n", e, e);
+        AvmErrorf("Thrown from %v\n", &__avmThrownContext234._location);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
 
 str AvmRuntimeGetProgramName(void)
@@ -280,6 +293,18 @@ AvmString AvmRuntimeGetBacktrace(void)
 #else
     return AvmStringFrom(NoBacktraceMsg);
 #endif
+}
+
+never AvmRuntimeThrow(object value, AvmLocation location)
+{
+    pre
+    {
+        assert(value != NULL);
+    }
+
+    __AvmRuntimeState._throwContext->_location = location;
+    __AvmRuntimeState._throwContext->_thrownObject = value;
+    longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
 }
 
 //
@@ -485,18 +510,6 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
     return retval;
 }
 
-never __AvmRuntimeThrow(object value, AvmLocation location)
-{
-    pre
-    {
-        assert(value != NULL);
-    }
-
-    __AvmRuntimeState._throwContext->_location = location;
-    __AvmRuntimeState._throwContext->_thrownObject = value;
-    longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
-}
-
 void AvmCopy(object o, size_t size, byte* destination)
 {
     pre
@@ -514,74 +527,3 @@ void AvmCopy(object o, size_t size, byte* destination)
 
     memcpy(destination, o, objectSize);
 }
-
-// static void AvmHandleException(int exception)
-// {
-//     switch (exception)
-//     {
-//     case SIGSEGV:
-//         AvmErrorf("%s\n", InvalidPtrDerefMsg);
-//         break;
-//     case SIGILL:
-//         AvmErrorf("%s\n", IllegalInstructionMsg);
-//         break;
-//     case SIGFPE:
-//         AvmErrorf("%s\n", ArithmeticExceptionMsg);
-//         break;
-//     default:
-//         break;
-//     }
-
-//     exit(EXIT_FAILURE);
-// }
-
-// void AvmRuntimeEnableExceptions(void)
-// {
-//     signal(SIGSEGV, AvmHandleException);
-//     signal(SIGILL, AvmHandleException);
-//     signal(SIGFPE, AvmHandleException);
-// }
-
-// void AvmRuntimeDisableExceptions(void)
-// {
-//     signal(SIGSEGV, SIG_DFL);
-//     signal(SIGILL, SIG_DFL);
-//     signal(SIGFPE, SIG_DFL);
-// }
-
-// #ifdef AVM_USE_GC
-// void AvmGCForceCollect(void)
-// {
-//     GC_gcollect();
-// }
-
-// void AvmGCDisable(void)
-// {
-//     GC_disable();
-// }
-
-// void AvmGCEnable(void)
-// {
-//     GC_enable();
-// }
-
-// ulong AvmGCGetTotalBytes(void)
-// {
-//     return GC_get_total_bytes();
-// }
-
-// ulong AvmGCGetFreeBytes(void)
-// {
-//     return GC_get_free_bytes();
-// }
-
-// ulong AvmGCGetUsedBytes(void)
-// {
-//     return GC_get_memory_use();
-// }
-
-// ulong AvmGCGetHeapSize(void)
-// {
-//     return GC_get_heap_size();
-// }
-// #endif

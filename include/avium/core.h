@@ -218,8 +218,11 @@ AVM_CLASS(AvmRuntime, object, {
     AvmVersion _version;
 });
 
+/// The entry point function.
+typedef void (*AvmEntryPoint)(void);
+
 /**
- * @brief Initializes the Avium runtime.
+ * @brief Initializes the Avium runtime and calls into the entry point.
  *
  * Many Avium functions cannot be called without initializing the runtime
  * first.
@@ -228,8 +231,11 @@ AVM_CLASS(AvmRuntime, object, {
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
+ * @param entry The entry point.
+ *
+ * @return A status code such as EXIT_SUCCESS or EXIT_FAILURE.
  */
-AVMAPI void AvmRuntimeInit(int argc, str argv[]);
+AVMAPI int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry);
 
 /**
  * @brief Returns the name of the currently running program.
@@ -265,6 +271,19 @@ AVMAPI str* AvmRuntimeGetArgs(void);
  * @return The backtrace, or a symbolic string.
  */
 AVMAPI AvmString AvmRuntimeGetBacktrace(void);
+
+/**
+ * @brief Throws an object.
+ *
+ * A better alternative to using this function is the throw macro.
+ *
+ * @pre Parameter @p value must be not null.
+ *
+ * @param value The object to throw.
+ * @param location The location from which the object is thrown.
+ * @return This function never returns.
+ */
+AVMAPI never AvmRuntimeThrow(object value, AvmLocation location);
 
 /// @}
 
@@ -361,8 +380,8 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
                 __AvmRuntimePopThrowContext();                                 \
                 break;                                                         \
             }                                                                  \
-            __AvmRuntimeThrow(__AvmRuntimeGetThrowContext()->_thrownObject,    \
-                              __AvmRuntimePopThrowContext()->_location);       \
+            AvmRuntimeThrow(__AvmRuntimeGetThrowContext()->_thrownObject,      \
+                            __AvmRuntimePopThrowContext()->_location);         \
         }                                                                      \
         else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
 
@@ -390,7 +409,7 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  * @param value The object to throw.
  */
 #define throw(value)                                                           \
-    __AvmRuntimeThrow(value, AvmLocationFrom(__FILE__, __LINE__, 0))
+    AvmRuntimeThrow(value, AvmLocationFrom(__FILE__, __LINE__, 0))
 
 /// @}
 
@@ -407,20 +426,9 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
 AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
 #ifndef DOXYGEN
-AVMAPI never __AvmRuntimeThrow(object value, AvmLocation location);
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
 #endif // DOXYGEN
-
-// #ifdef AVM_USE_GC
-// AVMAPI void AvmGCForceCollect(void);
-// AVMAPI void AvmGCDisable(void);
-// AVMAPI void AvmGCEnable(void);
-// AVMAPI ulong AvmGCGetTotalBytes(void);
-// AVMAPI ulong AvmGCGetFreeBytes(void);
-// AVMAPI ulong AvmGCGetUsedBytes(void);
-// AVMAPI ulong AvmGCGetHeapSize(void);
-// #endif
 
 #endif // AVIUM_CORE_H
