@@ -20,8 +20,6 @@
 #cmakedefine AVM_HAVE_UCHAR_H
 #cmakedefine AVM_HAVE_DLFCN_H
 
-#define static_assert_s(condition) _Static_assert(condition, "")
-
 #ifdef AVM_MSVC
 #ifndef alignof
 #define alignof __alignof
@@ -43,19 +41,6 @@
 #ifdef __cplusplus
 #warning "Avium: C++ is not supported, you may encounter errors."
 #endif
-
-#define AVM_BYTE_SIZE          1
-#define AVM_CHAR_SIZE          1
-#define AVM_SHORT_SIZE         2
-#define AVM_INT_SIZE           4
-#define AVM_LONG_SIZE          8
-#define AVM_OBJECT_SIZE        8
-#define AVM_STRING_SIZE        24
-#define AVM_VERSION_SIZE       16
-#define AVM_STREAM_SIZE        8
-#define AVM_FILE_STREAM_SIZE   16
-#define AVM_MEMORY_STREAM_SIZE 48
-#define AVM_ARRAY_LIST_SIZE    32
 
 #define AVM_MAX_STRING_SIZE          ((uint)-1)
 #define AVM_STRING_GROWTH_FACTOR     2

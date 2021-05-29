@@ -108,41 +108,17 @@ typedef struct AvmEnum AvmEnum;
 typedef void AvmError;
 typedef struct AvmString AvmString;
 
-static_assert_s(sizeof(_long) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(_long);
-
-static_assert_s(sizeof(ulong) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(ulong);
-
-static_assert_s(sizeof(int) == AVM_INT_SIZE);
 extern const AvmType AVM_TI_NAME(int);
-
-static_assert_s(sizeof(uint) == AVM_INT_SIZE);
 extern const AvmType AVM_TI_NAME(uint);
-
-static_assert_s(sizeof(short) == AVM_SHORT_SIZE);
 extern const AvmType AVM_TI_NAME(short);
-
-static_assert_s(sizeof(ushort) == AVM_SHORT_SIZE);
 extern const AvmType AVM_TI_NAME(ushort);
-
-static_assert_s(sizeof(char) == AVM_CHAR_SIZE);
 extern const AvmType AVM_TI_NAME(char);
-
-static_assert_s(sizeof(byte) == AVM_BYTE_SIZE);
 extern const AvmType AVM_TI_NAME(byte);
-
-static_assert_s(sizeof(object) == AVM_OBJECT_SIZE);
 extern const AvmType AVM_TI_NAME(object);
-
-// TODO
-static_assert_s(sizeof(float) == AVM_INT_SIZE);
 extern const AvmType AVM_TI_NAME(float);
-
-static_assert_s(sizeof(double) == AVM_LONG_SIZE);
 extern const AvmType AVM_TI_NAME(double);
-
-static_assert_s(sizeof(str) == AVM_OBJECT_SIZE);
 extern const AvmType AVM_TI_NAME(str);
 #endif
 

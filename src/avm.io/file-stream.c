@@ -8,8 +8,6 @@
 
 AVM_CLASS(AvmFileStream, object, { AvmFileHandle _handle; });
 
-static_assert_s(sizeof(AvmFileStream) == AVM_FILE_STREAM_SIZE);
-
 static AvmError* AvmFileStreamFlush(AvmFileStream* self)
 {
     int status = fflush(self->_handle);

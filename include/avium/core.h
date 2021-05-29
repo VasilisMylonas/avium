@@ -399,8 +399,6 @@ AVMAPI never __AvmRuntimeThrow(object value);
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
-
-static_assert_s(sizeof(AvmVersion) == AVM_VERSION_SIZE);
 #endif // DOXYGEN
 
 // #ifdef AVM_USE_GC

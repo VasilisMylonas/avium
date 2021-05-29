@@ -11,8 +11,6 @@ AVM_CLASS(AvmMemoryStream, object, {
     AvmArrayList _list;
 });
 
-static_assert_s(sizeof(AvmMemoryStream) == AVM_MEMORY_STREAM_SIZE);
-
 static AvmError* AvmMemoryStreamFlush(AvmMemoryStream* self)
 {
     (void)self;
