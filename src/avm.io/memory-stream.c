@@ -4,6 +4,7 @@
 #include "avium/collections/list.h"
 #include "avium/private/errors.h"
 #include "avium/private/resources.h"
+#include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 AVM_CLASS(AvmMemoryStream, object, {
@@ -87,6 +88,17 @@ static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self)
     return AvmListGetCapacity(&self->_list);
 }
 
+static void AvmMemoryStreamClose(AvmMemoryStream* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    // Unlike AvmFileStream we have no need to dispose non-memory resources.
+    AvmObjectDisableDtor(self);
+}
+
 AVM_TYPE(AvmMemoryStream,
          object,
          {
@@ -96,6 +108,7 @@ AVM_TYPE(AvmMemoryStream,
              [FnEntrySeek] = (AvmFunction)AvmMemoryStreamSeek,
              [FnEntryGetPosition] = (AvmFunction)AvmMemoryStreamGetPosition,
              [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
+             [FnEntryClose] = (AvmFunction)AvmMemoryStreamClose,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity)

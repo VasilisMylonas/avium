@@ -70,6 +70,8 @@ AVMAPI AvmStream* AvmStreamFromMemory(size_t capacity);
 // TODO
 AVMAPI AvmStream* AvmStreamFromRaw(size_t length, byte array[]);
 
+AVMAPI void AvmStreamClose(AvmStream* self);
+
 /**
  * @brief Reads bytes from an AvmStream.
  *

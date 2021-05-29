@@ -95,6 +95,7 @@ AVM_ENUM(AvmFnEntry,
              FnEntrySeek,        ///< The AvmStreamSeek entry.
              FnEntryFlush,       ///< The AvmStreamFlush entry.
              FnEntryGetPosition, ///< The AvmStreamPosition entry.
+             FnEntryClose,       ///< The AvmStreamClose entry.
 
              FnEntryGetLength = 12,
              FnEntryGetCapacity,

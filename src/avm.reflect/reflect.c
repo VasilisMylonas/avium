@@ -35,7 +35,7 @@ const AvmType* AvmReflectLoadType(str name)
     return t;
 }
 
-static void AvmModuleDestroy(AvmModule* self)
+static void AvmModuleDestroy(const AvmModule* self)
 {
     pre
     {
@@ -71,6 +71,17 @@ AvmModule* AvmModuleLoad(str path)
     }
 
     return AvmModuleLoadImpl(path);
+}
+
+void AvmModuleUnload(const AvmModule* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmModuleDestroy(self);
+    AvmObjectDisableDtor((object)self);
 }
 
 const AvmModule* AvmModuleGetCurrent(void)

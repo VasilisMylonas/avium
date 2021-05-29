@@ -55,6 +55,15 @@ AVM_CLASS(AvmModule, object, {
 AVMAPI AvmModule* AvmModuleLoad(str path);
 
 /**
+ * @brief Unloads a module.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmModule instance.
+ */
+AVMAPI void AvmModuleUnload(const AvmModule* self);
+
+/**
  * @brief Gets a pointer to the currently running module.
  *
  * @return The currently running module.

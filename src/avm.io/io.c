@@ -178,3 +178,8 @@ AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string)
 
     return AvmStreamWriteChar(self, '\n');
 }
+
+void AvmStreamClose(AvmStream* self)
+{
+    VIRTUAL_CALL(void, FnEntryClose, self);
+}

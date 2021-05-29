@@ -90,6 +90,17 @@ static size_t AvmFileStreamGetLength(AvmFileStream* self)
     return 0;
 }
 
+static void AvmFileStreamClose(AvmFileStream* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmFileStreamDestroy(self);
+    AvmObjectDisableDtor(self);
+}
+
 AVM_TYPE(AvmFileStream,
          object,
          {
@@ -100,6 +111,7 @@ AVM_TYPE(AvmFileStream,
              [FnEntryGetPosition] = (AvmFunction)AvmFileStreamGetPosition,
              [FnEntryDtor] = (AvmFunction)AvmFileStreamDestroy,
              [FnEntryGetLength] = (AvmFunction)AvmFileStreamGetLength,
+             [FnEntryClose] = (AvmFunction)AvmFileStreamClose,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle)
