@@ -119,6 +119,20 @@ typedef struct AvmString AvmString;
  */
 
 /**
+ * @brief Allocates an object on the heap.
+ *
+ * TODO
+ *
+ * This function is not overridable.
+ *
+ * @pre Parameter @p type must be not null.
+ *
+ * @param type The type of the object to allocate.
+ * @return The object.
+ */
+AVMAPI object AvmObjectNew(const AvmType* type);
+
+/**
  * @brief Gets information about the type of an object.
  *
  * You should use this function to get the type of an object. This
@@ -373,8 +387,6 @@ AVMAPI never AvmRuntimeThrow(object value, AvmLocation location);
  */
 AVMAPI void* AvmAlloc(size_t size);
 
-AVMAPI object AvmObjectNew(const AvmType* type);
-
 /**
  * @brief Reallocates a heap memory block.
  *
@@ -383,13 +395,6 @@ AVMAPI object AvmObjectNew(const AvmType* type);
  * @return The reallocated memory.
  */
 AVMAPI void* AvmRealloc(void* memory, size_t size);
-
-/**
- * @brief Deallocates heap memory.
- *
- * @param memory The memory block to deallocate.
- */
-AVMAPI void AvmDealloc(void* memory);
 
 /// @}
 

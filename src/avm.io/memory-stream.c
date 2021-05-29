@@ -82,11 +82,6 @@ static size_t AvmMemoryStreamGetPosition(AvmMemoryStream* self)
     return self->_position;
 }
 
-static void AvmMemoryStreamDestroy(AvmMemoryStream* self)
-{
-    AvmObjectDestroy(&self->_list);
-}
-
 static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self)
 {
     return AvmListGetCapacity(&self->_list);
@@ -100,7 +95,6 @@ AVM_TYPE(AvmMemoryStream,
              [FnEntryWrite] = (AvmFunction)AvmMemoryStreamWrite,
              [FnEntrySeek] = (AvmFunction)AvmMemoryStreamSeek,
              [FnEntryGetPosition] = (AvmFunction)AvmMemoryStreamGetPosition,
-             [FnEntryDtor] = (AvmFunction)AvmMemoryStreamDestroy,
              [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
          });
 

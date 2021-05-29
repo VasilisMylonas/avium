@@ -119,7 +119,6 @@ AvmString AvmPathGetExtension(str path)
 
     if (index == AvmInvalid)
     {
-        AvmObjectDestroy(&name);
         return AvmStringNew(0);
     }
 

@@ -52,7 +52,7 @@ AVM_CLASS(AvmModule, object, {
  * @param path The path to the share object file.
  * @return The loaded module.
  */
-AVMAPI AvmModule AvmModuleLoad(str path);
+AVMAPI AvmModule* AvmModuleLoad(str path);
 
 /**
  * @brief Gets a pointer to the currently running module.

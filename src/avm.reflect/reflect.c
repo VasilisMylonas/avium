@@ -47,7 +47,7 @@ static void AvmModuleDestroy(AvmModule* self)
 
 AVM_TYPE(AvmModule, object, {[FnEntryDtor] = (AvmFunction)AvmModuleDestroy});
 
-static AvmModule AvmModuleLoadImpl(str path)
+static AvmModule* AvmModuleLoadImpl(str path)
 {
     void* handle = dlopen(path, RTLD_LAZY);
 
@@ -56,15 +56,14 @@ static AvmModule AvmModuleLoadImpl(str path)
         throw(AvmErrorNew(dlerror()));
     }
 
-    return (AvmModule){
-        ._type = typeid(AvmModule),
-        ._handle = handle,
-        ._name = path == NULL ? AvmBasename(AvmRuntimeGetProgramName())
-                              : AvmBasename(path),
-    };
+    AvmModule* mod = AvmObjectNew(typeid(AvmModule));
+    mod->_handle = handle;
+    mod->_name = path == NULL ? AvmBasename(AvmRuntimeGetProgramName())
+                              : AvmBasename(path);
+    return mod;
 }
 
-AvmModule AvmModuleLoad(str path)
+AvmModule* AvmModuleLoad(str path)
 {
     pre
     {
@@ -77,7 +76,7 @@ AvmModule AvmModuleLoad(str path)
 const AvmModule* AvmModuleGetCurrent(void)
 {
     static bool isLoaded = false;
-    static AvmModule module;
+    static AvmModule* module;
 
     if (!isLoaded)
     {
@@ -85,7 +84,7 @@ const AvmModule* AvmModuleGetCurrent(void)
         isLoaded = true;
     }
 
-    return &module;
+    return module;
 }
 
 str AvmModuleGetName(const AvmModule* self)
