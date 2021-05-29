@@ -24,49 +24,7 @@
 #ifndef AVIUM_TYPEINFO_H
 #define AVIUM_TYPEINFO_H
 
-#include "avium/types.h"
-
-/// Represents an entry on the virtual function table.
-typedef enum
-{
-    FnEntryDtor = 0,    ///< The destructor entry.
-    FnEntryToString,    ///< The AvmObjectToString entry.
-    FnEntryClone,       ///< The AvmObjectClone entry.
-    FnEntryEquals,      ///< The AvmObjectEquals entry.
-    FnEntryRead = 16,   ///< The AvmStreamRead entry.
-    FnEntryWrite,       ///< The AvmStreamWrite entry.
-    FnEntrySeek,        ///< The AvmStreamSeek entry.
-    FnEntryFlush,       ///< The AvmStreamFlush entry.
-    FnEntryGetPosition, ///< The AvmStreamPosition entry.
-
-    FnEntryGetLength = 12,
-    FnEntryGetCapacity,
-
-    FnEntryRemove = 16,
-    FnEntryInsert,
-    FnEntryItemAt,
-    FnEntryGetItemType,
-} AvmFnEntry;
-
-/// Returns the base type of an object.
-#define baseof(x) (&(x)->_base)
-
-/// Returns a pointer to the type info of type T.
-#define typeid(T) (&AVM_TI_NAME(T))
-
-// clang-format off
-
-/// Determines whether an object is an instance of another type.
-#define instanceof(T, x)                 \
-    (typeid(T) == AvmObjectGetType(x) || \
-     AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
-
-#ifdef AVM_EXIT_ON_CAST_FAIL
-#define cast(T, x) (T*)(instanceof(T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
-#else
-#define cast(T, x) (T*)(instanceof(T, x) ? x : NULL)
-#endif
-// clang-format on
+#include "avium/core.h"
 
 /**
  * @brief Generates type info for a type.
@@ -94,6 +52,78 @@ AVM_CLASS(AvmType, object, {
     uint _vSize;
     AvmFunction* _vPtr;
 });
+
+#define AVM_ENUM_MEMBER(V)                                                     \
+    {                                                                          \
+#V, V                                                                  \
+    }
+
+/**
+ * @brief Generates type info for an enum.
+ *
+ * @param T The enum for which to generate type info.
+ * @param ... The enum members enclosed in braces ({...})
+ */
+#define AVM_ENUM_TYPE(T, ...)                                                  \
+    const AvmEnum AVM_TI_NAME(T) = {                                           \
+        ._type = typeid(AvmEnum),                                              \
+        ._name = #T,                                                           \
+        ._size = sizeof(T),                                                    \
+        ._members = __VA_ARGS__,                                               \
+    }
+
+/// A type containing information about an enum.
+AVM_CLASS(AvmEnum, object, {
+    str _name;
+    uint _size;
+    struct
+    {
+        str _name;
+        _long _value;
+    } _members[AVM_MAX_ENUM_MEMBERS];
+});
+
+/// Represents an entry on the virtual function table.
+AVM_ENUM(AvmFnEntry,
+         {
+             FnEntryDtor = 0,    ///< The destructor entry.
+             FnEntryToString,    ///< The AvmObjectToString entry.
+             FnEntryClone,       ///< The AvmObjectClone entry.
+             FnEntryEquals,      ///< The AvmObjectEquals entry.
+             FnEntryRead = 16,   ///< The AvmStreamRead entry.
+             FnEntryWrite,       ///< The AvmStreamWrite entry.
+             FnEntrySeek,        ///< The AvmStreamSeek entry.
+             FnEntryFlush,       ///< The AvmStreamFlush entry.
+             FnEntryGetPosition, ///< The AvmStreamPosition entry.
+
+             FnEntryGetLength = 12,
+             FnEntryGetCapacity,
+
+             FnEntryRemove = 16,
+             FnEntryInsert,
+             FnEntryItemAt,
+             FnEntryGetItemType,
+         });
+
+/// Returns the base type of an object.
+#define baseof(x) (&(x)->_base)
+
+/// Returns a pointer to the type info of type T.
+#define typeid(T) (&AVM_TI_NAME(T))
+
+// clang-format off
+
+/// Determines whether an object is an instance of another type.
+#define instanceof(T, x)                 \
+    (typeid(T) == AvmObjectGetType(x) || \
+     AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
+
+#ifdef AVM_EXIT_ON_CAST_FAIL
+#define cast(T, x) (T*)(instanceof(T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
+#else
+#define cast(T, x) (T*)(instanceof(T, x) ? x : NULL)
+#endif
+// clang-format on
 
 /**
  * @brief Gets the name of a type.
@@ -157,36 +187,6 @@ AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
  * @return The constructed object.
  */
 AVMAPI object AvmTypeConstruct(const AvmType* self);
-
-#define AVM_ENUM_MEMBER(V)                                                     \
-    {                                                                          \
-#V, V                                                                  \
-    }
-
-/**
- * @brief Generates type info for an enum.
- *
- * @param T The enum for which to generate type info.
- * @param ... The enum members enclosed in braces ({...})
- */
-#define AVM_ENUM_TYPE(T, ...)                                                  \
-    const AvmEnum AVM_TI_NAME(T) = {                                           \
-        ._type = typeid(AvmEnum),                                              \
-        ._name = #T,                                                           \
-        ._size = sizeof(T),                                                    \
-        ._members = __VA_ARGS__,                                               \
-    }
-
-/// A type containing information about an enum.
-AVM_CLASS(AvmEnum, object, {
-    str _name;
-    uint _size;
-    struct
-    {
-        str _name;
-        _long _value;
-    } _members[AVM_MAX_ENUM_MEMBERS];
-});
 
 /**
  * @brief Returns the name of an enum.

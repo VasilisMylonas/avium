@@ -31,7 +31,7 @@
  */
 
 // You should include this.
-#include <avium/types.h>
+#include <avium/core.h>
 
 AVM_CLASS(Point, object, {
     int _x;
@@ -102,7 +102,8 @@ AVM_TYPE(Point, object, {[FnEntryDtor] = NULL});
 // You should include this.
 #include <avium/runtime.h>
 
-Point PointFrom(int x, int y) {
+Point PointFrom(int x, int y)
+{
     return (Point){
         ._x = x,
         ._y = y,

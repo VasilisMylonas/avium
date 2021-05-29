@@ -1,7 +1,7 @@
 #ifndef AVIUM_PRIVATE_ERRORS_H
 #define AVIUM_PRIVATE_ERRORS_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 static const str ArgError = "Received an invalid argument.";
 static const str RangeError = "The provided index was out of range.";

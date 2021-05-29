@@ -8,6 +8,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+AVM_ENUM_TYPE(AvmFnEntry,
+              {
+                  AVM_ENUM_MEMBER(FnEntryDtor),
+                  AVM_ENUM_MEMBER(FnEntryToString),
+                  AVM_ENUM_MEMBER(FnEntryClone),
+                  AVM_ENUM_MEMBER(FnEntryEquals),
+                  AVM_ENUM_MEMBER(FnEntryRead),
+                  AVM_ENUM_MEMBER(FnEntryWrite),
+                  AVM_ENUM_MEMBER(FnEntrySeek),
+                  AVM_ENUM_MEMBER(FnEntryFlush),
+                  AVM_ENUM_MEMBER(FnEntryGetPosition),
+                  AVM_ENUM_MEMBER(FnEntryGetLength),
+                  AVM_ENUM_MEMBER(FnEntryGetCapacity),
+                  AVM_ENUM_MEMBER(FnEntryRemove),
+                  AVM_ENUM_MEMBER(FnEntryInsert),
+                  AVM_ENUM_MEMBER(FnEntryItemAt),
+                  AVM_ENUM_MEMBER(FnEntryGetItemType),
+              });
+
 object __AvmRuntimeCastFail(object value, const AvmType* type)
 {
     AvmString temp =
@@ -110,7 +129,7 @@ object AvmTypeConstruct(const AvmType* self)
     return o;
 }
 
-static AvmString AvmTypeToString(AvmType* self)
+static AvmString AvmTypeToString(const AvmType* self)
 {
     pre
     {
@@ -212,7 +231,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
     throw(AvmErrorNew(EnumConstantNotPresentError));
 }
 
-static AvmString AvmEnumToString(AvmEnum* self)
+static AvmString AvmEnumToString(const AvmEnum* self)
 {
     pre
     {

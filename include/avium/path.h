@@ -24,7 +24,7 @@
 #ifndef AVIUM_PATH_H
 #define AVIUM_PATH_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 /**
  * @brief Gets the character used as a path separator.

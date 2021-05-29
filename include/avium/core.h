@@ -24,16 +24,75 @@
 #ifndef AVIUM_CORE_H
 #define AVIUM_CORE_H
 
-#include "avium/typeinfo.h"
-#include "avium/types.h"
+#include "avium/config.h"
+#include "avium/exports.h"
 
 #include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
 
-#if defined AVM_GNU && defined AVM_LINUX
-#pragma weak AvmAlloc
-#pragma weak AvmRealloc
-#pragma weak AvmDealloc
-#endif
+typedef AVM_LONG_TYPE _long;          ///< Signed 64-bit integer type.
+typedef unsigned AVM_LONG_TYPE ulong; ///< Unsigned 64-bit integer type.
+typedef unsigned int uint;            ///< Unsigned 32-bit integer type.
+typedef unsigned short ushort;        ///< Unsigned 16-bit integer type.
+typedef unsigned char byte;           ///< Unsigned 8-bit integer type.
+typedef void* object;                 ///< An unknown object type.
+typedef void (*AvmFunction)(void);    ///< An unknown function type.
+typedef const char* str;              ///< Primitive read-only string.
+#define weakptr(T) T*                 ///< A weak pointer to a type T.
+typedef struct AvmType AvmType;
+typedef struct AvmEnum AvmEnum;
+typedef void AvmError;
+typedef struct AvmString AvmString;
+
+#define main AvmMain
+
+/**
+ * @brief Creates an Avium class type.
+ *
+ * @param T The name of the type.
+ * @param B The base class of the type.
+ * @param ... Member declaration in braces ({ ... })
+ */
+#define AVM_CLASS(T, B, ...)                                                   \
+    typedef struct T T;                                                        \
+    extern const AvmType AVM_TI_NAME(T);                                       \
+    struct T                                                                   \
+    {                                                                          \
+        union {                                                                \
+            const AvmType* _type;                                              \
+            B _base;                                                           \
+        };                                                                     \
+        struct __VA_ARGS__;                                                    \
+    }
+
+/**
+ * @brief Creates an Avium interface type.
+ *
+ * @param T The name of the type.
+ */
+#define AVM_INTERFACE(T) typedef void T
+
+/**
+ * @brief Creates an Avium enum type.
+ *
+ * @param T The name of the enum.
+ * @param ... The enum constants enclosed in braces ({...}).
+ */
+#define AVM_ENUM(T, ...)                                                       \
+    typedef enum T __VA_ARGS__ T;                                              \
+    extern const AvmEnum AVM_TI_NAME(T)
+
+#define AVM_CONCAT_(a, b) a##b
+#define AVM_CONCAT(a, b)  AVM_CONCAT_(a, b)
+#define AVM_UNIQUE(name)  AVM_CONCAT(name, __LINE__)
+
+#define AVM_VA_ARGS(T, ...)                                                    \
+    (sizeof((T[]){__VA_ARGS__}) / sizeof(T)), (T[])                            \
+    {                                                                          \
+        __VA_ARGS__                                                            \
+    }
 
 /// Refers to the base type in a function with a self parameter.
 #define base (&self->_base)
@@ -41,11 +100,17 @@
 // TODO
 #define AvmInvalid ((uint)-1)
 
+#if defined AVM_GNU && defined AVM_LINUX
+#pragma weak AvmAlloc
+#pragma weak AvmRealloc
+#pragma weak AvmDealloc
+#endif
+
 /**
  * @defgroup AvmObjectFunctions Universal object instance functions.
  *
- * These functions provide the basic facilities for the rest of the Avium type
- * system.
+ * These functions provide the basic facilities for the rest of the Avium
+ * type system.
  *
  * @{
  */
@@ -53,18 +118,20 @@
 /**
  * @brief Gets information about the type of an object.
  *
- * You should use this function to get the type of an object. This assumes that
- * the ._type field is correctly initialized by the object constructor.
+ * You should use this function to get the type of an object. This
+ * assumes that the ._type field is correctly initialized by the object
+ * constructor.
  *
- * This function returns the actual runtime type of an object bypassing any base
- * types. That is, for an object of type T where T inherits from another type B,
- * this function will always return typeid(T) regardless if the object is passed
- * as a T* or a B*.
+ * This function returns the actual runtime type of an object bypassing
+ * any base types. That is, for an object of type T where T inherits
+ * from another type B, this function will always return typeid(T)
+ * regardless if the object is passed as a T* or a B*.
  *
- * To check if an object is an instance of a type (possibly derived) use the
- * instanceof macro.
+ * To check if an object is an instance of a type (possibly derived) use
+ * the instanceof macro.
  *
- * To handle the returning AvmType instance, you may need to include typeinfo.h
+ * To handle the returning AvmType instance, you may need to include
+ * typeinfo.h
  *
  * This function is not overridable.
  *
@@ -429,6 +496,19 @@ AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+
+extern const AvmType AVM_TI_NAME(_long);
+extern const AvmType AVM_TI_NAME(ulong);
+extern const AvmType AVM_TI_NAME(int);
+extern const AvmType AVM_TI_NAME(uint);
+extern const AvmType AVM_TI_NAME(short);
+extern const AvmType AVM_TI_NAME(ushort);
+extern const AvmType AVM_TI_NAME(char);
+extern const AvmType AVM_TI_NAME(byte);
+extern const AvmType AVM_TI_NAME(object);
+extern const AvmType AVM_TI_NAME(float);
+extern const AvmType AVM_TI_NAME(double);
+extern const AvmType AVM_TI_NAME(str);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

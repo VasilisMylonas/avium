@@ -1,7 +1,7 @@
 #ifndef AVIUM_DLFCN_H
 #define AVIUM_DLFCN_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 #ifdef AVM_WIN32
 #define RTLD_LAZY         0

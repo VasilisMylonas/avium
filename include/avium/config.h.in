@@ -28,6 +28,7 @@
 #define thread_local __declspec(thread)
 #endif
 #define never __declspec(noreturn) void
+#define typeof(T) decltype(T)
 #else
 #ifndef alignof
 #define alignof _Alignof
@@ -36,6 +37,14 @@
 #define thread_local _Thread_local
 #endif
 #define never _Noreturn void
+#ifdef __clang__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wkeyword-macro"
+#endif
+#define typeof(T) __typeof__(T)
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
 #endif // AVM_MSVC
 
 #ifdef __cplusplus

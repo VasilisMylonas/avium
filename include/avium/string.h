@@ -24,7 +24,7 @@
 #ifndef AVIUM_STRING_H
 #define AVIUM_STRING_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 /// A dynamic heap-allocated string.
 AVM_CLASS(AvmString, object, {

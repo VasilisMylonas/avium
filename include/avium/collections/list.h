@@ -24,7 +24,7 @@
 #ifndef AVIUM_COLLECTIONS_LIST_H
 #define AVIUM_COLLECTIONS_LIST_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 /// Interface for list-like collections.
 AVM_INTERFACE(AvmList);

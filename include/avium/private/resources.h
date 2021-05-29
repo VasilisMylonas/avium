@@ -1,7 +1,7 @@
 #ifndef AVIUM_PRIVATE_RESOURCES_H
 #define AVIUM_PRIVATE_RESOURCES_H
 
-#include "avium/types.h"
+#include "avium/core.h"
 
 #define VIRTUAL_CALL_(TReturn, E, ...)                                         \
     AvmFunction __virtualFunc =                                                \

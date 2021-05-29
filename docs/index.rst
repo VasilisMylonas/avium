@@ -14,7 +14,6 @@ Welcome to Avium's documentation!
    string
    testing
    typeinfo
-   types
 
 Indices and tables
 ==================
