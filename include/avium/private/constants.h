@@ -7,15 +7,17 @@
 #define AVM_OBJECT        ((void*)1)
 #define ALREADY_FINALIZED ((void*)2)
 
-#define BACKTRACE_MAX_SYMBOLS 128
-#define BACKTRACE_LINE_SIZE   32
-#define AVM_FLOAT_BUFFER_SIZE 128
-#define READ_LINE_CAPACITY    32
+#define AVM_STRING_DEFAULT_CAPACITY 8
+#define BACKTRACE_MAX_SYMBOLS       128
+#define BACKTRACE_LINE_SIZE         32
+#define AVM_FLOAT_BUFFER_SIZE       128
+#define READ_LINE_CAPACITY          32
 
-#define LOCATION_STR "%s:%u"
-#define VERSION_STR  "%u.%u.%u"
-#define RUNTIME_STR  "%s v%v"
-#define OBJECT_STR   "%s [%x]"
+#define CAST_FAIL_STR "Tried to cast object [%x] of type %T to type %s."
+#define LOCATION_STR  "%s:%u"
+#define VERSION_STR   "%u.%u.%u"
+#define RUNTIME_STR   "%s v%v"
+#define OBJECT_STR    "%s [%x]"
 #define UNHANDLED_THROW_STR                                                    \
     "Uncaught thrown object of type %T: %v\nThrown from %v\n"
 #define AVM_RUNTIME_NAME            "Avium x86_64 Runtime Environment"

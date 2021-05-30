@@ -30,10 +30,7 @@ AVM_ENUM_TYPE(AvmFnEntry,
 object __AvmRuntimeCastFail(object value, const AvmType* type)
 {
     AvmString temp =
-        AvmStringFormat("Tried to cast object [%x] of type %T to type %s.",
-                        value,
-                        value,
-                        AvmTypeGetName(type));
+        AvmStringFormat(CAST_FAIL_STR, value, value, AvmTypeGetName(type));
 
     str msg = AvmStringToStr(&temp);
 

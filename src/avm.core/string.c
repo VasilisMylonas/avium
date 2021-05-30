@@ -40,7 +40,7 @@ static AvmString AvmStringToString(AvmString* self)
 
     if (self->_buffer == NULL)
     {
-        return AvmStringFrom("");
+        return AvmStringNew(0);
     }
     else
     {
@@ -192,7 +192,7 @@ AvmString AvmStringFromInt(_long value)
         value = -value;
     }
 
-    AvmString s = AvmStringNew(8);
+    AvmString s = AvmStringNew(AVM_STRING_DEFAULT_CAPACITY);
 
     uint i = 0;
     for (; value != 0; i++, value /= 10)
@@ -235,7 +235,7 @@ AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
                numericBase == NumericBaseHex);
     }
 
-    AvmString s = AvmStringNew(8);
+    AvmString s = AvmStringNew(AVM_STRING_DEFAULT_CAPACITY);
 
     uint i = 0;
     for (; value != 0; i++, value /= numericBase)
@@ -300,7 +300,7 @@ AvmString AvmStringFromFloat2(float value)
         return AvmStringFrom("0");
     }
 
-    AvmString s = AvmStringNew(8);
+    AvmString s = AvmStringNew(AVM_STRING_DEFAULT_CAPACITY);
 
     if (f.isNegative)
     {
