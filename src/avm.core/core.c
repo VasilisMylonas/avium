@@ -347,6 +347,40 @@ never AvmRuntimeThrow(object value, AvmLocation location)
     longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
 }
 
+#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
+    for (size_t i = 0; i < length; i++)                                        \
+    {                                                                          \
+        ((T1*)array)[i] = (T1)va_arg(args, T2);                                \
+    }                                                                          \
+                                                                               \
+    return array;
+
+void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
+{
+    pre
+    {
+        assert(args != NULL);
+        assert(size != 0);
+        assert(length != 0);
+    }
+
+    byte* array = AvmAlloc(length * size);
+
+    switch (size)
+    {
+    case sizeof(byte):
+        VA_LIST_TO_ARRAY_IMPL(byte, uint);
+    case sizeof(ushort):
+        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
+    case sizeof(uint):
+        VA_LIST_TO_ARRAY_IMPL(uint, uint);
+    case sizeof(ulong):
+        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
+    default:
+        throw(AvmErrorNew(MarshallingError));
+    }
+}
+
 //
 // Allocation functions.
 //

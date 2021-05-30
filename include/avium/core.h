@@ -516,10 +516,25 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  */
 AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
+/**
+ * @brief Creates an array from a va_list.
+ *
+ * @pre Parameter @p N must be not zero.
+ * @pre Parameter @p args must be not null.
+ *
+ * @param T The type of the array elements.
+ * @param N The length of the array.
+ * @param args The va_list.
+ *
+ * @return The created array.
+ */
+#define va_array(T, N, args) (T*)__AvmRuntimeVaListToArray(args, sizeof(T), N)
+
 #ifndef DOXYGEN
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

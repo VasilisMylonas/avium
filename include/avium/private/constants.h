@@ -46,5 +46,7 @@ static const str EnumConstantNotPresentError =
 static const str VirtualFuncError = "Virtual function entry not present.";
 static const str HomeDirNotDeterminedError =
     "Could not determine the home directory.";
+static const str MarshallingError =
+    "Marshalling of non primitive types is not supported.";
 
 #endif // AVIUM_PRIVATE_CONSTANTS_H
