@@ -88,7 +88,7 @@ static size_t AvmMemoryStreamGetLength(AvmMemoryStream* self)
     return AvmListGetCapacity(&self->_list);
 }
 
-static void AvmMemoryStreamClose(AvmMemoryStream* self)
+static void AvmMemoryStreamFinalize(AvmMemoryStream* self)
 {
     pre
     {
@@ -96,7 +96,6 @@ static void AvmMemoryStreamClose(AvmMemoryStream* self)
     }
 
     // Unlike AvmFileStream we have no need to dispose non-memory resources.
-    AvmObjectDisableDtor(self);
 }
 
 AVM_TYPE(AvmMemoryStream,
@@ -108,7 +107,7 @@ AVM_TYPE(AvmMemoryStream,
              [FnEntrySeek] = (AvmFunction)AvmMemoryStreamSeek,
              [FnEntryGetPosition] = (AvmFunction)AvmMemoryStreamGetPosition,
              [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
-             [FnEntryClose] = (AvmFunction)AvmMemoryStreamClose,
+             [FnEntryFinalize] = (AvmFunction)AvmMemoryStreamFinalize,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity)

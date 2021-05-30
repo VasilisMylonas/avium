@@ -10,7 +10,7 @@
 
 AVM_ENUM_TYPE(AvmFnEntry,
               {
-                  AVM_ENUM_MEMBER(FnEntryDtor),
+                  AVM_ENUM_MEMBER(FnEntryFinalize),
                   AVM_ENUM_MEMBER(FnEntryToString),
                   AVM_ENUM_MEMBER(FnEntryClone),
                   AVM_ENUM_MEMBER(FnEntryEquals),

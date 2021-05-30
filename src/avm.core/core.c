@@ -21,7 +21,7 @@ static void AvmRuntimeFinalize(object self, void* kind)
 {
     if (kind == AVM_OBJECT)
     {
-        VIRTUAL_CALL(void, FnEntryDtor, self);
+        AvmObjectFinalize(self);
     }
 }
 
@@ -54,7 +54,7 @@ const AvmType* AvmObjectGetType(object self)
     return *(const AvmType**)self;
 }
 
-void AvmObjectDisableDtor(object self)
+void AvmObjectSurpressFinalizer(object self)
 {
     pre
     {
@@ -74,6 +74,12 @@ bool AvmObjectEquals(object self, object other)
     VIRTUAL_CALL(bool, FnEntryEquals, self, other);
 }
 
+void AvmObjectFinalize(object self)
+{
+    AvmObjectSurpressFinalizer(self);
+    VIRTUAL_CALL(void, FnEntryFinalize, self);
+}
+
 object AvmObjectClone(object self)
 {
     VIRTUAL_CALL(object, FnEntryClone, self);
@@ -88,7 +94,7 @@ AvmString AvmObjectToString(object self)
 // Default implementations.
 //
 
-static void AvmObjectDestroyDefault(object self)
+static void AvmObjectFinalizeDefault(object self)
 {
     pre
     {
@@ -141,24 +147,24 @@ static AvmString AvmObjectToStringDefault(object self)
 AVM_TYPE(object,
          object,
          {
-             [FnEntryDtor] = (AvmFunction)AvmObjectDestroyDefault,
+             [FnEntryFinalize] = (AvmFunction)AvmObjectFinalizeDefault,
              [FnEntryEquals] = (AvmFunction)AvmObjectEqualsDefault,
              [FnEntryClone] = (AvmFunction)AvmObjectCloneDefault,
              [FnEntryToString] = (AvmFunction)AvmObjectToStringDefault,
          });
 
 // TODO: Override functions.
-AVM_TYPE(_long, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(ulong, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(int, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(uint, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(short, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(ushort, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(char, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(byte, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(str, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(float, object, {[FnEntryDtor] = NULL});
-AVM_TYPE(double, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(_long, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(ulong, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(int, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(uint, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(short, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(ushort, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(char, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(byte, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(str, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(float, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(double, object, {[FnEntryFinalize] = NULL});
 
 //
 // AvmLocation type.
@@ -523,7 +529,7 @@ AvmError* AvmErrorNew(str message)
 // Exception implementation.
 //
 
-AVM_TYPE(AvmThrowContext, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(AvmThrowContext, object, {[FnEntryFinalize] = NULL});
 
 AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {

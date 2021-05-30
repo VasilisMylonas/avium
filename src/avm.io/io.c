@@ -181,5 +181,5 @@ AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string)
 
 void AvmStreamClose(AvmStream* self)
 {
-    VIRTUAL_CALL(void, FnEntryClose, self);
+    AvmObjectFinalize(self);
 }

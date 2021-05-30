@@ -120,7 +120,7 @@ static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
 static void AvmArrayListDropItem(AvmArrayList* self, uint index)
 {
-    AvmFunction fn = AvmTypeGetFunction(self->_itemType, FnEntryDtor);
+    AvmFunction fn = AvmTypeGetFunction(self->_itemType, FnEntryFinalize);
     object item = AvmArrayListItemAt(self, index);
 
     if (fn != NULL)

@@ -61,7 +61,7 @@ AVMAPI AvmModule* AvmModuleLoad(str path);
  *
  * @param self The AvmModule instance.
  */
-AVMAPI void AvmModuleUnload(const AvmModule* self);
+AVMAPI void AvmModuleUnload(AvmModule* self);
 
 /**
  * @brief Gets a pointer to the currently running module.

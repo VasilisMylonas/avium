@@ -78,11 +78,6 @@ static size_t AvmFileStreamGetPosition(AvmFileStream* self)
     return (ulong)ftell(self->_handle);
 }
 
-static void AvmFileStreamDestroy(AvmFileStream* self)
-{
-    fclose(self->_handle);
-}
-
 static size_t AvmFileStreamGetLength(AvmFileStream* self)
 {
     (void)self;
@@ -90,15 +85,14 @@ static size_t AvmFileStreamGetLength(AvmFileStream* self)
     return 0;
 }
 
-static void AvmFileStreamClose(AvmFileStream* self)
+static void AvmFileStreamFinalize(AvmFileStream* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    AvmFileStreamDestroy(self);
-    AvmObjectDisableDtor(self);
+    fclose(self->_handle);
 }
 
 AVM_TYPE(AvmFileStream,
@@ -109,9 +103,8 @@ AVM_TYPE(AvmFileStream,
              [FnEntryWrite] = (AvmFunction)AvmFileStreamWrite,
              [FnEntrySeek] = (AvmFunction)AvmFileStreamSeek,
              [FnEntryGetPosition] = (AvmFunction)AvmFileStreamGetPosition,
-             [FnEntryDtor] = (AvmFunction)AvmFileStreamDestroy,
              [FnEntryGetLength] = (AvmFunction)AvmFileStreamGetLength,
-             [FnEntryClose] = (AvmFunction)AvmFileStreamClose,
+             [FnEntryFinalize] = (AvmFunction)AvmFileStreamFinalize,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle)

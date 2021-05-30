@@ -71,7 +71,7 @@ AVM_CLASS(Point, object, {
  * macro like so:
  */
 
-AVM_TYPE(Point, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(Point, object, {[FnEntryFinalize] = NULL});
 
 /*
  * As you can see, the AVM_TYPE macro takes 3 parameters, the class name, the

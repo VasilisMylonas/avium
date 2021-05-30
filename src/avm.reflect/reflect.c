@@ -35,17 +35,7 @@ const AvmType* AvmReflectLoadType(str name)
     return t;
 }
 
-static void AvmModuleDestroy(const AvmModule* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    dlclose(self->_handle);
-}
-
-AVM_TYPE(AvmModule, object, {[FnEntryDtor] = (AvmFunction)AvmModuleDestroy});
+AVM_TYPE(AvmModule, object, {[FnEntryFinalize] = (AvmFunction)AvmModuleUnload});
 
 static AvmModule* AvmModuleLoadImpl(str path)
 {
@@ -73,15 +63,15 @@ AvmModule* AvmModuleLoad(str path)
     return AvmModuleLoadImpl(path);
 }
 
-void AvmModuleUnload(const AvmModule* self)
+void AvmModuleUnload(AvmModule* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    AvmModuleDestroy(self);
-    AvmObjectDisableDtor((object)self);
+    AvmObjectSurpressFinalizer((object)self);
+    dlclose(self->_handle);
 }
 
 const AvmModule* AvmModuleGetCurrent(void)

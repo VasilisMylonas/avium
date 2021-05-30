@@ -1,7 +1,7 @@
 #include "avium/codegen.h"
 #include "avium/testing.h"
 
-AVM_TYPE(AvmTypeBuilder, object, {[FnEntryDtor] = NULL});
+AVM_TYPE(AvmTypeBuilder, object, {[FnEntryFinalize] = NULL});
 
 AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
 {
@@ -14,7 +14,7 @@ AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
     self->_type = typeid(AvmTypeBuilder);
     base->_baseType = type;
     base->_size = AvmTypeGetSize(type);
-    base->_vPtr[FnEntryDtor] = NULL;
+    base->_vPtr[FnEntryFinalize] = NULL;
     return self;
 }
 

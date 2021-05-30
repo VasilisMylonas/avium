@@ -181,10 +181,27 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
 AVMAPI bool AvmObjectEquals(object self, object other);
 
 /**
- * @brief Disables the destructor of an object.
+ * @brief Finalizes an object.
  *
- * When called makes the runtime ignore destruction of the object. This may be
- * useful if writing functions that deterministically destroys an object.
+ * This function calls AvmObjectSurpressFinalizer to make sure that the
+ * finalizer is not called more than once.
+ *
+ * This function is overridable by the FnEntryFinalize entry in the VFT.
+ *
+ * Overriding should be done when an object needs to release non-memory
+ * resources.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The object instance.
+ */
+AVMAPI void AvmObjectFinalize(object self);
+
+/**
+ * @brief Disables the finalizer of an object.
+ *
+ * When called makes the runtime ignore finalization of the object. This may be
+ * useful if writing functions that deterministically finalizes an object.
  *
  * This function is not overridable.
  *
@@ -192,7 +209,7 @@ AVMAPI bool AvmObjectEquals(object self, object other);
  *
  * @param self The object instance.
  */
-AVMAPI void AvmObjectDisableDtor(object self);
+AVMAPI void AvmObjectSurpressFinalizer(object self);
 
 /**
  * @brief Clones an object, creating an exact copy.

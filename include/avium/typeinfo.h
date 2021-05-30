@@ -86,16 +86,15 @@ AVM_CLASS(AvmEnum, object, {
 /// Represents an entry on the virtual function table.
 AVM_ENUM(AvmFnEntry,
          {
-             FnEntryDtor = 0,    ///< The destructor entry.
-             FnEntryToString,    ///< The AvmObjectToString entry.
-             FnEntryClone,       ///< The AvmObjectClone entry.
-             FnEntryEquals,      ///< The AvmObjectEquals entry.
-             FnEntryRead = 16,   ///< The AvmStreamRead entry.
-             FnEntryWrite,       ///< The AvmStreamWrite entry.
-             FnEntrySeek,        ///< The AvmStreamSeek entry.
-             FnEntryFlush,       ///< The AvmStreamFlush entry.
-             FnEntryGetPosition, ///< The AvmStreamPosition entry.
-             FnEntryClose,       ///< The AvmStreamClose entry.
+             FnEntryFinalize = 0, ///< The destructor entry.
+             FnEntryToString,     ///< The AvmObjectToString entry.
+             FnEntryClone,        ///< The AvmObjectClone entry.
+             FnEntryEquals,       ///< The AvmObjectEquals entry.
+             FnEntryRead = 16,    ///< The AvmStreamRead entry.
+             FnEntryWrite,        ///< The AvmStreamWrite entry.
+             FnEntrySeek,         ///< The AvmStreamSeek entry.
+             FnEntryFlush,        ///< The AvmStreamFlush entry.
+             FnEntryGetPosition,  ///< The AvmStreamPosition entry.
 
              FnEntryGetLength = 12,
              FnEntryGetCapacity,
