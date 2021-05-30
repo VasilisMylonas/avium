@@ -585,7 +585,7 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 
 str AvmRuntimeGetProgramName(void)
 {
-    return __AvmRuntimeState._argv[0];
+    return __AvmRuntimeState._argv[-1];
 }
 
 AvmVersion AvmRuntimeGetVersion(void)

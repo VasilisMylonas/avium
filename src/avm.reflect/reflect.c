@@ -2,6 +2,7 @@
 
 #include "avium/dlfcn.h"
 #include "avium/private/basename.h"
+#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
@@ -20,22 +21,35 @@ const AvmType* AvmReflectLoadType(str name)
     buffer[index] = '\0';
 
 #if defined AVM_WIN32
-    AvmString library = AvmStringFormat("%s.dll", buffer);
+    AvmString library = AvmStringFormat(WIN32_LIB_STR, buffer);
 #elif defined AVM_DARWIN
-    AvmString library = AvmStringFormat("lib%s.dylib", buffer);
+    AvmString library = AvmStringFormat(DARWIN_LIB_STR, buffer);
 #else
-    AvmString library = AvmStringFormat("lib%s.so", buffer);
+    AvmString library = AvmStringFormat(LINUX_LIB_STR, buffer);
 #endif
 
-    AvmString symbol = AvmStringFormat("_TI_%s", &buffer[index + 1]);
+    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, &buffer[index + 1]);
 
     void* handle = dlopen(AvmStringGetBuffer(&library), RTLD_LAZY);
     const AvmType* t = dlsym(handle, AvmStringGetBuffer(&symbol));
 
+    if (t == NULL)
+    {
+        throw(AvmErrorNew(TypeNotPresentError));
+    }
+
     return t;
 }
 
-AVM_TYPE(AvmModule, object, {[FnEntryFinalize] = (AvmFunction)AvmModuleUnload});
+static AvmString AvmModuleToString(const AvmModule* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(MODULE_STR, self->_name, self->_handle);
+}
 
 static AvmModule* AvmModuleLoadImpl(str path)
 {
@@ -52,6 +66,13 @@ static AvmModule* AvmModuleLoadImpl(str path)
                               : AvmBasename(path);
     return mod;
 }
+
+AVM_TYPE(AvmModule,
+         object,
+         {
+             [FnEntryFinalize] = (AvmFunction)AvmModuleUnload,
+             [FnEntryToString] = (AvmFunction)AvmModuleToString,
+         });
 
 AvmModule* AvmModuleLoad(str path)
 {
@@ -83,6 +104,11 @@ const AvmModule* AvmModuleGetCurrent(void)
     {
         module = AvmModuleLoadImpl(NULL);
         isLoaded = true;
+    }
+
+    post
+    {
+        assert(module != NULL);
     }
 
     return module;
@@ -117,8 +143,13 @@ const AvmType* AvmModuleGetType(const AvmModule* self, str name)
         assert(name != NULL);
     }
 
-    AvmString symbolName = AvmStringFormat("_TI_%s%c", name, '\0');
-    const AvmType* type = dlsym(self->_handle, AvmStringGetBuffer(&symbolName));
+    AvmString symbolName = AvmStringFormat(TYPE_SYMBOL_STR, name);
+    const AvmType* type = dlsym(self->_handle, AvmStringToStr(&symbolName));
+
+    if (type == NULL)
+    {
+        throw(AvmErrorNew(TypeNotPresentError));
+    }
 
     return type;
 }
@@ -132,6 +163,12 @@ AvmFunction AvmModuleGetFunction(const AvmModule* self, str name)
     }
 
     void* ptr = dlsym(self->_handle, name);
+
+    if (ptr == NULL)
+    {
+        throw(AvmErrorNew(SymbolNotPresentError));
+    }
+
     // This weird thing is needed because apparently ISO C forbids conversion
     // between void* and void(*)(void).
     return *((AvmFunction*)&ptr);
@@ -145,5 +182,12 @@ void* AvmModuleGetVariable(const AvmModule* self, str name)
         assert(name != NULL);
     }
 
-    return dlsym(self->_handle, name);
+    void* ptr = dlsym(self->_handle, name);
+
+    if (ptr == NULL)
+    {
+        throw(AvmErrorNew(SymbolNotPresentError));
+    }
+
+    return ptr;
 }

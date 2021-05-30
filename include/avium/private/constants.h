@@ -24,6 +24,11 @@
 #define BACKTRACE_SEPARATOR         '@'
 #define BACKTRACE_NOT_AVAILABLE_MSG "Backtrace not available."
 #define LONG_MIN_STR                "-9223372036854775808"
+#define TYPE_SYMBOL_STR             "_TI_%s"
+#define MODULE_STR                  "Module \"%s\" loaded at %x"
+#define LINUX_LIB_STR               "lib%s.so"
+#define WIN32_LIB_STR               "%s.dll"
+#define DARWIN_LIB_STR              "lib%s.dylib"
 
 #ifdef AVM_WIN32
 static const str HomeEnvVar = "%HOMEDRIVE%%HOMEPATH%";
@@ -48,5 +53,8 @@ static const str HomeDirNotDeterminedError =
     "Could not determine the home directory.";
 static const str MarshallingError =
     "Marshalling of non primitive types is not supported.";
+static const str SymbolNotPresentError =
+    "The requested symbol was not present.";
+static const str TypeNotPresentError = "The requested type was not present.";
 
 #endif // AVIUM_PRIVATE_CONSTANTS_H
