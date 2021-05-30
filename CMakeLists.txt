@@ -21,8 +21,7 @@ set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
 
 include(GNUInstallDirs)
 include(FetchContent)
-
-enable_testing()
+include(CTest)
 
 option(BUILD_SHARED_LIBS "Build dynamic library instead?" OFF)
 option(BUILD_TESTS "Generate tests?" ON)

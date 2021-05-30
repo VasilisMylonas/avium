@@ -11,6 +11,8 @@ static void TestFrom()
     assert_eq(AvmStringGetLength(&s), 5);
     assert_eq(AvmStringGetCapacity(&s), 5 * AVM_STRING_GROWTH_FACTOR);
     assert_eq(strcmp(AvmStringGetBuffer(&s), "Hello"), 0);
+    assert_eq(AvmStringCharAt(&s, 1), 'e');
+    assert(!AvmStringIsEmpty(&s));
 }
 
 void main()

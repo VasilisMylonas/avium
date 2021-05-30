@@ -19,11 +19,23 @@ void TestListPush()
         AvmListPush(&arrayList, &item);
     }
 
-    AvmPrintf("%v\n", &arrayList);
-
     assert(AvmListGetLength(&arrayList) == expectedLength);
     assert(AvmListGetCapacity(&arrayList) == expectedCapacity);
     assert(AvmListGetItemType(&arrayList) == expectedType);
+
+    for (uint i = 0; i < AvmListGetLength(&arrayList); i++)
+    {
+        assert_eq(*(char*)AvmListItemAt(&arrayList, i), item);
+    }
+
+    char item2 = 'A';
+    AvmListInsert(&arrayList, 4, &item2);
+
+    assert(AvmListGetLength(&arrayList) == expectedLength + 1);
+    assert(AvmListGetCapacity(&arrayList) ==
+           expectedCapacity * AVM_ARRAY_LIST_GROWTH_FACTOR);
+
+    assert_eq(AvmListIndexOf(&arrayList, &item2), 4);
 }
 
 void main()
