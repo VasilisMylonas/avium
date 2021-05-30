@@ -1,6 +1,6 @@
 #include "avium/io.h"
 
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
@@ -48,21 +48,25 @@ static AvmError* AvmFileStreamSeek(AvmFileStream* self,
                                    _long offset,
                                    AvmSeekOrigin origin)
 {
+    pre
+    {
+        assert(self != NULL);
+        assert(origin <= SeekOriginEnd);
+    }
+
     int status = 0;
 
     switch (origin)
     {
-    case SeekOriginCurrent:
-        status = fseek(self->_handle, (long)offset, SEEK_CUR);
-        break;
     case SeekOriginBegin:
         status = fseek(self->_handle, (long)offset, SEEK_SET);
+        break;
+    case SeekOriginCurrent:
+        status = fseek(self->_handle, (long)offset, SEEK_CUR);
         break;
     case SeekOriginEnd:
         status = fseek(self->_handle, (long)offset, SEEK_END);
         break;
-    default:
-        throw(AvmErrorNew(InvalidOriginMsg));
     }
 
     if (status != 0)

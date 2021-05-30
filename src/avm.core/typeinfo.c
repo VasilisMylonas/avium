@@ -1,7 +1,7 @@
 #include "avium/typeinfo.h"
 
 #include "avium/core.h"
-#include "avium/private/errors.h"
+#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 

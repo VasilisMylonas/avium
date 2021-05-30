@@ -7,8 +7,7 @@
 #include <string.h>
 
 #include "avium/core.h"
-#include "avium/private/errors.h"
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
@@ -184,7 +183,7 @@ AvmString AvmStringFromInt(_long value)
 {
     if (value == INTMAX_MIN)
     {
-        return AvmStringFrom(LongMinRepr);
+        return AvmStringFrom(LONG_MIN_STR);
     }
 
     const bool isNegative = value < 0;
@@ -228,15 +227,12 @@ AvmString AvmStringFromInt(_long value)
 
 AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
 {
-    switch (numericBase)
+    pre
     {
-    case NumericBaseBinary:
-    case NumericBaseOctal:
-    case NumericBaseDecimal:
-    case NumericBaseHex:
-        break;
-    default:
-        throw(AvmErrorNew(NumericBaseOutOfRangeMsg));
+        assert(numericBase == NumericBaseBinary ||
+               numericBase == NumericBaseOctal ||
+               numericBase == NumericBaseDecimal ||
+               numericBase == NumericBaseHex);
     }
 
     AvmString s = AvmStringNew(8);

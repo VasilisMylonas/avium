@@ -1,7 +1,6 @@
 #include "avium/file.h"
 
-#include "avium/private/errors.h"
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 
@@ -21,6 +20,8 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
     pre
     {
         assert(path != NULL);
+        assert(access % 2 == 0);
+        assert(access <= FileAccessAppend);
     }
 
     str mode = NULL;
@@ -43,8 +44,6 @@ AvmStream* AvmFileOpen(str path, AvmFileAccess access, AvmError** error)
     case FileAccessReadAppend:
         mode = "a+";
         break;
-    default:
-        throw(AvmErrorNew(InvalidAccessMsg));
     }
 
     FILE* file = fopen(path, mode);

@@ -1,8 +1,7 @@
 #include "avium/path.h"
 
 #include "avium/private/basename.h"
-#include "avium/private/errors.h"
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 

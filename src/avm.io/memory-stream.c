@@ -2,8 +2,7 @@
 
 #include "avium/collections/array-list.h"
 #include "avium/collections/list.h"
-#include "avium/private/errors.h"
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
@@ -48,6 +47,12 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
                                      _long offset,
                                      AvmSeekOrigin origin)
 {
+    pre
+    {
+        assert(self != NULL);
+        assert(origin <= SeekOriginEnd);
+    }
+
     switch (origin)
     {
     case SeekOriginCurrent:
@@ -71,8 +76,6 @@ static AvmError* AvmMemoryStreamSeek(AvmMemoryStream* self,
         }
         self->_position = AvmListGetCapacity(&self->_list) + offset;
         break;
-    default:
-        throw(AvmErrorNew(InvalidOriginMsg));
     }
 
     return NULL;

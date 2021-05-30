@@ -1,6 +1,6 @@
 #include "avium/io.h"
 
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"

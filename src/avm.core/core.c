@@ -1,12 +1,11 @@
 #include "avium/core.h"
 
-#include "avium/private/resources.h"
+#include "avium/private/constants.h"
+#include "avium/private/virtual.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
-#include <errno.h>
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -137,7 +136,7 @@ static AvmString AvmObjectToStringDefault(object self)
     }
 
     return AvmStringFormat(
-        "%s [%x]", AvmTypeGetName(AvmObjectGetType(self)), self);
+        OBJECT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
 }
 
 //
@@ -177,7 +176,7 @@ static AvmString AvmLocationToString(AvmLocation* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("%s:%u", self->File, self->Line);
+    return AvmStringFormat(LOCATION_STR, self->File, self->Line);
 }
 
 AVM_TYPE(AvmLocation,
@@ -210,7 +209,7 @@ static AvmString AvmVersionToString(AvmVersion* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("%i.%i.%i", self->Major, self->Minor, self->Patch);
+    return AvmStringFormat(VERSION_STR, self->Major, self->Minor, self->Patch);
 }
 
 AVM_TYPE(AvmVersion,
@@ -238,7 +237,7 @@ static AvmString AvmRuntimeToString(const AvmRuntime* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("%s v%v", self->_name, &self->_version);
+    return AvmStringFormat(RUNTIME_STR, self->_name, &self->_version);
 }
 
 AVM_TYPE(AvmRuntime,
@@ -259,6 +258,7 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
+    // TODO: Clean this up a bit.
     AvmThrowContext __avmThrownContext;
     __AvmRuntimePushThrowContext(&__avmThrownContext);
     for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)
@@ -278,8 +278,7 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
         }
     catch (object, e)
     {
-        AvmErrorf("Uncaught thrown object of type %T: %v\n", e, e);
-        AvmErrorf("Thrown from %v\n", __avmThrownContext._location);
+        AvmErrorf(UNHANDLED_THROW_STR, e, e, &__avmThrownContext._location);
         return EXIT_FAILURE;
     }
 
@@ -314,12 +313,12 @@ AvmString AvmRuntimeGetBacktrace(void)
     int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
     char** s = backtrace_symbols(arr, length);
 
-    AvmString bt = AvmStringNew(length * 10);
+    AvmString bt = AvmStringNew(length * BACKTRACE_LINE_SIZE);
 
     for (int i = length - 1; i >= 1; i--)
     {
         *(strchr(s[i], '+')) = '\0';
-        *(strchr(s[i], '(')) = '@';
+        *(strchr(s[i], '(')) = BACKTRACE_SEPARATOR;
 
         AvmStringPushStr(&bt, "    in ");
         AvmStringPushStr(&bt, s[i]);
@@ -332,7 +331,7 @@ AvmString AvmRuntimeGetBacktrace(void)
     free(s);
     return bt;
 #else
-    return AvmStringFrom(NoBacktraceMsg);
+    return AvmStringFrom(BACKTRACE_NOT_AVAILABLE_MSG);
 #endif
 }
 
