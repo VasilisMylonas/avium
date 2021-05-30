@@ -108,10 +108,12 @@ static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
     const size_t size = self->_itemType->_size;
     byte* const dest = self->_items + index * size;
+    uint freeLength = self->_length - index;
 
     if (index < self->_length)
     {
-        memmove(dest + size, dest, size); // Shift all elements out.
+        memmove(
+            dest + size, dest, size * freeLength); // Shift all elements out.
     }
 
     memcpy(dest, value, size);
@@ -171,32 +173,11 @@ static AvmString AvmArrayListToString(AvmArrayList* self)
     {
         object item = AvmArrayListItemAt(self, i);
 
-        if (self->_itemType->_size > sizeof(AvmType*)) // Type is not primitive.
-            AvmStringPushValue(&s, AvmArrayListItemAt(self, i));
-        else if (self->_itemType == typeid(float))
-            AvmStringPushFloat(&s, *(float*)item, FloatReprAuto);
-        else if (self->_itemType == typeid(double))
-            AvmStringPushFloat(&s, *(double*)item, FloatReprAuto);
-        else if (self->_itemType == typeid(str))
-            AvmStringPushStr(&s, *(str*)item);
-        else if (self->_itemType == typeid(byte))
-            AvmStringPushUint(&s, *(byte*)item, NumericBaseDecimal);
-        else if (self->_itemType == typeid(ushort))
-            AvmStringPushUint(&s, *(ushort*)item, NumericBaseDecimal);
-        else if (self->_itemType == typeid(uint))
-            AvmStringPushUint(&s, *(uint*)item, NumericBaseDecimal);
-        else if (self->_itemType == typeid(ulong))
-            AvmStringPushUint(&s, *(ulong*)item, NumericBaseDecimal);
-        else if (self->_itemType == typeid(char))
-            AvmStringPushChar(&s, *(char*)item);
-        else if (self->_itemType == typeid(short))
-            AvmStringPushInt(&s, *(short*)item);
-        else if (self->_itemType == typeid(int))
-            AvmStringPushInt(&s, *(int*)item);
-        else if (self->_itemType == typeid(_long))
-            AvmStringPushInt(&s, *(_long*)item);
-        else
-            throw(AvmErrorNew(InternalError));
+        AvmString (*func)(object) = (AvmString(*)(object))AvmTypeGetFunction(
+            self->_itemType, FnEntryToString);
+
+        AvmString temp = func(item);
+        AvmStringPushString(&s, &temp);
 
         if (i < self->_length - 1)
         {
