@@ -66,7 +66,7 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
 
     // TODO!!!
     // BUG: very likely
-    if (index < self->_vSize)
+    if (index < (self->_vSize / sizeof(AvmFunction)))
     {
         if (self->_vPtr[index] != NULL || self == typeid(object))
         {
@@ -144,7 +144,7 @@ str AvmEnumGetName(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return self->_name;
+    return base->_name;
 }
 
 uint AvmEnumGetSize(const AvmEnum* self)
@@ -154,7 +154,7 @@ uint AvmEnumGetSize(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return self->_size;
+    return base->_size;
 }
 
 bool AvmEnumIsDefined(const AvmEnum* self, _long value)
@@ -164,14 +164,9 @@ bool AvmEnumIsDefined(const AvmEnum* self, _long value)
         assert(self != NULL);
     }
 
-    for (uint i = 0; true; i++)
+    for (uint i = 0; i < (self->_cSize / (sizeof(_long) + sizeof(str))); i++)
     {
-        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
-        {
-            break;
-        }
-
-        if (self->_members[i]._value == value)
+        if (self->_cPtr[i]._value == value)
         {
             return true;
         }
@@ -189,14 +184,14 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
 
     for (uint i = 0; true; i++)
     {
-        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
+        if (self->_cPtr[i]._value == 0 && self->_cPtr[i]._name == NULL)
         {
             break;
         }
 
-        if (self->_members[i]._value == value)
+        if (self->_cPtr[i]._value == value)
         {
-            return self->_members[i]._name;
+            return self->_cPtr[i]._name;
         }
     }
 
@@ -213,14 +208,14 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
 
     for (uint i = 0; true; i++)
     {
-        if (self->_members[i]._value == 0 && self->_members[i]._name == NULL)
+        if (self->_cPtr[i]._value == 0 && self->_cPtr[i]._name == NULL)
         {
             break;
         }
 
-        if (strcmp(self->_members[i]._name, name) == 0)
+        if (strcmp(self->_cPtr[i]._name, name) == 0)
         {
-            return self->_members[i]._value;
+            return self->_cPtr[i]._value;
         }
     }
 
@@ -234,7 +229,7 @@ static AvmString AvmEnumToString(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("enum %s (%u bytes)", self->_name, self->_size);
+    return AvmStringFormat("enum %s (%u bytes)", base->_name, base->_size);
 }
 
-AVM_TYPE(AvmEnum, object, {[FnEntryToString] = (AvmFunction)AvmEnumToString});
+AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] = (AvmFunction)AvmEnumToString});

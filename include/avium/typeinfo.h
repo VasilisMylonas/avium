@@ -65,22 +65,28 @@ AVM_CLASS(AvmType, object, {
  * @param ... The enum members enclosed in braces ({...})
  */
 #define AVM_ENUM_TYPE(T, ...)                                                  \
+    static struct                                                              \
+    {                                                                          \
+        str _name;                                                             \
+        _long _value;                                                          \
+    } AVM_CTI_NAME(T)[] = __VA_ARGS__;                                         \
     const AvmEnum AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmEnum),                                              \
-        ._name = #T,                                                           \
-        ._size = sizeof(T),                                                    \
-        ._members = __VA_ARGS__,                                               \
+        ._base._name = #T,                                                     \
+        ._base._size = sizeof(T),                                              \
+        ._base._baseType = typeid(object),                                     \
+        ._cPtr = (void*)AVM_CTI_NAME(T),                                       \
+        ._cSize = sizeof(AVM_CTI_NAME(T)),                                     \
     }
 
 /// A type containing information about an enum.
-AVM_CLASS(AvmEnum, object, {
-    str _name;
-    uint _size;
+AVM_CLASS(AvmEnum, AvmType, {
+    uint _cSize;
     struct
     {
         str _name;
         _long _value;
-    } _members[AVM_MAX_ENUM_MEMBERS];
+    } * _cPtr;
 });
 
 /// Represents an entry on the virtual function table.
