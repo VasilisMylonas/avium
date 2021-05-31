@@ -386,6 +386,17 @@ static bool doubleEquals(const double* self, const double* other)
     return *self == *other;
 }
 
+// For consistency with other primitive types.
+static AvmString voidToString()
+{
+    return AvmStringNew(0);
+}
+
+static bool voidEquals()
+{
+    return false;
+}
+
 AVM_TYPE(_long,
          object,
          {
@@ -462,6 +473,21 @@ AVM_TYPE(double,
              [FnEntryToString] = (AvmFunction)doubleToString,
              [FnEntryEquals] = (AvmFunction)doubleEquals,
          });
+
+// Because we can't sizeof(void) we have to do this manually.
+static AvmFunction AVM_VT_NAME(void)[] = {
+    [FnEntryToString] = (AvmFunction)voidToString,
+    [FnEntryEquals] = (AvmFunction)voidEquals,
+};
+
+const AvmType AVM_TI_NAME(void) = {
+    ._type = typeid(AvmType),
+    ._vPtr = AVM_VT_NAME(void),
+    ._name = "void",
+    ._baseType = typeid(object),
+    ._vSize = sizeof(AVM_VT_NAME(void)),
+    ._size = 0,
+};
 
 //
 // AvmLocation type.

@@ -262,6 +262,7 @@ extern const AvmType AVM_TI_NAME(object);
 extern const AvmType AVM_TI_NAME(float);
 extern const AvmType AVM_TI_NAME(double);
 extern const AvmType AVM_TI_NAME(str);
+extern const AvmType AVM_TI_NAME(void);
 #endif // DOXYGEN
 
 #endif // AVIUM_TYPEINFO_H
