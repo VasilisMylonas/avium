@@ -54,6 +54,7 @@ if(MSVC)
     add_compile_options(/wd4267) # Conversion ... possible loss of data.
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
+    add_compile_options(/wd4100)
 else()
     if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
         add_compile_options(-fprofile-arcs -ftest-coverage)
