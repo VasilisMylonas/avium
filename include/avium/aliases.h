@@ -1,61 +1,67 @@
 #ifndef AVIUM_ALIASES_H
 #define AVIUM_ALIASES_H
 
-// types.h
-#define CLASS     AVM_CLASS
-#define TYPE      AVM_TYPE
-#define INTERFACE AVM_INTERFACE
-
-#define FORWARD_TYPE AVM_FORWARD_TYPE
-#define CONCAT       CONCAT
-#define UNIQUE       AVM_UNIQUE
-
-#define Function AvmFunction
-#define Type     AvmType
-#define Error    AvmError
-#define String   AvmString
-
-// error.h
-#define ErrorKind         AvmErrorKind
-#define ErrorGetLast      AvmErrorGetLast
-#define ErrorFromOSCode   AvmErrorFromOSCode
-#define ErrorOfKind       AvmErrorOfKind
-#define ErrorGetSource    AvmErrorGetSource
-#define ErrorGetBacktrace AvmErrorGetBacktrace
-#define Panic             AvmPanic
-#define PanicEx           AvmPanicEx
-
 // core.h
-#define Version                  AvmVersion
-#define ObjectGetType            AvmObjectGetType
-#define ObjectEquals             AvmObjectEquals
-#define ObjectDestroy            AvmObjectDestroy
-#define ObjectClone              AvmObjectClone
-#define ObjectToString           AvmObjectToString
-#define VersionFrom              AvmVersionFrom
-#define RuntimeGetVersion        AvmRuntimeGetVersion
-#define RuntimeInit              AvmRuntimeInit
-#define RuntimeGetProgramName    AvmRuntimeGetProgramName
-#define RuntimeEnableExceptions  AvmRuntimeEnableExceptions
-#define RuntimeDisableExceptions AvmRuntimeDisableExceptions
-#define Alloc                    AvmAlloc
-#define Realloc                  AvmRealloc
-#define Dealloc                  AvmDealloc
-#define Copy                     AvmCopy
-#define VScanf                   AvmVScanf
-#define VPrintf                  AvmVPrintf
-#define VErrorf                  AvmVErrorf
-#define Scanf                    AvmScanf
-#define Printf                   AvmPrintf
-#define Errorf                   AvmErrorf
+#define Function                AvmFunction
+#define Type                    AvmType
+#define Enum                    AvmEnum
+#define String                  AvmString
+#define CLASS                   AVM_CLASS
+#define INTERFACE               AVM_INTERFACE
+#define ENUM                    AVM_ENUM
+#define CONCAT                  CONCAT
+#define UNIQUE                  AVM_UNIQUE
+#define VA_ARGS                 AVM_VA_ARGS
+#define ObjectNew               AvmObjectNew
+#define ObjectGetType           AvmObjectGetType
+#define ObjectEquals            AvmObjectEquals
+#define ObjectFinalize          AvmObjectFinalize
+#define ObjectSurpressFinalizer AvmObjectSurpressFinalizer
+#define ObjectClone             AvmObjectClone
+#define ObjectToString          AvmObjectToString
+#define Location                AvmLocation
+#define LocationFrom            AvmLocationFrom
+#define Version                 AvmVersion
+#define VersionFrom             AvmVersionFrom
+#define ThrowContext            AvmThrowContext
+#define Runtime                 AvmRuntime
+#define EntryPoint              AvmEntryPoint
+#define RuntimeInit             AvmRuntimeInit
+#define RuntimeGetProgramName   AvmRuntimeGetProgramName
+#define RuntimeGetVersion       AvmRuntimeGetVersion
+#define RuntimeGetArgCount      AvmRuntimeGetArgCount
+#define RuntimeGetArgs          AvmRuntimeGetArgs
+#define RuntimeGetBacktrace     AvmRuntimeGetBacktrace
+#define RuntimeThrow            AvmRuntimeThrow
+#define Alloc                   AvmAlloc
+#define Realloc                 AvmRealloc
+#define VScanf                  AvmVScanf
+#define VPrintf                 AvmVPrintf
+#define VErrorf                 AvmVErrorf
+#define Scanf                   AvmScanf
+#define Printf                  AvmPrintf
+#define Errorf                  AvmErrorf
+#define Error                   AvmError
+#define ErrorNew                AvmErrorNew
+#define ErrorFromOSCode         AvmErrorFromOSCode
+#define Copy                    AvmCopy
 
 // typeinfo.h
+#define TYPE             AVM_TYPE
+#define ENUM_MEMBER      AVM_ENUM_MEMBER
+#define ENUM_TYPE        AVM_ENUM_TYPE
 #define FnEntry          AvmFnEntry
 #define TypeGetName      AvmTypeGetName
 #define TypeGetSize      AvmTypeGetSize
 #define TypeGetFunction  AvmTypeGetFunction
 #define TypeGetBase      AvmTypeGetBase
 #define TypeInheritsFrom AvmTypeInheritsFrom
+#define TypeConstruct    AvmTypeConstruct
+#define EnumGetName      AvmEnumGetName
+#define EnumGetSize      AvmEnumGetSize
+#define EnumIsDefined    AvmEnumIsDefined
+#define EnumGetNameOf    AvmEnumGetNameOf
+#define EnumGetValueOf   AvmEnumGetValueOf
 
 // TODO
 

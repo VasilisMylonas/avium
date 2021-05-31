@@ -106,7 +106,6 @@ typedef struct AvmString AvmString;
 #if defined AVM_GNU && defined AVM_LINUX
 #pragma weak AvmAlloc
 #pragma weak AvmRealloc
-#pragma weak AvmDealloc
 #endif
 
 /**
