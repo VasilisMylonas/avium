@@ -1,3 +1,12 @@
+#include "avium/config.h"
+
+#ifdef AVM_WIN32
+#include <windows.h>
+#else
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#endif
+
 #include "avium/reflect.h"
 
 #include "avium/dlfcn.h"
@@ -190,4 +199,109 @@ void* AvmModuleGetVariable(const AvmModule* self, str name)
     }
 
     return ptr;
+}
+
+static AvmFunctionInfo* AvmFunctionGetInfo(AvmFunction self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+#ifdef AVM_WIN32
+    DWORD64 displacement = 0;
+    HANDLE process = GetCurrentProcess();
+    if (!SymInitialize(process, NULL, FALSE))
+    {
+        throw(AvmErrorFromOSCode((int)GetLastError()));
+    }
+
+    PSYMBOL_INFO info = AvmAlloc(sizeof(SYMBOL_INFO) + MAX_SYM_NAME);
+    info->SizeOfStruct = sizeof(SYMBOL_INFO);
+    info->MaxNameLen = MAX_SYM_NAME;
+
+    // TODO: Not thread safe.
+    if (!SymFromAddr(process, *(DWORD64*)&self, &displacement, info))
+    {
+        throw(AvmErrorFromOSCode((int)GetLastError()));
+    }
+
+    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, info->Name);
+#else
+    Dl_info info;
+    dladdr(*(void**)&self, &info);
+
+    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, info.dli_sname);
+#endif
+
+    return AvmModuleGetVariable(AvmModuleGetCurrent(), AvmStringToStr(&symbol));
+}
+
+static AvmString AvmFunctionInfoToString(const AvmFunctionInfo* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString s = AvmStringNew(self->_paramCount * 4);
+    AvmStringPushStr(&s, "function ");
+    AvmStringPushStr(&s, self->_name);
+    AvmStringPushStr(&s, " (");
+    AvmStringPushUint(&s, self->_paramCount, NumericBaseDecimal);
+    if (self->_paramCount == 1)
+    {
+        AvmStringPushStr(&s, " parameter)");
+    }
+    else
+    {
+        AvmStringPushStr(&s, " parameters)");
+    }
+    return s;
+}
+
+AVM_TYPE(AvmFunctionInfo,
+         object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmFunctionInfoToString,
+         });
+
+const AvmType* AvmFunctionGetReturnType(AvmFunction self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmFunctionGetInfo(self)->_returnType;
+}
+
+const AvmType** AvmFunctionGetParams(AvmFunction self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmFunctionGetInfo(self)->_paramTypes;
+}
+
+uint AvmFunctionGetParamCount(AvmFunction self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmFunctionGetInfo(self)->_paramCount;
+}
+
+str AvmFunctionGetName(AvmFunction self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmFunctionGetInfo(self)->_name;
 }

@@ -128,4 +128,28 @@ AVMAPI AvmFunction AvmModuleGetFunction(const AvmModule* self, str name);
  */
 AVMAPI void* AvmModuleGetVariable(const AvmModule* self, str name);
 
+AVM_CLASS(AvmFunctionInfo, object, {
+    uint _paramCount;
+    const AvmType** _paramTypes;
+    const AvmType* _returnType;
+    AvmFunction _function;
+    str _name;
+});
+
+#define AVM_FUNCTION(F, TReturn, ...)                                          \
+    static const AvmType* AVM_PTI_NAME(F)[] = __VA_ARGS__;                     \
+    const AvmFunctionInfo AVM_TI_NAME(F) = {                                   \
+        ._type = typeid(AvmFunctionInfo),                                      \
+        ._paramCount = sizeof(AVM_PTI_NAME(F)) / sizeof(AvmType*),             \
+        ._paramTypes = AVM_PTI_NAME(F),                                        \
+        ._returnType = typeid(TReturn),                                        \
+        ._function = (AvmFunction)(F),                                         \
+        ._name = #F,                                                           \
+    }
+
+AVMAPI const AvmType* AvmFunctionGetReturnType(AvmFunction self);
+AVMAPI const AvmType** AvmFunctionGetParams(AvmFunction self);
+AVMAPI uint AvmFunctionGetParamCount(AvmFunction self);
+AVMAPI str AvmFunctionGetName(AvmFunction self);
+
 #endif // AVIUM_REFLECT_H
