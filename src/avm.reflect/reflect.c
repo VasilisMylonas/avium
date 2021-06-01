@@ -1,15 +1,5 @@
 #include "avium/config.h"
 
-#ifdef AVM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-// This should come after windows.h
-#include <dbghelp.h>
-#else
-#define _GNU_SOURCE
-#include <dlfcn.h>
-#endif
-
 #include "avium/reflect.h"
 
 #include "avium/dlfcn.h"
@@ -204,32 +194,14 @@ static AvmFunctionInfo* AvmFunctionGetInfo(AvmFunction self)
         assert(self != NULL);
     }
 
-#ifdef AVM_WIN32
-    DWORD64 displacement = 0;
-    HANDLE process = GetCurrentProcess();
-    if (!SymInitialize(process, NULL, FALSE))
-    {
-        throw(AvmErrorFromOSCode((int)GetLastError()));
-    }
-
-    PSYMBOL_INFO info = AvmAlloc(sizeof(SYMBOL_INFO) + MAX_SYM_NAME);
-    info->SizeOfStruct = sizeof(SYMBOL_INFO);
-    info->MaxNameLen = MAX_SYM_NAME;
-
-    // TODO: Not thread safe.
-    if (!SymFromAddr(process, *(DWORD64*)&self, &displacement, info))
-    {
-        throw(AvmErrorFromOSCode((int)GetLastError()));
-    }
-
-    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, info->Name);
-#else
     Dl_info info;
-    dladdr(*(void**)&self, &info);
+    if (!dladdr(*(void**)&self, &info))
+    {
+        // TODO
+        throw(AvmErrorNew("TODO"));
+    }
 
     AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, info.dli_sname);
-#endif
-
     return AvmModuleGetVariable(AvmModuleGetCurrent(), AvmStringToStr(&symbol));
 }
 

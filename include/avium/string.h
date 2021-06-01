@@ -126,13 +126,6 @@ typedef enum
     FloatReprAuto,
 } AvmFloatRepr;
 
-#ifdef AVM_ENABLE_ALIASES
-#define AvmItoa  AvmStringFromInt
-#define AvmUtoa  AvmStringFromUint
-#define AvmFtoa  AvmStringFromFloat
-#define AvmFtoa2 AvmStringFromFloat2
-#endif
-
 AVMAPI AvmString AvmStringFromInt(_long value);
 AVMAPI AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase);
 AVMAPI AvmString AvmStringFromFloat(double value);

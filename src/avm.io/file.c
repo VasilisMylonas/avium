@@ -6,14 +6,18 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #ifdef AVM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <io.h>
 #include <windows.h>
+
+#define F_OK   0
+#define stat   _stat
+#define access _access
 #else
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif
 
@@ -70,11 +74,7 @@ bool AvmFileExists(str path)
         assert(path != NULL);
     }
 
-#ifdef AVM_WIN32
-    return _access(path, 0) == 0;
-#else
     return access(path, F_OK) == 0;
-#endif
 }
 
 AvmError* AvmFileDelete(str path)
@@ -191,19 +191,11 @@ AvmError* AvmFileReadAllText(str path, AvmString* string)
         assert(string != NULL);
     }
 
-#ifdef AVM_WIN32
-    struct _stat buffer;
-    if (_stat(path, &buffer) != 0)
-    {
-        return AvmErrorFromOSCode(errno);
-    }
-#else
     struct stat buffer;
     if (stat(path, &buffer) != 0)
     {
         return AvmErrorFromOSCode(errno);
     }
-#endif
 
     const size_t length = AvmStringGetLength(string);
 

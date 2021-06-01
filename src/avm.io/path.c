@@ -2,30 +2,22 @@
 
 #include "avium/private/basename.h"
 #include "avium/private/constants.h"
+#include "avium/private/realpath.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 
-#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef AVM_WIN32
-#include <shlwapi.h>
-#endif
-
 char AvmPathGetSeparator(void)
 {
-#ifdef AVM_WIN32
-    return '\\';
-#else
-    return '/';
-#endif
+    return AVM_PATH_SEPARATOR;
 }
 
 char AvmPathGetAltSeparator(void)
 {
-    return '/';
+    return AVM_PATH_ALT_SEPARATOR;
 }
 
 bool AvmPathHasExtension(str path)
@@ -68,11 +60,7 @@ bool AvmPathIsValid(str path)
         assert(path != NULL);
     }
 
-#ifdef AVM_WIN32
-    return PathFileExistsA(path);
-#else
-    return strstr(path, "//") == NULL;
-#endif
+    return AVM_PATH_IS_VALID(path);
 }
 
 bool AvmPathIsDir(str path)
@@ -136,21 +124,14 @@ AvmString AvmPathGetParent(str path)
 
     AvmString s = AvmStringFrom(path);
 
-#ifdef AVM_WIN32
-    if (s._length == 3)
-#else
-    if (s._length == 1)
-#endif
+    if (s._length == AVM_PATH_ROOT_LENGTH)
     {
         return s;
     }
 
     const char sep = AvmPathGetSeparator();
 
-#ifdef AVM_WIN32
-    const char alt = AvmPathGetAltSeparator();
-    AvmStringReplaceAll(&s, alt, sep);
-#endif
+    AVM_PATH_NORMALIZE(&s);
 
     uint index = AvmStringLastIndexOf(&s, sep);
 
@@ -171,13 +152,8 @@ AvmString AvmPathGetFullPath(str path)
         assert(path != NULL);
     }
 
-#ifdef AVM_WIN32
-    char buffer[_MAX_PATH] = {0};
-    if (_fullpath(buffer, path, _MAX_PATH) != NULL)
-#else
-    char buffer[PATH_MAX] = {0};
+    char buffer[AVM_PATH_MAX] = {0};
     if (realpath(path, buffer) != NULL)
-#endif
     {
         return AvmStringFrom(buffer);
     }
@@ -280,10 +256,7 @@ AvmString AvmPathCombine2(str path1, str path2)
 
     AvmStringPush(&temp, path2 + offset);
 
-#ifdef AVM_WIN32
-    // Replace / with \ on windows.
-    AvmStringReplaceAll(&temp, alt, sep);
-#endif
+    AVM_PATH_NORMALIZE(&temp);
 
     return temp;
 }

@@ -26,6 +26,7 @@
 #define never __declspec(noreturn) void
 #define typeof(T) decltype(T)
 #else
+#define _GNU_SOURCE
 #ifndef alignof
 #define alignof _Alignof
 #endif

@@ -4,6 +4,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+// This should come after windows.h
+#include <dbghelp.h>
+
 static __declspec(thread) DWORD last_dl_error;
 
 void* dlopen(const char* filename, int mode)
@@ -48,5 +51,32 @@ char* dlerror(void)
                   NULL);
 
     return message;
+}
+
+int dladdr(const void* address, Dl_info* info)
+{
+    DWORD64 displacement = 0;
+    HANDLE process = GetCurrentProcess();
+    if (!SymInitialize(process, NULL, FALSE))
+    {
+        return 0;
+    }
+
+    PSYMBOL_INFO i = AvmAlloc(sizeof(SYMBOL_INFO) + MAX_SYM_NAME);
+    i->SizeOfStruct = sizeof(SYMBOL_INFO);
+    i->MaxNameLen = MAX_SYM_NAME;
+
+    // TODO: Not thread safe.
+    if (!SymFromAddr(process, *(DWORD64*)&self, &displacement, i))
+    {
+        return 0;
+    }
+
+    info->dli_fname = NULL;
+    info->dli_fbase = NULL;
+    info->dli_sname = i->Name;
+    info->dli_saddr = address;
+
+    return 1;
 }
 #endif

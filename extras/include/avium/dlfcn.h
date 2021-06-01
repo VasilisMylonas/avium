@@ -16,6 +16,16 @@ extern void* dlopen(const char* filename, int mode);
 extern int dlclose(void* handle);
 extern void* dlsym(void* handle, const char* name);
 extern char* dlerror(void);
+
+typedef struct
+{
+    const char* dli_fname;
+    void* dli_fbase;
+    const char* dli_sname;
+    void* dli_saddr;
+} Dl_info;
+
+extern int dladdr(const void* address, Dl_info* info);
 #else
 #include <dlfcn.h>
 #endif
