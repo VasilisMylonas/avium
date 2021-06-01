@@ -10,7 +10,8 @@
 #include <sys/types.h>
 
 #ifdef AVM_WIN32
-#include <io.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
