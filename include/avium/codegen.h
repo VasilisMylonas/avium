@@ -27,8 +27,6 @@
 #include "avium/core.h"
 #include "avium/typeinfo.h"
 
-#ifdef AVM_USE_REFLECT
-
 /// A helper object for creating AvmType instances.
 AVM_CLASS(AvmTypeBuilder, AvmType, { uint _reserved; });
 
@@ -77,7 +75,5 @@ AVMAPI void AvmTypeBuilderSetVFT(AvmTypeBuilder* self,
  * @param type The type of the member to be added.
  */
 AVMAPI void AvmTypeBuilderAddMember(AvmTypeBuilder* self, const AvmType* type);
-
-#endif // AVM_USE_REFLECT
 
 #endif // AVIUM_CODEGEN_H

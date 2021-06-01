@@ -24,10 +24,6 @@
 #ifndef AVIUM_IO_H
 #define AVIUM_IO_H
 
-#include "avium/config.h"
-
-#ifdef AVM_USE_IO
-
 #include "avium/core.h"
 
 /// Represents a C file handle.
@@ -216,7 +212,5 @@ AVMAPI AvmString AvmStreamReadLine(AvmStream* self, AvmError** error);
  * @return The result of the IO operation.
  */
 AVMAPI AvmError* AvmStreamWriteLine(AvmStream* self, AvmString* string);
-
-#endif // AVM_USE_IO
 
 #endif // AVIUM_IO_H

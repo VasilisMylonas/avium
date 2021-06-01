@@ -26,9 +26,14 @@
 #define LONG_MIN_STR                "-9223372036854775808"
 #define TYPE_SYMBOL_STR             "_TI_%s"
 #define MODULE_STR                  "Module \"%s\" loaded at %x"
-#define LINUX_LIB_STR               "lib%s.so"
-#define WIN32_LIB_STR               "%s.dll"
-#define DARWIN_LIB_STR              "lib%s.dylib"
+
+#if defined AVM_WIN32
+#define LIB_STR "%s.dll"
+#elif defined AVM_DARWIN
+#define LIB_STR "lib%s.dylib"
+#else
+#define LIB_STR "lib%s.so"
+#endif
 
 #ifdef AVM_WIN32
 static const str HomeEnvVar = "%HOMEDRIVE%%HOMEPATH%";

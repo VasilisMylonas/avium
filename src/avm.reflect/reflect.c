@@ -32,14 +32,7 @@ const AvmType* AvmReflectLoadType(str name)
     char* buffer = AvmStringGetBuffer(&temp);
     buffer[index] = '\0';
 
-#if defined AVM_WIN32
-    AvmString library = AvmStringFormat(WIN32_LIB_STR, buffer);
-#elif defined AVM_DARWIN
-    AvmString library = AvmStringFormat(DARWIN_LIB_STR, buffer);
-#else
-    AvmString library = AvmStringFormat(LINUX_LIB_STR, buffer);
-#endif
-
+    AvmString library = AvmStringFormat(LIB_STR, name);
     AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, &buffer[index + 1]);
 
     void* handle = dlopen(AvmStringGetBuffer(&library), RTLD_LAZY);

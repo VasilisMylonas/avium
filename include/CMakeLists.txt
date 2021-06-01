@@ -31,18 +31,6 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-if(USE_ARGPARSE)
-    set(AVM_USE_ARGPARSE ON)
-endif()
-
-if(USE_REFLECT)
-    set(AVM_USE_REFLECT ON)
-endif()
-
-if(USE_IO)
-    set(AVM_USE_IO ON)
-endif()
-
 configure_file(avium/config.h.in avium/config.h @ONLY)
 
 file(GLOB INCLUDE_FILES avium/*.h)
