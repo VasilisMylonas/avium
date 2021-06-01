@@ -2,8 +2,9 @@
 
 #ifdef AVM_WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <dbghelp.h>
 #include <windows.h>
+// This should come after windows.h
+#include <dbghelp.h>
 #else
 #define _GNU_SOURCE
 #include <dlfcn.h>
