@@ -1,0 +1,1372 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>string.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="testing.h" href="testing.html" />
+    <link rel="prev" title="reflect.h" href="reflect.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>string.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/string.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="string-h">
+<span id="string"></span><h1>string.h<a class="headerlink" href="#string-h" title="Permalink to this headline">¶</a></h1>
+<p>Dynamic string implementation. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.2.5 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-04-24</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmStringPush">
+<span class="target" id="string_8h_1a02c6e2e9a327d91b96b3ff8e1f52d710"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPush</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AvmStringPush" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmStringStartsWith">
+<span class="target" id="string_8h_1a5955ba8184b1e98af206c150788e4064"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringStartsWith</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AvmStringStartsWith" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmStringEndsWith">
+<span class="target" id="string_8h_1aba7a2c01b639097cb4c13452fe59c4bc"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEndsWith</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AvmStringEndsWith" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmStringContains">
+<span class="target" id="string_8h_1ae2a36cfbb34037d8d235d4f92e0ad427"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringContains</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AvmStringContains" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv414AvmNumericBase">
+<span id="_CPPv314AvmNumericBase"></span><span id="_CPPv214AvmNumericBase"></span><span class="target" id="string_8h_1a5f9306db47316c96f26074aeb3d6350e"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmNumericBase</span></span></span><a class="headerlink" href="#_CPPv414AvmNumericBase" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents the base in which a number is represented. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14AvmNumericBase17NumericBaseBinaryE">
+<span id="_CPPv3N14AvmNumericBase17NumericBaseBinaryE"></span><span id="_CPPv2N14AvmNumericBase17NumericBaseBinaryE"></span><span class="target" id="string_8h_1a5f9306db47316c96f26074aeb3d6350ea016d6fac31574c7243ce0c348a9dedd4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumericBaseBinary</span></span></span><a class="headerlink" href="#_CPPv4N14AvmNumericBase17NumericBaseBinaryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Base 2 (00010000). </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14AvmNumericBase16NumericBaseOctalE">
+<span id="_CPPv3N14AvmNumericBase16NumericBaseOctalE"></span><span id="_CPPv2N14AvmNumericBase16NumericBaseOctalE"></span><span class="target" id="string_8h_1a5f9306db47316c96f26074aeb3d6350ea5a0c45233143f6d536f9f3adf8110523"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumericBaseOctal</span></span></span><a class="headerlink" href="#_CPPv4N14AvmNumericBase16NumericBaseOctalE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Base 8 (20). </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14AvmNumericBase18NumericBaseDecimalE">
+<span id="_CPPv3N14AvmNumericBase18NumericBaseDecimalE"></span><span id="_CPPv2N14AvmNumericBase18NumericBaseDecimalE"></span><span class="target" id="string_8h_1a5f9306db47316c96f26074aeb3d6350ea67dbd660418569ef65ff0514c8dccb92"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumericBaseDecimal</span></span></span><a class="headerlink" href="#_CPPv4N14AvmNumericBase18NumericBaseDecimalE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Base 10 (16). </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14AvmNumericBase14NumericBaseHexE">
+<span id="_CPPv3N14AvmNumericBase14NumericBaseHexE"></span><span id="_CPPv2N14AvmNumericBase14NumericBaseHexE"></span><span class="target" id="string_8h_1a5f9306db47316c96f26074aeb3d6350ea2b5b7508a69bff6f9961069189afed48"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumericBaseHex</span></span></span><a class="headerlink" href="#_CPPv4N14AvmNumericBase14NumericBaseHexE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Base 16 (10). </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv412AvmFloatRepr">
+<span id="_CPPv312AvmFloatRepr"></span><span id="_CPPv212AvmFloatRepr"></span><span class="target" id="string_8h_1afe470cf02c77be181c51414f38ff21fd"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmFloatRepr</span></span></span><a class="headerlink" href="#_CPPv412AvmFloatRepr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12AvmFloatRepr15FloatReprSimpleE">
+<span id="_CPPv3N12AvmFloatRepr15FloatReprSimpleE"></span><span id="_CPPv2N12AvmFloatRepr15FloatReprSimpleE"></span><span class="target" id="string_8h_1afe470cf02c77be181c51414f38ff21fda90735c4c55f91cd79d47a8b5cc6dfa3e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FloatReprSimple</span></span></span><a class="headerlink" href="#_CPPv4N12AvmFloatRepr15FloatReprSimpleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12AvmFloatRepr19FloatReprScientificE">
+<span id="_CPPv3N12AvmFloatRepr19FloatReprScientificE"></span><span id="_CPPv2N12AvmFloatRepr19FloatReprScientificE"></span><span class="target" id="string_8h_1afe470cf02c77be181c51414f38ff21fdac369f881da89be153777ef6cef5fe0c3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FloatReprScientific</span></span></span><a class="headerlink" href="#_CPPv4N12AvmFloatRepr19FloatReprScientificE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12AvmFloatRepr13FloatReprAutoE">
+<span id="_CPPv3N12AvmFloatRepr13FloatReprAutoE"></span><span id="_CPPv2N12AvmFloatRepr13FloatReprAutoE"></span><span class="target" id="string_8h_1afe470cf02c77be181c51414f38ff21fda76891fe55bba5f1ded0f7a8d01c4711a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FloatReprAuto</span></span></span><a class="headerlink" href="#_CPPv4N12AvmFloatRepr13FloatReprAutoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="string_8h_1acd7677ac87203b4ea20384496f7eeb8d"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmString,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">uint</span> <span class="pre">_capacity;uint</span> <span class="pre">_length;char</span> <span class="pre">*_buffer;})</span></span></dt>
+<dd><p>A dynamic heap-allocated string. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412AvmStringNew4uint">
+<span id="_CPPv312AvmStringNew4uint"></span><span id="_CPPv212AvmStringNew4uint"></span><span id="AvmStringNew__uint"></span><span class="target" id="string_8h_1a4725efab179e83aef3efeb966457f20d"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringNew</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">capacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412AvmStringNew4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString with a specified capacity. </p>
+<p>The capacity is the number of characters that the string will be able to hold until it needs to allocate more memory. If 0 is used as the capacity, then no memory is allocated until a character is pushed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>capacity</strong> – The capacity of the AvmString. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmStringFrom3str">
+<span id="_CPPv313AvmStringFrom3str"></span><span id="_CPPv213AvmStringFrom3str"></span><span id="AvmStringFrom__str"></span><span class="target" id="string_8h_1a7e34c44629f86e16718bef26d71bfd7c"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFrom</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmStringFrom3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString from a raw string. </p>
+<p>The raw string is copied into a heap buffer. The capacity of the resulting string may be larger, in order to reduce total reallocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>contents</strong> – The contents of the AvmString. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be a ‘\0’ terminated string. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringFromInt5_long">
+<span id="_CPPv316AvmStringFromInt5_long"></span><span id="_CPPv216AvmStringFromInt5_long"></span><span id="AvmStringFromInt___long"></span><span class="target" id="string_8h_1aca2c01d105f59b32d116e76c1076abb4"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFromInt</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv45_long" title="_long"><span class="n"><span class="pre">_long</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringFromInt5_long" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStringFromUint5ulong14AvmNumericBase">
+<span id="_CPPv317AvmStringFromUint5ulong14AvmNumericBase"></span><span id="_CPPv217AvmStringFromUint5ulong14AvmNumericBase"></span><span id="AvmStringFromUint__ulong.AvmNumericBase"></span><span class="target" id="string_8h_1adc8164c1f682e9d3ff777e8cdd252c92"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFromUint</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv45ulong" title="ulong"><span class="n"><span class="pre">ulong</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span>, <a class="reference internal" href="#_CPPv414AvmNumericBase" title="AvmNumericBase"><span class="n"><span class="pre">AvmNumericBase</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">numericBase</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStringFromUint5ulong14AvmNumericBase" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringFromFloatd">
+<span id="_CPPv318AvmStringFromFloatd"></span><span id="_CPPv218AvmStringFromFloatd"></span><span id="AvmStringFromFloat__double"></span><span class="target" id="string_8h_1a683cc30bfa03c2f5b0701d7091876cfa"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFromFloat</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringFromFloatd" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmStringFromFloat2f">
+<span id="_CPPv319AvmStringFromFloat2f"></span><span id="_CPPv219AvmStringFromFloat2f"></span><span id="AvmStringFromFloat2__float"></span><span class="target" id="string_8h_1a13ef69fc92a5d36800c607db4a55b144"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFromFloat2</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmStringFromFloat2f" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringPushFloatP9AvmStringd12AvmFloatRepr">
+<span id="_CPPv318AvmStringPushFloatP9AvmStringd12AvmFloatRepr"></span><span id="_CPPv218AvmStringPushFloatP9AvmStringd12AvmFloatRepr"></span><span id="AvmStringPushFloat__AvmStringP.double.AvmFloatRepr"></span><span class="target" id="string_8h_1a32830eeb8ac130ed6bb8916af630aa74"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushFloat</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span>, <a class="reference internal" href="#_CPPv412AvmFloatRepr" title="AvmFloatRepr"><span class="n"><span class="pre">AvmFloatRepr</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">repr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringPushFloatP9AvmStringd12AvmFloatRepr" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringPushIntP9AvmString5_long">
+<span id="_CPPv316AvmStringPushIntP9AvmString5_long"></span><span id="_CPPv216AvmStringPushIntP9AvmString5_long"></span><span id="AvmStringPushInt__AvmStringP._long"></span><span class="target" id="string_8h_1a5c70c027552aac7f75cbb99f27521be3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushInt</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv45_long" title="_long"><span class="n"><span class="pre">_long</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringPushIntP9AvmString5_long" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStringPushUintP9AvmString5ulong14AvmNumericBase">
+<span id="_CPPv317AvmStringPushUintP9AvmString5ulong14AvmNumericBase"></span><span id="_CPPv217AvmStringPushUintP9AvmString5ulong14AvmNumericBase"></span><span id="AvmStringPushUint__AvmStringP.ulong.AvmNumericBase"></span><span class="target" id="string_8h_1ac00caf12e833d46cd93baa2e455bf71a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushUint</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv45ulong" title="ulong"><span class="n"><span class="pre">ulong</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span>, <a class="reference internal" href="#_CPPv414AvmNumericBase" title="AvmNumericBase"><span class="n"><span class="pre">AvmNumericBase</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">numericBase</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStringPushUintP9AvmString5ulong14AvmNumericBase" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringPushValueP9AvmString6object">
+<span id="_CPPv318AvmStringPushValueP9AvmString6object"></span><span id="_CPPv218AvmStringPushValueP9AvmString6object"></span><span id="AvmStringPushValue__AvmStringP.object"></span><span class="target" id="string_8h_1afdebb1d0ffb16bef1db4abe873c0d306"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringPushValueP9AvmString6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringFromChars4uint3str">
+<span id="_CPPv318AvmStringFromChars4uint3str"></span><span id="_CPPv218AvmStringFromChars4uint3str"></span><span id="AvmStringFromChars__uint.str"></span><span class="target" id="string_8h_1ad1215a0c446687864c91336f054597e8"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFromChars</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringFromChars4uint3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString from a raw string provided with its length. </p>
+<p>If <code class="docutils literal notranslate"><span class="pre">length</span></code> is 0 then the behavior is the same as AvmStringNew(0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – The length of the raw string. </p></li>
+<li><p><strong>contents</strong> – The contents of the AvmString. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmStringRepeat3str4uint">
+<span id="_CPPv315AvmStringRepeat3str4uint"></span><span id="_CPPv215AvmStringRepeat3str4uint"></span><span id="AvmStringRepeat__str.uint"></span><span class="target" id="string_8h_1ad1e43e4544b9bba7bf59a03d198e175e"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringRepeat</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmStringRepeat3str4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString by repeating a raw string. </p>
+<p>If <code class="docutils literal notranslate"><span class="pre">count</span></code> is 0 then the behavior is the same as AvmStringNew(0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contents</strong> – The raw string to repeat. </p></li>
+<li><p><strong>count</strong> – How many times to repeat. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringRepeatChars4uint3str4uint">
+<span id="_CPPv320AvmStringRepeatChars4uint3str4uint"></span><span id="_CPPv220AvmStringRepeatChars4uint3str4uint"></span><span id="AvmStringRepeatChars__uint.str.uint"></span><span class="target" id="string_8h_1a15a14dbcf14ca6b7844b4f38dda31284"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringRepeatChars</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringRepeatChars4uint3str4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString by repeating a character array provided with its length. </p>
+<p>If <code class="docutils literal notranslate"><span class="pre">count</span></code> or <code class="docutils literal notranslate"><span class="pre">length</span></code> is 0 then the behavior is the same as AvmStringNew(0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – The length of the array. </p></li>
+<li><p><strong>contents</strong> – The character array to repeat. </p></li>
+<li><p><strong>count</strong> – How many times to repeat. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringGetLengthPK9AvmString">
+<span id="_CPPv318AvmStringGetLengthPK9AvmString"></span><span id="_CPPv218AvmStringGetLengthPK9AvmString"></span><span id="AvmStringGetLength__AvmStringCP"></span><span class="target" id="string_8h_1adbc1372fb7aa3a9b37fd8a19535bfab3"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringGetLength</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringGetLengthPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the length of an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The AvmString length. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringGetCapacityPK9AvmString">
+<span id="_CPPv320AvmStringGetCapacityPK9AvmString"></span><span id="_CPPv220AvmStringGetCapacityPK9AvmString"></span><span id="AvmStringGetCapacity__AvmStringCP"></span><span class="target" id="string_8h_1a04906b1b6d5ee4a1a1537e8382c0f50a"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringGetCapacity</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringGetCapacityPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the capacity of an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The AvmString capacity. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="string_8h_1abac008b293d73f916b711fb69df2d369"></span><span class="sig-name descname"><span class="pre">weakptr</span> <span class="pre">(char)</span> <span class="pre">AvmStringGetBuffer(const</span> <span class="pre">AvmString</span> <span class="pre">*self)</span></span></dt>
+<dd><p>Gives access to the internal buffer of an AvmString. </p>
+<p>The returned pointer may be invalidated if the AvmString instance decides to reallocate. For safe usage, do not modify the AvmString while holding this pointer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A pointer to the internal buffer. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringIsEmptyPK9AvmString">
+<span id="_CPPv316AvmStringIsEmptyPK9AvmString"></span><span id="_CPPv216AvmStringIsEmptyPK9AvmString"></span><span id="AvmStringIsEmpty__AvmStringCP"></span><span class="target" id="string_8h_1ac96730d730845e4e777a4cf3c5c7c51b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringIsEmpty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringIsEmptyPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString is empty. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the string is empty, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmStringCharAtPK9AvmString4uint">
+<span id="_CPPv315AvmStringCharAtPK9AvmString4uint"></span><span id="_CPPv215AvmStringCharAtPK9AvmString4uint"></span><span id="AvmStringCharAt__AvmStringCP.uint"></span><span class="target" id="string_8h_1a765fdf29c9186883ab986e9b5e782802"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringCharAt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmStringCharAtPK9AvmString4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the character at the specified index in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>index</strong> – The index of the character to get.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The character at the specified index. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringForEachPK9AvmStringPFvcE">
+<span id="_CPPv316AvmStringForEachPK9AvmStringPFvcE"></span><span id="_CPPv216AvmStringForEachPK9AvmStringPFvcE"></span><span class="target" id="string_8h_1af9b6992e59ce89e6684f62d877466711"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringForEach</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">function</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringForEachPK9AvmStringPFvcE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calls a function for each character in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>function</strong> – The function to call. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">function</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringForEachExPK9AvmStringPFvc4uintE">
+<span id="_CPPv318AvmStringForEachExPK9AvmStringPFvc4uintE"></span><span id="_CPPv218AvmStringForEachExPK9AvmStringPFvc4uintE"></span><span class="target" id="string_8h_1a900aa83f97346b4db79694d1b16052c0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringForEachEx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">function</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringForEachExPK9AvmStringPFvc4uintE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calls a function for each character in an AvmString providing it additionally with the character index. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>function</strong> – The function to call. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">function</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412AvmStringMapPK9AvmStringPFccE">
+<span id="_CPPv312AvmStringMapPK9AvmStringPFccE"></span><span id="_CPPv212AvmStringMapPK9AvmStringPFccE"></span><span class="target" id="string_8h_1aa5b428bc8a0a8b876b667d6a194f9c0e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringMap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">function</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412AvmStringMapPK9AvmStringPFccE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Applies a function for each character in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>function</strong> – The function to call. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">function</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStringMapExPK9AvmStringPFcc4uintE">
+<span id="_CPPv314AvmStringMapExPK9AvmStringPFcc4uintE"></span><span id="_CPPv214AvmStringMapExPK9AvmStringPFcc4uintE"></span><span class="target" id="string_8h_1adc417ed078d00ba44e09b4457151c369"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringMapEx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">function</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStringMapExPK9AvmStringPFcc4uintE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Applies a function for each character in an AvmString providing it additionally with the character index. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>function</strong> – The function to call. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">function</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringMapCompatPK9AvmStringPFiiE">
+<span id="_CPPv318AvmStringMapCompatPK9AvmStringPFiiE"></span><span id="_CPPv218AvmStringMapCompatPK9AvmStringPFiiE"></span><span class="target" id="string_8h_1a08f6033aa3201d9a73dd9d1c509cd85d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringMapCompat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">function</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringMapCompatPK9AvmStringPFiiE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Applies a function for each character in an AvmString. Used for compatibility with functions taking an int instead of a char. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>function</strong> – The function to call. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">function</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423AvmStringEnsureCapacityP9AvmString4uint">
+<span id="_CPPv323AvmStringEnsureCapacityP9AvmString4uint"></span><span id="_CPPv223AvmStringEnsureCapacityP9AvmString4uint"></span><span id="AvmStringEnsureCapacity__AvmStringP.uint"></span><span class="target" id="string_8h_1a8732e81c530fecf4ddbe9f4f471c1650"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEnsureCapacity</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">capacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423AvmStringEnsureCapacityP9AvmString4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStringPushCharP9AvmStringc">
+<span id="_CPPv317AvmStringPushCharP9AvmStringc"></span><span id="_CPPv217AvmStringPushCharP9AvmStringc"></span><span id="AvmStringPushChar__AvmStringP.c"></span><span class="target" id="string_8h_1a52a3468136b0eb75d96d4b4e47ce6f5f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushChar</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStringPushCharP9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pushes a character to the end of an AvmString. </p>
+<p>If the AvmString’s length is less than its capacity, then the character is simply appended to the end, otherwise the AvmString allocates new memory. The allocated memory may be larger than one character, in order to reduce total reallocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to push. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringPushStrP9AvmString3str">
+<span id="_CPPv316AvmStringPushStrP9AvmString3str"></span><span id="_CPPv216AvmStringPushStrP9AvmString3str"></span><span id="AvmStringPushStr__AvmStringP.str"></span><span class="target" id="string_8h_1ae3aae1b979f9517bc24f150a1f657226"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushStr</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringPushStrP9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pushes a str to the end an AvmString. </p>
+<p>If the AvmString’s length is not sufficient to hold the str then the AvmString allocates new memory. The allocated memory may be larger than the length of the str, in order to reduce total reallocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The str to push. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStringPushCharsP9AvmString4uint3str">
+<span id="_CPPv318AvmStringPushCharsP9AvmString4uint3str"></span><span id="_CPPv218AvmStringPushCharsP9AvmString4uint3str"></span><span id="AvmStringPushChars__AvmStringP.uint.str"></span><span class="target" id="string_8h_1a62bf5500aef971fc65767b6f268002f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushChars</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStringPushCharsP9AvmString4uint3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pushes an array of characters to the end an AvmString. </p>
+<p>If the AvmString’s length is not sufficient to hold the str then the AvmString allocates new memory. The allocated memory may be larger than the length of the str, in order to reduce total reallocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>length</strong> – The length of the array. </p></li>
+<li><p><strong>contents</strong> – The array of characters. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmStringPushStringP9AvmStringPK9AvmString">
+<span id="_CPPv319AvmStringPushStringP9AvmStringPK9AvmString"></span><span id="_CPPv219AvmStringPushStringP9AvmStringPK9AvmString"></span><span id="AvmStringPushString__AvmStringP.AvmStringCP"></span><span class="target" id="string_8h_1ae9db60d628f33be8108c9a3ee6b9eb05"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringPushString</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmStringPushStringP9AvmStringPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pushes an AvmString to the end an AvmString. </p>
+<p>If the AvmString’s length is not sufficient to hold the new contents then the AvmString allocates new memory. The allocated memory may be larger than the length of the new contents, in order to reduce total reallocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>other</strong> – The AvmString to push. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">other</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringIndexOfPK9AvmStringc">
+<span id="_CPPv316AvmStringIndexOfPK9AvmStringc"></span><span id="_CPPv216AvmStringIndexOfPK9AvmStringc"></span><span id="AvmStringIndexOf__AvmStringCP.c"></span><span class="target" id="string_8h_1a43a1fc9a8adb1a808342c7570c160dae"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringIndexOf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringIndexOfPK9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the index of the first occurrence of a character in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The index or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringLastIndexOfPK9AvmStringc">
+<span id="_CPPv320AvmStringLastIndexOfPK9AvmStringc"></span><span id="_CPPv220AvmStringLastIndexOfPK9AvmStringc"></span><span id="AvmStringLastIndexOf__AvmStringCP.c"></span><span class="target" id="string_8h_1a0074dec424eebdf0126e5618f82ea769"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringLastIndexOf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringLastIndexOfPK9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the index of the last occurrence of a character in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The index or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringReplacePK9AvmStringcc">
+<span id="_CPPv316AvmStringReplacePK9AvmStringcc"></span><span id="_CPPv216AvmStringReplacePK9AvmStringcc"></span><span id="AvmStringReplace__AvmStringCP.c.c"></span><span class="target" id="string_8h_1a189513af110c2e33cfd82e0ee5d78e00"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReplace</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">oldCharacter</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newCharacter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringReplacePK9AvmStringcc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replaces the first occurrence of a character in an AvmString with another. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>oldCharacter</strong> – The character to be replaced. </p></li>
+<li><p><strong>newCharacter</strong> – The character to replace with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The index of the replaced character or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStringReplaceNPK9AvmString4uintcc">
+<span id="_CPPv317AvmStringReplaceNPK9AvmString4uintcc"></span><span id="_CPPv217AvmStringReplaceNPK9AvmString4uintcc"></span><span id="AvmStringReplaceN__AvmStringCP.uint.c.c"></span><span class="target" id="string_8h_1a105bfd11b792dca0d8feda1b4ae8d90e"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReplaceN</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">oldCharacter</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newCharacter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStringReplaceNPK9AvmString4uintcc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replaces the first N occurrences of a character in an AvmString with another. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>count</strong> – The count of characters to replace. </p></li>
+<li><p><strong>oldCharacter</strong> – The character to be replaced. </p></li>
+<li><p><strong>newCharacter</strong> – The character to replace with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The count of the total replaced characters. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmStringReplaceLastNPK9AvmString4uintcc">
+<span id="_CPPv321AvmStringReplaceLastNPK9AvmString4uintcc"></span><span id="_CPPv221AvmStringReplaceLastNPK9AvmString4uintcc"></span><span id="AvmStringReplaceLastN__AvmStringCP.uint.c.c"></span><span class="target" id="string_8h_1a8b80d3704d0e0f100ca15f70ff625a72"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReplaceLastN</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">oldCharacter</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newCharacter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmStringReplaceLastNPK9AvmString4uintcc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replaces the last N occurrences of a character in an AvmString with another. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>count</strong> – The count of characters to replace. </p></li>
+<li><p><strong>oldCharacter</strong> – The character to be replaced. </p></li>
+<li><p><strong>newCharacter</strong> – The character to replace with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The count of the total replaced characters. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmStringReplaceAllPK9AvmStringcc">
+<span id="_CPPv319AvmStringReplaceAllPK9AvmStringcc"></span><span id="_CPPv219AvmStringReplaceAllPK9AvmStringcc"></span><span id="AvmStringReplaceAll__AvmStringCP.c.c"></span><span class="target" id="string_8h_1a6f2c377122a35d12af999370698559db"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReplaceAll</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">oldCharacter</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newCharacter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmStringReplaceAllPK9AvmStringcc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replaces all occurrences of a character in an AvmString with another. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>oldCharacter</strong> – The character to be replaced. </p></li>
+<li><p><strong>newCharacter</strong> – The character to replace with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The count of the total replaced characters. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringReplaceLastPK9AvmStringcc">
+<span id="_CPPv320AvmStringReplaceLastPK9AvmStringcc"></span><span id="_CPPv220AvmStringReplaceLastPK9AvmStringcc"></span><span id="AvmStringReplaceLast__AvmStringCP.c.c"></span><span class="target" id="string_8h_1a87ff5066562c49a0eb26aaa223f658f3"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReplaceLast</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">oldCharacter</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newCharacter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringReplaceLastPK9AvmStringcc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replaces the last occurrence of a character in an AvmString with another. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>oldCharacter</strong> – The character to be replaced. </p></li>
+<li><p><strong>newCharacter</strong> – The character to replace with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The index or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmStringFindPK9AvmString3str">
+<span id="_CPPv313AvmStringFindPK9AvmString3str"></span><span id="_CPPv213AvmStringFindPK9AvmString3str"></span><span id="AvmStringFind__AvmStringCP.str"></span><span class="target" id="string_8h_1ae28cbe5d1b5c2379ef8f354d5c28819f"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFind</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">substring</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmStringFindPK9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the index of the first occurrence of a substring in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>substring</strong> – The substring to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">substring</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The index or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStringFindLastPK9AvmString3str">
+<span id="_CPPv317AvmStringFindLastPK9AvmString3str"></span><span id="_CPPv217AvmStringFindLastPK9AvmString3str"></span><span id="AvmStringFindLast__AvmStringCP.str"></span><span class="target" id="string_8h_1a208bc047fb18c15be1cb48dd41ac02de"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFindLast</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">substring</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStringFindLastPK9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the index of the last occurrence of a substring in an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>substring</strong> – The substring to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">substring</span></code> must be not NULL.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The index or AvmInvalid. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringReversePK9AvmString">
+<span id="_CPPv316AvmStringReversePK9AvmString"></span><span id="_CPPv216AvmStringReversePK9AvmString"></span><span id="AvmStringReverse__AvmStringCP"></span><span class="target" id="string_8h_1ab7566645a72d8bf7d95e8fa00d151098"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringReverse</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringReversePK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reverses an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringToUpperPK9AvmString">
+<span id="_CPPv316AvmStringToUpperPK9AvmString"></span><span id="_CPPv216AvmStringToUpperPK9AvmString"></span><span id="AvmStringToUpper__AvmStringCP"></span><span class="target" id="string_8h_1a61c7a319a45c270fdacd46aedc23a826"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringToUpper</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringToUpperPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Converts all characters in an AvmString to uppercase. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringToLowerPK9AvmString">
+<span id="_CPPv316AvmStringToLowerPK9AvmString"></span><span id="_CPPv216AvmStringToLowerPK9AvmString"></span><span id="AvmStringToLower__AvmStringCP"></span><span class="target" id="string_8h_1a801f5ea4902eabe650d75d8b67fc8d90"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringToLower</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringToLowerPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Converts all characters in an AvmString to lowercase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStringClearP9AvmString">
+<span id="_CPPv314AvmStringClearP9AvmString"></span><span id="_CPPv214AvmStringClearP9AvmString"></span><span id="AvmStringClear__AvmStringP"></span><span class="target" id="string_8h_1a0f399631fbc2fdc451bb80b646b37077"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringClear</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStringClearP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clears the contents of an AvmString by setting its length to 0). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStringEraseP9AvmString">
+<span id="_CPPv314AvmStringEraseP9AvmString"></span><span id="_CPPv214AvmStringEraseP9AvmString"></span><span id="AvmStringErase__AvmStringP"></span><span class="target" id="string_8h_1aae0bba73f3c77afd332bf7cad83de3c9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringErase</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStringEraseP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Erases the contents of an AvmString, by filling the string with zeroes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmString instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424AvmStringUnsafeSetLengthP9AvmString4uint">
+<span id="_CPPv324AvmStringUnsafeSetLengthP9AvmString4uint"></span><span id="_CPPv224AvmStringUnsafeSetLengthP9AvmString4uint"></span><span id="AvmStringUnsafeSetLength__AvmStringP.uint"></span><span class="target" id="string_8h_1a8da317d29753504463e26c1d253d826b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringUnsafeSetLength</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424AvmStringUnsafeSetLengthP9AvmString4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Changed the length value of an AvmString. </p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function can lead to undefined behavior if not used correctly. </p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>length</strong> – The new length value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not NULL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423AvmStringUnsafeDestructPK9AvmStringP4uintP4uintPPc">
+<span id="_CPPv323AvmStringUnsafeDestructPK9AvmStringP4uintP4uintPPc"></span><span id="_CPPv223AvmStringUnsafeDestructPK9AvmStringP4uintP4uintPPc"></span><span id="AvmStringUnsafeDestruct__AvmStringCP.uintP.uintP.cPP"></span><span class="target" id="string_8h_1a5b3221984e3186c751ff47b517d249d4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringUnsafeDestruct</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">capacity</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">length</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423AvmStringUnsafeDestructPK9AvmStringP4uintP4uintPPc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructures an AvmString instance. </p>
+<p>NULL can be passed to the parameters, to ignore the output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>capacity</strong> – <strong>[out]</strong> The capacity. </p></li>
+<li><p><strong>length</strong> – <strong>[out]</strong> The length. </p></li>
+<li><p><strong>buffer</strong> – <strong>[out]</strong> The internal buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422AvmStringUnsafeFromRaw4uint4uintPc">
+<span id="_CPPv322AvmStringUnsafeFromRaw4uint4uintPc"></span><span id="_CPPv222AvmStringUnsafeFromRaw4uint4uintPc"></span><span id="AvmStringUnsafeFromRaw__uint.uint.cP"></span><span class="target" id="string_8h_1a982e7a3b94eb58f180c51c1208e6dd72"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringUnsafeFromRaw</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">capacity</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422AvmStringUnsafeFromRaw4uint4uintPc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmString from the provided parts. </p>
+<p>No validation is done on the parameters. You are responsible for correct usage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>capacity</strong> – The capacity of the buffer. </p></li>
+<li><p><strong>length</strong> – The current length of the buffer. </p></li>
+<li><p><strong>buffer</strong> – The heap buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmStringContainsCharPK9AvmStringc">
+<span id="_CPPv321AvmStringContainsCharPK9AvmStringc"></span><span id="_CPPv221AvmStringContainsCharPK9AvmStringc"></span><span id="AvmStringContainsChar__AvmStringCP.c"></span><span class="target" id="string_8h_1ab09cdb6cd6cc08f701347974b77bc539"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringContainsChar</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmStringContainsCharPK9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString contains a character. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the character is found, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringContainsStrPK9AvmString3str">
+<span id="_CPPv320AvmStringContainsStrPK9AvmString3str"></span><span id="_CPPv220AvmStringContainsStrPK9AvmString3str"></span><span id="AvmStringContainsStr__AvmStringCP.str"></span><span class="target" id="string_8h_1a8ff94af61ef9f8d5731af1d58ce14761"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringContainsStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringContainsStrPK9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString contains a raw string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The string to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the string is found, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423AvmStringStartsWithCharPK9AvmStringc">
+<span id="_CPPv323AvmStringStartsWithCharPK9AvmStringc"></span><span id="_CPPv223AvmStringStartsWithCharPK9AvmStringc"></span><span id="AvmStringStartsWithChar__AvmStringCP.c"></span><span class="target" id="string_8h_1aa8d6955c6010936b21fbb4ed0d616ccb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringStartsWithChar</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423AvmStringStartsWithCharPK9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString starts with a character. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the AvmString starts with the character, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424AvmStringStartsWithCharsPK9AvmString4uint3str">
+<span id="_CPPv324AvmStringStartsWithCharsPK9AvmString4uint3str"></span><span id="_CPPv224AvmStringStartsWithCharsPK9AvmString4uint3str"></span><span id="AvmStringStartsWithChars__AvmStringCP.uint.str"></span><span class="target" id="string_8h_1af0204224219c2fc3ad0cb847c99ac4e9"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringStartsWithChars</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424AvmStringStartsWithCharsPK9AvmString4uint3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString starts with a raw string provided with its length. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>length</strong> – The length of the string. </p></li>
+<li><p><strong>contents</strong> – The string to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString starts with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422AvmStringStartsWithStrPK9AvmString3str">
+<span id="_CPPv322AvmStringStartsWithStrPK9AvmString3str"></span><span id="_CPPv222AvmStringStartsWithStrPK9AvmString3str"></span><span id="AvmStringStartsWithStr__AvmStringCP.str"></span><span class="target" id="string_8h_1aef556293356b4595d0a2f11703c4a7ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringStartsWithStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422AvmStringStartsWithStrPK9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString starts with a raw string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The string to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString starts with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425AvmStringStartsWithStringPK9AvmStringPK9AvmString">
+<span id="_CPPv325AvmStringStartsWithStringPK9AvmStringPK9AvmString"></span><span id="_CPPv225AvmStringStartsWithStringPK9AvmStringPK9AvmString"></span><span id="AvmStringStartsWithString__AvmStringCP.AvmStringCP"></span><span class="target" id="string_8h_1a976053ba841ab9bb084267af34e96fe7"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringStartsWithString</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425AvmStringStartsWithStringPK9AvmStringPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString starts with an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The string to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString starts with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmStringEndsWithCharPK9AvmStringc">
+<span id="_CPPv321AvmStringEndsWithCharPK9AvmStringc"></span><span id="_CPPv221AvmStringEndsWithCharPK9AvmStringc"></span><span id="AvmStringEndsWithChar__AvmStringCP.c"></span><span class="target" id="string_8h_1a0da5b27aef351f2d9dadc77e3c25f287"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEndsWithChar</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">character</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmStringEndsWithCharPK9AvmStringc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString ends with a character. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>character</strong> – The character to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the AvmString ends with the character, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStringEndsWithStrPK9AvmString3str">
+<span id="_CPPv320AvmStringEndsWithStrPK9AvmString3str"></span><span id="_CPPv220AvmStringEndsWithStrPK9AvmString3str"></span><span id="AvmStringEndsWithStr__AvmStringCP.str"></span><span class="target" id="string_8h_1add1226dc8f2b7193e88f89b25bc20330"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEndsWithStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStringEndsWithStrPK9AvmString3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString ends with a raw string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The string to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString ends with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422AvmStringEndsWithCharsPK9AvmString4uint3str">
+<span id="_CPPv322AvmStringEndsWithCharsPK9AvmString4uint3str"></span><span id="_CPPv222AvmStringEndsWithCharsPK9AvmString4uint3str"></span><span id="AvmStringEndsWithChars__AvmStringCP.uint.str"></span><span class="target" id="string_8h_1a0c96b10adea31a3d7a4de16a05ed7fe8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEndsWithChars</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422AvmStringEndsWithCharsPK9AvmString4uint3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString ends with a raw string provided with its length. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>length</strong> – The length of the string. </p></li>
+<li><p><strong>contents</strong> – The string to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString ends with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423AvmStringEndsWithStringPK9AvmStringPK9AvmString">
+<span id="_CPPv323AvmStringEndsWithStringPK9AvmStringPK9AvmString"></span><span id="_CPPv223AvmStringEndsWithStringPK9AvmStringPK9AvmString"></span><span id="AvmStringEndsWithString__AvmStringCP.AvmStringCP"></span><span class="target" id="string_8h_1a7a14aa1bacd4ea2ce351b6d93be18133"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringEndsWithString</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">contents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423AvmStringEndsWithStringPK9AvmStringPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether an AvmString ends with an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>contents</strong> – The string to find. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">contents</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the AvmString ends with the string, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmStringFormat3strz">
+<span id="_CPPv315AvmStringFormat3strz"></span><span id="_CPPv215AvmStringFormat3strz"></span><span id="AvmStringFormat__str.z"></span><span class="target" id="string_8h_1ae82f4c47f8abec6490523491bbbfe477"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFormat</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmStringFormat3strz" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes formatted output into an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> – The format string. </p></li>
+<li><p><strong>...</strong> – The values to insert into the format string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">format</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The formatted string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStringFormatV3str7va_list">
+<span id="_CPPv316AvmStringFormatV3str7va_list"></span><span id="_CPPv216AvmStringFormatV3str7va_list"></span><span id="AvmStringFormatV__str.va_list"></span><span class="target" id="string_8h_1a8227ae6a2d49fc870d0501dfa4d726fc"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringFormatV</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStringFormatV3str7va_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes formatted output into an AvmString using a va_list. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> – The format string. </p></li>
+<li><p><strong>args</strong> – The va_list with the values to insert into the format string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">format</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The formatted string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStringParsePK9AvmString3strz">
+<span id="_CPPv314AvmStringParsePK9AvmString3strz"></span><span id="_CPPv214AvmStringParsePK9AvmString3strz"></span><span id="AvmStringParse__AvmStringCP.str.z"></span><span class="target" id="string_8h_1a96ea0d918785993744a52652e33a0562"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringParse</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStringParsePK9AvmString3strz" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads formatted output from an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>format</strong> – The format string. </p></li>
+<li><p><strong>...</strong> – The values to insert into the format string. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">format</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmStringParseVPK9AvmString3str7va_list">
+<span id="_CPPv315AvmStringParseVPK9AvmString3str7va_list"></span><span id="_CPPv215AvmStringParseVPK9AvmString3str7va_list"></span><span id="AvmStringParseV__AvmStringCP.str.va_list"></span><span class="target" id="string_8h_1a10f23d0fcfb0a99d073d16e809a88132"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringParseV</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmStringParseVPK9AvmString3str7va_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads formatted output from an AvmString. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmString instance. </p></li>
+<li><p><strong>format</strong> – The format string. </p></li>
+<li><p><strong>args</strong> – The va_list with the values to insert into the format string. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">format</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStringToStrPK9AvmString">
+<span id="_CPPv314AvmStringToStrPK9AvmString"></span><span id="_CPPv214AvmStringToStrPK9AvmString"></span><span id="AvmStringToStr__AvmStringCP"></span><span class="target" id="string_8h_1a5b4f19b5a14b7e931fac050120adbd28"></span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStringToStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStringToStrPK9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="testing.html" class="btn btn-neutral float-right" title="testing.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reflect.html" class="btn btn-neutral float-left" title="reflect.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

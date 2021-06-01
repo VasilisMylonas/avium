@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>codegen.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="core.h" href="core.html" />
+    <link rel="prev" title="Welcome to Avium’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>codegen.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/codegen.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="codegen-h">
+<span id="codegen"></span><h1>codegen.h<a class="headerlink" href="#codegen-h" title="Permalink to this headline">¶</a></h1>
+<p>Runtime code generation utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.2 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-05-12</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="codegen_8h_1aa3faa9f95c4fb0c63d6f229ec390afd3"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmTypeBuilder,</span> <span class="pre">AvmType,</span> <span class="pre">{</span> <span class="pre">uint</span> <span class="pre">_reserved;})</span></span></dt>
+<dd><p>A helper object for creating AvmType instances. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmTypeBuilderBasedOnPK7AvmType">
+<span id="_CPPv321AvmTypeBuilderBasedOnPK7AvmType"></span><span id="_CPPv221AvmTypeBuilderBasedOnPK7AvmType"></span><span id="AvmTypeBuilderBasedOn__AvmTypeCP"></span><span class="target" id="codegen_8h_1a4856f234342cf5fb30e693a354d0f697"></span><span class="n"><span class="pre">AvmTypeBuilder</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmTypeBuilderBasedOn</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmTypeBuilderBasedOnPK7AvmType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmTypeBuilder with a base type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – The base type. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">type</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created AvmTypeBuilder. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmTypeBuilderSetNameP14AvmTypeBuilder3str">
+<span id="_CPPv321AvmTypeBuilderSetNameP14AvmTypeBuilder3str"></span><span id="_CPPv221AvmTypeBuilderSetNameP14AvmTypeBuilder3str"></span><span id="AvmTypeBuilderSetName__AvmTypeBuilderP.str"></span><span class="target" id="codegen_8h_1afef53562bfaae1cf789a1770634d20c0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmTypeBuilderSetName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmTypeBuilder</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmTypeBuilderSetNameP14AvmTypeBuilder3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets the name for the AvmType to be created by an AvmTypeBuilder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmTypeBuilder instance. </p></li>
+<li><p><strong>name</strong> – The name for the type. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmTypeBuilderSetVFTP14AvmTypeBuilder4uintA_11AvmFunction">
+<span id="_CPPv320AvmTypeBuilderSetVFTP14AvmTypeBuilder4uintA_11AvmFunction"></span><span id="_CPPv220AvmTypeBuilderSetVFTP14AvmTypeBuilder4uintA_11AvmFunction"></span><span id="AvmTypeBuilderSetVFT__AvmTypeBuilderP.uint.AvmFunctionA"></span><span class="target" id="codegen_8h_1aac990378db2b39691c929f0637aa0626"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmTypeBuilderSetVFT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmTypeBuilder</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">vft</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmTypeBuilderSetVFTP14AvmTypeBuilder4uintA_11AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets the VFT for the AvmType to be created by an AvmTypeBuilder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmTypeBuilder instance. </p></li>
+<li><p><strong>legnth</strong> – The length of the VFT. </p></li>
+<li><p><strong>vft</strong> – The VFT for the type. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">vft</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423AvmTypeBuilderAddMemberP14AvmTypeBuilderPK7AvmType">
+<span id="_CPPv323AvmTypeBuilderAddMemberP14AvmTypeBuilderPK7AvmType"></span><span id="_CPPv223AvmTypeBuilderAddMemberP14AvmTypeBuilderPK7AvmType"></span><span id="AvmTypeBuilderAddMember__AvmTypeBuilderP.AvmTypeCP"></span><span class="target" id="codegen_8h_1a93c8b394591108ccd83cd61ec8112b53"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmTypeBuilderAddMember</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmTypeBuilder</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423AvmTypeBuilderAddMemberP14AvmTypeBuilderPK7AvmType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Adds a member to an AvmTypeBuilder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmTypeBuilder instance. </p></li>
+<li><p><strong>type</strong> – The type of the member to be added. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">type</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="core.html" class="btn btn-neutral float-right" title="core.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Avium’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

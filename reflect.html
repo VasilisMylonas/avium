@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reflect.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="string.h" href="string.html" />
+    <link rel="prev" title="path.h" href="path.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>reflect.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/reflect.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="reflect-h">
+<span id="reflect"></span><h1>reflect.h<a class="headerlink" href="#reflect-h" title="Permalink to this headline">¶</a></h1>
+<p>Program introspection utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.1 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-05-16</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_FUNCTION">
+<span class="target" id="reflect_8h_1af04ef5a0d4e21915949b6df5f4356b48"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_FUNCTION</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">F</span></span>, <span class="n"><span class="pre">TReturn</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_FUNCTION" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmReflectLoadType3str">
+<span id="_CPPv318AvmReflectLoadType3str"></span><span id="_CPPv218AvmReflectLoadType3str"></span><span id="AvmReflectLoadType__str"></span><span class="target" id="reflect_8h_1a50ad0054413ebbeb8207fd1ce4504ed4"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmReflectLoadType</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmReflectLoadType3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Loads a type based on its qualified name. </p>
+<p>The qualified name is in the form of library&#64;typename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – The qualified name of the type. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The AvmType instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="reflect_8h_1a570b5b14f66843bdbfba9d74cfad7f96"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmModule,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">void</span> <span class="pre">*_handle;str</span> <span class="pre">_name;})</span></span></dt>
+<dd><p>Represents a loaded shared object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmModuleLoad3str">
+<span id="_CPPv313AvmModuleLoad3str"></span><span id="_CPPv213AvmModuleLoad3str"></span><span id="AvmModuleLoad__str"></span><span class="target" id="reflect_8h_1a1b04947cc526bf4a744dbfb70057dc7a"></span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleLoad</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmModuleLoad3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Loads the shared object at the specified path. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path to the share object file. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The loaded module. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmModuleUnloadP9AvmModule">
+<span id="_CPPv315AvmModuleUnloadP9AvmModule"></span><span id="_CPPv215AvmModuleUnloadP9AvmModule"></span><span id="AvmModuleUnload__AvmModuleP"></span><span class="target" id="reflect_8h_1a8c5c9622969be5973ff55176e538365d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleUnload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmModuleUnloadP9AvmModule" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unloads a module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmModule instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmModuleGetCurrentv">
+<span id="_CPPv319AvmModuleGetCurrentv"></span><span id="_CPPv219AvmModuleGetCurrentv"></span><span id="AvmModuleGetCurrent__void"></span><span class="target" id="reflect_8h_1a50b97fff165d887f182b9f5ff83508e5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleGetCurrent</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmModuleGetCurrentv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets a pointer to the currently running module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The currently running module. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmModuleGetNamePK9AvmModule">
+<span id="_CPPv316AvmModuleGetNamePK9AvmModule"></span><span id="_CPPv216AvmModuleGetNamePK9AvmModule"></span><span id="AvmModuleGetName__AvmModuleCP"></span><span class="target" id="reflect_8h_1aa02c4e2ee2729ea600b54060d72138cd"></span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleGetName</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmModuleGetNamePK9AvmModule" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the name of a module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmModule instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the module. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmModuleHasSymbolPK9AvmModule3str">
+<span id="_CPPv318AvmModuleHasSymbolPK9AvmModule3str"></span><span id="_CPPv218AvmModuleHasSymbolPK9AvmModule3str"></span><span id="AvmModuleHasSymbol__AvmModuleCP.str"></span><span class="target" id="reflect_8h_1a5e8920365dea564d390bfd2f031bfcff"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleHasSymbol</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmModuleHasSymbolPK9AvmModule3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a symbol exists on the specified module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmModule instance. </p></li>
+<li><p><strong>name</strong> – The name of the symbol. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the symbol exists, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmModuleGetTypePK9AvmModule3str">
+<span id="_CPPv316AvmModuleGetTypePK9AvmModule3str"></span><span id="_CPPv216AvmModuleGetTypePK9AvmModule3str"></span><span id="AvmModuleGetType__AvmModuleCP.str"></span><span class="target" id="reflect_8h_1a869a3ecd9a9c6ddf8df9cb439ca21f46"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleGetType</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmModuleGetTypePK9AvmModule3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets an AvmType instance from a module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmModule instance. </p></li>
+<li><p><strong>name</strong> – The name of the type. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The AvmType instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmModuleGetFunctionPK9AvmModule3str">
+<span id="_CPPv320AvmModuleGetFunctionPK9AvmModule3str"></span><span id="_CPPv220AvmModuleGetFunctionPK9AvmModule3str"></span><span id="AvmModuleGetFunction__AvmModuleCP.str"></span><span class="target" id="reflect_8h_1a66c2e9f77873599eee84bd36be6e4f52"></span><a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleGetFunction</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmModuleGetFunctionPK9AvmModule3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets a function from a module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmModule instance. </p></li>
+<li><p><strong>name</strong> – The name of the function. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The function. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmModuleGetVariablePK9AvmModule3str">
+<span id="_CPPv320AvmModuleGetVariablePK9AvmModule3str"></span><span id="_CPPv220AvmModuleGetVariablePK9AvmModule3str"></span><span id="AvmModuleGetVariable__AvmModuleCP.str"></span><span class="target" id="reflect_8h_1a12d3d3987f31777cad4c144acdcd0dc6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmModuleGetVariable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">AvmModule</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmModuleGetVariablePK9AvmModule3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets a variable from a module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmModule instance. </p></li>
+<li><p><strong>name</strong> – The name of the variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">name</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pointer to the variable. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="reflect_8h_1a37ecd87e40d6b4ec7554367ed4affde5"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmFunctionInfo,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">uint</span> <span class="pre">_paramCount;const</span> <span class="pre">AvmType</span> <span class="pre">**_paramTypes;const</span> <span class="pre">AvmType</span> <span class="pre">*_returnType;AvmFunction</span> <span class="pre">_function;str</span> <span class="pre">_name;})</span></span></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424AvmFunctionGetReturnType11AvmFunction">
+<span id="_CPPv324AvmFunctionGetReturnType11AvmFunction"></span><span id="_CPPv224AvmFunctionGetReturnType11AvmFunction"></span><span id="AvmFunctionGetReturnType__AvmFunction"></span><span class="target" id="reflect_8h_1ac10f7a80984015f0473c1ed167bd243d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFunctionGetReturnType</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424AvmFunctionGetReturnType11AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmFunctionGetParams11AvmFunction">
+<span id="_CPPv320AvmFunctionGetParams11AvmFunction"></span><span id="_CPPv220AvmFunctionGetParams11AvmFunction"></span><span id="AvmFunctionGetParams__AvmFunction"></span><span class="target" id="reflect_8h_1a95e76ff613c069b4c7f27ecd53fab391"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="core.html#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFunctionGetParams</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmFunctionGetParams11AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424AvmFunctionGetParamCount11AvmFunction">
+<span id="_CPPv324AvmFunctionGetParamCount11AvmFunction"></span><span id="_CPPv224AvmFunctionGetParamCount11AvmFunction"></span><span id="AvmFunctionGetParamCount__AvmFunction"></span><span class="target" id="reflect_8h_1a0b1e6000893c49e22145d3f4ba7eb54d"></span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmFunctionGetParamCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424AvmFunctionGetParamCount11AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmFunctionGetName11AvmFunction">
+<span id="_CPPv318AvmFunctionGetName11AvmFunction"></span><span id="_CPPv218AvmFunctionGetName11AvmFunction"></span><span id="AvmFunctionGetName__AvmFunction"></span><span class="target" id="reflect_8h_1a42b08b0a0deee097c45620495700b1b6"></span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmFunctionGetName</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv411AvmFunction" title="AvmFunction"><span class="n"><span class="pre">AvmFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmFunctionGetName11AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="string.html" class="btn btn-neutral float-right" title="string.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="path.html" class="btn btn-neutral float-left" title="path.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

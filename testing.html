@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>testing.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="typeinfo.h" href="typeinfo.html" />
+    <link rel="prev" title="string.h" href="string.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>testing.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/testing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="testing-h">
+<span id="testing"></span><h1>testing.h<a class="headerlink" href="#testing-h" title="Permalink to this headline">¶</a></h1>
+<p>Testing utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.2 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-05-07</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.pre">
+<span class="target" id="testing_8h_1a781764a80d29166390dc16a5f4ac9cab"></span><span class="sig-name descname"><span class="n"><span class="pre">pre</span></span></span><a class="headerlink" href="#c.pre" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.post">
+<span class="target" id="testing_8h_1a2082ce495ef0629c501a6504914d74b7"></span><span class="sig-name descname"><span class="n"><span class="pre">post</span></span></span><a class="headerlink" href="#c.post" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_eq">
+<span class="target" id="testing_8h_1a85b8b9c27a1eb37641251a7d60233664"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_eq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_eq" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_ne">
+<span class="target" id="testing_8h_1aa9967fd934cf82f5d0a64d850c2c95e8"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_ne</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_ne" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_gt">
+<span class="target" id="testing_8h_1ab532eab7f03308ce4bdb7c886af6a1a0"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_gt</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_gt" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_lt">
+<span class="target" id="testing_8h_1a66d531cb84cb8a5a6d2969cdd5cddff1"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_lt</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_lt" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_ge">
+<span class="target" id="testing_8h_1a34d671ca22d8fff76d3138a43e42a31f"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_ge</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_ge" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.assert_le">
+<span class="target" id="testing_8h_1a1273f3ca43d905062d77ac7375010455"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_le</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">x</span></span>, <span class="n"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_le" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="typeinfo.html" class="btn btn-neutral float-right" title="typeinfo.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="string.html" class="btn btn-neutral float-left" title="string.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

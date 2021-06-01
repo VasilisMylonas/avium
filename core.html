@@ -1,0 +1,863 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>core.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="file.h" href="file.html" />
+    <link rel="prev" title="codegen.h" href="codegen.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>core.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="core-h">
+<span id="core"></span><h1>core.h<a class="headerlink" href="#core-h" title="Permalink to this headline">¶</a></h1>
+<p>Avium core runtime utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.3.5 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-05-28</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.weakptr">
+<span class="target" id="group__AvmCoreTypes_1ga3ef311f01f8d17b3e56ec1b9a806222a"></span><span class="sig-name descname"><span class="n"><span class="pre">weakptr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.weakptr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A weak pointer to a type T. </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_CLASS">
+<span class="target" id="core_8h_1a792434d1d11db51f9c900a78a6aa6d49"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_CLASS</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span>, <span class="n"><span class="pre">B</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_CLASS" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an Avium class type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – The name of the type. </p></li>
+<li><p><strong>B</strong> – The base class of the type. </p></li>
+<li><p><strong>...</strong> – Member declaration in braces ({ … }) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_INTERFACE">
+<span class="target" id="core_8h_1ac5785a9335d96943479d482a1cb83545"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_INTERFACE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_INTERFACE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an Avium interface type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – The name of the type. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_ENUM">
+<span class="target" id="core_8h_1ac996241f506eb191aa5914d0bcba3eb8"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_ENUM</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_ENUM" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an Avium enum type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – The name of the enum. </p></li>
+<li><p><strong>...</strong> – The enum constants enclosed in braces ({…}). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_CONCAT_">
+<span class="target" id="core_8h_1ab636d6002df269e9bced47206d5ff5ee"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_CONCAT_</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">a</span></span>, <span class="n"><span class="pre">b</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_CONCAT_" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_CONCAT">
+<span class="target" id="core_8h_1a4c2b0767546396315b17ecc89106ac6d"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_CONCAT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">a</span></span>, <span class="n"><span class="pre">b</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_CONCAT" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_UNIQUE">
+<span class="target" id="core_8h_1aec3df9e232ba9c514d6684faeced855b"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_UNIQUE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_UNIQUE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AVM_VA_ARGS">
+<span class="target" id="core_8h_1a316a2b80366afba308ff58909cc7b482"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_VA_ARGS</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AVM_VA_ARGS" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.main">
+<span class="target" id="core_8h_1aa4e97f3782107649d3e4eb3875090b3a"></span><span class="sig-name descname"><span class="n"><span class="pre">main</span></span></span><a class="headerlink" href="#c.main" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmInvalid">
+<span class="target" id="core_8h_1a998dadbc4a2e9fc18bdd69a38a368442"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmInvalid</span></span></span><a class="headerlink" href="#c.AvmInvalid" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.try">
+<span class="target" id="group__AvmErrorHandling_1ga28599e8ac99ea9faff60a2258a914aee"></span><span class="sig-name descname"><span class="n"><span class="pre">try</span></span></span><a class="headerlink" href="#c.try" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Begins a try block. </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.catch">
+<span class="target" id="group__AvmErrorHandling_1ga1f7b2c5353d3694146b87716f3d6a24d"></span><span class="sig-name descname"><span class="n"><span class="pre">catch</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span>, <span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.catch" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Begins a catch block for type T. </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.throw">
+<span class="target" id="group__AvmErrorHandling_1gaa46a3967c4ea676513881c24cc05f93f"></span><span class="sig-name descname"><span class="n"><span class="pre">throw</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.throw" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Throws an object. </p>
+<p>The object must be heap-allocated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The object to throw. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.va_array">
+<span class="target" id="core_8h_1a67413c8eb6afad44089806f17d8e14d9"></span><span class="sig-name descname"><span class="n"><span class="pre">va_array</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">T</span></span>, <span class="n"><span class="pre">N</span></span>, <span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.va_array" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an array from a va_list. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – The type of the array elements. </p></li>
+<li><p><strong>N</strong> – The length of the array. </p></li>
+<li><p><strong>args</strong> – The va_list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">N</span></code> must be not zero. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">args</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created array. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv45_long">
+<span id="_CPPv35_long"></span><span id="_CPPv25_long"></span><span id="_long"></span><span class="target" id="group__AvmCoreTypes_1gae490c711a122bfe895096153b96e7776"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_long</span></span></span><a class="headerlink" href="#_CPPv45_long" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Signed 64-bit integer type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv45ulong">
+<span id="_CPPv35ulong"></span><span id="_CPPv25ulong"></span><span id="ulong"></span><span class="target" id="group__AvmCoreTypes_1ga718b4eb2652c286f4d42dc18a8e71a1a"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span> <span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ulong</span></span></span><a class="headerlink" href="#_CPPv45ulong" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned 64-bit integer type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv44uint">
+<span id="_CPPv34uint"></span><span id="_CPPv24uint"></span><span id="uint"></span><span class="target" id="group__AvmCoreTypes_1ga91ad9478d81a7aaf2593e8d9c3d06a14"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span> <span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint</span></span></span><a class="headerlink" href="#_CPPv44uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned 32-bit integer type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46ushort">
+<span id="_CPPv36ushort"></span><span id="_CPPv26ushort"></span><span id="ushort"></span><span class="target" id="group__AvmCoreTypes_1gab95f123a6c9bcfee6a343170ef8c5f69"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span> <span class="pre">short</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ushort</span></span></span><a class="headerlink" href="#_CPPv46ushort" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned 16-bit integer type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv44byte">
+<span id="_CPPv34byte"></span><span id="_CPPv24byte"></span><span id="byte"></span><span class="target" id="group__AvmCoreTypes_1ga0c8186d9b9b7880309c27230bbb5e69d"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span> <span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">byte</span></span></span><a class="headerlink" href="#_CPPv44byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned 8-bit integer type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46object">
+<span id="_CPPv36object"></span><span id="_CPPv26object"></span><span id="object"></span><span class="target" id="group__AvmCoreTypes_1ga71301352e6ef9a0fcf7b0a8bae72c535"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">object</span></span></span><a class="headerlink" href="#_CPPv46object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An unknown object type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv411AvmFunction">
+<span id="_CPPv311AvmFunction"></span><span id="_CPPv211AvmFunction"></span><span id="AvmFunction"></span><span class="target" id="group__AvmCoreTypes_1ga1e7609fb406db5b637df31e10677dd8b"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFunction</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv411AvmFunction" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An unknown function type. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv47AvmType">
+<span id="_CPPv37AvmType"></span><span id="_CPPv27AvmType"></span><span id="AvmType"></span><span class="target" id="group__AvmCoreTypes_1gadec63e4673cb0e31b23d97083d7a1dd8"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmType</span></span></span><a class="headerlink" href="#_CPPv47AvmType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv47AvmEnum">
+<span id="_CPPv37AvmEnum"></span><span id="_CPPv27AvmEnum"></span><span id="AvmEnum"></span><span class="target" id="group__AvmCoreTypes_1ga62014946f691d3504bab0543bb3165b4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv47AvmEnum" title="AvmEnum"><span class="n"><span class="pre">AvmEnum</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmEnum</span></span></span><a class="headerlink" href="#_CPPv47AvmEnum" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49AvmString">
+<span id="_CPPv39AvmString"></span><span id="_CPPv29AvmString"></span><span id="AvmString"></span><span class="target" id="group__AvmCoreTypes_1gada3082660bc396227dc490822d57da7f"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmString</span></span></span><a class="headerlink" href="#_CPPv49AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv413AvmEntryPoint">
+<span id="_CPPv313AvmEntryPoint"></span><span id="_CPPv213AvmEntryPoint"></span><span id="AvmEntryPoint"></span><span class="target" id="group__AvmRuntimeFunctions_1ga992b7c1f5df46bb791b7caf31525953b"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmEntryPoint</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv413AvmEntryPoint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The entry point function. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412AvmObjectNewPK7AvmType">
+<span id="_CPPv312AvmObjectNewPK7AvmType"></span><span id="_CPPv212AvmObjectNewPK7AvmType"></span><span id="AvmObjectNew__AvmTypeCP"></span><span class="target" id="group__AvmObjectFunctions_1ga88131a31dbe582d015353e6aa84d32c9"></span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectNew</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412AvmObjectNewPK7AvmType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates an object on the heap. </p>
+<p>TODO</p>
+<p>This function is not overridable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – The type of the object to allocate. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">type</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmObjectGetType6object">
+<span id="_CPPv316AvmObjectGetType6object"></span><span id="_CPPv216AvmObjectGetType6object"></span><span id="AvmObjectGetType__object"></span><span class="target" id="group__AvmObjectFunctions_1ga813ddee74c8ea430bbdb037bd1283823"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv47AvmType" title="AvmType"><span class="n"><span class="pre">AvmType</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectGetType</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmObjectGetType6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets information about the type of an object. </p>
+<p>You should use this function to get the type of an object. This assumes that the ._type field is correctly initialized by the object constructor.</p>
+<p>This function returns the actual runtime type of an object bypassing any base types. That is, for an object of type T where T inherits from another type B, this function will always return <a class="reference internal" href="typeinfo.html#typeinfo_8h_1a596aeba1a4acf6b939cba1687a84df73"><span class="std std-ref">typeid(T)</span></a> regardless if the object is passed as a T* or a B*.</p>
+<p>To check if an object is an instance of a type (possibly derived) use the instanceof macro.</p>
+<p>To handle the returning AvmType instance, you may need to include typeinfo.h</p>
+<p>This function is not overridable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The object instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The type information of the object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmObjectEquals6object6object">
+<span id="_CPPv315AvmObjectEquals6object6object"></span><span id="_CPPv215AvmObjectEquals6object6object"></span><span id="AvmObjectEquals__object.object"></span><span class="target" id="group__AvmObjectFunctions_1gaf6aede9f821f7d844823c35baa601b6d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectEquals</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmObjectEquals6object6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compares two objects for equality. </p>
+<p>This function compares 2 objects for value equality, that is both objects in-memory representation must be exactly the same for this function to return true.</p>
+<p>Overriding this function may be especially desirable for non-trivial types.</p>
+<p>This function is overridable by the FnEntryEquals entry in the VFT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The first object. </p></li>
+<li><p><strong>other</strong> – The second object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">other</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the two objects are equal, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmObjectFinalize6object">
+<span id="_CPPv317AvmObjectFinalize6object"></span><span id="_CPPv217AvmObjectFinalize6object"></span><span id="AvmObjectFinalize__object"></span><span class="target" id="group__AvmObjectFunctions_1ga8dd604a7906dbf8c0caffcc6d42c1eac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectFinalize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmObjectFinalize6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalizes an object. </p>
+<p>This function calls AvmObjectSurpressFinalizer to make sure that the finalizer is not called more than once.</p>
+<p>This function is overridable by the FnEntryFinalize entry in the VFT.</p>
+<p>Overriding should be done when an object needs to release non-memory resources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The object instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426AvmObjectSurpressFinalizer6object">
+<span id="_CPPv326AvmObjectSurpressFinalizer6object"></span><span id="_CPPv226AvmObjectSurpressFinalizer6object"></span><span id="AvmObjectSurpressFinalizer__object"></span><span class="target" id="group__AvmObjectFunctions_1gac19d3b8997b6e05ca536f3316d45e2be"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectSurpressFinalizer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426AvmObjectSurpressFinalizer6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Disables the finalizer of an object. </p>
+<p>When called makes the runtime ignore finalization of the object. This may be useful if writing functions that deterministically finalizes an object.</p>
+<p>This function is not overridable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The object instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmObjectClone6object">
+<span id="_CPPv314AvmObjectClone6object"></span><span id="_CPPv214AvmObjectClone6object"></span><span id="AvmObjectClone__object"></span><span class="target" id="group__AvmObjectFunctions_1gafbfeb3cba778e8a8c2f6d5c780485775"></span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectClone</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmObjectClone6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clones an object, creating an exact copy. </p>
+<p>Creates an exact clone of an objects such as that AvmObjectEquals returns true by copying the object to heap memory.</p>
+<p>This function should be overriden if an object contains pointers.</p>
+<p>This function is overridable by the FnEntryClone entry in the VFT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The object instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The cloned object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmObjectToString6object">
+<span id="_CPPv317AvmObjectToString6object"></span><span id="_CPPv217AvmObjectToString6object"></span><span id="AvmObjectToString__object"></span><span class="target" id="group__AvmObjectFunctions_1ga8147e5c28ae090eb38715adf951369ca"></span><a class="reference internal" href="#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmObjectToString</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmObjectToString6object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a string representation of an object. </p>
+<p>This function creates a simple object-identifying string. Overriding this function to provided a more helpful representation may be useful.</p>
+<p>This function is overridable by the FnEntryToString entry in the VFT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The object instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The string representation of the object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="group__AvmMiscTypes_1gad4e752062e82fa488f8e3095513969b0"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmLocation,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">str</span> <span class="pre">File;uint</span> <span class="pre">Line;uint</span> <span class="pre">Column;})</span></span></dt>
+<dd><p>Represents a location in source code. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmLocationFrom3str4uint4uint">
+<span id="_CPPv315AvmLocationFrom3str4uint4uint"></span><span id="_CPPv215AvmLocationFrom3str4uint4uint"></span><span id="AvmLocationFrom__str.uint.uint"></span><span class="target" id="group__AvmMiscTypes_1ga991464f80645f6490dad4a42ccdf1c63"></span><span class="n"><span class="pre">AvmLocation</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmLocationFrom</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">file</span></span>, <a class="reference internal" href="#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">line</span></span>, <a class="reference internal" href="#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">column</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmLocationFrom3str4uint4uint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a new AvmLocation instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> – The file name. </p></li>
+<li><p><strong>line</strong> – The line number. </p></li>
+<li><p><strong>column</strong> – The column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="group__AvmMiscTypes_1ga2c0ff01dc9087854353b5e96d3a331d6"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmVersion,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">ushort</span> <span class="pre">Major;ushort</span> <span class="pre">Minor;ushort</span> <span class="pre">Patch;})</span></span></dt>
+<dd><p>A type representing a software version in the format: N.N.N. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmVersionFrom6ushort6ushort6ushort">
+<span id="_CPPv314AvmVersionFrom6ushort6ushort6ushort"></span><span id="_CPPv214AvmVersionFrom6ushort6ushort6ushort"></span><span id="AvmVersionFrom__ushort.ushort.ushort"></span><span class="target" id="group__AvmMiscTypes_1ga8d63e094c101a91f4413a93d9d120d11"></span><span class="n"><span class="pre">AvmVersion</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmVersionFrom</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46ushort" title="ushort"><span class="n"><span class="pre">ushort</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">major</span></span>, <a class="reference internal" href="#_CPPv46ushort" title="ushort"><span class="n"><span class="pre">ushort</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">minor</span></span>, <a class="reference internal" href="#_CPPv46ushort" title="ushort"><span class="n"><span class="pre">ushort</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">patch</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmVersionFrom6ushort6ushort6ushort" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a new AvmVersion instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>major</strong> – The version major number (incremented at breaking changes). </p></li>
+<li><p><strong>minor</strong> – The version minor number (incremented at non-breaking changes). </p></li>
+<li><p><strong>patch</strong> – The version patch number (incremented at bug fixes).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="group__AvmRuntimeFunctions_1ga266082c3ac85f9a7169b6ee6c8182be3"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmThrowContext,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">AvmThrowContext</span> <span class="pre">*_prev;object</span> <span class="pre">_thrownObject;AvmLocation</span> <span class="pre">_location;jmp_buf</span> <span class="pre">_jumpBuffer;})</span></span></dt>
+<dd><p>Represents the context of a thrown object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="group__AvmRuntimeFunctions_1ga9a20ee8a9a938fea572894d7ca7b144b"></span><span class="sig-name descname"><span class="pre">AVM_CLASS</span> <span class="pre">(AvmRuntime,</span> <span class="pre">object,</span> <span class="pre">{</span> <span class="pre">uint</span> <span class="pre">_argc;str</span> <span class="pre">*_argv;str</span> <span class="pre">_name;AvmThrowContext</span> <span class="pre">*_throwContext;AvmVersion</span> <span class="pre">_version;})</span></span></dt>
+<dd><p>Holds the state for the Avium runtime. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmRuntimeInitiA_3str13AvmEntryPoint">
+<span id="_CPPv314AvmRuntimeInitiA_3str13AvmEntryPoint"></span><span id="_CPPv214AvmRuntimeInitiA_3str13AvmEntryPoint"></span><span id="AvmRuntimeInit__i.strA.AvmEntryPoint"></span><span class="target" id="group__AvmRuntimeFunctions_1ga4c6cfc9bf905fe5c20cbcc9f10d133d0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeInit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">argc</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">argv</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span>, <a class="reference internal" href="#_CPPv413AvmEntryPoint" title="AvmEntryPoint"><span class="n"><span class="pre">AvmEntryPoint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">entry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmRuntimeInitiA_3str13AvmEntryPoint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the Avium runtime and calls into the entry point. </p>
+<p>Many Avium functions cannot be called without initializing the runtime first.</p>
+<p>When using the whole framework, this function is called automatically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>argc</strong> – The argc parameter from main. </p></li>
+<li><p><strong>argv</strong> – The argv parameter from main. </p></li>
+<li><p><strong>entry</strong> – The entry point.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A status code such as EXIT_SUCCESS or EXIT_FAILURE. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424AvmRuntimeGetProgramNamev">
+<span id="_CPPv324AvmRuntimeGetProgramNamev"></span><span id="_CPPv224AvmRuntimeGetProgramNamev"></span><span id="AvmRuntimeGetProgramName__void"></span><span class="target" id="group__AvmRuntimeFunctions_1ga51bfd484e3eccbb1bd83903ad16c0edf"></span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeGetProgramName</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424AvmRuntimeGetProgramNamev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the name of the currently running program. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the currently running program. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmRuntimeGetVersionv">
+<span id="_CPPv320AvmRuntimeGetVersionv"></span><span id="_CPPv220AvmRuntimeGetVersionv"></span><span id="AvmRuntimeGetVersion__void"></span><span class="target" id="group__AvmRuntimeFunctions_1gae4794f0b98c20883a3b793cf6c24d1b1"></span><span class="n"><span class="pre">AvmVersion</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeGetVersion</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmRuntimeGetVersionv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the current runtime version. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The current runtime version. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421AvmRuntimeGetArgCountv">
+<span id="_CPPv321AvmRuntimeGetArgCountv"></span><span id="_CPPv221AvmRuntimeGetArgCountv"></span><span id="AvmRuntimeGetArgCount__void"></span><span class="target" id="group__AvmRuntimeFunctions_1ga606a1e4396cf5e1fb67a43679509d90c"></span><a class="reference internal" href="#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeGetArgCount</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421AvmRuntimeGetArgCountv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the number of argument that the program received. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of arguments. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmRuntimeGetArgsv">
+<span id="_CPPv317AvmRuntimeGetArgsv"></span><span id="_CPPv217AvmRuntimeGetArgsv"></span><span id="AvmRuntimeGetArgs__void"></span><span class="target" id="group__AvmRuntimeFunctions_1ga579fd080c775946db10194474a81b454"></span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeGetArgs</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmRuntimeGetArgsv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns a pointer to the program arguments. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The program arguments. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422AvmRuntimeGetBacktracev">
+<span id="_CPPv322AvmRuntimeGetBacktracev"></span><span id="_CPPv222AvmRuntimeGetBacktracev"></span><span id="AvmRuntimeGetBacktrace__void"></span><span class="target" id="group__AvmRuntimeFunctions_1gae20977074070293506e0a7887de59174"></span><a class="reference internal" href="#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeGetBacktrace</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422AvmRuntimeGetBacktracev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Captures a stack backtrace, if available. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The backtrace, or a symbolic string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmRuntimeThrow6object11AvmLocation">
+<span id="_CPPv315AvmRuntimeThrow6object11AvmLocation"></span><span id="_CPPv215AvmRuntimeThrow6object11AvmLocation"></span><span id="AvmRuntimeThrow__object.AvmLocation"></span><span class="target" id="group__AvmRuntimeFunctions_1ga475ca56e0fb4a2734fdb452ddd5c7556"></span><span class="n"><span class="pre">never</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmRuntimeThrow</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">AvmLocation</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">location</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmRuntimeThrow6object11AvmLocation" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Throws an object. </p>
+<p>A better alternative to using this function is the throw macro.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The object to throw. </p></li>
+<li><p><strong>location</strong> – The location from which the object is thrown. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This function never returns. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48AvmAlloc6size_t">
+<span id="_CPPv38AvmAlloc6size_t"></span><span id="_CPPv28AvmAlloc6size_t"></span><span id="AvmAlloc__s"></span><span class="target" id="group__AvmAllocationFunctions_1gae56a64ec07bf9cb36f83bace3875815a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmAlloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48AvmAlloc6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates heap memory. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – The size of the memory block in bytes. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The allocated memory. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410AvmReallocPv6size_t">
+<span id="_CPPv310AvmReallocPv6size_t"></span><span id="_CPPv210AvmReallocPv6size_t"></span><span id="AvmRealloc__voidP.s"></span><span class="target" id="group__AvmAllocationFunctions_1gac11378b589f616f8bbb62f89d7a5d152"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmRealloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">memory</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410AvmReallocPv6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reallocates a heap memory block. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>memory</strong> – The memory block to reallocate. </p></li>
+<li><p><strong>size</strong> – The new size of the memory block in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The reallocated memory. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49AvmVScanf3str7va_list">
+<span id="_CPPv39AvmVScanf3str7va_list"></span><span id="_CPPv29AvmVScanf3str7va_list"></span><span id="AvmVScanf__str.va_list"></span><span class="target" id="group__AvmCoreIO_1ga90c8ed122c82df5e22a979dc714640a6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmVScanf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49AvmVScanf3str7va_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410AvmVPrintf3str7va_list">
+<span id="_CPPv310AvmVPrintf3str7va_list"></span><span id="_CPPv210AvmVPrintf3str7va_list"></span><span id="AvmVPrintf__str.va_list"></span><span class="target" id="group__AvmCoreIO_1gaabab8225fc009a2188214ec35e4ad5e8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmVPrintf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410AvmVPrintf3str7va_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410AvmVErrorf3str7va_list">
+<span id="_CPPv310AvmVErrorf3str7va_list"></span><span id="_CPPv210AvmVErrorf3str7va_list"></span><span id="AvmVErrorf__str.va_list"></span><span class="target" id="group__AvmCoreIO_1ga398100b43b196791f1bc5380bebd50d6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmVErrorf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410AvmVErrorf3str7va_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48AvmScanf3strz">
+<span id="_CPPv38AvmScanf3strz"></span><span id="_CPPv28AvmScanf3strz"></span><span id="AvmScanf__str.z"></span><span class="target" id="group__AvmCoreIO_1ga5043fb0aa84240bcd7a08e12c7f81274"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmScanf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48AvmScanf3strz" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49AvmPrintf3strz">
+<span id="_CPPv39AvmPrintf3strz"></span><span id="_CPPv29AvmPrintf3strz"></span><span id="AvmPrintf__str.z"></span><span class="target" id="group__AvmCoreIO_1gad7a617473526288c1e0c5cc43237a420"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPrintf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49AvmPrintf3strz" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49AvmErrorf3strz">
+<span id="_CPPv39AvmErrorf3strz"></span><span id="_CPPv29AvmErrorf3strz"></span><span id="AvmErrorf__str.z"></span><span class="target" id="group__AvmCoreIO_1gabf723c1ab1f2d3d1801b0e4dde16646b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmErrorf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49AvmErrorf3strz" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AVM_INTERFACE8AvmError">
+<span id="_CPPv313AVM_INTERFACE8AvmError"></span><span id="_CPPv213AVM_INTERFACE8AvmError"></span><span id="AVM_INTERFACE__AvmError"></span><span class="target" id="group__AvmErrorHandling_1gacdd823270703b915eeb2b2c8f38943de"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_INTERFACE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmError</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AVM_INTERFACE8AvmError" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A type representing an error. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411AvmErrorNew3str">
+<span id="_CPPv311AvmErrorNew3str"></span><span id="_CPPv211AvmErrorNew3str"></span><span id="AvmErrorNew__str"></span><span class="target" id="group__AvmErrorHandling_1ga73a66f55834834d174ce122a18545b01"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmErrorNew</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411AvmErrorNew3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmError with a message. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> – The error message. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">message</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmErrorFromOSCodei">
+<span id="_CPPv318AvmErrorFromOSCodei"></span><span id="_CPPv218AvmErrorFromOSCodei"></span><span id="AvmErrorFromOSCode__i"></span><span class="target" id="group__AvmErrorHandling_1ga9982152d47cf2a19a36f6d7a5e874135"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmErrorFromOSCode</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">code</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmErrorFromOSCodei" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates an AvmError from an OS code. </p>
+<p>If the code is 0 then a ‘successful’ error is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> – The error code. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47AvmCopy6object6size_tP4byte">
+<span id="_CPPv37AvmCopy6object6size_tP4byte"></span><span id="_CPPv27AvmCopy6object6size_tP4byte"></span><span id="AvmCopy__object.s.byteP"></span><span class="target" id="core_8h_1a0868d2609ec23c7b587eb87b3f909551"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46object" title="object"><span class="n"><span class="pre">object</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">o</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <a class="reference internal" href="#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">destination</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47AvmCopy6object6size_tP4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copies an object to a memory block. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>o</strong> – The object to copy. </p></li>
+<li><p><strong>size</strong> – The size of the destination buffer. </p></li>
+<li><p><strong>destination</strong> – The memory block to copy to. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">o</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">destination</span></code> must be not null.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp">
+<span class="target" id="group__AvmCoreTypes_1ga26fe834cd3a5122958feab45a504d257"></span><span class="sig-name descname"><span class="pre">const</span> <span class="pre">typedef</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">str</span></span></dt>
+<dd><p>Primitive read-only string. </p>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="file.html" class="btn btn-neutral float-right" title="file.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="codegen.html" class="btn btn-neutral float-left" title="codegen.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

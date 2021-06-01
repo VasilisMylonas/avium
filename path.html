@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>path.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="reflect.h" href="reflect.html" />
+    <link rel="prev" title="io.h" href="io.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>path.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/path.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="path-h">
+<span id="path"></span><h1>path.h<a class="headerlink" href="#path-h" title="Permalink to this headline">¶</a></h1>
+<p>Filesystem path utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.1 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-05-24</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.AvmPathCombineV">
+<span class="target" id="path_8h_1ad431c491feea9a4c0d69deff729e9715"></span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathCombineV</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.AvmPathCombineV" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Equivalent to AvmPathCombine but taking variadic arguments. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmPathGetSeparatorv">
+<span id="_CPPv319AvmPathGetSeparatorv"></span><span id="_CPPv219AvmPathGetSeparatorv"></span><span id="AvmPathGetSeparator__void"></span><span class="target" id="path_8h_1a4c11d35adf4c552f1741d040d114887e"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetSeparator</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmPathGetSeparatorv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the character used as a path separator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The path separator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422AvmPathGetAltSeparatorv">
+<span id="_CPPv322AvmPathGetAltSeparatorv"></span><span id="_CPPv222AvmPathGetAltSeparatorv"></span><span id="AvmPathGetAltSeparator__void"></span><span class="target" id="path_8h_1a21fe319461bc199f99d4c1b48d9bebbd"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetAltSeparator</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422AvmPathGetAltSeparatorv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the alternative character used as a path separator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The alternative path separator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmPathHasExtension3str">
+<span id="_CPPv319AvmPathHasExtension3str"></span><span id="_CPPv219AvmPathHasExtension3str"></span><span id="AvmPathHasExtension__str"></span><span class="target" id="path_8h_1a2d1c79028d321582698c9c5f495039f6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathHasExtension</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmPathHasExtension3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a path has an extension. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the path has an extension, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmPathIsAbsolute3str">
+<span id="_CPPv317AvmPathIsAbsolute3str"></span><span id="_CPPv217AvmPathIsAbsolute3str"></span><span id="AvmPathIsAbsolute__str"></span><span class="target" id="path_8h_1ade3d214b7a3fa1a870eb521cd9a7a1ba"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathIsAbsolute</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmPathIsAbsolute3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a path is absolute. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the path is absolute, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmPathIsRelative3str">
+<span id="_CPPv317AvmPathIsRelative3str"></span><span id="_CPPv217AvmPathIsRelative3str"></span><span id="AvmPathIsRelative__str"></span><span class="target" id="path_8h_1a22bb13874648f5eef4de85392fb9a737"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathIsRelative</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmPathIsRelative3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a path is relative. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the path is relative, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmPathIsValid3str">
+<span id="_CPPv314AvmPathIsValid3str"></span><span id="_CPPv214AvmPathIsValid3str"></span><span id="AvmPathIsValid__str"></span><span class="target" id="path_8h_1a2b2b0a1617f8645503bcf994e473dd1f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathIsValid</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmPathIsValid3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a path is valid. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the path is valid, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412AvmPathIsDir3str">
+<span id="_CPPv312AvmPathIsDir3str"></span><span id="_CPPv212AvmPathIsDir3str"></span><span id="AvmPathIsDir__str"></span><span class="target" id="path_8h_1a83b18954c178abc1e9d671e9e787269b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathIsDir</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412AvmPathIsDir3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a path represents a directory. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the path represents a directory, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmPathGetName3str">
+<span id="_CPPv314AvmPathGetName3str"></span><span id="_CPPv214AvmPathGetName3str"></span><span id="AvmPathGetName__str"></span><span class="target" id="path_8h_1a75798f2b01b0f3d9b93460a3b1360da7"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmPathGetName3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the name of the file or directory represented by a given path. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The file or directory name. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmPathGetExtension3str">
+<span id="_CPPv319AvmPathGetExtension3str"></span><span id="_CPPv219AvmPathGetExtension3str"></span><span id="AvmPathGetExtension__str"></span><span class="target" id="path_8h_1ad8c50d8bd827b33ba9baa61c2949540f"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetExtension</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmPathGetExtension3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the file extension component of a path, or an empty string if it does not represent a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The file extension. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmPathGetParent3str">
+<span id="_CPPv316AvmPathGetParent3str"></span><span id="_CPPv216AvmPathGetParent3str"></span><span id="AvmPathGetParent__str"></span><span class="target" id="path_8h_1a91c4e15737e2b90b875e94c423807ce7"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetParent</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmPathGetParent3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the parent directory of a path. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The parent directory. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmPathGetHomeDirv">
+<span id="_CPPv317AvmPathGetHomeDirv"></span><span id="_CPPv217AvmPathGetHomeDirv"></span><span id="AvmPathGetHomeDir__void"></span><span class="target" id="path_8h_1adcd6049e7a4f2dcd6f0339688538f612"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetHomeDir</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmPathGetHomeDirv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the path to the user home directory. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The home directory path. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmPathGetTempDirv">
+<span id="_CPPv317AvmPathGetTempDirv"></span><span id="_CPPv217AvmPathGetTempDirv"></span><span id="AvmPathGetTempDir__void"></span><span class="target" id="path_8h_1a6a368b86159242c40e5a1d11cf1acd61"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetTempDir</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmPathGetTempDirv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns a path to a directory suitable for storing temporary files. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The temporary directory path. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmPathGetFullPath3str">
+<span id="_CPPv318AvmPathGetFullPath3str"></span><span id="_CPPv218AvmPathGetFullPath3str"></span><span id="AvmPathGetFullPath__str"></span><span class="target" id="path_8h_1aa9b2dd69259fd05de2322f8094412c62"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathGetFullPath</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmPathGetFullPath3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Expands a path to its absolute equivalent. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The relative path. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The expanded path. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmPathCombine4uintA_3str">
+<span id="_CPPv314AvmPathCombine4uintA_3str"></span><span id="_CPPv214AvmPathCombine4uintA_3str"></span><span id="AvmPathCombine__uint.strA"></span><span class="target" id="path_8h_1ac82030cfe1ea2cb497b31ec2f6689541"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathCombine</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core.html#_CPPv44uint" title="uint"><span class="n"><span class="pre">uint</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">paths</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmPathCombine4uintA_3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Combines an array of paths components to a single path. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – The length of the array. </p></li>
+<li><p><strong>paths</strong> – The paths. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">length</span></code> must be not 0. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">paths</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The combined path. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmPathCombine23str3str">
+<span id="_CPPv315AvmPathCombine23str3str"></span><span id="_CPPv215AvmPathCombine23str3str"></span><span id="AvmPathCombine2__str.str"></span><span class="target" id="path_8h_1aee42488463d855e31aa33cd9c8520c9d"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmPathCombine2</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path1</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmPathCombine23str3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Combines two paths into one. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path1</strong> – The first path. </p></li>
+<li><p><strong>path2</strong> – The second path. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path1</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path2</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The combined path. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="reflect.html" class="btn btn-neutral float-right" title="reflect.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="io.html" class="btn btn-neutral float-left" title="io.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

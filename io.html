@@ -1,0 +1,567 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>io.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="path.h" href="path.html" />
+    <link rel="prev" title="file.h" href="file.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">file.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>io.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="io-h">
+<span id="io"></span><h1>io.h<a class="headerlink" href="#io-h" title="Permalink to this headline">¶</a></h1>
+<p>IO utilities. </p>
+<p>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Vasilis Mylonas <a class="reference external" href="mailto:vasilismylonas&#37;&#52;&#48;protonmail&#46;com">vasilismylonas<span>&#64;</span>protonmail<span>&#46;</span>com</a> </p>
+</dd>
+<dt><strong>Version</strong></dt><dd><p>0.1 </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>2021-04-15</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (c) 2021 Vasilis Mylonas</p>
+</dd>
+</dl>
+</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv413AvmFileHandle">
+<span id="_CPPv313AvmFileHandle"></span><span id="_CPPv213AvmFileHandle"></span><span id="AvmFileHandle"></span><span class="target" id="io_8h_1abad4f7fba19981eaf2c09a003674e1c6"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileHandle</span></span></span><a class="headerlink" href="#_CPPv413AvmFileHandle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents a C file handle. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv413AvmSeekOrigin">
+<span id="_CPPv313AvmSeekOrigin"></span><span id="_CPPv213AvmSeekOrigin"></span><span class="target" id="io_8h_1ab47cb708c1c4a3404a75a4b8040635f3"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmSeekOrigin</span></span></span><a class="headerlink" href="#_CPPv413AvmSeekOrigin" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Defines the origin point for a seek operation. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmSeekOrigin15SeekOriginBeginE">
+<span id="_CPPv3N13AvmSeekOrigin15SeekOriginBeginE"></span><span id="_CPPv2N13AvmSeekOrigin15SeekOriginBeginE"></span><span class="target" id="io_8h_1ab47cb708c1c4a3404a75a4b8040635f3ab6e45b83682a4ef6458447e92ca6552e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SeekOriginBegin</span></span></span><a class="headerlink" href="#_CPPv4N13AvmSeekOrigin15SeekOriginBeginE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Seek from the beginning of the stream. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmSeekOrigin17SeekOriginCurrentE">
+<span id="_CPPv3N13AvmSeekOrigin17SeekOriginCurrentE"></span><span id="_CPPv2N13AvmSeekOrigin17SeekOriginCurrentE"></span><span class="target" id="io_8h_1ab47cb708c1c4a3404a75a4b8040635f3aa8f9cf628419d1630d5b48228acdc11a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SeekOriginCurrent</span></span></span><a class="headerlink" href="#_CPPv4N13AvmSeekOrigin17SeekOriginCurrentE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Seek from the current stream position. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmSeekOrigin13SeekOriginEndE">
+<span id="_CPPv3N13AvmSeekOrigin13SeekOriginEndE"></span><span id="_CPPv2N13AvmSeekOrigin13SeekOriginEndE"></span><span class="target" id="io_8h_1ab47cb708c1c4a3404a75a4b8040635f3a0e0e38ff54bf3d513e02423db09c52f5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SeekOriginEnd</span></span></span><a class="headerlink" href="#_CPPv4N13AvmSeekOrigin13SeekOriginEndE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Seek backwards from the end of the stream. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AVM_INTERFACE9AvmStream">
+<span id="_CPPv313AVM_INTERFACE9AvmStream"></span><span id="_CPPv213AVM_INTERFACE9AvmStream"></span><span id="AVM_INTERFACE__AvmStream"></span><span class="target" id="io_8h_1a1c742955a734748359e2334244031e7b"></span><span class="sig-name descname"><span class="n"><span class="pre">AVM_INTERFACE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AVM_INTERFACE9AvmStream" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An abstraction over a sequence of bytes. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmStreamFromHandle13AvmFileHandle">
+<span id="_CPPv319AvmStreamFromHandle13AvmFileHandle"></span><span id="_CPPv219AvmStreamFromHandle13AvmFileHandle"></span><span id="AvmStreamFromHandle__AvmFileHandle"></span><span class="target" id="io_8h_1a9bf0fc423e13ad5e9a5a89f90e5829f2"></span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamFromHandle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413AvmFileHandle" title="AvmFileHandle"><span class="n"><span class="pre">AvmFileHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmStreamFromHandle13AvmFileHandle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a stream from a file handle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handle</strong> – The file handle. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">handle</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The created stream. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmStreamFromMemory6size_t">
+<span id="_CPPv319AvmStreamFromMemory6size_t"></span><span id="_CPPv219AvmStreamFromMemory6size_t"></span><span id="AvmStreamFromMemory__s"></span><span class="target" id="io_8h_1aefcc589b5894f707511f587824d59407"></span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamFromMemory</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">capacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmStreamFromMemory6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a stream from heap memory. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>capacity</strong> – The initial capacity of the stream. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created stream. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmStreamFromRaw6size_tA_4byte">
+<span id="_CPPv316AvmStreamFromRaw6size_tA_4byte"></span><span id="_CPPv216AvmStreamFromRaw6size_tA_4byte"></span><span id="AvmStreamFromRaw__s.byteA"></span><span class="target" id="io_8h_1ac0fbe33742aa1d1a71bcbd80d7bce2d8"></span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamFromRaw</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">array</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmStreamFromRaw6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStreamCloseP9AvmStream">
+<span id="_CPPv314AvmStreamCloseP9AvmStream"></span><span id="_CPPv214AvmStreamCloseP9AvmStream"></span><span id="AvmStreamClose__AvmStreamP"></span><span class="target" id="io_8h_1a65f1e1d67591052b6729c07a3bcbb4f9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamClose</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStreamCloseP9AvmStream" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmStreamReadP9AvmStream6size_tA_4byte">
+<span id="_CPPv313AvmStreamReadP9AvmStream6size_tA_4byte"></span><span id="_CPPv213AvmStreamReadP9AvmStream6size_tA_4byte"></span><span id="AvmStreamRead__AvmStreamP.s.byteA"></span><span class="target" id="io_8h_1af87c06344065ad7f1363871fefbf969f"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamRead</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">buffer</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmStreamReadP9AvmStream6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads bytes from an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>length</strong> – The number of bytes to read. </p></li>
+<li><p><strong>buffer</strong> – The buffer to read the bytes to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStreamWriteP9AvmStream6size_tA_4byte">
+<span id="_CPPv314AvmStreamWriteP9AvmStream6size_tA_4byte"></span><span id="_CPPv214AvmStreamWriteP9AvmStream6size_tA_4byte"></span><span id="AvmStreamWrite__AvmStreamP.s.byteA"></span><span class="target" id="io_8h_1a4c8a69ff927d51f84f664a4e8d96ded1"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamWrite</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">buffer</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStreamWriteP9AvmStream6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes bytes to an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>length</strong> – The number of bytes to write. </p></li>
+<li><p><strong>buffer</strong> – The buffer from which to write the bytes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmStreamFlushP9AvmStream">
+<span id="_CPPv314AvmStreamFlushP9AvmStream"></span><span id="_CPPv214AvmStreamFlushP9AvmStream"></span><span id="AvmStreamFlush__AvmStreamP"></span><span class="target" id="io_8h_1a8f214795171a88319559aeae6c8f93e6"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamFlush</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmStreamFlushP9AvmStream" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flushes a stream, writing buffered data to the underlying device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmStream instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmStreamSeekP9AvmStream5_long13AvmSeekOrigin">
+<span id="_CPPv313AvmStreamSeekP9AvmStream5_long13AvmSeekOrigin"></span><span id="_CPPv213AvmStreamSeekP9AvmStream5_long13AvmSeekOrigin"></span><span id="AvmStreamSeek__AvmStreamP._long.AvmSeekOrigin"></span><span class="target" id="io_8h_1a15085ad84daee3242c980aa68d519f4f"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamSeek</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv45_long" title="_long"><span class="n"><span class="pre">_long</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <a class="reference internal" href="#_CPPv413AvmSeekOrigin" title="AvmSeekOrigin"><span class="n"><span class="pre">AvmSeekOrigin</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">origin</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmStreamSeekP9AvmStream5_long13AvmSeekOrigin" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Seeks to a position in a stream. </p>
+<p>If <code class="docutils literal notranslate"><span class="pre">origin</span></code> is SeekOriginBegin, then the position is set to <code class="docutils literal notranslate"><span class="pre">offset</span></code>. If <code class="docutils literal notranslate"><span class="pre">origin</span></code> is SeekOriginCurrent, then the position is incremented, or decremented according to <code class="docutils literal notranslate"><span class="pre">offset</span></code>. If <code class="docutils literal notranslate"><span class="pre">origin</span></code> is SeekOriginEnd, then the position is incremented, or decremented according to <code class="docutils literal notranslate"><span class="pre">offset</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>offset</strong> – The offset. </p></li>
+<li><p><strong>origin</strong> – The origin point for seek operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmStreamGetPositionP9AvmStream">
+<span id="_CPPv320AvmStreamGetPositionP9AvmStream"></span><span id="_CPPv220AvmStreamGetPositionP9AvmStream"></span><span id="AvmStreamGetPosition__AvmStreamP"></span><span class="target" id="io_8h_1a4e8192db197503ba3ceea7f83cddddfa"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamGetPosition</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmStreamGetPositionP9AvmStream" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the current position in an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmStream instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The current position of the stream. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStreamGetLengthP9AvmStream">
+<span id="_CPPv318AvmStreamGetLengthP9AvmStream"></span><span id="_CPPv218AvmStreamGetLengthP9AvmStream"></span><span id="AvmStreamGetLength__AvmStreamP"></span><span class="target" id="io_8h_1a3841958b9df1f259934c94a18e95f678"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamGetLength</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStreamGetLengthP9AvmStream" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the length of an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The AvmStream instance. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The length of the stream. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStreamReadByteP9AvmStreamPP8AvmError">
+<span id="_CPPv317AvmStreamReadByteP9AvmStreamPP8AvmError"></span><span id="_CPPv217AvmStreamReadByteP9AvmStreamPP8AvmError"></span><span id="AvmStreamReadByte__AvmStreamP.AvmErrorPP"></span><span class="target" id="io_8h_1aea78f7b464bd7cc8565d5d96c71c9d39"></span><a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamReadByte</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStreamReadByteP9AvmStreamPP8AvmError" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads a single byte from an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>error</strong> – <strong>[out]</strong> Any error that occurs. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The byte. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStreamWriteByteP9AvmStream4byte">
+<span id="_CPPv318AvmStreamWriteByteP9AvmStream4byte"></span><span id="_CPPv218AvmStreamWriteByteP9AvmStream4byte"></span><span id="AvmStreamWriteByte__AvmStreamP.byte"></span><span class="target" id="io_8h_1a489fe89940e3298bcdeb4426e92cf36d"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamWriteByte</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStreamWriteByteP9AvmStream4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes a single byte to an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>value</strong> – The byte to write. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStreamReadCharP9AvmStreamPP8AvmError">
+<span id="_CPPv317AvmStreamReadCharP9AvmStreamPP8AvmError"></span><span id="_CPPv217AvmStreamReadCharP9AvmStreamPP8AvmError"></span><span id="AvmStreamReadChar__AvmStreamP.AvmErrorPP"></span><span class="target" id="io_8h_1a407adc15e17579e775649f7b01bba8a9"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamReadChar</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStreamReadCharP9AvmStreamPP8AvmError" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads a single character from an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>error</strong> – <strong>[out]</strong> Any error that occurs. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The character. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStreamWriteCharP9AvmStreamc">
+<span id="_CPPv318AvmStreamWriteCharP9AvmStreamc"></span><span id="_CPPv218AvmStreamWriteCharP9AvmStreamc"></span><span id="AvmStreamWriteChar__AvmStreamP.c"></span><span class="target" id="io_8h_1a13536ea671c8a2c9e00587170813fe60"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamWriteChar</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStreamWriteCharP9AvmStreamc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes a single character to an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>value</strong> – The character to write. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417AvmStreamReadLineP9AvmStreamPP8AvmError">
+<span id="_CPPv317AvmStreamReadLineP9AvmStreamPP8AvmError"></span><span id="_CPPv217AvmStreamReadLineP9AvmStreamPP8AvmError"></span><span id="AvmStreamReadLine__AvmStreamP.AvmErrorPP"></span><span class="target" id="io_8h_1a782a9d7bc875a5f3c96d0e75a5fac873"></span><a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamReadLine</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417AvmStreamReadLineP9AvmStreamPP8AvmError" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads a line of text from an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>error</strong> – <strong>[out]</strong> Any error that occurs. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmStreamWriteLineP9AvmStreamP9AvmString">
+<span id="_CPPv318AvmStreamWriteLineP9AvmStreamP9AvmString"></span><span id="_CPPv218AvmStreamWriteLineP9AvmStreamP9AvmString"></span><span id="AvmStreamWriteLine__AvmStreamP.AvmStringP"></span><span class="target" id="io_8h_1a8afa6c98a966ba63619f13b2e67b7338"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmStreamWriteLine</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmStreamWriteLineP9AvmStreamP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes a line of text from an AvmStream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The AvmStream instance. </p></li>
+<li><p><strong>string</strong> – The AvmString to write.s </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">self</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">string</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the IO operation. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="path.html" class="btn btn-neutral float-right" title="path.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="file.html" class="btn btn-neutral float-left" title="file.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>file.h &mdash; avium 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
+        <script src="static/jquery.js"></script>
+        <script src="static/underscore.js"></script>
+        <script src="static/doctools.js"></script>
+    
+    <script type="text/javascript" src="static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="io.h" href="io.html" />
+    <link rel="prev" title="core.h" href="core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> avium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Files:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">codegen.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">core.h</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">file.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">path.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflect.html">reflect.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">string.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">testing.h</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeinfo.html">typeinfo.h</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">avium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>file.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/file.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="file-h">
+<span id="file"></span><h1>file.h<a class="headerlink" href="#file-h" title="Permalink to this headline">¶</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv413AvmFileAccess">
+<span id="_CPPv313AvmFileAccess"></span><span id="_CPPv213AvmFileAccess"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67be"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileAccess</span></span></span><a class="headerlink" href="#_CPPv413AvmFileAccess" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines the mode that a file will be opened with. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmFileAccess14FileAccessReadE">
+<span id="_CPPv3N13AvmFileAccess14FileAccessReadE"></span><span id="_CPPv2N13AvmFileAccess14FileAccessReadE"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67bea3db078561d95d83e2d3df04d7aaa8b5a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FileAccessRead</span></span></span><a class="headerlink" href="#_CPPv4N13AvmFileAccess14FileAccessReadE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmFileAccess15FileAccessWriteE">
+<span id="_CPPv3N13AvmFileAccess15FileAccessWriteE"></span><span id="_CPPv2N13AvmFileAccess15FileAccessWriteE"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67bea2197d9b4b45418fc29561d0b225abb1b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FileAccessWrite</span></span></span><a class="headerlink" href="#_CPPv4N13AvmFileAccess15FileAccessWriteE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmFileAccess16FileAccessAppendE">
+<span id="_CPPv3N13AvmFileAccess16FileAccessAppendE"></span><span id="_CPPv2N13AvmFileAccess16FileAccessAppendE"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67bea2be0f9fcf4a8793828622f4cf908b91c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FileAccessAppend</span></span></span><a class="headerlink" href="#_CPPv4N13AvmFileAccess16FileAccessAppendE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmFileAccess19FileAccessReadWriteE">
+<span id="_CPPv3N13AvmFileAccess19FileAccessReadWriteE"></span><span id="_CPPv2N13AvmFileAccess19FileAccessReadWriteE"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67bea0ca1734973bcac0ee479a2ec7e7f06e3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FileAccessReadWrite</span></span></span><a class="headerlink" href="#_CPPv4N13AvmFileAccess19FileAccessReadWriteE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13AvmFileAccess20FileAccessReadAppendE">
+<span id="_CPPv3N13AvmFileAccess20FileAccessReadAppendE"></span><span id="_CPPv2N13AvmFileAccess20FileAccessReadAppendE"></span><span class="target" id="file_8h_1a0d8c759d7655ebafacc761af7a2a67bea568e7f56007df53463bdf8bcf7fbcb3a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FileAccessReadAppend</span></span></span><a class="headerlink" href="#_CPPv4N13AvmFileAccess20FileAccessReadAppendE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411AvmFileOpen3str13AvmFileAccessPP8AvmError">
+<span id="_CPPv311AvmFileOpen3str13AvmFileAccessPP8AvmError"></span><span id="_CPPv211AvmFileOpen3str13AvmFileAccessPP8AvmError"></span><span id="AvmFileOpen__str.AvmFileAccess.AvmErrorPP"></span><span class="target" id="file_8h_1aca3a517f990b03d099fa60d04bc347f6"></span><span class="n"><span class="pre">AvmStream</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileOpen</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <a class="reference internal" href="#_CPPv413AvmFileAccess" title="AvmFileAccess"><span class="n"><span class="pre">AvmFileAccess</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">access</span></span>, <span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411AvmFileOpen3str13AvmFileAccessPP8AvmError" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmFileExists3str">
+<span id="_CPPv313AvmFileExists3str"></span><span id="_CPPv213AvmFileExists3str"></span><span id="AvmFileExists__str"></span><span class="target" id="file_8h_1a638067d450360ffd2a00ad81e4f67b20"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileExists</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmFileExists3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines whether a file is accessible. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path to the file. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the file is accessible, otherwise false. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413AvmFileDelete3str">
+<span id="_CPPv313AvmFileDelete3str"></span><span id="_CPPv213AvmFileDelete3str"></span><span id="AvmFileDelete__str"></span><span class="target" id="file_8h_1a2a1f2c0ca26c3367d9119fc269f29f37"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileDelete</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413AvmFileDelete3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Deletes a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path to the file to delete. </p>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411AvmFileMove3str3str">
+<span id="_CPPv311AvmFileMove3str3str"></span><span id="_CPPv211AvmFileMove3str3str"></span><span id="AvmFileMove__str.str"></span><span class="target" id="file_8h_1adbb576ee6e54391b0d47b856385aeb50"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileMove</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">destination</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411AvmFileMove3str3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Moves file to a different location. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – The path to the file to move. </p></li>
+<li><p><strong>destination</strong> – The path to the destination. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">source</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">destination</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411AvmFileCopy3str3str">
+<span id="_CPPv311AvmFileCopy3str3str"></span><span id="_CPPv211AvmFileCopy3str3str"></span><span id="AvmFileCopy__str.str"></span><span class="target" id="file_8h_1a4308eecd0c6f3866028752432290c8e3"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileCopy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">destination</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411AvmFileCopy3str3str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copies a file to a different location. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – The path to the file to copy. </p></li>
+<li><p><strong>destination</strong> – The path to the destination. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">source</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">destination</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414AvmFileReadAll3str6size_tA_4byte">
+<span id="_CPPv314AvmFileReadAll3str6size_tA_4byte"></span><span id="_CPPv214AvmFileReadAll3str6size_tA_4byte"></span><span id="AvmFileReadAll__str.s.byteA"></span><span class="target" id="file_8h_1a63fa277b6a75f620a54b37985dab8270"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileReadAll</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">buffer</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414AvmFileReadAll3str6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads the contents of a file to a buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – The path to the file. </p></li>
+<li><p><strong>length</strong> – The number of bytes to read. </p></li>
+<li><p><strong>buffer</strong> – The buffer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415AvmFileWriteAll3str6size_tA_4byte">
+<span id="_CPPv315AvmFileWriteAll3str6size_tA_4byte"></span><span id="_CPPv215AvmFileWriteAll3str6size_tA_4byte"></span><span id="AvmFileWriteAll__str.s.byteA"></span><span class="target" id="file_8h_1a96d5024f5167d960acc40772bc098947"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileWriteAll</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">buffer</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415AvmFileWriteAll3str6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reads the contents of a buffer to a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – The path to the file. </p></li>
+<li><p><strong>length</strong> – The number of bytes to write. </p></li>
+<li><p><strong>buffer</strong> – The buffer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416AvmFileAppendAll3str6size_tA_4byte">
+<span id="_CPPv316AvmFileAppendAll3str6size_tA_4byte"></span><span id="_CPPv216AvmFileAppendAll3str6size_tA_4byte"></span><span id="AvmFileAppendAll__str.s.byteA"></span><span class="target" id="file_8h_1a715bd2e9456255919a6b0040bb168446"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileAppendAll</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <a class="reference internal" href="core.html#_CPPv44byte" title="byte"><span class="n"><span class="pre">byte</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">buffer</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416AvmFileAppendAll3str6size_tA_4byte" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Appends the contents of a buffer to a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – The path to the file. </p></li>
+<li><p><strong>length</strong> – The number of bytes to append. </p></li>
+<li><p><strong>buffer</strong> – The buffer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pre</dt>
+<dd class="field-even"><p>Parameter <code class="docutils literal notranslate"><span class="pre">path</span></code> must be not null. </p>
+</dd>
+<dt class="field-odd">Pre</dt>
+<dd class="field-odd"><p>Parameter <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be not null.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Any error that occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418AvmFileReadAllText3strP9AvmString">
+<span id="_CPPv318AvmFileReadAllText3strP9AvmString"></span><span id="_CPPv218AvmFileReadAllText3strP9AvmString"></span><span id="AvmFileReadAllText__str.AvmStringP"></span><span class="target" id="file_8h_1a3a5024ff80c3054242b65847c82e5d78"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileReadAllText</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418AvmFileReadAllText3strP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419AvmFileWriteAllText3strP9AvmString">
+<span id="_CPPv319AvmFileWriteAllText3strP9AvmString"></span><span id="_CPPv219AvmFileWriteAllText3strP9AvmString"></span><span id="AvmFileWriteAllText__str.AvmStringP"></span><span class="target" id="file_8h_1a4f73acc03381aefd2920b2c6cfa174a7"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileWriteAllText</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419AvmFileWriteAllText3strP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420AvmFileAppendAllText3strP9AvmString">
+<span id="_CPPv320AvmFileAppendAllText3strP9AvmString"></span><span id="_CPPv220AvmFileAppendAllText3strP9AvmString"></span><span id="AvmFileAppendAllText__str.AvmStringP"></span><span class="target" id="file_8h_1a287f097b10c2b177cd0e91d54ef7b886"></span><span class="n"><span class="pre">AvmError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">AvmFileAppendAllText</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <a class="reference internal" href="core.html#_CPPv49AvmString" title="AvmString"><span class="n"><span class="pre">AvmString</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420AvmFileAppendAllText3strP9AvmString" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="io.html" class="btn btn-neutral float-right" title="io.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="core.html" class="btn btn-neutral float-left" title="core.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasilis Mylonas.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
