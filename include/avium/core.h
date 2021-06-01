@@ -50,6 +50,7 @@ typedef const char* str;              ///< Primitive read-only string.
 typedef struct AvmType AvmType;
 typedef struct AvmEnum AvmEnum;
 typedef struct AvmString AvmString;
+typedef struct AvmMember AvmMember;
 
 /// @}
 
@@ -241,6 +242,18 @@ AVMAPI object AvmObjectClone(object self);
  * @return The string representation of the object.
  */
 AVMAPI AvmString AvmObjectToString(object self);
+
+/**
+ * @brief Visits a member in an object.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p member must be not null.
+ *
+ * @param self The object instance.
+ * @param member The member to visit.
+ * @return A pointer to the data.
+ */
+AVMAPI void* AvmObjectVisit(object self, const AvmMember* member);
 
 /// @}
 

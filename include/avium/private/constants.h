@@ -61,5 +61,7 @@ static const str MarshallingError =
 static const str SymbolNotPresentError =
     "The requested symbol was not present.";
 static const str TypeNotPresentError = "The requested type was not present.";
+static const str MemberNotPresentError =
+    "The requested member was not present.";
 
 #endif // AVIUM_PRIVATE_CONSTANTS_H

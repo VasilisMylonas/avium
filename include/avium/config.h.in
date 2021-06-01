@@ -81,6 +81,7 @@
 
 #define AVM_TI_NAME(T)  _TI_##T
 #define AVM_VT_NAME(T)  _VT_##T
+#define AVM_MTI_NAME(T) _MTI_##T
 #define AVM_PTI_NAME(F) _PTI_##F
 #define AVM_CTI_NAME(E) _CTI_##E
 

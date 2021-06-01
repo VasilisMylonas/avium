@@ -64,6 +64,13 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
+    if (self == typeid(object) &&
+        (index > (self->_vSize / sizeof(AvmFunction)) ||
+         self->_vPtr[index] == NULL))
+    {
+        throw(AvmErrorNew(VirtualFuncError));
+    }
+
     // TODO!!!
     // BUG: very likely
     if (index < (self->_vSize / sizeof(AvmFunction)))
@@ -72,11 +79,9 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         {
             return self->_vPtr[index];
         }
-
-        return AvmTypeGetFunction(self->_baseType, index);
     }
 
-    throw(AvmErrorNew(VirtualFuncError));
+    return AvmTypeGetFunction(self->_baseType, index);
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
@@ -233,3 +238,84 @@ static AvmString AvmEnumToString(const AvmEnum* self)
 }
 
 AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] = (AvmFunction)AvmEnumToString});
+
+const AvmMember* AvmTypeGetMemberAt(const AvmType* self, uint index)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    if (index < self->_mSize / sizeof(AvmMember))
+    {
+        return &self->_mPtr[index];
+    }
+
+    throw(AvmErrorNew(MemberNotPresentError));
+}
+
+const AvmMember* AvmTypeGetMember(const AvmType* self, str name)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(name != NULL);
+    }
+
+    for (uint i = 0; i < (self->_mSize / sizeof(AvmMember)); i++)
+    {
+        if (strcmp(self->_mPtr[i]._name, name) == 0)
+        {
+            return &self->_mPtr[i];
+        }
+    }
+
+    throw(AvmErrorNew(MemberNotPresentError));
+}
+
+uint AvmTypeGetMemberCount(const AvmType* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_mSize / sizeof(AvmMember);
+}
+
+uint AvmMemberGetOffset(const AvmMember* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_offset;
+}
+
+str AvmMemberGetName(const AvmMember* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_name;
+}
+
+static AvmString AvmMemberToString(const AvmMember* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(
+        "member %s (%u bytes offset)", self->_name, self->_offset);
+}
+
+AVM_TYPE(AvmMember,
+         object,
+         {
+             [FnEntryToString] = (AvmFunction)AvmMemberToString,
+         });

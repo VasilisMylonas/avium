@@ -64,6 +64,17 @@ void AvmObjectSurpressFinalizer(object self)
         self, AvmRuntimeFinalize, ALREADY_FINALIZED, NULL, NULL);
 }
 
+void* AvmObjectVisit(object self, const AvmMember* member)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(member != NULL);
+    }
+
+    return ((byte*)self) + member->_offset;
+}
+
 //
 // Virtual calls.
 //
@@ -590,7 +601,7 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     }
     else if (instanceof (object, context._thrownObject))
     {
-        object e = __AvmRuntimePopThrowContext();
+        object e = __AvmRuntimePopThrowContext()->_thrownObject;
         AvmErrorf(UNHANDLED_THROW_STR, e, e, &context._location);
         return EXIT_FAILURE;
     }

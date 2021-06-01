@@ -44,13 +44,43 @@
         ._size = sizeof(T),                                                    \
     }
 
+#define AVM_TYPE_EX(T, B, ...)                                                 \
+    static AvmFunction AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
+    const AvmType AVM_TI_NAME(T) = {                                           \
+        ._type = typeid(AvmType),                                              \
+        ._vPtr = AVM_VT_NAME(T),                                               \
+        ._name = #T,                                                           \
+        ._baseType = typeid(B),                                                \
+        ._vSize = sizeof(AVM_VT_NAME(T)),                                      \
+        ._size = sizeof(T),                                                    \
+        ._mSize = sizeof(AVM_MTI_NAME(T)),                                     \
+        ._mPtr = AVM_MTI_NAME(T),                                              \
+    }
+
 /// A type containing information about an object.
 AVM_CLASS(AvmType, object, {
     const AvmType* _baseType;
     str _name;
     uint _size;
-    uint _vSize;
+    ushort _vSize;
+    ushort _mSize;
     AvmFunction* _vPtr;
+    const AvmMember* _mPtr;
+});
+
+#define AVM_MEMBER(P, T, member)                                               \
+    {                                                                          \
+        ._type = typeid(AvmMember), ._name = #member,                          \
+        ._offset = offsetof(P, member), ._memberType = typeid(T),              \
+    }
+
+#define AVM_MEMBERS(T, ...)                                                    \
+    static const AvmMember AVM_MTI_NAME(T)[] = __VA_ARGS__
+
+AVM_CLASS(AvmMember, object, {
+    const AvmType* _memberType;
+    str _name;
+    uint _offset;
 });
 
 #define AVM_ENUM_MEMBER(V)                                                     \
@@ -96,11 +126,12 @@ AVM_ENUM(AvmFnEntry,
              FnEntryToString,     ///< The AvmObjectToString entry.
              FnEntryClone,        ///< The AvmObjectClone entry.
              FnEntryEquals,       ///< The AvmObjectEquals entry.
-             FnEntryRead = 16,    ///< The AvmStreamRead entry.
-             FnEntryWrite,        ///< The AvmStreamWrite entry.
-             FnEntrySeek,         ///< The AvmStreamSeek entry.
-             FnEntryFlush,        ///< The AvmStreamFlush entry.
-             FnEntryGetPosition,  ///< The AvmStreamPosition entry.
+
+             FnEntryRead = 16,   ///< The AvmStreamRead entry.
+             FnEntryWrite,       ///< The AvmStreamWrite entry.
+             FnEntrySeek,        ///< The AvmStreamSeek entry.
+             FnEntryFlush,       ///< The AvmStreamFlush entry.
+             FnEntryGetPosition, ///< The AvmStreamPosition entry.
 
              FnEntryGetLength = 12,
              FnEntryGetCapacity,
@@ -186,6 +217,12 @@ AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
  * @return true if the type has the specified type as a base, otherwise false.
  */
 AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
+
+AVMAPI uint AvmTypeGetMemberCount(const AvmType* self);
+AVMAPI const AvmMember* AvmTypeGetMemberAt(const AvmType* self, uint index);
+AVMAPI const AvmMember* AvmTypeGetMember(const AvmType* self, str name);
+AVMAPI uint AvmMemberGetOffset(const AvmMember* self);
+AVMAPI str AvmMemberGetName(const AvmMember* self);
 
 /**
  * @brief Constructs an object from an AvmType instance.
