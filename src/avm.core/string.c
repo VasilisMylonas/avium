@@ -615,7 +615,6 @@ void AvmStringPushStr(AvmString* self, str contents)
         assert(self->_capacity >= length);
         assert(self->_length >= length);
         assert(self->_buffer != NULL);
-        assert(self->_buffer[self->_length - 1] == contents[length - 1]);
     }
 }
 
@@ -1334,7 +1333,12 @@ static void ParseStr(uint* index, char* buffer, char* ptr, uint capacity)
     uint start = *index;
     SkipWord(buffer, index);
 
-    uint length = *index - start;
+    uint length = (*index) - start;
+
+    if (length == 0)
+    {
+        return;
+    }
 
     memcpy(ptr, &buffer[start], length);
 

@@ -7,6 +7,9 @@
 #include <errno.h>
 #include <stdio.h>
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #ifdef AVM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <io.h>
@@ -16,8 +19,6 @@
 #define stat   _stat
 #define access _access
 #else
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 #endif
 

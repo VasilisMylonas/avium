@@ -582,27 +582,16 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
-    // TODO: Clean this up a bit.
-    AvmThrowContext __avmThrownContext;
-    __AvmRuntimePushThrowContext(&__avmThrownContext);
-    for (uint __avmTLC = 0; __avmTLC < 2; __avmTLC++)
-        if (__avmTLC == 1)
-        {
-            if (__AvmRuntimeGetThrowContext()->_thrownObject == NULL)
-            {
-                __AvmRuntimePopThrowContext();
-                break;
-            }
-            AvmRuntimeThrow(__AvmRuntimeGetThrowContext()->_thrownObject,
-                            __AvmRuntimePopThrowContext()->_location);
-        }
-        else if (setjmp(__AvmRuntimeGetThrowContext()->_jumpBuffer) == 0)
-        {
-            entry();
-        }
-    catch (object, e)
+    AvmThrowContext context;
+    __AvmRuntimePushThrowContext(&context);
+    if (setjmp(context._jumpBuffer) == 0)
     {
-        AvmErrorf(UNHANDLED_THROW_STR, e, e, &__avmThrownContext._location);
+        entry();
+    }
+    else if (instanceof (object, context._thrownObject))
+    {
+        object e = __AvmRuntimePopThrowContext();
+        AvmErrorf(UNHANDLED_THROW_STR, e, e, &context._location);
         return EXIT_FAILURE;
     }
 
