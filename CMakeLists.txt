@@ -35,7 +35,6 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     add_compile_options(/W4)
-    add_compile_options(/WX)
 
     # Disable silly warnings.
     add_compile_options(/wd4710) # Function not inlined.
@@ -55,6 +54,7 @@ if(MSVC)
     add_compile_options(/wd4232) # Address of dllimport ... is not static, identity not guaranteed.
     add_compile_options(/wd4273) # TODO: Temporary
     add_compile_options(/wd4100)
+
 else()
     if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
         add_compile_options(-fprofile-arcs -ftest-coverage)
