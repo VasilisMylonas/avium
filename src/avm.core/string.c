@@ -1182,6 +1182,29 @@ void AvmStringPushValue(AvmString* self, object value)
     AvmStringPushString(self, &temp);
 }
 
+void AvmStringPushMembers(AvmString* self, object o)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(o != NULL);
+    }
+
+    const AvmType* type = AvmObjectGetType(o);
+    uint count = AvmTypeGetMemberCount(type);
+
+    AvmString s = AvmStringFormat("class %T\n{\n", o);
+    AvmStringPushString(self, &s);
+    for (uint i = 0; i < count; i++)
+    {
+        const AvmMember* member = AvmTypeGetMemberAt(type, i);
+        s = AvmStringFormat(
+            "    %s %s;\n", member->_memberType->_name, member->_name);
+        AvmStringPushString(self, &s);
+    }
+    AvmStringPushStr(self, "};");
+}
+
 //
 // AvmStringFormat, AvmStringFormatV
 //
@@ -1244,6 +1267,9 @@ static void Format(char c, AvmString* string, va_list args)
         break;
     case AVM_FMT_VALUE:
         AvmStringPushValue(string, va_arg(args, object));
+        break;
+    case AVM_FMT_MEMBERS:
+        AvmStringPushMembers(string, va_arg(args, object));
         break;
     default:
         AvmStringPushChar(string, c);

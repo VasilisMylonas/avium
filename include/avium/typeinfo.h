@@ -77,6 +77,7 @@ AVM_CLASS(AvmType, object, {
 #define AVM_MEMBERS(T, ...)                                                    \
     static const AvmMember AVM_MTI_NAME(T)[] = __VA_ARGS__
 
+/// Represents a struct member.
 AVM_CLASS(AvmMember, object, {
     const AvmType* _memberType;
     str _name;
@@ -218,21 +219,58 @@ AVMAPI const AvmType* AvmTypeGetBase(const AvmType* self);
  */
 AVMAPI bool AvmTypeInheritsFrom(const AvmType* self, const AvmType* baseType);
 
-AVMAPI uint AvmTypeGetMemberCount(const AvmType* self);
-AVMAPI const AvmMember* AvmTypeGetMemberAt(const AvmType* self, uint index);
-AVMAPI const AvmMember* AvmTypeGetMember(const AvmType* self, str name);
-AVMAPI uint AvmMemberGetOffset(const AvmMember* self);
-AVMAPI str AvmMemberGetName(const AvmMember* self);
-
 /**
- * @brief Constructs an object from an AvmType instance.
+ * @brief Returns the number of members of a type.
  *
  * @pre Parameter @p self must be not null.
  *
  * @param self The AvmType instance.
- * @return The constructed object.
+ * @return The number of members of the type.
  */
-AVMAPI object AvmTypeConstruct(const AvmType* self);
+AVMAPI uint AvmTypeGetMemberCount(const AvmType* self);
+
+/**
+ * @brief Returns the member at the specified index.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmType instance.
+ * @param index The index of the member.
+ * @return The AvmMember instance.
+ */
+AVMAPI const AvmMember* AvmTypeGetMemberAt(const AvmType* self, uint index);
+
+/**
+ * @brief Returns the specified member.
+ *
+ * @pre Parameter @p self must be not null.
+ * @pre Parameter @p name must be not null.
+ *
+ * @param self The AvmType instance.
+ * @param name The name of the member.
+ * @return The AvmMember instance.
+ */
+AVMAPI const AvmMember* AvmTypeGetMember(const AvmType* self, str name);
+
+/**
+ * @brief Returns the offset of the specified member.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmMember instance.
+ * @return The member offset.
+ */
+AVMAPI uint AvmMemberGetOffset(const AvmMember* self);
+
+/**
+ * @brief Returns the name of the specified member.
+ *
+ * @pre Parameter @p self must be not null.
+ *
+ * @param self The AvmMember instance.
+ * @return The member name.
+ */
+AVMAPI str AvmMemberGetName(const AvmMember* self);
 
 /**
  * @brief Returns the name of an enum.

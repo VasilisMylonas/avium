@@ -72,6 +72,7 @@
 #define AVM_FMT_VALUE          'v'
 #define AVM_FMT_TYPE           'T'
 #define AVM_FMT_SIZE           'Z'
+#define AVM_FMT_MEMBERS        'm'
 #define AVM_FMT_TRUE           "true"
 #define AVM_FMT_FALSE          "false"
 #define AVM_FMT_HEX_PREFIX     "0x"

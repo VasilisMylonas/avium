@@ -139,6 +139,7 @@ AVMAPI void AvmStringPushUint(AvmString* self,
                               ulong value,
                               AvmNumericBase numericBase);
 AVMAPI void AvmStringPushValue(AvmString* self, object value);
+AVMAPI void AvmStringPushMembers(AvmString* self, object o);
 
 /**
  * @brief Creates an AvmString from a raw string provided with its length.
