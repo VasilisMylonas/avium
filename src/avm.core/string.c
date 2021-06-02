@@ -1195,6 +1195,12 @@ void AvmStringPushMembers(AvmString* self, object o)
 
     AvmString s = AvmStringFormat("class %T\n{\n", o);
     AvmStringPushString(self, &s);
+
+    if (count == 0)
+    {
+        AvmStringPushStr(self, "    ...\n");
+    }
+
     for (uint i = 0; i < count; i++)
     {
         const AvmMember* member = AvmTypeGetMemberAt(type, i);
@@ -1202,6 +1208,7 @@ void AvmStringPushMembers(AvmString* self, object o)
             "    %s %s;\n", member->_memberType->_name, member->_name);
         AvmStringPushString(self, &s);
     }
+
     AvmStringPushStr(self, "};");
 }
 

@@ -101,10 +101,51 @@ AvmString AvmObjectToString(object self)
 }
 
 //
-// Default implementations.
+// Boxing
 //
 
-static void AvmObjectFinalizeDefault(object self)
+AvmBox AvmRuntimeBoxInt(_long value)
+{
+    return (AvmBox){
+        ._type = typeid(_long),
+        .AsInt = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxFloat(double value)
+{
+    return (AvmBox){
+        ._type = typeid(double),
+        .AsFloat = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxUint(ulong value)
+{
+    return (AvmBox){
+        ._type = typeid(ulong),
+        .AsUint = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxStr(str value)
+{
+    pre
+    {
+        assert(value != NULL);
+    }
+
+    return (AvmBox){
+        ._type = typeid(str),
+        .AsStr = value,
+    };
+}
+
+//
+// Type info for primitive types.
+//
+
+static void objectFinalize(object self)
 {
     pre
     {
@@ -114,7 +155,7 @@ static void AvmObjectFinalizeDefault(object self)
     (void)self;
 }
 
-static bool AvmObjectEqualsDefault(object self, object other)
+static bool objectEquals(object self, object other)
 {
     pre
     {
@@ -126,7 +167,7 @@ static bool AvmObjectEqualsDefault(object self, object other)
     return memcmp(self, other, size) == 0;
 }
 
-static object AvmObjectCloneDefault(object self)
+static object objectClone(object self)
 {
     pre
     {
@@ -139,7 +180,7 @@ static object AvmObjectCloneDefault(object self)
     return memory;
 }
 
-static AvmString AvmObjectToStringDefault(object self)
+static AvmString objectToString(object self)
 {
     pre
     {
@@ -150,30 +191,17 @@ static AvmString AvmObjectToStringDefault(object self)
         OBJECT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
 }
 
-//
-// Type info for primitive types.
-//
-
-AVM_TYPE(object,
-         object,
-         {
-             [FnEntryFinalize] = (AvmFunction)AvmObjectFinalizeDefault,
-             [FnEntryEquals] = (AvmFunction)AvmObjectEqualsDefault,
-             [FnEntryClone] = (AvmFunction)AvmObjectCloneDefault,
-             [FnEntryToString] = (AvmFunction)AvmObjectToStringDefault,
-         });
-
-static AvmString _longToString(const _long* self)
+static AvmString signedToString(const AvmBox* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmStringFromInt(*self);
+    return AvmStringFromInt(self->AsInt);
 }
 
-static bool _longEquals(const _long* self, const _long* other)
+static bool signedEquals(const AvmBox* self, const AvmBox* other)
 {
     pre
     {
@@ -181,41 +209,20 @@ static bool _longEquals(const _long* self, const _long* other)
         assert(other != NULL);
     }
 
-    return *self == *other;
+    return self->AsInt == other->AsInt;
 }
 
-static AvmString intToString(const int* self)
+static AvmString unsignedToString(const AvmBox* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmStringFromInt(*self);
+    return AvmStringFromUint(self->AsUint, NumericBaseDecimal);
 }
 
-static bool intEquals(const int* self, const int* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
-}
-
-static AvmString shortToString(const int* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromInt(*self);
-}
-
-static bool shortEquals(const short* self, const short* other)
+static bool unsignedEquals(const AvmBox* self, const AvmBox* other)
 {
     pre
     {
@@ -223,41 +230,20 @@ static bool shortEquals(const short* self, const short* other)
         assert(other != NULL);
     }
 
-    return *self == *other;
+    return self->AsUint == other->AsUint;
 }
 
-static AvmString charToString(const char* self)
+static AvmString floatToString(const AvmBox* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmStringFromChars(1, self);
+    return AvmStringFromFloat(self->AsFloat);
 }
 
-static bool charEquals(const char* self, const char* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
-}
-
-static AvmString ulongToString(const ulong* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromUint(*self, NumericBaseDecimal);
-}
-
-static bool ulongEquals(const ulong* self, const ulong* other)
+static bool floatEquals(const AvmBox* self, const AvmBox* other)
 {
     pre
     {
@@ -265,136 +251,31 @@ static bool ulongEquals(const ulong* self, const ulong* other)
         assert(other != NULL);
     }
 
-    return *self == *other;
+    return self->AsFloat == other->AsFloat;
 }
 
-static AvmString uintToString(const uint* self)
+static AvmString strToString(const AvmBox* self)
 {
     pre
     {
         assert(self != NULL);
+        assert(self->AsStr != NULL);
     }
 
-    return AvmStringFromUint(*self, NumericBaseDecimal);
+    return AvmStringFrom(self->AsStr);
 }
 
-static bool uintEquals(const uint* self, const uint* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
-}
-
-static AvmString ushortToString(const ushort* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromUint(*self, NumericBaseDecimal);
-}
-
-static bool ushortEquals(const ushort* self, const ushort* other)
+static bool strEquals(const AvmBox* self, const AvmBox* other)
 {
     pre
     {
         assert(self != NULL);
         assert(other != NULL);
+        assert(self->AsStr != NULL);
+        assert(other->AsStr != NULL);
     }
 
-    return *self == *other;
-}
-
-static AvmString byteToString(const byte* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromUint(*self, NumericBaseDecimal);
-}
-
-static bool byteEquals(const byte* self, const byte* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
-}
-
-static AvmString strToString(const str* self)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(*self != NULL);
-    }
-
-    return AvmStringFrom(*self);
-}
-
-static bool strEquals(const str* self, const str* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-        assert(*self != NULL);
-        assert(*other != NULL);
-    }
-
-    return strcmp(*self, *other) == 0;
-}
-
-static AvmString floatToString(const float* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromFloat(*self);
-}
-
-static bool floatEquals(const float* self, const float* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
-}
-
-static AvmString doubleToString(const double* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromFloat(*self);
-}
-
-static bool doubleEquals(const double* self, const double* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return *self == *other;
+    return strcmp(self->AsStr, other->AsStr) == 0;
 }
 
 // For consistency with other primitive types.
@@ -408,60 +289,69 @@ static bool voidEquals()
     return false;
 }
 
+AVM_TYPE(object,
+         object,
+         {
+             [FnEntryFinalize] = (AvmFunction)objectFinalize,
+             [FnEntryEquals] = (AvmFunction)objectEquals,
+             [FnEntryClone] = (AvmFunction)objectClone,
+             [FnEntryToString] = (AvmFunction)objectToString,
+         });
+
 AVM_TYPE(_long,
          object,
          {
-             [FnEntryToString] = (AvmFunction)_longToString,
-             [FnEntryEquals] = (AvmFunction)_longEquals,
+             [FnEntryToString] = (AvmFunction)signedToString,
+             [FnEntryEquals] = (AvmFunction)signedEquals,
          });
 
 AVM_TYPE(ulong,
          object,
          {
-             [FnEntryToString] = (AvmFunction)ulongToString,
-             [FnEntryEquals] = (AvmFunction)ulongEquals,
+             [FnEntryToString] = (AvmFunction)unsignedToString,
+             [FnEntryEquals] = (AvmFunction)unsignedEquals,
          });
 
 AVM_TYPE(int,
          object,
          {
-             [FnEntryToString] = (AvmFunction)intToString,
-             [FnEntryEquals] = (AvmFunction)intEquals,
+             [FnEntryToString] = (AvmFunction)signedToString,
+             [FnEntryEquals] = (AvmFunction)signedEquals,
          });
 
 AVM_TYPE(uint,
          object,
          {
-             [FnEntryToString] = (AvmFunction)uintToString,
-             [FnEntryEquals] = (AvmFunction)uintEquals,
+             [FnEntryToString] = (AvmFunction)unsignedToString,
+             [FnEntryEquals] = (AvmFunction)unsignedEquals,
          });
 
 AVM_TYPE(short,
          object,
          {
-             [FnEntryToString] = (AvmFunction)shortToString,
-             [FnEntryEquals] = (AvmFunction)shortEquals,
+             [FnEntryToString] = (AvmFunction)signedToString,
+             [FnEntryEquals] = (AvmFunction)signedEquals,
          });
 
 AVM_TYPE(ushort,
          object,
          {
-             [FnEntryToString] = (AvmFunction)ushortToString,
-             [FnEntryEquals] = (AvmFunction)ushortEquals,
+             [FnEntryToString] = (AvmFunction)unsignedToString,
+             [FnEntryEquals] = (AvmFunction)unsignedEquals,
          });
 
 AVM_TYPE(char,
          object,
          {
-             [FnEntryToString] = (AvmFunction)charToString,
-             [FnEntryEquals] = (AvmFunction)charEquals,
+             [FnEntryToString] = (AvmFunction)signedToString,
+             [FnEntryEquals] = (AvmFunction)signedEquals,
          });
 
 AVM_TYPE(byte,
          object,
          {
-             [FnEntryToString] = (AvmFunction)byteToString,
-             [FnEntryEquals] = (AvmFunction)byteEquals,
+             [FnEntryToString] = (AvmFunction)unsignedToString,
+             [FnEntryEquals] = (AvmFunction)unsignedEquals,
          });
 
 AVM_TYPE(str,
@@ -481,8 +371,8 @@ AVM_TYPE(float,
 AVM_TYPE(double,
          object,
          {
-             [FnEntryToString] = (AvmFunction)doubleToString,
-             [FnEntryEquals] = (AvmFunction)doubleEquals,
+             [FnEntryToString] = (AvmFunction)floatToString,
+             [FnEntryEquals] = (AvmFunction)floatEquals,
          });
 
 // Because we can't sizeof(void) we have to do this manually.

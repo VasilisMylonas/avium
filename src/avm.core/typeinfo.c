@@ -54,6 +54,13 @@ uint AvmTypeGetSize(const AvmType* self)
         assert(self != NULL);
     }
 
+    // We may be dealling with an AvmBox which has a fake type since it is just
+    // a wrapper.
+    if (self->_size <= sizeof(ulong))
+    {
+        return sizeof(ulong) + sizeof(const AvmType*);
+    }
+
     return self->_size;
 }
 
@@ -64,23 +71,22 @@ AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
         assert(self != NULL);
     }
 
-    if (self == typeid(object) &&
-        (index > (self->_vSize / sizeof(AvmFunction)) ||
-         self->_vPtr[index] == NULL))
+    const uint length = self->_vSize / sizeof(AvmFunction);
+
+    // If the index is valid then simply use that function.
+    if (index < length && self->_vPtr[index] != NULL)
+    {
+        return self->_vPtr[index];
+    }
+
+    // If the type is an object and the index is invalid then that mean that
+    // there is no such function in the inheritance hierarchy.
+    if (self == typeid(object))
     {
         throw(AvmErrorNew(VirtualFuncError));
     }
 
-    // TODO!!!
-    // BUG: very likely
-    if (index < (self->_vSize / sizeof(AvmFunction)))
-    {
-        if (self->_vPtr[index] != NULL || self == typeid(object))
-        {
-            return self->_vPtr[index];
-        }
-    }
-
+    // Otherwise we just keep looking up the chain.
     return AvmTypeGetFunction(self->_baseType, index);
 }
 

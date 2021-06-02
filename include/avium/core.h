@@ -542,6 +542,33 @@ AVMAPI void AvmCopy(object o, size_t size, byte* destination);
  */
 #define va_array(T, N, args) (T*)__AvmRuntimeVaListToArray(args, sizeof(T), N)
 
+AVM_CLASS(AvmBox, object, {
+    union {
+        double AsFloat;
+        ulong AsUint;
+        _long AsInt;
+        str AsStr;
+    };
+});
+
+#define box(x)                                                                 \
+    _Generic((x), char                                                         \
+             : AvmRuntimeBoxInt, short                                         \
+             : AvmRuntimeBoxInt, int                                           \
+             : AvmRuntimeBoxInt, _long                                         \
+             : AvmRuntimeBoxInt, byte                                          \
+             : AvmRuntimeBoxUint, ushort                                       \
+             : AvmRuntimeBoxUint, uint                                         \
+             : AvmRuntimeBoxUint, ulong                                        \
+             : AvmRuntimeBoxUint, float                                        \
+             : AvmRuntimeBoxFloat, double                                      \
+             : AvmRuntimeBoxFloat)(x)
+
+AVMAPI AvmBox AvmRuntimeBoxInt(_long value);
+AVMAPI AvmBox AvmRuntimeBoxFloat(double value);
+AVMAPI AvmBox AvmRuntimeBoxUint(ulong value);
+AVMAPI AvmBox AvmRuntimeBoxStr(str value);
+
 #ifndef DOXYGEN
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
