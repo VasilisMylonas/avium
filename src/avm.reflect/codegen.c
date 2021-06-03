@@ -10,8 +10,7 @@ AvmTypeBuilder* AvmTypeBuilderBasedOn(const AvmType* type)
         assert(type != NULL);
     }
 
-    AvmTypeBuilder* self = AvmAlloc(sizeof(AvmTypeBuilder));
-    self->_type = typeid(AvmTypeBuilder);
+    AvmTypeBuilder* self = AvmObjectNew(typeid(AvmTypeBuilder));
     base->_baseType = type;
     base->_size = AvmTypeGetSize(type);
     base->_vPtr[FnEntryFinalize] = NULL;

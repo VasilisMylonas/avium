@@ -123,7 +123,7 @@ AVM_CLASS(AvmEnum, AvmType, {
 /// Represents an entry on the virtual function table.
 AVM_ENUM(AvmFnEntry,
          {
-             FnEntryFinalize = 0, ///< The destructor entry.
+             FnEntryFinalize = 0, ///< The finalizer entry.
              FnEntryToString,     ///< The AvmObjectToString entry.
              FnEntryClone,        ///< The AvmObjectClone entry.
              FnEntryEquals,       ///< The AvmObjectEquals entry.
@@ -330,7 +330,6 @@ AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
 AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
 #ifndef DOXYGEN
-#define DOXYGEN
 extern const AvmType AVM_TI_NAME(_long);
 extern const AvmType AVM_TI_NAME(ulong);
 extern const AvmType AVM_TI_NAME(int);

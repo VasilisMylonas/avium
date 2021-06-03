@@ -38,6 +38,7 @@ object AvmObjectNew(const AvmType* type)
     object o = AvmAlloc(AvmTypeGetSize(type));
     GC_register_finalizer(o, AvmRuntimeFinalize, AVM_OBJECT, NULL, NULL);
     *(const AvmType**)o = type;
+
     return o;
 }
 
@@ -174,10 +175,10 @@ static object objectClone(object self)
         assert(self != NULL);
     }
 
-    uint size = AvmTypeGetSize(AvmObjectGetType(self));
-    void* memory = AvmAlloc(size);
-    AvmCopy(self, size, (byte*)memory);
-    return memory;
+    const AvmType* type = AvmObjectGetType(self);
+    object o = AvmObjectNew(type);
+    AvmCopy(self, AvmTypeGetSize(type), (byte*)o);
+    return o;
 }
 
 static AvmString objectToString(object self)
@@ -731,8 +732,7 @@ AVM_TYPE(AvmNativeError,
 
 AvmError* AvmErrorFromOSCode(int code)
 {
-    AvmNativeError* e = AvmAlloc(sizeof(AvmNativeError));
-    e->_type = typeid(AvmNativeError);
+    AvmNativeError* e = AvmObjectNew(typeid(AvmNativeError));
     e->_code = code;
     return e;
 }
@@ -766,8 +766,7 @@ AvmError* AvmErrorNew(str message)
         assert(message != NULL);
     }
 
-    AvmDetailedError* e = AvmAlloc(sizeof(AvmDetailedError));
-    e->_type = typeid(AvmDetailedError);
+    AvmDetailedError* e = AvmObjectNew(typeid(AvmDetailedError));
     e->_message = message;
     return e;
 }

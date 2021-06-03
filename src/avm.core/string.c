@@ -56,7 +56,7 @@ static object AvmStringClone(AvmString* self)
     }
 
     AvmString s = AvmStringFrom(self->_buffer);
-    AvmString* ret = AvmAlloc(sizeof(AvmString));
+    AvmString* ret = AvmObjectNew(typeid(AvmString));
     AvmCopy(&s, sizeof(AvmString), (byte*)ret);
     return ret;
 }

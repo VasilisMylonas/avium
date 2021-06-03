@@ -118,8 +118,7 @@ AvmStream* AvmStreamFromHandle(AvmFileHandle handle)
         assert(handle != NULL);
     }
 
-    AvmFileStream* stream = AvmAlloc(sizeof(AvmFileStream));
+    AvmFileStream* stream = AvmObjectNew(typeid(AvmFileStream));
     stream->_handle = handle;
-    stream->_type = typeid(AvmFileStream);
     return (AvmStream*)stream;
 }

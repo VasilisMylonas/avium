@@ -115,9 +115,8 @@ AVM_TYPE(AvmMemoryStream,
 
 AvmStream* AvmStreamFromMemory(size_t capacity)
 {
-    AvmMemoryStream* stream = AvmAlloc(sizeof(AvmMemoryStream));
+    AvmMemoryStream* stream = AvmObjectNew(typeid(AvmMemoryStream));
     stream->_list = AvmArrayListNew(typeid(byte), capacity);
-    stream->_type = typeid(AvmMemoryStream);
     stream->_position = 0;
     return (AvmStream*)stream;
 }
