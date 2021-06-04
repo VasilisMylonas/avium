@@ -325,12 +325,13 @@ AVM_CLASS(AvmRuntime, object, {
     uint _argc;
     str* _argv;
     str _name;
-    AvmThrowContext* _throwContext;
     AvmVersion _version;
 });
 
 /// The entry point function.
 typedef void (*AvmEntryPoint)(void);
+
+typedef byte AvmExitCode;
 
 /**
  * @brief Initializes the Avium runtime and calls into the entry point.
@@ -346,7 +347,7 @@ typedef void (*AvmEntryPoint)(void);
  *
  * @return A status code such as EXIT_SUCCESS or EXIT_FAILURE.
  */
-AVMAPI int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry);
+AVMAPI AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry);
 
 /**
  * @brief Returns the name of the currently running program.
@@ -577,6 +578,7 @@ AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
 AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
+AVMAPI AvmExitCode __AvmRuntimeThreadInit(void*);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

@@ -19,7 +19,8 @@
 #define RUNTIME_STR   "%s v%v"
 #define OBJECT_STR    "%s [%x]"
 #define UNHANDLED_THROW_STR                                                    \
-    "Uncaught thrown object of type %T: %v\nThrown from %v\n"
+    "Uncaught thrown object of type %T: %v\nThrown from %v while on thread "   \
+    "[%x].\n"
 #define AVM_RUNTIME_NAME            "Avium x86_64 Runtime Environment"
 #define BACKTRACE_SEPARATOR         '@'
 #define BACKTRACE_NOT_AVAILABLE_MSG "Backtrace not available."

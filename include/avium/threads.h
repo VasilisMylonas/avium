@@ -3,10 +3,12 @@
 
 #include "avium/core.h"
 
-AVM_CLASS(AvmThread, object, { void* _state; });
+AVM_CLASS(AvmThread, object, {
+    void* _state;
+    AvmThrowContext* _context;
+});
 
-typedef byte AvmExitCode;
-typedef AvmExitCode (*AvmThreadCallback)(object);
+typedef void (*AvmThreadCallback)(object);
 
 AVMAPI AvmThread AvmThreadNew(AvmThreadCallback callback, object value);
 

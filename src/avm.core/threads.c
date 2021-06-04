@@ -3,8 +3,12 @@
 
 #include "avium/threads.h"
 
+#include "avium/private/constants.h"
+#include "avium/private/threads.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
+
+#include <stdlib.h>
 
 #ifdef AVM_WIN32
 
@@ -22,7 +26,12 @@ AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
     AvmThread thread = {
         ._type = typeid(AvmThread),
         ._state = (void*)GC_beginthreadex(
-            NULL, 0, (_beginthreadex_proc_type)callback, value, 0, NULL),
+            NULL,
+            0,
+            (_beginthreadex_proc_type)__AvmRuntimeThreadInit,
+            ThreadStateNew(value, callback),
+            0,
+            NULL),
     };
 
     // Handle errors and throw exceptions.
@@ -67,32 +76,6 @@ AvmExitCode AvmThreadJoin(const AvmThread* self)
     return (AvmExitCode)exitCode;
 }
 
-const AvmThread* AvmThreadCurrent(void)
-{
-    static thread_local AvmThread thread = {
-        ._type = NULL,
-        ._state = NULL,
-    };
-
-    if (thread._type == NULL)
-    {
-        thread._type = typeid(AvmThread);
-        thread._state = (void*)GetCurrentThread();
-    }
-
-    return &t;
-}
-
-never AvmThreadExit(AvmExitCode code)
-{
-    GC_endthreadex(code);
-}
-
-void AvmThreadSleep(uint ms)
-{
-    Sleep(ms);
-}
-
 #else
 
 #include <unistd.h>
@@ -105,8 +88,11 @@ AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
     }
 
     pthread_t t = 0;
-    int result = GC_pthread_create(
-        &t, NULL, (void* (*)(void*))(AvmCallback)callback, value);
+    int result =
+        GC_pthread_create(&t,
+                          NULL,
+                          (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
+                          ThreadStateNew(value, callback));
 
     if (result != 0)
     {
@@ -117,6 +103,7 @@ AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
     return (AvmThread){
         ._type = typeid(AvmThread),
         ._state = (void*)t,
+        ._context = NULL,
     };
 }
 
@@ -138,22 +125,33 @@ AvmExitCode AvmThreadJoin(const AvmThread* self)
     return (AvmExitCode)(ulong)result;
 }
 
+#endif
+
 never AvmThreadExit(AvmExitCode code)
 {
+#ifdef AVM_WIN32
+    GC_endthreadex(code);
+#else
     GC_pthread_exit((void*)(ulong)code);
+#endif
 }
 
-const AvmThread* AvmThreadCurrent(void)
+const AvmThread* AvmThreadGetCurrent(void)
 {
     static thread_local AvmThread thread = {
         ._type = NULL,
         ._state = NULL,
+        ._context = NULL,
     };
 
     if (thread._type == NULL)
     {
         thread._type = typeid(AvmThread);
+#ifdef AVM_WIN32
+        thread._state = (void*)GetCurrentThread();
+#else
         thread._state = (void*)pthread_self();
+#endif
     }
 
     return &thread;
@@ -161,9 +159,11 @@ const AvmThread* AvmThreadCurrent(void)
 
 void AvmThreadSleep(uint ms)
 {
+#ifdef AVM_WIN32
+    Sleep(ms);
+#else
     usleep(ms * 1000);
-}
-
 #endif
+}
 
 AVM_TYPE(AvmThread, object, {[FnEntryFinalize] = NULL});

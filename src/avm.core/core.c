@@ -1,9 +1,12 @@
 #include "avium/core.h"
 
 #include "avium/private/constants.h"
+#include "avium/private/threads.h"
 #include "avium/private/virtual.h"
+
 #include "avium/string.h"
 #include "avium/testing.h"
+#include "avium/threads.h"
 #include "avium/typeinfo.h"
 
 #include <stdio.h>
@@ -472,9 +475,30 @@ AVM_TYPE(AvmRuntime,
              [FnEntryToString] = (AvmCallback)AvmRuntimeToString,
          });
 
-static thread_local AvmRuntime __AvmRuntimeState;
+static AvmRuntime __AvmRuntimeState;
 
-int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
+AvmExitCode __AvmRuntimeThreadInit(void* s)
+{
+    ThreadState* state = s;
+
+    AvmThrowContext context;
+    __AvmRuntimePushThrowContext(&context);
+    if (setjmp(context._jumpBuffer) == 0)
+    {
+        state->callback(state->arg);
+    }
+    else if (instanceof (object, context._thrownObject))
+    {
+        object e = __AvmRuntimePopThrowContext()->_thrownObject;
+        const AvmThread* t = AvmThreadGetCurrent();
+        AvmErrorf(UNHANDLED_THROW_STR, e, e, &context._location, t->_state);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     GC_INIT();
 
@@ -482,24 +506,11 @@ int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     __AvmRuntimeState._argc = (uint)(argc - 1);
     __AvmRuntimeState._argv = argv + 1;
     __AvmRuntimeState._name = AVM_RUNTIME_NAME;
-    __AvmRuntimeState._throwContext = NULL;
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
-    AvmThrowContext context;
-    __AvmRuntimePushThrowContext(&context);
-    if (setjmp(context._jumpBuffer) == 0)
-    {
-        entry();
-    }
-    else if (instanceof (object, context._thrownObject))
-    {
-        object e = __AvmRuntimePopThrowContext()->_thrownObject;
-        AvmErrorf(UNHANDLED_THROW_STR, e, e, &context._location);
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    return __AvmRuntimeThreadInit(
+        ThreadStateNew(NULL, (AvmThreadCallback)entry));
 }
 
 str AvmRuntimeGetProgramName(void)
@@ -559,9 +570,11 @@ never AvmRuntimeThrow(object value, AvmLocation location)
         assert(value != NULL);
     }
 
-    __AvmRuntimeState._throwContext->_location = location;
-    __AvmRuntimeState._throwContext->_thrownObject = value;
-    longjmp(__AvmRuntimeState._throwContext->_jumpBuffer, 1);
+    const AvmThread* t = AvmThreadGetCurrent();
+
+    t->_context->_location = location;
+    t->_context->_thrownObject = value;
+    longjmp(t->_context->_jumpBuffer, 1);
 }
 
 #define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
@@ -781,21 +794,23 @@ AVM_TYPE(AvmThrowContext, object, {[FnEntryFinalize] = NULL});
 
 AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {
-    return __AvmRuntimeState._throwContext;
+    return AvmThreadGetCurrent()->_context;
 }
 
 void __AvmRuntimePushThrowContext(AvmThrowContext* context)
 {
+    AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
     context->_type = typeid(AvmThrowContext);
     context->_thrownObject = NULL;
-    context->_prev = __AvmRuntimeState._throwContext;
-    __AvmRuntimeState._throwContext = context;
+    context->_prev = t->_context;
+    t->_context = context;
 }
 
 AvmThrowContext* __AvmRuntimePopThrowContext(void)
 {
-    AvmThrowContext* retval = __AvmRuntimeState._throwContext;
-    __AvmRuntimeState._throwContext = retval->_prev;
+    AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
+    AvmThrowContext* retval = t->_context;
+    t->_context = retval->_prev;
     return retval;
 }
 
