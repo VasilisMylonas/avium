@@ -114,7 +114,7 @@ AVMAPI const AvmType* AvmModuleGetType(const AvmModule* self, str name);
  * @param name The name of the function.
  * @return The function.
  */
-AVMAPI AvmFunction AvmModuleGetFunction(const AvmModule* self, str name);
+AVMAPI AvmCallback AvmModuleGetFunction(const AvmModule* self, str name);
 
 /**
  * @brief Gets a variable from a module.
@@ -132,7 +132,7 @@ AVM_CLASS(AvmFunctionInfo, object, {
     uint _paramCount;
     const AvmType** _paramTypes;
     const AvmType* _returnType;
-    AvmFunction _function;
+    AvmCallback _function;
     str _name;
 });
 
@@ -143,13 +143,13 @@ AVM_CLASS(AvmFunctionInfo, object, {
         ._paramCount = sizeof(AVM_PTI_NAME(F)) / sizeof(AvmType*),             \
         ._paramTypes = AVM_PTI_NAME(F),                                        \
         ._returnType = typeid(TReturn),                                        \
-        ._function = (AvmFunction)(F),                                         \
+        ._function = (AvmCallback)(F),                                         \
         ._name = #F,                                                           \
     }
 
-AVMAPI const AvmType* AvmFunctionGetReturnType(AvmFunction self);
-AVMAPI const AvmType** AvmFunctionGetParams(AvmFunction self);
-AVMAPI uint AvmFunctionGetParamCount(AvmFunction self);
-AVMAPI str AvmFunctionGetName(AvmFunction self);
+AVMAPI const AvmType* AvmFunctionGetReturnType(AvmCallback self);
+AVMAPI const AvmType** AvmFunctionGetParams(AvmCallback self);
+AVMAPI uint AvmFunctionGetParamCount(AvmCallback self);
+AVMAPI str AvmFunctionGetName(AvmCallback self);
 
 #endif // AVIUM_REFLECT_H

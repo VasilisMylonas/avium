@@ -65,8 +65,8 @@ static AvmModule* AvmModuleLoadImpl(str path)
 AVM_TYPE(AvmModule,
          object,
          {
-             [FnEntryFinalize] = (AvmFunction)AvmModuleUnload,
-             [FnEntryToString] = (AvmFunction)AvmModuleToString,
+             [FnEntryFinalize] = (AvmCallback)AvmModuleUnload,
+             [FnEntryToString] = (AvmCallback)AvmModuleToString,
          });
 
 AvmModule* AvmModuleLoad(str path)
@@ -149,7 +149,7 @@ const AvmType* AvmModuleGetType(const AvmModule* self, str name)
     return type;
 }
 
-AvmFunction AvmModuleGetFunction(const AvmModule* self, str name)
+AvmCallback AvmModuleGetFunction(const AvmModule* self, str name)
 {
     pre
     {
@@ -166,7 +166,7 @@ AvmFunction AvmModuleGetFunction(const AvmModule* self, str name)
 
     // This weird thing is needed because apparently ISO C forbids conversion
     // between void* and void(*)(void).
-    return *((AvmFunction*)&ptr);
+    return *((AvmCallback*)&ptr);
 }
 
 void* AvmModuleGetVariable(const AvmModule* self, str name)
@@ -187,7 +187,7 @@ void* AvmModuleGetVariable(const AvmModule* self, str name)
     return ptr;
 }
 
-static AvmFunctionInfo* AvmFunctionGetInfo(AvmFunction self)
+static AvmFunctionInfo* AvmFunctionGetInfo(AvmCallback self)
 {
     pre
     {
@@ -231,10 +231,10 @@ static AvmString AvmFunctionInfoToString(const AvmFunctionInfo* self)
 AVM_TYPE(AvmFunctionInfo,
          object,
          {
-             [FnEntryToString] = (AvmFunction)AvmFunctionInfoToString,
+             [FnEntryToString] = (AvmCallback)AvmFunctionInfoToString,
          });
 
-const AvmType* AvmFunctionGetReturnType(AvmFunction self)
+const AvmType* AvmFunctionGetReturnType(AvmCallback self)
 {
     pre
     {
@@ -244,7 +244,7 @@ const AvmType* AvmFunctionGetReturnType(AvmFunction self)
     return AvmFunctionGetInfo(self)->_returnType;
 }
 
-const AvmType** AvmFunctionGetParams(AvmFunction self)
+const AvmType** AvmFunctionGetParams(AvmCallback self)
 {
     pre
     {
@@ -254,7 +254,7 @@ const AvmType** AvmFunctionGetParams(AvmFunction self)
     return AvmFunctionGetInfo(self)->_paramTypes;
 }
 
-uint AvmFunctionGetParamCount(AvmFunction self)
+uint AvmFunctionGetParamCount(AvmCallback self)
 {
     pre
     {
@@ -264,7 +264,7 @@ uint AvmFunctionGetParamCount(AvmFunction self)
     return AvmFunctionGetInfo(self)->_paramCount;
 }
 
-str AvmFunctionGetName(AvmFunction self)
+str AvmFunctionGetName(AvmCallback self)
 {
     pre
     {

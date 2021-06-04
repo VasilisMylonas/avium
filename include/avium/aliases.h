@@ -2,7 +2,7 @@
 #define AVIUM_ALIASES_H
 
 // core.h
-#define Function                AvmFunction
+#define Callback                AvmCallback
 #define Type                    AvmType
 #define Enum                    AvmEnum
 #define String                  AvmString

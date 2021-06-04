@@ -44,7 +44,7 @@ typedef unsigned int uint;            ///< Unsigned 32-bit integer type.
 typedef unsigned short ushort;        ///< Unsigned 16-bit integer type.
 typedef unsigned char byte;           ///< Unsigned 8-bit integer type.
 typedef void* object;                 ///< An unknown object type.
-typedef void (*AvmFunction)(void);    ///< An unknown function type.
+typedef void (*AvmCallback)(void);    ///< An unknown function type.
 typedef const char* str;              ///< Primitive read-only string.
 #define weakptr(T) T*                 ///< A weak pointer to a type T.
 typedef struct AvmType AvmType;
@@ -540,7 +540,7 @@ AVMAPI void AvmCopy(object o, size_t size, byte* destination);
  *
  * @return The created array.
  */
-#define va_array(T, N, args) (T*)__AvmRuntimeVaListToArray(args, sizeof(T), N)
+#define va_array(T, N, args) (T*)__AvmRuntimeMarshalVaList(args, sizeof(T), N)
 
 AVM_CLASS(AvmBox, object, {
     union {
@@ -562,7 +562,9 @@ AVM_CLASS(AvmBox, object, {
              : AvmRuntimeBoxUint, ulong                                        \
              : AvmRuntimeBoxUint, float                                        \
              : AvmRuntimeBoxFloat, double                                      \
-             : AvmRuntimeBoxFloat)(x)
+             : AvmRuntimeBoxFloat, str                                         \
+             : AvmRuntimeBoxStr, char*                                         \
+             : AvmRuntimeBoxStr)(x)
 
 AVMAPI AvmBox AvmRuntimeBoxInt(_long value);
 AVMAPI AvmBox AvmRuntimeBoxFloat(double value);

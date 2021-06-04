@@ -64,14 +64,14 @@ uint AvmTypeGetSize(const AvmType* self)
     return self->_size;
 }
 
-AvmFunction AvmTypeGetFunction(const AvmType* self, uint index)
+AvmCallback AvmTypeGetFunction(const AvmType* self, uint index)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    const uint length = self->_vSize / sizeof(AvmFunction);
+    const uint length = self->_vSize / sizeof(AvmCallback);
 
     // If the index is valid then simply use that function.
     if (index < length && self->_vPtr[index] != NULL)
@@ -178,7 +178,7 @@ static AvmString AvmTypeToString(const AvmType* self)
     return AvmStringFormat("class %s (%u bytes)", self->_name, self->_size);
 }
 
-AVM_TYPE(AvmType, object, {[FnEntryToString] = (AvmFunction)AvmTypeToString});
+AVM_TYPE(AvmType, object, {[FnEntryToString] = (AvmCallback)AvmTypeToString});
 
 str AvmEnumGetName(const AvmEnum* self)
 {
@@ -275,7 +275,7 @@ static AvmString AvmEnumToString(const AvmEnum* self)
     return AvmStringFormat("enum %s (%u bytes)", base->_name, base->_size);
 }
 
-AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] = (AvmFunction)AvmEnumToString});
+AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] = (AvmCallback)AvmEnumToString});
 
 uint AvmMemberGetOffset(const AvmMember* self)
 {
@@ -311,5 +311,5 @@ static AvmString AvmMemberToString(const AvmMember* self)
 AVM_TYPE(AvmMember,
          object,
          {
-             [FnEntryToString] = (AvmFunction)AvmMemberToString,
+             [FnEntryToString] = (AvmCallback)AvmMemberToString,
          });

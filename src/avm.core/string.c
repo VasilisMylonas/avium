@@ -64,11 +64,11 @@ static object AvmStringClone(AvmString* self)
 AVM_TYPE(AvmString,
          object,
          {
-             [FnEntryClone] = (AvmFunction)AvmStringClone,
-             [FnEntryToString] = (AvmFunction)AvmStringToString,
-             [FnEntryGetLength] = (AvmFunction)AvmStringGetLength,
-             [FnEntryGetCapacity] = (AvmFunction)AvmStringGetCapacity,
-             [FnEntryEquals] = (AvmFunction)AvmStringEquals,
+             [FnEntryClone] = (AvmCallback)AvmStringClone,
+             [FnEntryToString] = (AvmCallback)AvmStringToString,
+             [FnEntryGetLength] = (AvmCallback)AvmStringGetLength,
+             [FnEntryGetCapacity] = (AvmCallback)AvmStringGetCapacity,
+             [FnEntryEquals] = (AvmCallback)AvmStringEquals,
          });
 
 void AvmStringEnsureCapacity(AvmString* self, uint capacity)

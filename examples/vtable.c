@@ -38,7 +38,8 @@
  * the distance of that point from 0.0. An implementation could be like so:
  */
 
-uint PointDistance(Point* self) {
+uint PointDistance(Point* self)
+{
     return sqrt(pow(self._x, 2) + pow(self._y, 2));
 }
 
@@ -74,9 +75,18 @@ MY_API uint PointDistance(object self);
 
 // These can be marked static.
 
-static uint Point1DDistance(Point1D* self) { ... }
-static uint Point2DDistance(Point2D* self) { ... }
-static uint Point3DDistance(Point3D* self) { ... }
+static uint Point1DDistance(Point1D* self)
+{
+    ...
+}
+static uint Point2DDistance(Point2D* self)
+{
+    ...
+}
+static uint Point3DDistance(Point3D* self)
+{
+    ...
+}
 
 // Because each entry in the VFT is represented by an index, let's reserve one
 // for our function:
@@ -93,18 +103,19 @@ AVM_TYPE(Point1D, object, {[DistanceEntry] = Point2DDistance})
 AVM_TYPE(Point1D, object, {[DistanceEntry] = Point3DDistance})
 
 // Depending on your compiler and/or compile options, you may have to cast the
-// functions to the AvmFunction type:
+// functions to the AvmCallback type:
 
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point1DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point2DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmFunction)Point3DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point1DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point2DDistance})
+AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point3DDistance})
 
 // Typedefing this here is not required but is good for understanding.
 typedef uint (*DistanceFunc)(object);
 
 // In this function we just have to call the DistanceEntry entry in the provided
 // object.
-uint PointDistance(object self) {
+uint PointDistance(object self)
+{
     // There are plans to make this simpler. But for now this how it is done.
 
     const AvmType* type = AvmObjectGetType(self);

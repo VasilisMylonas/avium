@@ -293,93 +293,93 @@ static bool voidEquals()
 AVM_TYPE(object,
          object,
          {
-             [FnEntryFinalize] = (AvmFunction)objectFinalize,
-             [FnEntryEquals] = (AvmFunction)objectEquals,
-             [FnEntryClone] = (AvmFunction)objectClone,
-             [FnEntryToString] = (AvmFunction)objectToString,
+             [FnEntryFinalize] = (AvmCallback)objectFinalize,
+             [FnEntryEquals] = (AvmCallback)objectEquals,
+             [FnEntryClone] = (AvmCallback)objectClone,
+             [FnEntryToString] = (AvmCallback)objectToString,
          });
 
 AVM_TYPE(_long,
          object,
          {
-             [FnEntryToString] = (AvmFunction)signedToString,
-             [FnEntryEquals] = (AvmFunction)signedEquals,
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
          });
 
 AVM_TYPE(ulong,
          object,
          {
-             [FnEntryToString] = (AvmFunction)unsignedToString,
-             [FnEntryEquals] = (AvmFunction)unsignedEquals,
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
          });
 
 AVM_TYPE(int,
          object,
          {
-             [FnEntryToString] = (AvmFunction)signedToString,
-             [FnEntryEquals] = (AvmFunction)signedEquals,
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
          });
 
 AVM_TYPE(uint,
          object,
          {
-             [FnEntryToString] = (AvmFunction)unsignedToString,
-             [FnEntryEquals] = (AvmFunction)unsignedEquals,
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
          });
 
 AVM_TYPE(short,
          object,
          {
-             [FnEntryToString] = (AvmFunction)signedToString,
-             [FnEntryEquals] = (AvmFunction)signedEquals,
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
          });
 
 AVM_TYPE(ushort,
          object,
          {
-             [FnEntryToString] = (AvmFunction)unsignedToString,
-             [FnEntryEquals] = (AvmFunction)unsignedEquals,
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
          });
 
 AVM_TYPE(char,
          object,
          {
-             [FnEntryToString] = (AvmFunction)signedToString,
-             [FnEntryEquals] = (AvmFunction)signedEquals,
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
          });
 
 AVM_TYPE(byte,
          object,
          {
-             [FnEntryToString] = (AvmFunction)unsignedToString,
-             [FnEntryEquals] = (AvmFunction)unsignedEquals,
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
          });
 
 AVM_TYPE(str,
          object,
          {
-             [FnEntryToString] = (AvmFunction)strToString,
-             [FnEntryEquals] = (AvmFunction)strEquals,
+             [FnEntryToString] = (AvmCallback)strToString,
+             [FnEntryEquals] = (AvmCallback)strEquals,
          });
 
 AVM_TYPE(float,
          object,
          {
-             [FnEntryToString] = (AvmFunction)floatToString,
-             [FnEntryEquals] = (AvmFunction)floatEquals,
+             [FnEntryToString] = (AvmCallback)floatToString,
+             [FnEntryEquals] = (AvmCallback)floatEquals,
          });
 
 AVM_TYPE(double,
          object,
          {
-             [FnEntryToString] = (AvmFunction)floatToString,
-             [FnEntryEquals] = (AvmFunction)floatEquals,
+             [FnEntryToString] = (AvmCallback)floatToString,
+             [FnEntryEquals] = (AvmCallback)floatEquals,
          });
 
 // Because we can't sizeof(void) we have to do this manually.
-static AvmFunction AVM_VT_NAME(void)[] = {
-    [FnEntryToString] = (AvmFunction)voidToString,
-    [FnEntryEquals] = (AvmFunction)voidEquals,
+static AvmCallback AVM_VT_NAME(void)[] = {
+    [FnEntryToString] = (AvmCallback)voidToString,
+    [FnEntryEquals] = (AvmCallback)voidEquals,
 };
 
 const AvmType AVM_TI_NAME(void) = {
@@ -407,7 +407,7 @@ static AvmString AvmLocationToString(AvmLocation* self)
 
 AVM_TYPE(AvmLocation,
          object,
-         {[FnEntryToString] = (AvmFunction)AvmLocationToString});
+         {[FnEntryToString] = (AvmCallback)AvmLocationToString});
 
 AvmLocation AvmLocationFrom(str file, uint line, uint column)
 {
@@ -440,7 +440,7 @@ static AvmString AvmVersionToString(AvmVersion* self)
 
 AVM_TYPE(AvmVersion,
          object,
-         {[FnEntryToString] = (AvmFunction)AvmVersionToString});
+         {[FnEntryToString] = (AvmCallback)AvmVersionToString});
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
 {
@@ -469,7 +469,7 @@ static AvmString AvmRuntimeToString(const AvmRuntime* self)
 AVM_TYPE(AvmRuntime,
          object,
          {
-             [FnEntryToString] = (AvmFunction)AvmRuntimeToString,
+             [FnEntryToString] = (AvmCallback)AvmRuntimeToString,
          });
 
 static thread_local AvmRuntime __AvmRuntimeState;
@@ -727,7 +727,7 @@ static AvmString AvmNativeErrorToString(const AvmNativeError* self)
 AVM_TYPE(AvmNativeError,
          object,
          {
-             [FnEntryToString] = (AvmFunction)AvmNativeErrorToString,
+             [FnEntryToString] = (AvmCallback)AvmNativeErrorToString,
          });
 
 AvmError* AvmErrorFromOSCode(int code)
@@ -756,7 +756,7 @@ static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
 AVM_TYPE(AvmDetailedError,
          object,
          {
-             [FnEntryToString] = (AvmFunction)AvmDetailedErrorToString,
+             [FnEntryToString] = (AvmCallback)AvmDetailedErrorToString,
          });
 
 AvmError* AvmErrorNew(str message)

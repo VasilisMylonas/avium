@@ -63,7 +63,7 @@ AVMAPI void AvmTypeBuilderSetName(AvmTypeBuilder* self, str name);
  */
 AVMAPI void AvmTypeBuilderSetVFT(AvmTypeBuilder* self,
                                  uint length,
-                                 AvmFunction vft[]);
+                                 AvmCallback vft[]);
 
 /**
  * @brief Adds a member to an AvmTypeBuilder.

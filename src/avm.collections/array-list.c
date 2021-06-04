@@ -122,7 +122,7 @@ static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
 static void AvmArrayListDropItem(AvmArrayList* self, uint index)
 {
-    AvmFunction fn = AvmTypeGetFunction(self->_itemType, FnEntryFinalize);
+    AvmCallback fn = AvmTypeGetFunction(self->_itemType, FnEntryFinalize);
     object item = AvmArrayListItemAt(self, index);
 
     if (fn != NULL)
@@ -191,13 +191,13 @@ static AvmString AvmArrayListToString(AvmArrayList* self)
 AVM_TYPE(AvmArrayList,
          object,
          {
-             [FnEntryGetLength] = (AvmFunction)AvmArrayListGetLength,
-             [FnEntryGetCapacity] = (AvmFunction)AvmArrayListGetCapacity,
-             [FnEntryGetItemType] = (AvmFunction)AvmArrayListGetItemType,
-             [FnEntryInsert] = (AvmFunction)AvmArrayListInsert,
-             [FnEntryRemove] = (AvmFunction)AvmArrayListRemove,
-             [FnEntryItemAt] = (AvmFunction)AvmArrayListItemAt,
-             [FnEntryToString] = (AvmFunction)AvmArrayListToString,
+             [FnEntryGetLength] = (AvmCallback)AvmArrayListGetLength,
+             [FnEntryGetCapacity] = (AvmCallback)AvmArrayListGetCapacity,
+             [FnEntryGetItemType] = (AvmCallback)AvmArrayListGetItemType,
+             [FnEntryInsert] = (AvmCallback)AvmArrayListInsert,
+             [FnEntryRemove] = (AvmCallback)AvmArrayListRemove,
+             [FnEntryItemAt] = (AvmCallback)AvmArrayListItemAt,
+             [FnEntryToString] = (AvmCallback)AvmArrayListToString,
          });
 
 AvmArrayList AvmArrayListNew(const AvmType* type, uint capacity)

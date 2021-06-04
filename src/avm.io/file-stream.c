@@ -102,13 +102,13 @@ static void AvmFileStreamFinalize(AvmFileStream* self)
 AVM_TYPE(AvmFileStream,
          object,
          {
-             [FnEntryFlush] = (AvmFunction)AvmFileStreamFlush,
-             [FnEntryRead] = (AvmFunction)AvmFileStreamRead,
-             [FnEntryWrite] = (AvmFunction)AvmFileStreamWrite,
-             [FnEntrySeek] = (AvmFunction)AvmFileStreamSeek,
-             [FnEntryGetPosition] = (AvmFunction)AvmFileStreamGetPosition,
-             [FnEntryGetLength] = (AvmFunction)AvmFileStreamGetLength,
-             [FnEntryFinalize] = (AvmFunction)AvmFileStreamFinalize,
+             [FnEntryFlush] = (AvmCallback)AvmFileStreamFlush,
+             [FnEntryRead] = (AvmCallback)AvmFileStreamRead,
+             [FnEntryWrite] = (AvmCallback)AvmFileStreamWrite,
+             [FnEntrySeek] = (AvmCallback)AvmFileStreamSeek,
+             [FnEntryGetPosition] = (AvmCallback)AvmFileStreamGetPosition,
+             [FnEntryGetLength] = (AvmCallback)AvmFileStreamGetLength,
+             [FnEntryFinalize] = (AvmCallback)AvmFileStreamFinalize,
          });
 
 AvmStream* AvmStreamFromHandle(AvmFileHandle handle)

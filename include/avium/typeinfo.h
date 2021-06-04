@@ -34,7 +34,7 @@
  * @param ... The type vtable enclosed in braces ({...})
  */
 #define AVM_TYPE(T, B, ...)                                                    \
-    static AvmFunction AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
+    static AvmCallback AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
     const AvmType AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmType),                                              \
         ._vPtr = AVM_VT_NAME(T),                                               \
@@ -45,7 +45,7 @@
     }
 
 #define AVM_TYPE_EX(T, B, ...)                                                 \
-    static AvmFunction AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
+    static AvmCallback AVM_VT_NAME(T)[] = __VA_ARGS__;                         \
     const AvmType AVM_TI_NAME(T) = {                                           \
         ._type = typeid(AvmType),                                              \
         ._vPtr = AVM_VT_NAME(T),                                               \
@@ -64,7 +64,7 @@ AVM_CLASS(AvmType, object, {
     uint _size;
     ushort _vSize;
     ushort _mSize;
-    AvmFunction* _vPtr;
+    AvmCallback* _vPtr;
     const AvmMember* _mPtr;
 });
 
@@ -195,7 +195,7 @@ AVMAPI uint AvmTypeGetSize(const AvmType* self);
  * @param index The VFT entry.
  * @return The function pointer.
  */
-AVMAPI AvmFunction AvmTypeGetFunction(const AvmType* self, uint index);
+AVMAPI AvmCallback AvmTypeGetFunction(const AvmType* self, uint index);
 
 /**
  * @brief Returns a pointer to the type info for the base type of a type.

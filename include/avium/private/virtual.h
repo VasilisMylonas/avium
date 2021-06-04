@@ -2,7 +2,7 @@
 #define AVIUM_PRIVATE_VIRTUAL_H
 
 #define VIRTUAL_CALL_(TReturn, E, ...)                                         \
-    AvmFunction __virtualFunc =                                                \
+    AvmCallback __virtualFunc =                                                \
         AvmTypeGetFunction(AvmObjectGetType((object)self), E);                 \
     return ((TReturn(*)())__virtualFunc)(__VA_ARGS__);
 

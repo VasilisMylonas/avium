@@ -28,7 +28,7 @@ void AvmTypeBuilderSetName(AvmTypeBuilder* self, str name)
     base->_name = name;
 }
 
-void AvmTypeBuilderSetVFT(AvmTypeBuilder* self, uint length, AvmFunction vft[])
+void AvmTypeBuilderSetVFT(AvmTypeBuilder* self, uint length, AvmCallback vft[])
 {
     pre
     {
@@ -36,7 +36,7 @@ void AvmTypeBuilderSetVFT(AvmTypeBuilder* self, uint length, AvmFunction vft[])
         assert(vft != NULL);
     }
 
-    base->_vSize = length * sizeof(AvmFunction);
+    base->_vSize = length * sizeof(AvmCallback);
     base->_vPtr = vft;
 }
 

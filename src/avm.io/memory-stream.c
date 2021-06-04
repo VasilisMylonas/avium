@@ -104,13 +104,13 @@ static void AvmMemoryStreamFinalize(AvmMemoryStream* self)
 AVM_TYPE(AvmMemoryStream,
          object,
          {
-             [FnEntryFlush] = (AvmFunction)AvmMemoryStreamFlush,
-             [FnEntryRead] = (AvmFunction)AvmMemoryStreamRead,
-             [FnEntryWrite] = (AvmFunction)AvmMemoryStreamWrite,
-             [FnEntrySeek] = (AvmFunction)AvmMemoryStreamSeek,
-             [FnEntryGetPosition] = (AvmFunction)AvmMemoryStreamGetPosition,
-             [FnEntryGetLength] = (AvmFunction)AvmMemoryStreamGetLength,
-             [FnEntryFinalize] = (AvmFunction)AvmMemoryStreamFinalize,
+             [FnEntryFlush] = (AvmCallback)AvmMemoryStreamFlush,
+             [FnEntryRead] = (AvmCallback)AvmMemoryStreamRead,
+             [FnEntryWrite] = (AvmCallback)AvmMemoryStreamWrite,
+             [FnEntrySeek] = (AvmCallback)AvmMemoryStreamSeek,
+             [FnEntryGetPosition] = (AvmCallback)AvmMemoryStreamGetPosition,
+             [FnEntryGetLength] = (AvmCallback)AvmMemoryStreamGetLength,
+             [FnEntryFinalize] = (AvmCallback)AvmMemoryStreamFinalize,
          });
 
 AvmStream* AvmStreamFromMemory(size_t capacity)
