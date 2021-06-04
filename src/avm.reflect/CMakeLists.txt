@@ -1,3 +1,3 @@
-add_library(avm.reflect codegen.c reflect.c callable.c)
+add_library(avm.reflect codegen.c reflect.c)
 
-target_link_libraries(avm.reflect avm.core dl ffi)
+target_link_libraries(avm.reflect avm.core dl)

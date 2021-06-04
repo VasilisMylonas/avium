@@ -16,13 +16,13 @@ void TestModuleHasSymbol()
     assert(!AvmModuleHasSymbol(module, fakeSymbol));
 }
 
-void TestModuleGetFunction()
+void TestModuleGetCallback()
 {
     const AvmModule* module = AvmModuleGetCurrent();
-    const str functionName = "AvmModuleLoad";
-    const AvmFunction function = (AvmFunction)AvmModuleLoad;
+    const str name = "AvmModuleLoad";
+    const AvmCallback callback = (AvmCallback)AvmModuleLoad;
 
-    assert(function == AvmModuleGetFunction(module, functionName));
+    assert(callback == AvmModuleGetCallback(module, name));
 }
 
 void TestModuleGetType()
@@ -58,7 +58,7 @@ void TestModuleGetVariable()
 void main()
 {
     TestModuleHasSymbol();
-    TestModuleGetFunction();
+    TestModuleGetCallback();
     TestModuleGetType();
     TestModuleGetName();
     TestReflectLoadType();
