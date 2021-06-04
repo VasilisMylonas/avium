@@ -313,3 +313,72 @@ AVM_TYPE(AvmMember,
          {
              [FnEntryToString] = (AvmCallback)AvmMemberToString,
          });
+
+const AvmType* AvmFunctionGetReturnType(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_returnType;
+}
+
+const AvmType** AvmFunctionGetParams(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_paramTypes;
+}
+
+uint AvmFunctionGetParamCount(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_paramCount;
+}
+
+str AvmFunctionGetName(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_name;
+}
+
+static AvmString AvmFunctionToString(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    AvmString s = AvmStringNew(self->_paramCount * 4);
+    AvmStringPushStr(&s, "function ");
+    AvmStringPushStr(&s, self->_name);
+    AvmStringPushStr(&s, " (");
+    AvmStringPushUint(&s, self->_paramCount, NumericBaseDecimal);
+    if (self->_paramCount == 1)
+    {
+        AvmStringPushStr(&s, " parameter)");
+    }
+    else
+    {
+        AvmStringPushStr(&s, " parameters)");
+    }
+    return s;
+}
+
+AVM_TYPE(AvmFunction,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)AvmFunctionToString,
+         });

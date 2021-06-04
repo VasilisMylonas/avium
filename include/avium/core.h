@@ -51,6 +51,7 @@ typedef struct AvmType AvmType;
 typedef struct AvmEnum AvmEnum;
 typedef struct AvmString AvmString;
 typedef struct AvmMember AvmMember;
+typedef struct AvmFunction AvmFunction;
 
 /// @}
 

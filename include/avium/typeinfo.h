@@ -120,6 +120,25 @@ AVM_CLASS(AvmEnum, AvmType, {
     } * _cPtr;
 });
 
+#define AVM_FUNCTION_TYPE(F, TReturn, ...)                                     \
+    static const AvmType* AVM_PTI_NAME(F)[] = __VA_ARGS__;                     \
+    const AvmFunction AVM_TI_NAME(F) = {                                       \
+        ._type = typeid(AvmFunction),                                          \
+        ._paramCount = sizeof(AVM_PTI_NAME(F)) / sizeof(AvmType*),             \
+        ._paramTypes = AVM_PTI_NAME(F),                                        \
+        ._returnType = typeid(TReturn),                                        \
+        ._callback = (AvmCallback)(F),                                         \
+        ._name = #F,                                                           \
+    }
+
+AVM_CLASS(AvmFunction, object, {
+    uint _paramCount;
+    const AvmType** _paramTypes;
+    const AvmType* _returnType;
+    AvmCallback _callback;
+    str _name;
+});
+
 /// Represents an entry on the virtual function table.
 AVM_ENUM(AvmFnEntry,
          {
@@ -326,6 +345,11 @@ AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
  * @return The value of the constant.
  */
 AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
+
+AVMAPI const AvmType* AvmFunctionGetReturnType(const AvmFunction* self);
+AVMAPI const AvmType** AvmFunctionGetParams(const AvmFunction* self);
+AVMAPI uint AvmFunctionGetParamCount(const AvmFunction* self);
+AVMAPI str AvmFunctionGetName(const AvmFunction* self);
 
 AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
