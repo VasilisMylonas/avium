@@ -476,6 +476,8 @@ static thread_local AvmRuntime __AvmRuntimeState;
 
 int AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
+    GC_INIT();
+
     __AvmRuntimeState._type = typeid(AvmRuntime);
     __AvmRuntimeState._argc = (uint)(argc - 1);
     __AvmRuntimeState._argv = argv + 1;
