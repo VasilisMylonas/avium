@@ -53,7 +53,7 @@
 #define FnEntry          AvmFnEntry
 #define TypeGetName      AvmTypeGetName
 #define TypeGetSize      AvmTypeGetSize
-#define TypeGetFunction  AvmTypeGetFunction
+#define TypeGetCallback  AvmTypeGetCallback
 #define TypeGetBase      AvmTypeGetBase
 #define TypeInheritsFrom AvmTypeInheritsFrom
 #define TypeConstruct    AvmTypeConstruct

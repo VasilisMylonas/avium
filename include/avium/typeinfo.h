@@ -193,9 +193,9 @@ AVMAPI uint AvmTypeGetSize(const AvmType* self);
  *
  * @param self The AvmType instance.
  * @param index The VFT entry.
- * @return The function pointer.
+ * @return The callback.
  */
-AVMAPI AvmCallback AvmTypeGetFunction(const AvmType* self, uint index);
+AVMAPI AvmCallback AvmTypeGetCallback(const AvmType* self, uint index);
 
 /**
  * @brief Returns a pointer to the type info for the base type of a type.

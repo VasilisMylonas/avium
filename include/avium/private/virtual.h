@@ -3,7 +3,7 @@
 
 #define VIRTUAL_CALL_(TReturn, E, ...)                                         \
     AvmCallback __virtualFunc =                                                \
-        AvmTypeGetFunction(AvmObjectGetType((object)self), E);                 \
+        AvmTypeGetCallback(AvmObjectGetType((object)self), E);                 \
     return ((TReturn(*)())__virtualFunc)(__VA_ARGS__);
 
 #ifdef AVM_GNU

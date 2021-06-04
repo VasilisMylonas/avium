@@ -149,7 +149,7 @@ const AvmType* AvmModuleGetType(const AvmModule* self, str name)
     return type;
 }
 
-AvmCallback AvmModuleGetFunction(const AvmModule* self, str name)
+AvmCallback AvmModuleGetCallback(const AvmModule* self, str name)
 {
     pre
     {
@@ -187,7 +187,18 @@ void* AvmModuleGetVariable(const AvmModule* self, str name)
     return ptr;
 }
 
-static AvmFunctionInfo* AvmFunctionGetInfo(AvmCallback self)
+const AvmFunction* AvmFunctionFromName(str name)
+{
+    pre
+    {
+        assert(name != NULL);
+    }
+
+    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, name);
+    return AvmModuleGetVariable(AvmModuleGetCurrent(), AvmStringToStr(&symbol));
+}
+
+const AvmFunction* AvmFunctionFromCallback(AvmCallback self)
 {
     pre
     {
@@ -201,11 +212,10 @@ static AvmFunctionInfo* AvmFunctionGetInfo(AvmCallback self)
         throw(AvmErrorNew("TODO"));
     }
 
-    AvmString symbol = AvmStringFormat(TYPE_SYMBOL_STR, info.dli_sname);
-    return AvmModuleGetVariable(AvmModuleGetCurrent(), AvmStringToStr(&symbol));
+    return AvmFunctionFromName(info.dli_sname);
 }
 
-static AvmString AvmFunctionInfoToString(const AvmFunctionInfo* self)
+static AvmString AvmFunctionToString(const AvmFunction* self)
 {
     pre
     {
@@ -228,48 +238,48 @@ static AvmString AvmFunctionInfoToString(const AvmFunctionInfo* self)
     return s;
 }
 
-AVM_TYPE(AvmFunctionInfo,
+AVM_TYPE(AvmFunction,
          object,
          {
-             [FnEntryToString] = (AvmCallback)AvmFunctionInfoToString,
+             [FnEntryToString] = (AvmCallback)AvmFunctionToString,
          });
 
-const AvmType* AvmFunctionGetReturnType(AvmCallback self)
+const AvmType* AvmFunctionGetReturnType(const AvmFunction* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmFunctionGetInfo(self)->_returnType;
+    return self->_returnType;
 }
 
-const AvmType** AvmFunctionGetParams(AvmCallback self)
+const AvmType** AvmFunctionGetParams(const AvmFunction* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmFunctionGetInfo(self)->_paramTypes;
+    return self->_paramTypes;
 }
 
-uint AvmFunctionGetParamCount(AvmCallback self)
+uint AvmFunctionGetParamCount(const AvmFunction* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmFunctionGetInfo(self)->_paramCount;
+    return self->_paramCount;
 }
 
-str AvmFunctionGetName(AvmCallback self)
+str AvmFunctionGetName(const AvmFunction* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmFunctionGetInfo(self)->_name;
+    return self->_name;
 }

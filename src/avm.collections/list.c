@@ -70,7 +70,7 @@ bool AvmListContains(const AvmList* self, object value)
 
 uint AvmListIndexOf(const AvmList* self, object value)
 {
-    bool (*func)(object, object) = (bool (*)(object, object))AvmTypeGetFunction(
+    bool (*func)(object, object) = (bool (*)(object, object))AvmTypeGetCallback(
         AvmListGetItemType(self), FnEntryEquals);
 
     const uint length = AvmListGetLength(self);

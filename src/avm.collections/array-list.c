@@ -122,7 +122,7 @@ static void AvmArrayListInsert(AvmArrayList* self, uint index, object value)
 
 static void AvmArrayListDropItem(AvmArrayList* self, uint index)
 {
-    AvmCallback fn = AvmTypeGetFunction(self->_itemType, FnEntryFinalize);
+    AvmCallback fn = AvmTypeGetCallback(self->_itemType, FnEntryFinalize);
     object item = AvmArrayListItemAt(self, index);
 
     if (fn != NULL)
@@ -173,7 +173,7 @@ static AvmString AvmArrayListToString(AvmArrayList* self)
     {
         object item = AvmArrayListItemAt(self, i);
 
-        AvmString (*func)(object) = (AvmString(*)(object))AvmTypeGetFunction(
+        AvmString (*func)(object) = (AvmString(*)(object))AvmTypeGetCallback(
             self->_itemType, FnEntryToString);
 
         AvmString temp = func(item);

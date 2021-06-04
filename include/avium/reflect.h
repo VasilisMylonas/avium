@@ -105,16 +105,16 @@ AVMAPI bool AvmModuleHasSymbol(const AvmModule* self, str name);
 AVMAPI const AvmType* AvmModuleGetType(const AvmModule* self, str name);
 
 /**
- * @brief Gets a function from a module.
+ * @brief Gets a callback from a module.
  *
  * @pre Parameter @p self must be not null.
  * @pre Parameter @p name must be not null.
  *
  * @param self The AvmModule instance.
- * @param name The name of the function.
- * @return The function.
+ * @param name The name of the callback.
+ * @return The callback.
  */
-AVMAPI AvmCallback AvmModuleGetFunction(const AvmModule* self, str name);
+AVMAPI AvmCallback AvmModuleGetCallback(const AvmModule* self, str name);
 
 /**
  * @brief Gets a variable from a module.
@@ -128,28 +128,31 @@ AVMAPI AvmCallback AvmModuleGetFunction(const AvmModule* self, str name);
  */
 AVMAPI void* AvmModuleGetVariable(const AvmModule* self, str name);
 
-AVM_CLASS(AvmFunctionInfo, object, {
+AVM_CLASS(AvmFunction, object, {
     uint _paramCount;
     const AvmType** _paramTypes;
     const AvmType* _returnType;
-    AvmCallback _function;
+    AvmCallback _callback;
     str _name;
 });
 
+AVMAPI const AvmFunction* AvmFunctionFromCallback(AvmCallback self);
+AVMAPI const AvmFunction* AvmFunctionFromName(str name);
+
 #define AVM_FUNCTION(F, TReturn, ...)                                          \
     static const AvmType* AVM_PTI_NAME(F)[] = __VA_ARGS__;                     \
-    const AvmFunctionInfo AVM_TI_NAME(F) = {                                   \
-        ._type = typeid(AvmFunctionInfo),                                      \
+    const AvmFunction AVM_TI_NAME(F) = {                                       \
+        ._type = typeid(AvmFunction),                                          \
         ._paramCount = sizeof(AVM_PTI_NAME(F)) / sizeof(AvmType*),             \
         ._paramTypes = AVM_PTI_NAME(F),                                        \
         ._returnType = typeid(TReturn),                                        \
-        ._function = (AvmCallback)(F),                                         \
+        ._callback = (AvmCallback)(F),                                         \
         ._name = #F,                                                           \
     }
 
-AVMAPI const AvmType* AvmFunctionGetReturnType(AvmCallback self);
-AVMAPI const AvmType** AvmFunctionGetParams(AvmCallback self);
-AVMAPI uint AvmFunctionGetParamCount(AvmCallback self);
-AVMAPI str AvmFunctionGetName(AvmCallback self);
+AVMAPI const AvmType* AvmFunctionGetReturnType(const AvmFunction* self);
+AVMAPI const AvmType** AvmFunctionGetParams(const AvmFunction* self);
+AVMAPI uint AvmFunctionGetParamCount(const AvmFunction* self);
+AVMAPI str AvmFunctionGetName(const AvmFunction* self);
 
 #endif // AVIUM_REFLECT_H

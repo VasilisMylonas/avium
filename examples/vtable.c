@@ -47,7 +47,7 @@ uint PointDistance(Point* self)
  * And this would work just fine for our situation.
  *
  * But this only works for 2D points. What if we had a 3D point? We would have
- * to write a new class an create new function (Point3DDistance?). Because the
+ * to write a new class and create new function (Point3DDistance?). Because the
  * point distance operation can work for 1D, 2D and 3D points. It would be nice
  * to have 1 public interface that works with all of them. Let's see how we can
  * do that.
@@ -119,7 +119,7 @@ uint PointDistance(object self)
     // There are plans to make this simpler. But for now this how it is done.
 
     const AvmType* type = AvmObjectGetType(self);
-    return ((DistanceFunc)AvmTypeGetFunction(type, DistanceEntry))(self);
+    return ((DistanceFunc)AvmTypeGetCallback(type, DistanceEntry))(self);
 }
 
 /*

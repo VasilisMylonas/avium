@@ -64,7 +64,7 @@ uint AvmTypeGetSize(const AvmType* self)
     return self->_size;
 }
 
-AvmCallback AvmTypeGetFunction(const AvmType* self, uint index)
+AvmCallback AvmTypeGetCallback(const AvmType* self, uint index)
 {
     pre
     {
@@ -73,21 +73,21 @@ AvmCallback AvmTypeGetFunction(const AvmType* self, uint index)
 
     const uint length = self->_vSize / sizeof(AvmCallback);
 
-    // If the index is valid then simply use that function.
+    // If the index is valid then simply use that callback.
     if (index < length && self->_vPtr[index] != NULL)
     {
         return self->_vPtr[index];
     }
 
     // If the type is an object and the index is invalid then that mean that
-    // there is no such function in the inheritance hierarchy.
+    // there is no such callback in the inheritance hierarchy.
     if (self == typeid(object))
     {
         throw(AvmErrorNew(VirtualFuncError));
     }
 
     // Otherwise we just keep looking up the chain.
-    return AvmTypeGetFunction(self->_baseType, index);
+    return AvmTypeGetCallback(self->_baseType, index);
 }
 
 const AvmType* AvmTypeGetBase(const AvmType* self)
