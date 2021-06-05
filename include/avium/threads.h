@@ -8,6 +8,18 @@ AVM_CLASS(AvmThread, object, {
     AvmThrowContext* _context;
 });
 
+#ifndef AVM_WIN32
+AVM_CLASS(AvmMutex, object, { void* _mutex; });
+
+AVMAPI AvmMutex AvmMutexNew();
+AVMAPI void AvmMutexLock(const AvmMutex* self);
+AVMAPI void AvmMutexUnlock(const AvmMutex* self);
+
+#define lock(mutex)                                                            \
+    AvmMutexLock(&mutex);                                                      \
+    for (uint i = 0; i < 1; i++, AvmMutexUnlock(&mutex))
+#endif
+
 typedef void (*AvmThreadCallback)(object);
 
 AVMAPI AvmThread AvmThreadNew(AvmThreadCallback callback, object value);

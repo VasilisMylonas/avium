@@ -8,6 +8,7 @@
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
+#include <errno.h>
 #include <stdlib.h>
 
 #ifdef AVM_WIN32
@@ -167,3 +168,55 @@ void AvmThreadSleep(uint ms)
 }
 
 AVM_TYPE(AvmThread, object, {[FnEntryFinalize] = NULL});
+
+#ifndef AVM_WIN32
+AVM_TYPE(AvmMutex, object, {[FnEntryFinalize] = NULL});
+
+AvmMutex AvmMutexNew()
+{
+    // TODO: Register finalizer.
+    pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
+
+    int result = pthread_mutex_init(mutex, NULL);
+
+    if (result != 0)
+    {
+        throw(AvmErrorFromOSCode(result));
+    }
+
+    return (AvmMutex){
+        ._type = typeid(AvmMutex),
+        ._mutex = mutex,
+    };
+}
+
+void AvmMutexLock(const AvmMutex* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    int result = pthread_mutex_lock(self->_mutex);
+
+    if (result != 0)
+    {
+        throw(AvmErrorFromOSCode(result));
+    }
+}
+
+void AvmMutexUnlock(const AvmMutex* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    int result = pthread_mutex_unlock(self->_mutex);
+
+    if (result != 0)
+    {
+        throw(AvmErrorFromOSCode(result));
+    }
+}
+#endif

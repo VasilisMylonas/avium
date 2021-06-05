@@ -38,7 +38,7 @@ void TestListPush()
     assert_eq(AvmListIndexOf(&arrayList, &item2), 4);
 }
 
-void main()
+void Main()
 {
     TestListPush();
 }

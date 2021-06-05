@@ -68,7 +68,7 @@ void TestPathGetParent()
     assert(AvmObjectEquals(&name4, &expected3_4));
 }
 
-void main()
+void Main()
 {
     TestPathCombine2();
     TestPathCombine();

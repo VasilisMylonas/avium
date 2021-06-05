@@ -100,7 +100,7 @@ typedef struct AvmFunction AvmFunction;
         __VA_ARGS__                                                            \
     }
 
-#define main AvmMain
+#define Main AvmMain
 
 // TODO
 #define AvmInvalid ((uint)-1)

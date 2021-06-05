@@ -15,7 +15,7 @@ static void TestFrom()
     assert(!AvmStringIsEmpty(&s));
 }
 
-void main()
+void Main()
 {
     TestFrom();
 }

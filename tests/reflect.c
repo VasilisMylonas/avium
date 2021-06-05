@@ -55,7 +55,7 @@ void TestModuleGetVariable()
     // TODO
 }
 
-void main()
+void Main()
 {
     TestModuleHasSymbol();
     TestModuleGetCallback();
