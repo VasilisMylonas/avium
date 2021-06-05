@@ -1,7 +1,7 @@
 add_library(avm-core STATIC core.c string.c typeinfo.c threads.c)
 target_link_libraries(avm-core gc)
 
-if(WIN32)
+if(NOT WIN32)
     find_library(LIBPTHREAD pthread REQUIRED)
     target_link_libraries(avm-core ${LIBPTHREAD})
 endif()
