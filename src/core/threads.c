@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include <bdwgc-src/include/gc.h>
+#include <bdwgc/include/gc.h>
 
 #ifdef AVM_WIN32
 
@@ -80,6 +80,7 @@ AvmExitCode AvmThreadJoin(const AvmThread* self)
 
 #else
 
+#include <pthread.h>
 #include <unistd.h>
 
 AvmThread AvmThreadNew(AvmThreadCallback callback, object value)

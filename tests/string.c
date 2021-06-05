@@ -15,7 +15,30 @@ static void TestFrom()
     assert(!AvmStringIsEmpty(&s));
 }
 
+#include "avium/threads.h"
+
+void ThreadProc(object o)
+{
+    (void)o;
+
+    for (size_t i = 0; i < 20; i++)
+    {
+        AvmPrintf("Hello from 2\n");
+        AvmThreadSleep(20);
+    }
+}
+
 void Main()
 {
+    AvmThread thread = AvmThreadNew(ThreadProc, NULL);
+
+    for (size_t i = 0; i < 20; i++)
+    {
+        AvmPrintf("Hello from 1\n");
+        AvmThreadSleep(20);
+    }
+
+    AvmThreadJoin(&thread);
+
     TestFrom();
 }

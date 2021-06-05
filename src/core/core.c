@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <bdwgc-src/include/gc.h>
+#include <bdwgc/include/gc.h>
 
 #ifdef AVM_LINUX
 #include <execinfo.h>

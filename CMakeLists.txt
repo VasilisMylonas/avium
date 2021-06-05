@@ -45,18 +45,20 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-add_definitions("-D_CRT_SECURE_NO_WARNINGS -DGC_THREADS -D_REENTRANT")
-
 include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUT_DIR})
 
 configure_file(include/avium/config.h.in include/avium/config.h @ONLY)
 
-add_subdirectory(bdwgc)
+set(enable_threads ON)
+
+include_directories(deps/libatomic_ops/src)
+add_subdirectory(deps/bdwgc)
 add_subdirectory(docs)
 add_subdirectory(src/core)
 add_subdirectory(tests)
 
 if(MSVC)
+    add_definitions(_CRT_SECURE_NO_WARNINGS)
     add_compile_options(/W4)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
