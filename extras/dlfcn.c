@@ -67,7 +67,7 @@ int dladdr(const void* address, Dl_info* info)
     i->MaxNameLen = MAX_SYM_NAME;
 
     // TODO: Not thread safe.
-    if (!SymFromAddr(process, *(DWORD64*)&self, &displacement, i))
+    if (!SymFromAddr(process, *(DWORD64*)&address, &displacement, i))
     {
         return 0;
     }
