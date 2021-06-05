@@ -1,5 +1,5 @@
 #define GC_THREADS
-#include "gc/gc.h"
+#include "gc.h"
 
 #include "avium/threads.h"
 
