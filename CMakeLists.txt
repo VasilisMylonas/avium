@@ -39,7 +39,6 @@ set(AVM_BUILDING ON)
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UCHAR_H)
 check_include_file(dlfcn.h AVM_HAVE_DLFCN_H)
-check_include_file(pthread.h AVM_HAVE_PTHREAD_H)
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE "long")
@@ -47,13 +46,12 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUT_DIR})
+include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUT_DIR} deps/libatomic_ops/src)
 
 configure_file(include/avium/config.h.in include/avium/config.h @ONLY)
 
 set(enable_threads ON)
 
-include_directories(deps/libatomic_ops/src)
 add_subdirectory(deps/bdwgc)
 add_subdirectory(docs)
 add_subdirectory(src/core)

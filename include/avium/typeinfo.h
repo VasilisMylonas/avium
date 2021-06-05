@@ -102,7 +102,7 @@ AVM_CLASS(AvmMember, object, {
         _long _value;                                                          \
     } AVM_CTI_NAME(T)[] = __VA_ARGS__;                                         \
     const AvmEnum AVM_TI_NAME(T) = {                                           \
-        ._type = typeid(AvmEnum),                                              \
+        ._base._type = typeid(AvmEnum),                                        \
         ._base._name = #T,                                                     \
         ._base._size = sizeof(T),                                              \
         ._base._baseType = typeid(object),                                     \
