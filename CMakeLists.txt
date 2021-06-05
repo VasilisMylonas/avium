@@ -12,8 +12,9 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
+include(CTest)
 
-enable_testing()
+add_definitions(-DGC_THREADS -D_REENTRANT -D_CRT_SECURE_NO_WARNINGS)
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
     message("Building for Linux.")
@@ -30,11 +31,18 @@ endif()
 
 if(MSVC)
     set(AVM_MSVC ON)
+    add_compile_options(/W4)
 else()
     set(AVM_GNU ON)
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+    if(CMAKE_BUILD_TYPE STREQUAL Debug)
+        add_compile_options(-fprofile-arcs -ftest-coverage)
+        add_link_options(-fprofile-arcs -ftest-coverage)
+    endif()
 endif()
 
 set(AVM_BUILDING ON)
+set(enable_threads ON)
 
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UCHAR_H)
@@ -46,24 +54,9 @@ else()
     set(AVM_LONG_TYPE "long long")
 endif()
 
-include_directories(${AVM_INCLUDE_DIR} ${AVM_INCLUDE_OUT_DIR} deps/libatomic_ops/src)
-
 configure_file(include/avium/config.h.in include/avium/config.h @ONLY)
-
-set(enable_threads ON)
 
 add_subdirectory(deps/bdwgc)
 add_subdirectory(docs)
 add_subdirectory(src/core)
 add_subdirectory(tests)
-
-if(MSVC)
-    add_definitions(_CRT_SECURE_NO_WARNINGS)
-    add_compile_options(/W4)
-else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
-    if(CMAKE_BUILD_TYPE STREQUAL Debug)
-        add_compile_options(-fprofile-arcs -ftest-coverage)
-        add_link_options(-fprofile-arcs -ftest-coverage)
-    endif()
-endif()
