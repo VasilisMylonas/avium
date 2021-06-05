@@ -9,6 +9,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(AVM_BUILDING ON)
+set(enable_threads ON)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
@@ -40,9 +42,6 @@ else()
         add_link_options(-fprofile-arcs -ftest-coverage)
     endif()
 endif()
-
-set(AVM_BUILDING ON)
-set(enable_threads ON)
 
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UCHAR_H)
