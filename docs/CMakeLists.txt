@@ -30,5 +30,5 @@ if(DOXYGEN_FOUND AND SPHINX_FOUND)
         COMMAND ${SPHINX_EXECUTABLE} -q -c ${DOC_OUTPUT_DIR}
                 ${CMAKE_SOURCE_DIR}/docs ${HTML_OUTPUT_DIR})
 else()
-    message(WARNING "Install Doxygen and Sphinx to gener ate documentation.")
+    message(WARNING "Install Doxygen and Sphinx to generate documentation.")
 endif()

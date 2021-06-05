@@ -26,7 +26,6 @@ include(CTest)
 option(BUILD_SHARED_LIBS "Build dynamic library instead?" OFF)
 option(BUILD_TESTS "Generate tests?" ON)
 option(USE_IO "Use the IO library?" ON)
-option(USE_ARGPARSE "Use the argument parsing library?" ON)
 option(USE_REFLECT "Use the reflection library?" ON)
 option(USE_COLLECTIONS "Use the collections library?" ON)
 
