@@ -168,9 +168,6 @@ AVM_ENUM(AvmFnEntry,
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&AVM_TI_NAME(T))
 
-/// Refers to the base type in a function with a self parameter.
-#define base (&self->_base)
-
 // clang-format off
 
 /// Determines whether an object is an instance of another type.

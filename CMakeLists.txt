@@ -13,6 +13,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(CheckTypeSize)
 include(CheckIncludeFile)
 
+enable_testing()
+
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
     message("Building for Linux.")
     set(AVM_LINUX ON)

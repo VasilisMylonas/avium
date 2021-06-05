@@ -187,7 +187,7 @@ str AvmEnumGetName(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return base->_name;
+    return baseof(self)->_name;
 }
 
 uint AvmEnumGetSize(const AvmEnum* self)
@@ -197,7 +197,7 @@ uint AvmEnumGetSize(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return base->_size;
+    return baseof(self)->_size;
 }
 
 bool AvmEnumIsDefined(const AvmEnum* self, _long value)
@@ -272,7 +272,8 @@ static AvmString AvmEnumToString(const AvmEnum* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("enum %s (%u bytes)", base->_name, base->_size);
+    return AvmStringFormat(
+        "enum %s (%u bytes)", baseof(self)->_name, baseof(self)->_size);
 }
 
 AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] = (AvmCallback)AvmEnumToString});
