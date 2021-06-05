@@ -1,18 +1,19 @@
-#define GC_THREADS
-#include "gc.h"
-
 #include "avium/threads.h"
 
 #include "avium/private/constants.h"
 #include "avium/private/threads.h"
+
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 #include <errno.h>
 #include <stdlib.h>
 
+#include <bdwgc-src/include/gc.h>
+
 #ifdef AVM_WIN32
 
+#define WIN32_LEAN_AND_MEAN
 #include <process.h>
 #include <windows.h>
 

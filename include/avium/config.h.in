@@ -15,6 +15,17 @@
 #cmakedefine AVM_GNU
 #cmakedefine AVM_HAVE_UCHAR_H
 #cmakedefine AVM_HAVE_DLFCN_H
+#cmakedefine AVM_BUILDING
+
+#ifdef AVM_MSVC
+#ifdef AVM_BUILDING
+#define AVMAPI extern __declspec(dllexport)
+#else
+#define AVMAPI extern __declspec(dllimport)
+#endif
+#else
+#define AVMAPI extern
+#endif
 
 #ifdef AVM_MSVC
 #ifndef alignof

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gc.h"
+#include <bdwgc-src/include/gc.h>
 
 #ifdef AVM_LINUX
 #include <execinfo.h>
@@ -830,4 +830,14 @@ void AvmCopy(object o, size_t size, byte* destination)
     }
 
     memcpy(destination, o, objectSize);
+}
+
+#undef main
+
+// This should be defined by user code.
+extern void AvmMain();
+
+int main(int argc, str argv[])
+{
+    return AvmRuntimeInit(argc, argv, AvmMain);
 }

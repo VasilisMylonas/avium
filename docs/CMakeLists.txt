@@ -1,6 +1,9 @@
 find_package(Doxygen)
 find_package(Sphinx)
 
+set(DOC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
+set(HTML_OUTPUT_DIR ${DOC_OUTPUT_DIR}/html)
+
 if(DOXYGEN_FOUND AND SPHINX_FOUND)
     set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C TRUE)
     set(DOXYGEN_GENERATE_HTML FALSE)

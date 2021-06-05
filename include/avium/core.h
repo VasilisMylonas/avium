@@ -25,7 +25,6 @@
 #define AVIUM_CORE_H
 
 #include "avium/config.h"
-#include "avium/exports.h"
 
 #include <setjmp.h>
 #include <stdarg.h>
