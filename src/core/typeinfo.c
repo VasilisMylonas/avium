@@ -1,13 +1,13 @@
 #include "avium/typeinfo.h"
 
-#include "avium/private/errors.h"
-
 #include "avium/core.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+#define _ AvmRuntimeGetResource
 
 AVM_ENUM_TYPE(AvmFnEntry,
               {
@@ -90,7 +90,7 @@ AvmCallback AvmTypeGetCallback(const AvmType* self, uint index)
     // there is no such callback in the inheritance hierarchy.
     if (self == typeid(object))
     {
-        throw(AvmErrorNew(VirtualFuncError));
+        throw(AvmErrorNew(_(AvmMissingCallbackErrorMsg)));
     }
 
     // Otherwise we just keep looking up the chain.
@@ -143,7 +143,7 @@ const AvmMember* AvmTypeGetMemberAt(const AvmType* self, uint index)
         return &self->_mPtr[index];
     }
 
-    throw(AvmErrorNew(MemberNotPresentError));
+    throw(AvmErrorNew(_(AvmMissingMemberErrorMsg)));
 }
 
 const AvmMember* AvmTypeGetMember(const AvmType* self, str name)
@@ -162,7 +162,7 @@ const AvmMember* AvmTypeGetMember(const AvmType* self, str name)
         }
     }
 
-    throw(AvmErrorNew(MemberNotPresentError));
+    throw(AvmErrorNew(_(AvmMissingMemberErrorMsg)));
 }
 
 uint AvmTypeGetMemberCount(const AvmType* self)
@@ -245,7 +245,7 @@ str AvmEnumGetNameOf(const AvmEnum* self, _long value)
         }
     }
 
-    throw(AvmErrorNew(EnumConstantNotPresentError));
+    throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
 }
 
 _long AvmEnumGetValueOf(const AvmEnum* self, str name)
@@ -269,7 +269,7 @@ _long AvmEnumGetValueOf(const AvmEnum* self, str name)
         }
     }
 
-    throw(AvmErrorNew(EnumConstantNotPresentError));
+    throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
 }
 
 static AvmString AvmEnumToString(const AvmEnum* self)

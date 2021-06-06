@@ -1,7 +1,5 @@
 #include "avium/string.h"
 
-#include "avium/private/errors.h"
-
 #include "avium/core.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
@@ -15,6 +13,8 @@
 #ifdef AVM_HAVE_UNICODE
 #include <uchar.h>
 #endif
+
+#define _ AvmRuntimeGetResource
 
 static bool AvmStringEquals(AvmString* self, AvmString* other)
 {
@@ -184,7 +184,7 @@ AvmString AvmStringFromInt(_long value)
 {
     if (value == INTMAX_MIN)
     {
-        return AvmStringFrom(LONG_MIN_STR);
+        return AvmStringFrom(AVM_LONG_MIN_STR);
     }
 
     const bool isNegative = value < 0;
@@ -355,12 +355,33 @@ AvmString AvmStringFromFloat2(float value)
     return s;
 }
 
-AvmString AvmStringFromFloat(double value)
+AvmString AvmStringFromFloat(double value, AvmFloatRepr repr)
 {
-    uint length = snprintf(NULL, 0, "%lf", value);
-    AvmString s = AvmStringNew(length);
+    pre
+    {
+        assert(repr == FloatReprSimple || repr == FloatReprScientific ||
+               repr == FloatReprAuto);
+    }
+
+    str fmt = NULL;
+
+    switch (repr)
+    {
+    case FloatReprSimple:
+        fmt = "%lf";
+        break;
+    case FloatReprScientific:
+        fmt = "%le";
+        break;
+    case FloatReprAuto:
+        fmt = "%lg";
+        break;
+    }
+
+    uint length = snprintf(NULL, 0, fmt, value);
+    AvmString s = AvmStringNew(length + 1);
     char* buffer = AvmStringGetBuffer(&s);
-    snprintf(buffer, length + 1, "%lf", value);
+    snprintf(buffer, length + 1, fmt, value);
     AvmStringUnsafeSetLength(&s, length);
 
     post
@@ -495,7 +516,7 @@ char AvmStringCharAt(const AvmString* self, uint index)
         return self->_buffer[index];
     }
 
-    throw(AvmErrorNew(RangeError));
+    throw(AvmErrorNew(_(AvmRangeErrorMsg)));
 }
 
 //
@@ -1148,28 +1169,8 @@ void AvmStringPushFloat(AvmString* self, double value, AvmFloatRepr repr)
         assert(self != NULL);
     }
 
-    switch (repr)
-    {
-    case FloatReprSimple: {
-        AvmString temp = AvmStringFromFloat(value);
-        AvmStringPushString(self, &temp);
-        break;
-    }
-    case FloatReprScientific: {
-        char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-        snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%le", value);
-        AvmStringPushStr(self, buffer);
-        break;
-    }
-    case FloatReprAuto: {
-        char buffer[AVM_FLOAT_BUFFER_SIZE] = {0};
-        snprintf(buffer, AVM_FLOAT_BUFFER_SIZE, "%lg", value);
-        AvmStringPushStr(self, buffer);
-    }
-    default:
-        // TODO
-        break;
-    }
+    AvmString temp = AvmStringFromFloat(value, repr);
+    AvmStringPushString(self, &temp);
 }
 
 void AvmStringPushValue(AvmString* self, object value)

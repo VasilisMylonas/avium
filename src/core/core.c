@@ -1,6 +1,5 @@
 #include "avium/core.h"
 
-#include "avium/private/errors.h"
 #include "avium/private/threads.h"
 #include "avium/private/virtual.h"
 
@@ -18,6 +17,8 @@
 #ifdef AVM_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
+
+#define _ AvmRuntimeGetResource
 
 static void AvmRuntimeFinalize(object self, void* kind)
 {
@@ -243,7 +244,7 @@ static AvmString floatToString(const AvmBox* self)
         assert(self != NULL);
     }
 
-    return AvmStringFromFloat(self->AsFloat);
+    return AvmStringFromFloat(self->AsFloat, FloatReprAuto);
 }
 
 static bool floatEquals(const AvmBox* self, const AvmBox* other)
@@ -608,7 +609,41 @@ void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
     case sizeof(ulong):
         VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
     default:
-        throw(AvmErrorNew(MarshallingError));
+        throw(AvmErrorNew(_(AvmMarshalErrorMsg)));
+    }
+}
+
+AVM_ENUM_TYPE(AvmResourceKey,
+              {
+                  AVM_ENUM_MEMBER(AvmArgErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMemErrorMsg),
+                  AVM_ENUM_MEMBER(AvmRangeErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMarshalErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingMemberErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingConstantErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingCallbackErrorMsg),
+              });
+
+str AvmRuntimeGetResource(AvmResourceKey key)
+{
+    switch (key)
+    {
+    case AvmArgErrorMsg:
+        return "Received an invalid argument.";
+    case AvmMemErrorMsg:
+        return "The system run out of memory.";
+    case AvmRangeErrorMsg:
+        return "The provided index was out of range.";
+    case AvmMarshalErrorMsg:
+        return "Marshalling of non primitive types is not supported.";
+    case AvmMissingMemberErrorMsg:
+        return "The requested member was missing.";
+    case AvmMissingConstantErrorMsg:
+        return "The requested constant was missing.";
+    case AvmMissingCallbackErrorMsg:
+        return "The requested callback was missing.";
+    default:
+        return "";
     }
 }
 

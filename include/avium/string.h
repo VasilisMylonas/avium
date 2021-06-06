@@ -128,7 +128,7 @@ typedef enum
 
 AVMAPI AvmString AvmStringFromInt(_long value);
 AVMAPI AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase);
-AVMAPI AvmString AvmStringFromFloat(double value);
+AVMAPI AvmString AvmStringFromFloat(double value, AvmFloatRepr repr);
 AVMAPI AvmString AvmStringFromFloat2(float value);
 
 AVMAPI void AvmStringPushFloat(AvmString* self,

@@ -572,6 +572,19 @@ AVMAPI AvmBox AvmRuntimeBoxFloat(double value);
 AVMAPI AvmBox AvmRuntimeBoxUint(ulong value);
 AVMAPI AvmBox AvmRuntimeBoxStr(str value);
 
+AVM_ENUM(AvmResourceKey,
+         {
+             AvmArgErrorMsg,
+             AvmMemErrorMsg,
+             AvmRangeErrorMsg,
+             AvmMarshalErrorMsg,
+             AvmMissingMemberErrorMsg,
+             AvmMissingConstantErrorMsg,
+             AvmMissingCallbackErrorMsg,
+         });
+
+AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);
+
 #ifndef DOXYGEN
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
