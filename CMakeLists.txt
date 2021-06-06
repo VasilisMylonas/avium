@@ -23,6 +23,7 @@ check_include_file(uchar.h AVM_HAVE_UNICODE)
 check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
 
 option(AVM_THROW_ON_CAST_FAIL "Should cast() throw an exception on failure?" ON)
+option(AVM_INSERT_INIT_CODE "Insert runtime initialization code?" ON)
 
 add_definitions(
     -DGC_THREADS -D_REENTRANT

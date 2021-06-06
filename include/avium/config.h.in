@@ -18,6 +18,7 @@
 #cmakedefine AVM_HAVE_WIN32_THREADS
 #cmakedefine AVM_HAVE_POSIX_THREADS
 #cmakedefine AVM_THROW_ON_CAST_FAIL
+#cmakedefine AVM_INSERT_INIT_CODE
 #cmakedefine AVM_BUILDING
 
 #ifdef AVM_MSVC

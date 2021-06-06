@@ -868,8 +868,7 @@ void AvmCopy(object o, size_t size, byte* destination)
     memcpy(destination, o, objectSize);
 }
 
-#undef main
-
+#ifdef AVM_INSERT_INIT_CODE
 // This should be defined by user code.
 extern void AvmMain();
 
@@ -877,3 +876,4 @@ int main(int argc, str argv[])
 {
     return AvmRuntimeInit(argc, argv, AvmMain);
 }
+#endif
