@@ -13,8 +13,11 @@
 #cmakedefine AVM_DARWIN
 #cmakedefine AVM_MSVC
 #cmakedefine AVM_GNU
-#cmakedefine AVM_HAVE_UCHAR_H
-#cmakedefine AVM_HAVE_DLFCN_H
+#cmakedefine AVM_HAVE_UNICODE
+#cmakedefine AVM_HAVE_BACKTRACE
+#cmakedefine AVM_HAVE_WIN32_THREADS
+#cmakedefine AVM_HAVE_POSIX_THREADS
+#cmakedefine AVM_THROW_ON_CAST_FAIL
 #cmakedefine AVM_BUILDING
 
 #ifdef AVM_MSVC
@@ -61,9 +64,13 @@
 
 #define AVM_MAX_STRING_SIZE          ((uint)-1)
 #define AVM_STRING_GROWTH_FACTOR     2
+#define AVM_STRING_DEFAULT_CAPACITY  8
 #define AVM_ARRAY_LIST_GROWTH_FACTOR 2
 
-#ifdef AVM_HAVE_UCHAR_H
+#define AVM_FLOAT_BUFFER_SIZE 128
+#define LONG_MIN_STR          "-9223372036854775808"
+
+#ifdef AVM_HAVE_UNICODE
 #define AVM_FMT_UNICODE 'U'
 #endif
 
@@ -96,5 +103,21 @@
 #define AVM_MTI_NAME(T) _MTI_##T
 #define AVM_PTI_NAME(F) _PTI_##F
 #define AVM_CTI_NAME(E) _CTI_##E
+
+#define AVM_MEMORY            ((void*)0)
+#define AVM_OBJECT            ((void*)1)
+#define AVM_OBJECT_FMT_STR    "%s [%x]"
+#define AVM_LOCATION_FMT_STR  "%s:%u"
+#define AVM_VERSION_FMT_STR   "%u.%u.%u"
+#define AVM_RUNTIME_FMT_STR   "%s v%v"
+#define AVM_CAST_FAIL_FMT_STR "Tried to cast object [%x] of type %T to type %s."
+#define AVM_UNHANDLED_THROW_FMT_STR                                            \
+    "Uncaught thrown object of type %T: %v\nThrown from %v while on thread "   \
+    "[%x].\n"
+#define AVM_RUNTIME_NAME                "Avium x86_64 Runtime Environment"
+#define AVM_BACKTRACE_MAX_SYMBOLS       128
+#define AVM_BACKTRACE_LINE_SIZE         32
+#define AVM_BACKTRACE_SEPARATOR         '@'
+#define AVM_BACKTRACE_NOT_AVAILABLE_MSG "Backtrace not available."
 
 #endif // AVIUM_CONFIG_H

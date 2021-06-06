@@ -174,13 +174,10 @@ AVM_ENUM(AvmFnEntry,
 #define instanceof(T, x)                 \
     (typeid(T) == AvmObjectGetType(x) || \
      AvmTypeInheritsFrom(AvmObjectGetType(x), typeid(T)))
-
-#ifdef AVM_EXIT_ON_CAST_FAIL
-#define cast(T, x) (T*)(instanceof(T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
-#else
-#define cast(T, x) (T*)(instanceof(T, x) ? x : NULL)
-#endif
 // clang-format on
+
+#define cast(T, x)                                                             \
+    (T*)(instanceof (T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
 
 /**
  * @brief Gets the name of a type.
@@ -348,9 +345,9 @@ AVMAPI const AvmType** AvmFunctionGetParams(const AvmFunction* self);
 AVMAPI uint AvmFunctionGetParamCount(const AvmFunction* self);
 AVMAPI str AvmFunctionGetName(const AvmFunction* self);
 
+#ifndef DOXYGEN
 AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
-#ifndef DOXYGEN
 extern const AvmType AVM_TI_NAME(_long);
 extern const AvmType AVM_TI_NAME(ulong);
 extern const AvmType AVM_TI_NAME(int);

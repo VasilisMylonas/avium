@@ -1,6 +1,6 @@
 #include "avium/core.h"
 
-#include "avium/private/constants.h"
+#include "avium/private/errors.h"
 #include "avium/private/threads.h"
 #include "avium/private/virtual.h"
 
@@ -15,7 +15,7 @@
 
 #include <bdwgc/include/gc.h>
 
-#ifdef AVM_LINUX
+#ifdef AVM_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
 
@@ -64,8 +64,7 @@ void AvmObjectSurpressFinalizer(object self)
         assert(self != NULL);
     }
 
-    GC_register_finalizer(
-        self, AvmRuntimeFinalize, ALREADY_FINALIZED, NULL, NULL);
+    GC_register_finalizer(self, AvmRuntimeFinalize, AVM_MEMORY, NULL, NULL);
 }
 
 void* AvmObjectVisit(object self, const AvmMember* member)
@@ -192,7 +191,7 @@ static AvmString objectToString(object self)
     }
 
     return AvmStringFormat(
-        OBJECT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
+        AVM_OBJECT_FMT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
 }
 
 static AvmString signedToString(const AvmBox* self)
@@ -405,7 +404,7 @@ static AvmString AvmLocationToString(AvmLocation* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat(LOCATION_STR, self->File, self->Line);
+    return AvmStringFormat(AVM_LOCATION_FMT_STR, self->File, self->Line);
 }
 
 AVM_TYPE(AvmLocation,
@@ -438,7 +437,8 @@ static AvmString AvmVersionToString(AvmVersion* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat(VERSION_STR, self->Major, self->Minor, self->Patch);
+    return AvmStringFormat(
+        AVM_VERSION_FMT_STR, self->Major, self->Minor, self->Patch);
 }
 
 AVM_TYPE(AvmVersion,
@@ -466,7 +466,7 @@ static AvmString AvmRuntimeToString(const AvmRuntime* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat(RUNTIME_STR, self->_name, &self->_version);
+    return AvmStringFormat(AVM_RUNTIME_FMT_STR, self->_name, &self->_version);
 }
 
 AVM_TYPE(AvmRuntime,
@@ -491,7 +491,8 @@ AvmExitCode __AvmRuntimeThreadInit(void* s)
     {
         object e = __AvmRuntimePopThrowContext()->_thrownObject;
         const AvmThread* t = AvmThreadGetCurrent();
-        AvmErrorf(UNHANDLED_THROW_STR, e, e, &context._location, t->_state);
+        AvmErrorf(
+            AVM_UNHANDLED_THROW_FMT_STR, e, e, &context._location, t->_state);
         return EXIT_FAILURE;
     }
 
@@ -535,18 +536,18 @@ str* AvmRuntimeGetArgs(void)
 
 AvmString AvmRuntimeGetBacktrace(void)
 {
-#ifdef AVM_LINUX
-    void* arr[BACKTRACE_MAX_SYMBOLS];
+#ifdef AVM_HAVE_BACKTRACE
+    void* arr[AVM_BACKTRACE_MAX_SYMBOLS];
 
-    int length = backtrace(arr, BACKTRACE_MAX_SYMBOLS);
+    int length = backtrace(arr, AVM_BACKTRACE_MAX_SYMBOLS);
     char** s = backtrace_symbols(arr, length);
 
-    AvmString bt = AvmStringNew(length * BACKTRACE_LINE_SIZE);
+    AvmString bt = AvmStringNew(length * AVM_BACKTRACE_LINE_SIZE);
 
     for (int i = length - 1; i >= 1; i--)
     {
         *(strchr(s[i], '+')) = '\0';
-        *(strchr(s[i], '(')) = BACKTRACE_SEPARATOR;
+        *(strchr(s[i], '(')) = AVM_BACKTRACE_SEPARATOR;
 
         AvmStringPushStr(&bt, "    in ");
         AvmStringPushStr(&bt, s[i]);
@@ -622,7 +623,7 @@ void* AvmAlloc(size_t size)
     {
         GC_abort_on_oom();
     }
-    GC_register_finalizer(mem, AvmRuntimeFinalize, RAW_MEMORY, NULL, NULL);
+    GC_register_finalizer(mem, AvmRuntimeFinalize, AVM_MEMORY, NULL, NULL);
     return mem;
 }
 

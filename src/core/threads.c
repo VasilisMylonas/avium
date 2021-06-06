@@ -1,6 +1,5 @@
 #include "avium/threads.h"
 
-#include "avium/private/constants.h"
 #include "avium/private/threads.h"
 
 #include "avium/testing.h"
@@ -11,77 +10,17 @@
 
 #include <bdwgc/include/gc.h>
 
-#ifdef AVM_WIN32
-
-#define WIN32_LEAN_AND_MEAN
-#include <process.h>
-#include <windows.h>
-
-AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
-{
-    pre
-    {
-        assert(callback != NULL);
-    }
-
-    // Create a new thread.
-    AvmThread thread = {
-        ._type = typeid(AvmThread),
-        ._state = (void*)GC_beginthreadex(
-            NULL,
-            0,
-            (_beginthreadex_proc_type)__AvmRuntimeThreadInit,
-            ThreadStateNew(value, callback),
-            0,
-            NULL),
-    };
-
-    // Handle errors and throw exceptions.
-    if (thread._state == NULL)
-    {
-        if (errno == EACCES)
-        {
-            throw(AvmErrorNew(
-                "The system could not allocate memory for the thread."));
-        }
-        throw(AvmErrorNew("Thread creation failed."));
-    }
-
-    // Return the thread handle.
-    return thread;
-}
-
-AvmExitCode AvmThreadJoin(const AvmThread* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    // Wait for the thread to finish executing.
-    if (WaitForSingleObject((HANDLE)self->_state, INFINITE) == WAIT_FAILED)
-    {
-        CloseHandle((HANDLE)self->_state);
-        throw(AvmErrorNew("Could not join the requested thread."));
-    }
-
-    // Get the thread return value.
-    DWORD exitCode = 0;
-    if (GetExitCodeThread((HANDLE)self->_state, &exitCode) == 0)
-    {
-        CloseHandle((HANDLE)self->_state);
-        throw(AvmErrorNew("Could not join the requested thread."));
-    }
-
-    // Close the thread handle and return the return value.
-    CloseHandle((HANDLE)self->_state);
-    return (AvmExitCode)exitCode;
-}
-
-#else
-
+#ifdef AVM_HAVE_POSIX_THREADS
 #include <pthread.h>
+#else
+#include <process.h>
+#endif
+
+#ifdef AVM_WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 
 AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
 {
@@ -90,14 +29,26 @@ AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
         assert(callback != NULL);
     }
 
-    pthread_t t = 0;
+#ifdef AVM_HAVE_POSIX_THREADS
+    pthread_t handle = 0;
     int result =
-        GC_pthread_create(&t,
+        GC_pthread_create(&handle,
                           NULL,
                           (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
                           ThreadStateNew(value, callback));
 
     if (result != 0)
+#else
+    uintptr_t handle = GC_beginthreadex(
+        NULL,
+        0,
+        (_beginthreadex_proc_type)(AvmCallback)__AvmRuntimeThreadInit,
+        ThreadStateNew(value, callback),
+        0,
+        NULL);
+
+    if (handle == NULL)
+#endif
     {
         throw(AvmErrorNew("Thread creation failed."));
     }
@@ -105,7 +56,7 @@ AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
     // Return the thread handle.
     return (AvmThread){
         ._type = typeid(AvmThread),
-        ._state = (void*)t,
+        ._state = (void*)handle,
         ._context = NULL,
     };
 }
@@ -117,25 +68,37 @@ AvmExitCode AvmThreadJoin(const AvmThread* self)
         assert(self != NULL);
     }
 
-    // Try to join the thread and return the result.
-    void* result = NULL;
+#ifdef AVM_HAVE_POSIX_THREADS
+    void* exitCode = NULL;
 
-    if (GC_pthread_join((pthread_t)self->_state, &result) != 0)
+    if (GC_pthread_join((pthread_t)self->_state, &exitCode) != 0)
     {
         throw(AvmErrorNew("Could not join the requested thread."));
     }
+#else
+    DWORD exitCode = 0;
 
-    return (AvmExitCode)(ulong)result;
-}
-
+    if (WaitForSingleObject((HANDLE)self->_state, INFINITE) == WAIT_FAILED &&
+        GetExitCodeThread((HANDLE)self->_state, &exitCode) == 0)
+    {
+        CloseHandle((HANDLE)self->_state);
+    }
+    else
+    {
+        CloseHandle((HANDLE)self->_state);
+        throw(AvmErrorNew("Could not join the requested thread."));
+    }
 #endif
+
+    return (AvmExitCode)(ulong)exitCode;
+}
 
 never AvmThreadExit(AvmExitCode code)
 {
-#ifdef AVM_WIN32
-    GC_endthreadex(code);
-#else
+#ifdef AVM_HAVE_POSIX_THREADS
     GC_pthread_exit((void*)(ulong)code);
+#else
+    GC_endthreadex(code);
 #endif
 }
 
@@ -150,10 +113,10 @@ const AvmThread* AvmThreadGetCurrent(void)
     if (thread._type == NULL)
     {
         thread._type = typeid(AvmThread);
-#ifdef AVM_WIN32
-        thread._state = (void*)GetCurrentThread();
-#else
+#ifdef AVM_HAVE_POSIX_THREADS
         thread._state = (void*)pthread_self();
+#else
+        thread._state = (void*)GetCurrentThread();
 #endif
     }
 

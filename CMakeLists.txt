@@ -3,12 +3,12 @@ project(avium VERSION 0.1.0)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(AVM_BUILDING ON)
 set(enable_threads ON)
 
@@ -16,15 +16,27 @@ include(CheckTypeSize)
 include(CheckIncludeFile)
 include(CTest)
 
-add_definitions(-DGC_THREADS -D_REENTRANT -D_CRT_SECURE_NO_WARNINGS)
+find_package(Threads REQUIRED)
 
-if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+check_type_size(long AVM_LONG_SIZE)
+check_include_file(uchar.h AVM_HAVE_UNICODE)
+check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
+
+option(AVM_THROW_ON_CAST_FAIL "Should cast() throw an exception on failure?" ON)
+
+add_definitions(
+    -DGC_THREADS -D_REENTRANT
+    -D_CRT_SECURE_NO_WARNINGS
+    -DWIN32_LEAN_AND_MEAN
+)
+
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     message("Building for Linux.")
     set(AVM_LINUX ON)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     message("Building for Darwin.")
     set(AVM_DARWIN ON)
-elseif (CMAKE_SYSTEM_NAME STREQUAL Windows)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     message("Building for Win32.")
     set(AVM_WIN32 ON)
 else()
@@ -36,17 +48,18 @@ if(MSVC)
     add_compile_options(/W4)
 else()
     set(AVM_GNU ON)
-    add_compile_options(-Wno-implicit-function-declaration)
-    # add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
         add_compile_options(-fprofile-arcs -ftest-coverage)
         add_link_options(-fprofile-arcs -ftest-coverage)
     endif()
 endif()
 
-check_type_size(long AVM_LONG_SIZE)
-check_include_file(uchar.h AVM_HAVE_UCHAR_H)
-check_include_file(dlfcn.h AVM_HAVE_DLFCN_H)
+if(CMAKE_USE_WIN32_THREADS_INIT)
+    set(AVM_HAVE_WIN32_THREADS ON)
+else()
+    set(AVM_HAVE_POSIX_THREADS ON)
+endif()
 
 if(${AVM_LONG_SIZE} EQUAL 8)
     set(AVM_LONG_TYPE "long")

@@ -1,7 +1,8 @@
 #include "avium/typeinfo.h"
 
+#include "avium/private/errors.h"
+
 #include "avium/core.h"
-#include "avium/private/constants.h"
 #include "avium/string.h"
 #include "avium/testing.h"
 
@@ -29,12 +30,18 @@ AVM_ENUM_TYPE(AvmFnEntry,
 
 object __AvmRuntimeCastFail(object value, const AvmType* type)
 {
-    AvmString temp =
-        AvmStringFormat(CAST_FAIL_STR, value, value, AvmTypeGetName(type));
+    (void)value;
+    (void)type;
+#ifdef AVM_THROW_ON_CAST_FAIL
+    AvmString temp = AvmStringFormat(
+        AVM_CAST_FAIL_FMT_STR, value, value, AvmTypeGetName(type));
 
     str msg = AvmStringToStr(&temp);
 
     throw(AvmErrorNew(msg));
+#else
+    return NULL;
+#endif
 }
 
 str AvmTypeGetName(const AvmType* self)

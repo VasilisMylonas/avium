@@ -1,17 +1,18 @@
 #include "avium/string.h"
 
+#include "avium/private/errors.h"
+
+#include "avium/core.h"
+#include "avium/testing.h"
+#include "avium/typeinfo.h"
+
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "avium/core.h"
-#include "avium/private/constants.h"
-#include "avium/testing.h"
-#include "avium/typeinfo.h"
-
-#ifdef AVM_HAVE_UCHAR_H
+#ifdef AVM_HAVE_UNICODE
 #include <uchar.h>
 #endif
 
@@ -1220,7 +1221,7 @@ static void Format(char c, AvmString* string, va_list args)
 {
     switch (c)
     {
-#ifdef AVM_HAVE_UCHAR_H
+#ifdef AVM_HAVE_UNICODE
     case AVM_FMT_UNICODE:
         AvmStringPushStr(string, AVM_FMT_UNICODE_PREFIX);
         AvmStringPushUint(string, va_arg(args, char32_t), NumericBaseDecimal);
