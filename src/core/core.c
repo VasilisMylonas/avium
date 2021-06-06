@@ -477,12 +477,6 @@ AVM_TYPE(AvmRuntime,
 
 static AvmRuntime __AvmRuntimeState;
 
-const AvmThread* AvmThreadGetCurrent()
-{
-    static thread_local AvmThread thread;
-    return &thread;
-}
-
 AvmExitCode __AvmRuntimeThreadInit(void* s)
 {
     ThreadState* state = s;
