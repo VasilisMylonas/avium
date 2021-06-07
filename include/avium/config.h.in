@@ -104,12 +104,11 @@
 #define AVM_PTI_NAME(F) _PTI_##F
 #define AVM_CTI_NAME(E) _CTI_##E
 
-#define AVM_MEMORY            ((void*)0)
-#define AVM_OBJECT            ((void*)1)
 #define AVM_OBJECT_FMT_STR    "%s [%x]"
 #define AVM_LOCATION_FMT_STR  "%s:%u"
 #define AVM_VERSION_FMT_STR   "%u.%u.%u"
 #define AVM_RUNTIME_FMT_STR   "%s v%v"
+#define AVM_THREAD_FMT_STR    "thread %s [%x]"
 #define AVM_CAST_FAIL_FMT_STR "Tried to cast object [%x] of type %T to type %s."
 #define AVM_UNHANDLED_THROW_FMT_STR                                            \
     "Uncaught thrown object of type %T: %v\nThrown from %v while on thread "   \

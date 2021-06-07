@@ -1,6 +1,6 @@
 #include "avium/core.h"
 
-#include "avium/private/threads.h"
+#include "avium/private/thread-context.h"
 #include "avium/private/virtual.h"
 
 #include "avium/string.h"
@@ -20,14 +20,6 @@
 
 #define _ AvmRuntimeGetResource
 
-static void AvmRuntimeFinalize(object self, void* kind)
-{
-    if (kind == AVM_OBJECT)
-    {
-        AvmObjectFinalize(self);
-    }
-}
-
 //
 // Object functions.
 //
@@ -40,7 +32,11 @@ object AvmObjectNew(const AvmType* type)
     }
 
     object o = AvmAlloc(AvmTypeGetSize(type));
-    GC_register_finalizer(o, AvmRuntimeFinalize, AVM_OBJECT, NULL, NULL);
+    GC_register_finalizer(o,
+                          (GC_finalization_proc)(AvmCallback)AvmObjectFinalize,
+                          NULL,
+                          NULL,
+                          NULL);
     *(const AvmType**)o = type;
 
     return o;
@@ -65,7 +61,7 @@ void AvmObjectSurpressFinalizer(object self)
         assert(self != NULL);
     }
 
-    GC_register_finalizer(self, AvmRuntimeFinalize, AVM_MEMORY, NULL, NULL);
+    GC_register_finalizer(self, NULL, NULL, NULL, NULL);
 }
 
 void* AvmObjectVisit(object self, const AvmMember* member)
@@ -478,28 +474,6 @@ AVM_TYPE(AvmRuntime,
 
 static AvmRuntime __AvmRuntimeState;
 
-AvmExitCode __AvmRuntimeThreadInit(void* s)
-{
-    ThreadState* state = s;
-
-    AvmThrowContext context;
-    __AvmRuntimePushThrowContext(&context);
-    if (setjmp(context._jumpBuffer) == 0)
-    {
-        state->callback(state->arg);
-    }
-    else if (instanceof (object, context._thrownObject))
-    {
-        object e = __AvmRuntimePopThrowContext()->_thrownObject;
-        const AvmThread* t = AvmThreadGetCurrent();
-        AvmErrorf(
-            AVM_UNHANDLED_THROW_FMT_STR, e, e, &context._location, t->_state);
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
-}
-
 AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     GC_INIT();
@@ -512,7 +486,7 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
     return __AvmRuntimeThreadInit(
-        ThreadStateNew(NULL, (AvmThreadCallback)entry));
+        AvmThreadContextNew(NULL, (AvmThreadEntryPoint)entry));
 }
 
 str AvmRuntimeGetProgramName(void)
@@ -658,7 +632,6 @@ void* AvmAlloc(size_t size)
     {
         GC_abort_on_oom();
     }
-    GC_register_finalizer(mem, AvmRuntimeFinalize, AVM_MEMORY, NULL, NULL);
     return mem;
 }
 
@@ -836,17 +809,25 @@ AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 void __AvmRuntimePushThrowContext(AvmThrowContext* context)
 {
     AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
+
     context->_type = typeid(AvmThrowContext);
     context->_thrownObject = NULL;
     context->_prev = t->_context;
+
+    pthread_mutex_lock(t->_lock);
     t->_context = context;
+    pthread_mutex_unlock(t->_lock);
 }
 
 AvmThrowContext* __AvmRuntimePopThrowContext(void)
 {
     AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
     AvmThrowContext* retval = t->_context;
+
+    pthread_mutex_lock(t->_lock);
     t->_context = retval->_prev;
+    pthread_mutex_unlock(t->_lock);
+
     return retval;
 }
 

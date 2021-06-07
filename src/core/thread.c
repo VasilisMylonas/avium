@@ -1,187 +1,310 @@
 #include "avium/thread.h"
 
-#include "avium/private/threads.h"
+#include "avium/private/thread-context.h"
 
+#include "avium/string.h"
 #include "avium/testing.h"
 #include "avium/typeinfo.h"
 
-#include <errno.h>
+#include <pthread.h>
+#include <setjmp.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <bdwgc/include/gc.h>
 
-#ifdef AVM_HAVE_POSIX_THREADS
-#include <pthread.h>
-#else
-#include <process.h>
-#endif
+AVM_TYPE(AvmThreadContext, object, {[FnEntryFinalize] = NULL});
 
-#ifdef AVM_WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-AvmThread AvmThreadNew(AvmThreadCallback callback, object value)
+AvmThreadContext* AvmThreadContextNew(object argument,
+                                      AvmThreadEntryPoint entryPoint)
 {
     pre
     {
-        assert(callback != NULL);
+        assert(entryPoint != NULL);
     }
 
-#ifdef AVM_HAVE_POSIX_THREADS
-    pthread_t handle = 0;
-    int result =
-        GC_pthread_create(&handle,
-                          NULL,
-                          (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
-                          ThreadStateNew(value, callback));
-
-    if (result != 0)
-#else
-    uintptr_t handle = GC_beginthreadex(
-        NULL,
-        0,
-        (_beginthreadex_proc_type)(AvmCallback)__AvmRuntimeThreadInit,
-        ThreadStateNew(value, callback),
-        0,
-        NULL);
-
-    if (handle == NULL)
-#endif
-    {
-        throw(AvmErrorNew("Thread creation failed."));
-    }
-
-    // Return the thread handle.
-    return (AvmThread){
-        ._type = typeid(AvmThread),
-        ._state = (void*)handle,
-        ._context = NULL,
-    };
+    AvmThreadContext* t = AvmObjectNew(typeid(AvmThreadContext));
+    t->_argument = argument;
+    t->_entryPoint = entryPoint;
+    t->_thread = NULL;
+    return t;
 }
 
-AvmExitCode AvmThreadJoin(const AvmThread* self)
+AvmThread* AvmThreadContextGetThread(const AvmThreadContext* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-#ifdef AVM_HAVE_POSIX_THREADS
+    while (self->_thread == NULL)
+    {
+        // Wait.
+    }
+
+    return self->_thread;
+}
+
+void AvmThreadContextEnter(const AvmThreadContext* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    object obj = NULL;
+
+    try
+    {
+        self->_entryPoint(self->_argument);
+    }
+    catch (object, e)
+    {
+        obj = e;
+    }
+
+    pthread_mutex_lock(self->_thread->_lock);
+    self->_thread->_isAlive = false;
+    pthread_mutex_unlock(self->_thread->_lock);
+
+    if (obj != NULL)
+    {
+        throw(obj);
+    }
+}
+
+AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
+{
+    context->_thread = (AvmThread*)AvmThreadGetCurrent();
+
+    AvmThrowContext c;
+    __AvmRuntimePushThrowContext(&c);
+    if (setjmp(c._jumpBuffer) == 0)
+    {
+        AvmThreadContextEnter(context);
+    }
+    else if (instanceof (object, c._thrownObject))
+    {
+        object e = __AvmRuntimePopThrowContext()->_thrownObject;
+        AvmErrorf(
+            AVM_UNHANDLED_THROW_FMT_STR, e, e, &c._location, context->_thread);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static void AvmThreadFinalize(AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    pthread_mutex_lock(self->_lock);
+    bool shouldTerminate = AvmThreadIsAlive(self) && !AvmThreadIsDetached(self);
+    pthread_mutex_unlock(self->_lock);
+
+    if (shouldTerminate)
+    {
+        AvmThreadTerminate(self);
+    }
+
+    pthread_mutex_destroy(self->_lock);
+}
+
+static AvmString AvmThreadToString(const AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(AVM_THREAD_FMT_STR, self->_name, self->_state);
+}
+
+AVM_TYPE(AvmThread,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)AvmThreadToString,
+             [FnEntryFinalize] = (AvmCallback)AvmThreadFinalize,
+         });
+
+AvmThread* AvmThreadNew(AvmThreadEntryPoint entry, object value)
+{
+    pre
+    {
+        assert(entry != NULL);
+    }
+
+    return AvmThreadNewEx(entry, value, 0, NULL, "<anonymous>");
+}
+
+AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
+                          object value,
+                          uint stackSize,
+                          byte* stackPtr,
+                          str name)
+{
+    pre
+    {
+        assert(entry != NULL);
+    }
+
+    AvmThreadContext* context = AvmThreadContextNew(value, entry);
+
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+
+    // TODO: These should be available through AvmThread.
+    (void)name;
+    if (stackSize != 0 && stackPtr != NULL)
+    {
+        pthread_attr_setstack(&attr, stackPtr, stackSize);
+    }
+
+    pthread_t id = 0;
+    int result =
+        GC_pthread_create(&id,
+                          &attr,
+                          (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
+                          context);
+
+    pthread_attr_destroy(&attr);
+
+    if (result != 0)
+    {
+        throw(AvmErrorNew("Thread creation failed."));
+    }
+
+    return AvmThreadContextGetThread(context);
+}
+
+bool AvmThreadIsDetached(const AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_isDetached;
+}
+
+bool AvmThreadIsAlive(const AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_isAlive;
+}
+
+str AvmThreadGetName(const AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_name;
+}
+
+uint AvmThreadGetCurrentID()
+{
+    return gettid();
+}
+
+const AvmThread* AvmThreadGetCurrent()
+{
+    static thread_local AvmThread* thread = NULL;
+
+    if (thread == NULL)
+    {
+        thread = AvmObjectNew(typeid(AvmThread));
+        thread->_lock = AvmAlloc(sizeof(pthread_mutex_t));
+        pthread_mutex_init(thread->_lock, NULL);
+
+        // No need to lock here since the thread object isn't yet accessible.
+        thread->_isAlive = true;
+        thread->_isDetached = false;
+        thread->_state = (void*)pthread_self();
+    }
+
+    return thread;
+}
+
+AvmExitCode AvmThreadJoin(AvmThread* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
     void* exitCode = NULL;
 
     if (GC_pthread_join((pthread_t)self->_state, &exitCode) != 0)
     {
         throw(AvmErrorNew("Could not join the requested thread."));
     }
-#else
-    DWORD exitCode = 0;
 
-    if (WaitForSingleObject((HANDLE)self->_state, INFINITE) == WAIT_FAILED &&
-        GetExitCodeThread((HANDLE)self->_state, &exitCode) == 0)
-    {
-        CloseHandle((HANDLE)self->_state);
-    }
-    else
-    {
-        CloseHandle((HANDLE)self->_state);
-        throw(AvmErrorNew("Could not join the requested thread."));
-    }
-#endif
+    pthread_mutex_lock(self->_lock);
+    self->_isAlive = false;
+    pthread_mutex_unlock(self->_lock);
 
     return (AvmExitCode)(ulong)exitCode;
 }
 
-never AvmThreadExit(AvmExitCode code)
+void AvmThreadDetach(AvmThread* self)
 {
-#ifdef AVM_HAVE_POSIX_THREADS
-    GC_pthread_exit((void*)(ulong)code);
-#else
-    GC_endthreadex(code);
-#endif
-}
-
-const AvmThread* AvmThreadGetCurrent(void)
-{
-    static thread_local AvmThread thread = {
-        ._type = NULL,
-        ._state = NULL,
-        ._context = NULL,
-    };
-
-    if (thread._type == NULL)
+    pre
     {
-        thread._type = typeid(AvmThread);
-#ifdef AVM_HAVE_POSIX_THREADS
-        thread._state = (void*)pthread_self();
-#else
-        thread._state = (void*)GetCurrentThread();
-#endif
+        assert(self != NULL);
     }
 
-    return &thread;
+    GC_pthread_detach((pthread_t)self->_state);
+
+    pthread_mutex_lock(self->_lock);
+    self->_isDetached = true;
+    pthread_mutex_unlock(self->_lock);
 }
 
 void AvmThreadSleep(uint ms)
 {
-#ifdef AVM_WIN32
-    Sleep(ms);
-#else
     usleep(ms * 1000);
-#endif
 }
 
-AVM_TYPE(AvmThread, object, {[FnEntryFinalize] = NULL});
-
-#ifndef AVM_WIN32
-AVM_TYPE(AvmMutex, object, {[FnEntryFinalize] = NULL});
-
-AvmMutex AvmMutexNew()
+void AvmThreadYield()
 {
-    // TODO: Register finalizer.
-    pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
-
-    int result = pthread_mutex_init(mutex, NULL);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
-
-    return (AvmMutex){
-        ._type = typeid(AvmMutex),
-        ._mutex = mutex,
-    };
+    sched_yield();
 }
 
-void AvmMutexLock(const AvmMutex* self)
+never AvmThreadExit(AvmExitCode code)
 {
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    int result = pthread_mutex_lock(self->_mutex);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
+    // TODO: Possible future deinitialization code could be here.
+    // Perhaps we could longjmp into __AvmRuntimeThreadInit and continue from
+    // there?
+    AvmThreadFastExit(code);
 }
 
-void AvmMutexUnlock(const AvmMutex* self)
+never AvmThreadFastExit(AvmExitCode code)
 {
-    pre
-    {
-        assert(self != NULL);
-    }
+    AvmThread* self = (AvmThread*)AvmThreadGetCurrent();
 
-    int result = pthread_mutex_unlock(self->_mutex);
+    pthread_mutex_lock(self->_lock);
+    self->_isAlive = false;
+    pthread_mutex_unlock(self->_lock);
 
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
+    GC_pthread_exit((void*)(ulong)code);
 }
-#endif
+
+void AvmThreadTerminate(AvmThread* self)
+{
+    AvmObjectSurpressFinalizer(self);
+
+    GC_pthread_cancel((pthread_t)self->_state);
+
+    pthread_mutex_lock(self->_lock);
+    self->_isAlive = false;
+    pthread_mutex_unlock(self->_lock);
+}

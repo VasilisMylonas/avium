@@ -201,7 +201,7 @@ AVMAPI void AvmObjectFinalize(object self);
  * @brief Disables the finalizer of an object.
  *
  * When called makes the runtime ignore finalization of the object. This may be
- * useful if writing functions that deterministically finalizes an object.
+ * useful if writing functions that deterministically finalize an object.
  *
  * This function is not overridable.
  *
@@ -590,7 +590,6 @@ AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
 AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
-AVMAPI AvmExitCode __AvmRuntimeThreadInit(void*);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H
