@@ -2,7 +2,7 @@
 #define AVIUM_PRIVATE_THREADS_H
 
 #include "avium/core.h"
-#include "avium/threads.h"
+#include "avium/thread.h"
 
 typedef struct
 {

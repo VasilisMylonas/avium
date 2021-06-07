@@ -1,4 +1,4 @@
-#include "avium/threads.h"
+#include "avium/thread.h"
 
 #include "avium/private/threads.h"
 

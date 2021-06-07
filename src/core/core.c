@@ -5,7 +5,7 @@
 
 #include "avium/string.h"
 #include "avium/testing.h"
-#include "avium/threads.h"
+#include "avium/thread.h"
 #include "avium/typeinfo.h"
 
 #include <stdio.h>

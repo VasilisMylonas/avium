@@ -1,5 +1,5 @@
-#ifndef AVIUM_THREADS_H
-#define AVIUM_THREADS_H
+#ifndef AVIUM_THREAD_H
+#define AVIUM_THREAD_H
 
 #include "avium/core.h"
 
@@ -54,4 +54,4 @@ AVMAPI AvmExitCode AvmThreadJoin(const AvmThread* thread);
  */
 AVMAPI void AvmThreadSleep(uint ms);
 
-#endif // AVIUM_THREADS_H
+#endif // AVIUM_THREAD_H
