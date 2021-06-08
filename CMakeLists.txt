@@ -17,10 +17,12 @@ set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
+include(CheckSymbolExists)
 include(CTest)
 
 find_package(Threads REQUIRED)
 
+check_symbol_exists(pthread_setname_np "pthread.h" AVM_HAVE_PTHREAD_SETNAME)
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UNICODE)
 check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
@@ -29,10 +31,9 @@ option(AVM_THROW_ON_CAST_FAIL "Should cast() throw an exception on failure?" ON)
 option(AVM_THROW_AUTO_CLONE "Should throw() automaticaly clone a stack object?" ON)
 option(AVM_INSERT_INIT_CODE "Insert runtime initialization code?" ON)
 
-add_definitions(
-    -DGC_THREADS -D_REENTRANT
-    -D_CRT_SECURE_NO_WARNINGS
-    -DWIN32_LEAN_AND_MEAN
+add_compile_definitions(
+    _CRT_SECURE_NO_WARNINGS GC_THREADS _REENTRANT
+    WIN32_LEAN_AND_MEAN _GNU_SOURCE
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

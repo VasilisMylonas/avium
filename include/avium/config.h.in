@@ -17,6 +17,7 @@
 #cmakedefine AVM_HAVE_BACKTRACE
 #cmakedefine AVM_HAVE_WIN32_THREADS
 #cmakedefine AVM_HAVE_POSIX_THREADS
+#cmakedefine AVM_HAVE_PTHREAD_SETNAME
 #cmakedefine AVM_THROW_ON_CAST_FAIL
 #cmakedefine AVM_THROW_AUTO_CLONE
 #cmakedefine AVM_INSERT_INIT_CODE
@@ -48,7 +49,6 @@
 #define never __declspec(noreturn) void
 #define typeof(T) decltype(T)
 #else
-#define _GNU_SOURCE
 #ifndef alignof
 #define alignof _Alignof
 #endif

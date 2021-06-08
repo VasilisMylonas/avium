@@ -17,6 +17,10 @@ void __AvmThreadContextSetThread(AvmThreadContext* self)
     // This would be bad.
     assert(state != NULL);
 
+#ifdef AVM_HAVE_PTHREAD_SETNAME
+    pthread_setname_np((pthread_t)state, name);
+#endif
+
     self->_thread->_state = state;
 }
 
