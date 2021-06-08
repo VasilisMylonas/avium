@@ -1,4 +1,4 @@
-add_library(avm-core STATIC core.c string.c typeinfo.c thread.c)
+add_library(avm-core STATIC core.c string.c typeinfo.c thread.c thread-posix.c)
 target_link_libraries(avm-core PRIVATE gc Threads::Threads)
 
 target_include_directories(avm-core

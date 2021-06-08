@@ -3,14 +3,27 @@
 
 #include "avium/core.h"
 
+AVM_CLASS(AvmMutex, object, { void* _state; });
+
 AVM_CLASS(AvmThread, object, {
-    void* _state;
-    void* _lock;
     AvmThrowContext* _context;
+    void* _state;
+    AvmMutex _lock;
     str _name;
-    volatile bool _isAlive;
-    volatile bool _isDetached;
+    byte* _stackPtr;
+    bool _isAlive;
+    bool _isDetached;
+    uint _stackSize;
 });
+
+#define lock(mutex)                                                            \
+    AvmMutexLock(mutex);                                                       \
+    for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
+         AVM_UNIQUE(__avmMC)++, AvmMutexUnlock(mutex))
+
+AVMAPI AvmMutex AvmMutexNew();
+AVMAPI void AvmMutexUnlock(const AvmMutex* self);
+AVMAPI void AvmMutexLock(const AvmMutex* self);
 
 typedef void (*AvmThreadEntryPoint)(object);
 
@@ -36,5 +49,8 @@ AVMAPI void AvmThreadYield();
 AVMAPI never AvmThreadExit(AvmExitCode code);
 AVMAPI never AvmThreadFastExit(AvmExitCode code);
 AVMAPI void AvmThreadTerminate(AvmThread* self);
+
+AVMAPI byte* AvmThreadGetStackPtr(const AvmThread* self);
+AVMAPI uint AvmThreadGetStackSize(const AvmThread* self);
 
 #endif // AVIUM_THREAD_H

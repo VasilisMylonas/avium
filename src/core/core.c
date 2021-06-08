@@ -485,8 +485,11 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     __AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
-    return __AvmRuntimeThreadInit(
-        AvmThreadContextNew(NULL, (AvmThreadEntryPoint)entry));
+    // TODO: Proper stack size and pointer.
+    return __AvmRuntimeThreadInit(AvmThreadContextNew(
+        NULL,
+        (AvmThreadEntryPoint)entry,
+        __AvmRuntimeCreateThreadObject("main", false, 0, NULL)));
 }
 
 str AvmRuntimeGetProgramName(void)
@@ -814,9 +817,10 @@ void __AvmRuntimePushThrowContext(AvmThrowContext* context)
     context->_thrownObject = NULL;
     context->_prev = t->_context;
 
-    pthread_mutex_lock(t->_lock);
-    t->_context = context;
-    pthread_mutex_unlock(t->_lock);
+    lock(&t->_lock)
+    {
+        t->_context = context;
+    }
 }
 
 AvmThrowContext* __AvmRuntimePopThrowContext(void)
@@ -824,9 +828,10 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
     AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
     AvmThrowContext* retval = t->_context;
 
-    pthread_mutex_lock(t->_lock);
-    t->_context = retval->_prev;
-    pthread_mutex_unlock(t->_lock);
+    lock(&t->_lock)
+    {
+        t->_context = retval->_prev;
+    }
 
     return retval;
 }
