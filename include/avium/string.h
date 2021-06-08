@@ -107,23 +107,23 @@ AVMAPI AvmString AvmStringFrom(str contents);
 typedef enum
 {
     /// Base 2 (00010000).
-    NumericBaseBinary = 2,
+    AvmNumericBaseBinary = 2,
 
     /// Base 8 (20).
-    NumericBaseOctal = 8,
+    AvmNumericBaseOctal = 8,
 
     /// Base 10 (16).
-    NumericBaseDecimal = 10,
+    AvmNumericBaseDecimal = 10,
 
     /// Base 16 (10).
-    NumericBaseHex = 16,
+    AvmNumericBaseHex = 16,
 } AvmNumericBase;
 
 typedef enum
 {
-    FloatReprSimple = 0,
-    FloatReprScientific,
-    FloatReprAuto,
+    AvmFloatReprSimple = 0,
+    AvmFloatReprScientific,
+    AvmFloatReprAuto,
 } AvmFloatRepr;
 
 AVMAPI AvmString AvmStringFromInt(_long value);

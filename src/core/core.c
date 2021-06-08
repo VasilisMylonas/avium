@@ -221,7 +221,7 @@ static AvmString unsignedToString(const AvmBox* self)
         assert(self != NULL);
     }
 
-    return AvmStringFromUint(self->AsUint, NumericBaseDecimal);
+    return AvmStringFromUint(self->AsUint, AvmNumericBaseDecimal);
 }
 
 static bool unsignedEquals(const AvmBox* self, const AvmBox* other)
@@ -242,7 +242,7 @@ static AvmString floatToString(const AvmBox* self)
         assert(self != NULL);
     }
 
-    return AvmStringFromFloat(self->AsFloat, FloatReprAuto);
+    return AvmStringFromFloat(self->AsFloat, AvmFloatReprAuto);
 }
 
 static bool floatEquals(const AvmBox* self, const AvmBox* other)

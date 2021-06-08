@@ -230,10 +230,10 @@ AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
 {
     pre
     {
-        assert(numericBase == NumericBaseBinary ||
-               numericBase == NumericBaseOctal ||
-               numericBase == NumericBaseDecimal ||
-               numericBase == NumericBaseHex);
+        assert(numericBase == AvmNumericBaseBinary ||
+               numericBase == AvmNumericBaseOctal ||
+               numericBase == AvmNumericBaseDecimal ||
+               numericBase == AvmNumericBaseHex);
     }
 
     AvmString s = AvmStringNew(AVM_STRING_DEFAULT_CAPACITY);
@@ -359,21 +359,21 @@ AvmString AvmStringFromFloat(double value, AvmFloatRepr repr)
 {
     pre
     {
-        assert(repr == FloatReprSimple || repr == FloatReprScientific ||
-               repr == FloatReprAuto);
+        assert(repr == AvmFloatReprSimple || repr == AvmFloatReprScientific ||
+               repr == AvmFloatReprAuto);
     }
 
     str fmt = NULL;
 
     switch (repr)
     {
-    case FloatReprSimple:
+    case AvmFloatReprSimple:
         fmt = "%lf";
         break;
-    case FloatReprScientific:
+    case AvmFloatReprScientific:
         fmt = "%le";
         break;
-    case FloatReprAuto:
+    case AvmFloatReprAuto:
         fmt = "%lg";
         break;
     }
@@ -1147,13 +1147,13 @@ void AvmStringPushUint(AvmString* self, ulong value, AvmNumericBase numericBase)
     AvmString temp = AvmStringFromUint(value, numericBase);
     switch (numericBase)
     {
-    case NumericBaseBinary:
+    case AvmNumericBaseBinary:
         AvmStringPushStr(self, AVM_FMT_BINARY_PREFIX);
         break;
-    case NumericBaseOctal:
+    case AvmNumericBaseOctal:
         AvmStringPushStr(self, AVM_FMT_OCTAL_PREFIX);
         break;
-    case NumericBaseHex:
+    case AvmNumericBaseHex:
         AvmStringPushStr(self, AVM_FMT_HEX_PREFIX);
         break;
     default:
@@ -1225,34 +1225,36 @@ static void AvmFormat(char c, AvmString* string, va_list args)
 #ifdef AVM_HAVE_UNICODE
     case AVM_FMT_UNICODE:
         AvmStringPushStr(string, AVM_FMT_UNICODE_PREFIX);
-        AvmStringPushUint(string, va_arg(args, char32_t), NumericBaseDecimal);
+        AvmStringPushUint(
+            string, va_arg(args, char32_t), AvmNumericBaseDecimal);
         break;
 #endif
     case AVM_FMT_INT_SIZE:
     case AVM_FMT_INT_UNSIGNED:
-        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseDecimal);
+        AvmStringPushUint(string, va_arg(args, ulong), AvmNumericBaseDecimal);
         break;
     case AVM_FMT_INT_DECIMAL:
         AvmStringPushInt(string, va_arg(args, _long));
         break;
     case AVM_FMT_INT_OCTAL:
-        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseOctal);
+        AvmStringPushUint(string, va_arg(args, ulong), AvmNumericBaseOctal);
         break;
     case AVM_FMT_POINTER:
     case AVM_FMT_INT_HEX:
-        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseHex);
+        AvmStringPushUint(string, va_arg(args, ulong), AvmNumericBaseHex);
         break;
     case AVM_FMT_INT_BINARY:
-        AvmStringPushUint(string, va_arg(args, ulong), NumericBaseBinary);
+        AvmStringPushUint(string, va_arg(args, ulong), AvmNumericBaseBinary);
         break;
     case AVM_FMT_FLOAT:
-        AvmStringPushFloat(string, va_arg(args, double), FloatReprSimple);
+        AvmStringPushFloat(string, va_arg(args, double), AvmFloatReprSimple);
         break;
     case AVM_FMT_FLOAT_EXP:
-        AvmStringPushFloat(string, va_arg(args, double), FloatReprScientific);
+        AvmStringPushFloat(
+            string, va_arg(args, double), AvmFloatReprScientific);
         break;
     case AVM_FMT_FLOAT_AUTO:
-        AvmStringPushFloat(string, va_arg(args, double), FloatReprAuto);
+        AvmStringPushFloat(string, va_arg(args, double), AvmFloatReprAuto);
         break;
     case AVM_FMT_CHAR:
         AvmStringPushChar(string, (char)va_arg(args, int));
@@ -1272,7 +1274,7 @@ static void AvmFormat(char c, AvmString* string, va_list args)
         AvmStringPushUint(
             string,
             AvmTypeGetSize(AvmObjectGetType(va_arg(args, object))),
-            NumericBaseDecimal);
+            AvmNumericBaseDecimal);
         break;
     case AVM_FMT_VALUE:
         AvmStringPushValue(string, va_arg(args, object));
@@ -1407,18 +1409,19 @@ static void AvmParse(char c, uint* index, char* buffer, va_list args)
         AvmParseInt(index, buffer, va_arg(args, _long*));
         break;
     case AVM_FMT_INT_BINARY:
-        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseBinary);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), AvmNumericBaseBinary);
         break;
     case AVM_FMT_INT_OCTAL:
-        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseOctal);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), AvmNumericBaseOctal);
         break;
     case AVM_FMT_INT_SIZE:
     case AVM_FMT_INT_UNSIGNED:
-        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseDecimal);
+        AvmParseUint(
+            index, buffer, va_arg(args, ulong*), AvmNumericBaseDecimal);
         break;
     case AVM_FMT_POINTER:
     case AVM_FMT_INT_HEX:
-        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseHex);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), AvmNumericBaseHex);
         break;
     case AVM_FMT_STRING:
         AvmParseStr(index, buffer, va_arg(args, char*), va_arg(args, uint));

@@ -373,7 +373,7 @@ static AvmString AvmFunctionToString(const AvmFunction* self)
     AvmStringPushStr(&s, "function ");
     AvmStringPushStr(&s, self->_name);
     AvmStringPushStr(&s, " (");
-    AvmStringPushUint(&s, self->_paramCount, NumericBaseDecimal);
+    AvmStringPushUint(&s, self->_paramCount, AvmNumericBaseDecimal);
     if (self->_paramCount == 1)
     {
         AvmStringPushStr(&s, " parameter)");
