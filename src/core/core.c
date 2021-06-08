@@ -20,7 +20,7 @@
 
 #define _ AvmRuntimeGetResource
 
-static AvmRuntime __AvmRuntimeState;
+static AvmRuntime AvmRuntimeState;
 
 //
 // Object functions.
@@ -478,11 +478,11 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     GC_INIT();
 
-    __AvmRuntimeState._type = typeid(AvmRuntime);
-    __AvmRuntimeState._argc = (uint)(argc - 1);
-    __AvmRuntimeState._argv = argv + 1;
-    __AvmRuntimeState._name = AVM_RUNTIME_NAME;
-    __AvmRuntimeState._version =
+    AvmRuntimeState._type = typeid(AvmRuntime);
+    AvmRuntimeState._argc = (uint)(argc - 1);
+    AvmRuntimeState._argv = argv + 1;
+    AvmRuntimeState._name = AVM_RUNTIME_NAME;
+    AvmRuntimeState._version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
     // TODO: Proper stack size and pointer.
@@ -494,22 +494,22 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 
 str AvmRuntimeGetProgramName(void)
 {
-    return __AvmRuntimeState._argv[-1];
+    return AvmRuntimeState._argv[-1];
 }
 
 AvmVersion AvmRuntimeGetVersion(void)
 {
-    return __AvmRuntimeState._version;
+    return AvmRuntimeState._version;
 }
 
 uint AvmRuntimeGetArgCount(void)
 {
-    return __AvmRuntimeState._argc;
+    return AvmRuntimeState._argc;
 }
 
 str* AvmRuntimeGetArgs(void)
 {
-    return __AvmRuntimeState._argv;
+    return AvmRuntimeState._argv;
 }
 
 AvmString AvmRuntimeGetBacktrace(void)
