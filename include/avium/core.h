@@ -567,6 +567,7 @@ AVM_CLASS(AvmBox, object, {
              : AvmRuntimeBoxStr, char*                                         \
              : AvmRuntimeBoxStr)(x)
 
+AVMAPI bool AvmRuntimeIsHeapObject(object o);
 AVMAPI AvmBox AvmRuntimeBoxInt(_long value);
 AVMAPI AvmBox AvmRuntimeBoxFloat(double value);
 AVMAPI AvmBox AvmRuntimeBoxUint(ulong value);

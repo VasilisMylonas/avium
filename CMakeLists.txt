@@ -9,8 +9,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(enable_threads ON) # This is for bdwgc
 set(AVM_BUILDING ON)
-set(enable_threads ON)
+set(AVM_MSVC_COMPILE_OPTIONS /W4)
+set(AVM_GNU_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror)
+set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
@@ -23,6 +26,7 @@ check_include_file(uchar.h AVM_HAVE_UNICODE)
 check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
 
 option(AVM_THROW_ON_CAST_FAIL "Should cast() throw an exception on failure?" ON)
+option(AVM_THROW_AUTO_CLONE "Should throw() automaticaly clone a stack object?" ON)
 option(AVM_INSERT_INIT_CODE "Insert runtime initialization code?" ON)
 
 add_definitions(
@@ -46,13 +50,11 @@ endif()
 
 if(MSVC)
     set(AVM_MSVC ON)
-    add_compile_options(/W4)
 else()
     set(AVM_GNU ON)
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
-        add_compile_options(-fprofile-arcs -ftest-coverage)
-        add_link_options(-fprofile-arcs -ftest-coverage)
+        add_compile_options(${AVM_GNU_COVERAGE_OPTIONS})
+        add_link_options(${AVM_GNU_COVERAGE_OPTIONS})
     endif()
 endif()
 

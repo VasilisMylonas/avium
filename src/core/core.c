@@ -492,6 +492,16 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
         __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0, NULL)));
 }
 
+bool AvmRuntimeIsHeapObject(object o)
+{
+    pre
+    {
+        assert(o != NULL);
+    }
+
+    return GC_is_heap_ptr(o);
+}
+
 str AvmRuntimeGetProgramName(void)
 {
     return AvmRuntimeState._argv[-1];
@@ -547,7 +557,17 @@ never AvmRuntimeThrow(object value, AvmLocation location)
     pre
     {
         assert(value != NULL);
+#ifndef AVM_THROW_AUTO_CLONE
+        assert(AvmRuntimeIsHeapObject(value));
+#endif
     }
+
+#ifdef AVM_THROW_AUTO_CLONE
+    if (!AvmRuntimeIsHeapObject(value))
+    {
+        value = AvmObjectClone(value);
+    }
+#endif
 
     const AvmThread* t = AvmThreadGetCurrent();
 
