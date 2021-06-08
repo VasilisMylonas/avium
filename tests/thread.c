@@ -14,6 +14,8 @@ void ThreadProc(object value)
     }
 }
 
+#include <pthread.h>
+
 void Main()
 {
     AvmThread* thread = AvmThreadNew(ThreadProc, NULL);

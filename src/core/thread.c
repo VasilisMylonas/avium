@@ -60,7 +60,7 @@ AvmThread* __AvmThreadNewObject(str name,
                                 byte* stackPtr)
 {
     AvmThread* thread = AvmObjectNew(typeid(AvmThread));
-    thread->_lock = AvmMutexNew();
+    thread->_lock = AvmMutexNew(false);
     thread->_isAlive = true;
     thread->_isDetached = isDetached;
     thread->_name = name;

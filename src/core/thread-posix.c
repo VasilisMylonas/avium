@@ -145,9 +145,25 @@ void AvmThreadTerminate(AvmThread* self)
     }
 }
 
-AvmMutex AvmMutexNew()
+AvmMutex AvmMutexNew(bool isRecursive)
 {
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+
+    if (isRecursive)
+    {
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    }
+
     pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
+    int result = pthread_mutex_init(mutex, &attr);
+
+    pthread_mutexattr_destroy(&attr);
+
+    if (result != 0)
+    {
+        throw(AvmErrorFromOSCode(result));
+    }
 
     // We register a custom 'finalizer'.
     GC_register_finalizer(
@@ -156,13 +172,6 @@ AvmMutex AvmMutexNew()
         NULL,
         NULL,
         NULL);
-
-    int result = pthread_mutex_init(mutex, NULL);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
 
     return (AvmMutex){
         ._type = typeid(AvmMutex),
