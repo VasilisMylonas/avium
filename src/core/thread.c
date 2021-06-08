@@ -6,13 +6,53 @@
 
 #include "avium/private/thread-context.h"
 
+#include <stdlib.h>
+
 #ifdef AVM_WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
 #endif
 
+static thread_local AvmThread* AvmCurrentThread = NULL;
+
 AVM_TYPE(AvmThreadContext, object, {[FnEntryFinalize] = NULL});
+
+AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
+{
+    AvmCurrentThread = context->_thread;
+
+    // At the same time AvmThreadContextGetThread will return.
+    // Thread setup is now complete.
+    __AvmThreadContextSetThread(context);
+
+    // Time to handle uncaught thrown objects.
+    AvmThrowContext c;
+    __AvmRuntimePushThrowContext(&c);
+    if (setjmp(c._jumpBuffer) == 0)
+    {
+        // Start executing the user code.
+        __AvmThreadContextEnter(context);
+    }
+    else if (instanceof (object, c._thrownObject))
+    {
+        // We caught something!
+        object e = __AvmRuntimePopThrowContext()->_thrownObject;
+        AvmErrorf(
+            AVM_UNHANDLED_THROW_FMT_STR, e, e, &c._location, context->_thread);
+        return EXIT_FAILURE;
+    }
+    else
+    {
+        // We caught something that was not an instance of `object`. This should
+        // never happen, but if it does it should be fatal. This should also
+        // probably crash at instanceof since it makes some assumptions about
+        // struct layout.
+        abort();
+    }
+
+    return EXIT_SUCCESS;
+}
 
 AvmThread* __AvmThreadNewObject(str name,
                                 bool isDetached,
@@ -29,9 +69,9 @@ AvmThread* __AvmThreadNewObject(str name,
     return thread;
 }
 
-AvmThreadContext* AvmThreadContextNew(object argument,
-                                      AvmThreadEntryPoint entryPoint,
-                                      AvmThread* thread)
+AvmThreadContext* __AvmThreadContextNew(object argument,
+                                        AvmThreadEntryPoint entryPoint,
+                                        AvmThread* thread)
 {
     pre
     {
@@ -45,7 +85,7 @@ AvmThreadContext* AvmThreadContextNew(object argument,
     return t;
 }
 
-void AvmThreadContextEnter(const AvmThreadContext* self)
+void __AvmThreadContextEnter(const AvmThreadContext* self)
 {
     pre
     {
@@ -63,18 +103,13 @@ void AvmThreadContextEnter(const AvmThreadContext* self)
         obj = e;
     }
 
-    lock(&self->_thread->_lock)
-    {
-        self->_thread->_isAlive = false;
-    }
-
     if (obj != NULL)
     {
         throw(obj);
     }
 }
 
-AvmThread* AvmThreadContextGetThread(const AvmThreadContext* self)
+AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self)
 {
     pre
     {
@@ -147,6 +182,11 @@ uint AvmThreadGetStackSize(const AvmThread* self)
     }
 
     return self->_stackSize;
+}
+
+const AvmThread* AvmThreadGetCurrent()
+{
+    return AvmCurrentThread;
 }
 
 void AvmThreadSleep(uint ms)

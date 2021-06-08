@@ -10,14 +10,23 @@ AVM_CLASS(AvmThreadContext, object, {
     AvmThread* _thread;
 });
 
-AVMHIDDEN AvmThreadContext* AvmThreadContextNew(object argument,
-                                                AvmThreadEntryPoint entryPoint,
-                                                AvmThread* thread);
+// Creates a new thread context.
+AVMHIDDEN AvmThreadContext* __AvmThreadContextNew(
+    object argument, AvmThreadEntryPoint entryPoint, AvmThread* thread);
 
-AVMHIDDEN AvmThread* AvmThreadContextGetThread(const AvmThreadContext* self);
-AVMHIDDEN void AvmThreadContextEnter(const AvmThreadContext* self);
+// Waits for the thread in the specified thread context to become available.
+AVMHIDDEN AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self);
+
+// Makes the current thread available in the specified thread context.
+AVMHIDDEN void __AvmThreadContextSetThread(AvmThreadContext* self);
+
+// Begins executing in the specified thread context.
+AVMHIDDEN void __AvmThreadContextEnter(const AvmThreadContext* self);
+
+// This is the first thing that runs in a newly created thread.
 AVMHIDDEN AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context);
 
+// Creates a thread object (just the object not the thread itself).
 AVMHIDDEN AvmThread* __AvmThreadNewObject(str name,
                                           bool isDetached,
                                           uint stackSize,

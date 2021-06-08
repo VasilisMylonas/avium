@@ -111,6 +111,7 @@
 #define AVM_CTI_NAME(E) _CTI_##E
 
 #define AVM_THREAD_DEFAULT_NAME "<anonymous>"
+#define AVM_THREAD_MAIN_NAME    "main"
 
 #define AVM_OBJECT_FMT_STR    "%s [%x]"
 #define AVM_LOCATION_FMT_STR  "%s:%u"

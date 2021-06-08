@@ -6,38 +6,18 @@
 #include "avium/private/thread-context.h"
 
 #include <pthread.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #include <bdwgc/include/gc.h>
 
-static thread_local AvmThread* AvmCurrentThread = NULL;
-
-// This is the first thing that runs in a newly created thread.
-AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
+void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
-    AvmCurrentThread = context->_thread;
+    void* state = (void*)pthread_self();
 
-    // This can only be done from this thread.
-    // At the same time AvmThreadContextGetThread will return from the other
-    // thread.
-    AvmCurrentThread->_state = (void*)pthread_self();
+    // This would be bad.
+    assert(state != NULL);
 
-    AvmThrowContext c;
-    __AvmRuntimePushThrowContext(&c);
-    if (setjmp(c._jumpBuffer) == 0)
-    {
-        AvmThreadContextEnter(context);
-    }
-    else if (instanceof (object, c._thrownObject))
-    {
-        object e = __AvmRuntimePopThrowContext()->_thrownObject;
-        AvmErrorf(
-            AVM_UNHANDLED_THROW_FMT_STR, e, e, &c._location, context->_thread);
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    self->_thread->_state = state;
 }
 
 AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
@@ -70,7 +50,7 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
 
     AvmThread* thread = __AvmThreadNewObject(name, false, stackSize, stackPtr);
 
-    AvmThreadContext* context = AvmThreadContextNew(value, entry, thread);
+    AvmThreadContext* context = __AvmThreadContextNew(value, entry, thread);
 
     pthread_t id = 0;
     int result =
@@ -86,12 +66,7 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
         throw(AvmErrorNew("Thread creation failed."));
     }
 
-    return AvmThreadContextGetThread(context);
-}
-
-const AvmThread* AvmThreadGetCurrent()
-{
-    return AvmCurrentThread;
+    return __AvmThreadContextGetThread(context);
 }
 
 uint AvmThreadGetCurrentID()

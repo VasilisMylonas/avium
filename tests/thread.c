@@ -14,16 +14,6 @@ void ThreadProc(object value)
     }
 }
 
-// typedef enum
-// {
-//     AvmThreadPriorityDefault,
-//     AvmThreadPriorityLow,
-//     AvmThreadPriorityMedium,
-//     AvmThreadPriorityHigh,
-// } AvmThreadPriority;
-
-// AVMAPI AvmThreadPriority AvmThreadGetPriority(const AvmThread* self);
-
 void Main()
 {
     AvmThread* thread = AvmThreadNew(ThreadProc, NULL);
@@ -32,8 +22,6 @@ void Main()
     assert(!AvmThreadIsDetached(thread));
 
     AvmThreadDetach(thread);
-
-    AvmPrintf("%v\n", typeid(AvmThread));
 
     assert(AvmThreadIsAlive(thread));
     assert(AvmThreadIsDetached(thread));

@@ -486,10 +486,10 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
     // TODO: Proper stack size and pointer.
-    return __AvmRuntimeThreadInit(
-        AvmThreadContextNew(NULL,
-                            (AvmThreadEntryPoint)entry,
-                            __AvmThreadNewObject("main", false, 0, NULL)));
+    return __AvmRuntimeThreadInit(__AvmThreadContextNew(
+        NULL,
+        (AvmThreadEntryPoint)entry,
+        __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0, NULL)));
 }
 
 str AvmRuntimeGetProgramName(void)
