@@ -10,6 +10,8 @@
 
 #include <bdwgc/include/gc.h>
 
+#define _ AvmRuntimeGetResource
+
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
     void* state = (void*)pthread_self();
@@ -27,7 +29,6 @@ void __AvmThreadContextSetThread(AvmThreadContext* self)
 AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
                           object value,
                           uint stackSize,
-                          byte* stackPtr,
                           str name)
 {
     pre
@@ -39,43 +40,29 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
     pthread_attr_t attr;
     pthread_attr_init(&attr);
 
-    if (stackSize != 0 && stackPtr != NULL)
+    if (stackSize != 0)
     {
-        pthread_attr_setstack(&attr, stackPtr, stackSize);
-    }
-    else
-    {
-        size_t stackSize2 = 0;
-        void* stackPtr2 = NULL;
-        pthread_attr_getstack(&attr, &stackPtr2, &stackSize2);
-        stackSize = (uint)stackSize2;
-        stackPtr = (byte*)stackPtr2;
+        if (pthread_attr_setstacksize(&attr, stackSize) != 0)
+        {
+            throw(AvmErrorNew(_(AvmInvalidStackSizeErrorMsg)));
+        }
     }
 
-    AvmThread* thread = __AvmThreadNewObject(name, false, stackSize, stackPtr);
-
+    AvmThread* thread = __AvmThreadNewObject(name, false, stackSize);
     AvmThreadContext* context = __AvmThreadContextNew(value, entry, thread);
 
     pthread_t id = 0;
-    int result =
-        GC_pthread_create(&id,
+    if (GC_pthread_create(&id,
                           &attr,
                           (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
-                          context);
-
-    pthread_attr_destroy(&attr);
-
-    if (result != 0)
+                          context))
     {
-        throw(AvmErrorNew("Thread creation failed."));
+        pthread_attr_destroy(&attr);
+        throw(AvmErrorNew(_(AvmThreadCreationErrorMsg)));
     }
 
+    pthread_attr_destroy(&attr);
     return __AvmThreadContextGetThread(context);
-}
-
-uint AvmThreadGetCurrentID()
-{
-    return gettid();
 }
 
 AvmExitCode AvmThreadJoin(AvmThread* self)
@@ -89,7 +76,7 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
 
     if (GC_pthread_join((pthread_t)self->_state, &exitCode) != 0)
     {
-        throw(AvmErrorNew("Could not join the requested thread."));
+        throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
     }
 
     lock(&self->_lock)
@@ -107,7 +94,10 @@ void AvmThreadDetach(AvmThread* self)
         assert(self != NULL);
     }
 
-    GC_pthread_detach((pthread_t)self->_state);
+    if (GC_pthread_detach((pthread_t)self->_state) != 0)
+    {
+        throw(AvmErrorNew(_(AvmThreadDetachErrorMsg)));
+    }
 
     lock(&self->_lock)
     {
@@ -120,7 +110,7 @@ void AvmThreadYield()
     sched_yield();
 }
 
-never AvmThreadFastExit(AvmExitCode code)
+never AvmThreadExit(AvmExitCode code)
 {
     AvmThread* self = (AvmThread*)AvmThreadGetCurrent();
 
@@ -141,11 +131,14 @@ void AvmThreadTerminate(AvmThread* self)
 
     AvmObjectSurpressFinalizer(self);
 
-    GC_pthread_cancel((pthread_t)self->_state);
-
     lock(&self->_lock)
     {
         self->_isAlive = false;
+    }
+
+    if (GC_pthread_cancel((pthread_t)self->_state) != 0)
+    {
+        throw(AvmErrorNew(_(AvmArgErrorMsg)));
     }
 }
 

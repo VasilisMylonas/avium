@@ -489,7 +489,7 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     return __AvmRuntimeThreadInit(__AvmThreadContextNew(
         NULL,
         (AvmThreadEntryPoint)entry,
-        __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0, NULL)));
+        __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0)));
 }
 
 bool AvmRuntimeIsHeapObject(object o)
@@ -611,6 +611,10 @@ AVM_ENUM_TYPE(AvmResourceKey,
                   AVM_ENUM_MEMBER(AvmMissingMemberErrorMsg),
                   AVM_ENUM_MEMBER(AvmMissingConstantErrorMsg),
                   AVM_ENUM_MEMBER(AvmMissingCallbackErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadCreationErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadJoinErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadDetachErrorMsg),
+                  AVM_ENUM_MEMBER(AvmInvalidStackSizeErrorMsg),
               });
 
 str AvmRuntimeGetResource(AvmResourceKey key)
@@ -631,6 +635,14 @@ str AvmRuntimeGetResource(AvmResourceKey key)
         return "The requested constant was missing.";
     case AvmMissingCallbackErrorMsg:
         return "The requested callback was missing.";
+    case AvmThreadCreationErrorMsg:
+        return "Thread creation failed.";
+    case AvmThreadJoinErrorMsg:
+        return "Failed to join thread.";
+    case AvmThreadDetachErrorMsg:
+        return "Failed to detach thread.";
+    case AvmInvalidStackSizeErrorMsg:
+        return "Invalid stack size.";
     default:
         return "";
     }

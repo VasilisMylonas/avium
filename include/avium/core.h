@@ -582,6 +582,10 @@ AVM_ENUM(AvmResourceKey,
              AvmMissingMemberErrorMsg,
              AvmMissingConstantErrorMsg,
              AvmMissingCallbackErrorMsg,
+             AvmThreadCreationErrorMsg,
+             AvmThreadJoinErrorMsg,
+             AvmThreadDetachErrorMsg,
+             AvmInvalidStackSizeErrorMsg,
          });
 
 AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);

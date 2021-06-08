@@ -29,7 +29,6 @@ AVMHIDDEN AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context);
 // Creates a thread object (just the object not the thread itself).
 AVMHIDDEN AvmThread* __AvmThreadNewObject(str name,
                                           bool isDetached,
-                                          uint stackSize,
-                                          byte* stackPtr);
+                                          uint stackSize);
 
 #endif // AVIUM_PRIVATE_THREAD_CONTEXT_H

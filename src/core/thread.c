@@ -54,17 +54,13 @@ AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
     return EXIT_SUCCESS;
 }
 
-AvmThread* __AvmThreadNewObject(str name,
-                                bool isDetached,
-                                uint stackSize,
-                                byte* stackPtr)
+AvmThread* __AvmThreadNewObject(str name, bool isDetached, uint stackSize)
 {
     AvmThread* thread = AvmObjectNew(typeid(AvmThread));
     thread->_lock = AvmMutexNew(false);
     thread->_isAlive = true;
     thread->_isDetached = isDetached;
     thread->_name = name;
-    thread->_stackPtr = stackPtr;
     thread->_stackSize = stackSize;
     return thread;
 }
@@ -131,7 +127,7 @@ AvmThread* AvmThreadNew(AvmThreadEntryPoint entry, object value)
         assert(entry != NULL);
     }
 
-    return AvmThreadNewEx(entry, value, 0, NULL, AVM_THREAD_DEFAULT_NAME);
+    return AvmThreadNewEx(entry, value, 0, AVM_THREAD_DEFAULT_NAME);
 }
 
 bool AvmThreadIsDetached(const AvmThread* self)
@@ -164,16 +160,6 @@ str AvmThreadGetName(const AvmThread* self)
     return self->_name;
 }
 
-byte* AvmThreadGetStackPtr(const AvmThread* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return self->_stackPtr;
-}
-
 uint AvmThreadGetStackSize(const AvmThread* self)
 {
     pre
@@ -196,14 +182,6 @@ void AvmThreadSleep(uint ms)
 #else
     usleep(ms * 1000);
 #endif
-}
-
-never AvmThreadExit(AvmExitCode code)
-{
-    // TODO: Possible future deinitialization code could be here.
-    // Perhaps we could longjmp into __AvmRuntimeThreadInit and continue from
-    // there?
-    AvmThreadFastExit(code);
 }
 
 static void AvmThreadFinalize(AvmThread* self)
