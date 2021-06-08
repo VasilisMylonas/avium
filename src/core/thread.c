@@ -243,3 +243,4 @@ AVM_TYPE(AvmThread,
          });
 
 AVM_TYPE(AvmMutex, object, {[FnEntryFinalize] = NULL});
+AVM_TYPE(AvmBarrier, object, {[FnEntryFinalize] = NULL});

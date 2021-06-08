@@ -199,3 +199,30 @@ void AvmMutexUnlock(const AvmMutex* self)
         throw(AvmErrorFromOSCode(result));
     }
 }
+
+AvmBarrier AvmBarrierNew(uint count)
+{
+    pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t));
+    pthread_barrier_init(barrier, NULL, count);
+    GC_register_finalizer(
+        barrier,
+        (GC_finalization_proc)(AvmCallback)pthread_barrier_destroy,
+        NULL,
+        NULL,
+        NULL);
+
+    return (AvmBarrier){
+        ._type = typeid(AvmBarrier),
+        ._state = barrier,
+    };
+}
+
+void AvmBarrierWait(const AvmBarrier* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    pthread_barrier_wait(self->_state);
+}

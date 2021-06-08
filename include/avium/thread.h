@@ -5,6 +5,20 @@
 
 AVM_CLASS(AvmMutex, object, { void* _state; });
 
+#define lock(mutex)                                                            \
+    AvmMutexLock(mutex);                                                       \
+    for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
+         AVM_UNIQUE(__avmMC)++, AvmMutexUnlock(mutex))
+
+AVMAPI AvmMutex AvmMutexNew();
+AVMAPI void AvmMutexUnlock(const AvmMutex* self);
+AVMAPI void AvmMutexLock(const AvmMutex* self);
+
+AVM_CLASS(AvmBarrier, object, { void* _state; });
+
+AVMAPI AvmBarrier AvmBarrierNew(uint count);
+AVMAPI void AvmBarrierWait(const AvmBarrier* self);
+
 AVM_CLASS(AvmThread, object, {
     AvmThrowContext* _context;
     void* _state;
@@ -15,15 +29,6 @@ AVM_CLASS(AvmThread, object, {
     bool _isDetached;
     uint _stackSize;
 });
-
-#define lock(mutex)                                                            \
-    AvmMutexLock(mutex);                                                       \
-    for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
-         AVM_UNIQUE(__avmMC)++, AvmMutexUnlock(mutex))
-
-AVMAPI AvmMutex AvmMutexNew();
-AVMAPI void AvmMutexUnlock(const AvmMutex* self);
-AVMAPI void AvmMutexLock(const AvmMutex* self);
 
 typedef void (*AvmThreadEntryPoint)(object);
 
