@@ -6,12 +6,18 @@
 
 #include "avium/private/thread-context.h"
 
+#ifdef AVM_WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 AVM_TYPE(AvmThreadContext, object, {[FnEntryFinalize] = NULL});
 
-AvmThread* __AvmRuntimeCreateThreadObject(str name,
-                                          bool isDetached,
-                                          uint stackSize,
-                                          byte* stackPtr)
+AvmThread* __AvmThreadNewObject(str name,
+                                bool isDetached,
+                                uint stackSize,
+                                byte* stackPtr)
 {
     AvmThread* thread = AvmObjectNew(typeid(AvmThread));
     thread->_lock = AvmMutexNew();
@@ -90,7 +96,7 @@ AvmThread* AvmThreadNew(AvmThreadEntryPoint entry, object value)
         assert(entry != NULL);
     }
 
-    return AvmThreadNewEx(entry, value, 0, NULL, "<anonymous>");
+    return AvmThreadNewEx(entry, value, 0, NULL, AVM_THREAD_DEFAULT_NAME);
 }
 
 bool AvmThreadIsDetached(const AvmThread* self)
@@ -141,6 +147,15 @@ uint AvmThreadGetStackSize(const AvmThread* self)
     }
 
     return self->_stackSize;
+}
+
+void AvmThreadSleep(uint ms)
+{
+#ifdef AVM_WIN32
+    Sleep(ms);
+#else
+    usleep(ms * 1000);
+#endif
 }
 
 never AvmThreadExit(AvmExitCode code)

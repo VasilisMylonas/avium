@@ -49,6 +49,7 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
     pre
     {
         assert(entry != NULL);
+        assert(name != NULL);
     }
 
     pthread_attr_t attr;
@@ -67,8 +68,7 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
         stackPtr = (byte*)stackPtr2;
     }
 
-    AvmThread* thread =
-        __AvmRuntimeCreateThreadObject(name, false, stackSize, stackPtr);
+    AvmThread* thread = __AvmThreadNewObject(name, false, stackSize, stackPtr);
 
     AvmThreadContext* context = AvmThreadContextNew(value, entry, thread);
 
@@ -136,11 +136,6 @@ void AvmThreadDetach(AvmThread* self)
     }
 }
 
-void AvmThreadSleep(uint ms)
-{
-    usleep(ms * 1000);
-}
-
 void AvmThreadYield()
 {
     sched_yield();
@@ -160,6 +155,11 @@ never AvmThreadFastExit(AvmExitCode code)
 
 void AvmThreadTerminate(AvmThread* self)
 {
+    pre
+    {
+        assert(self != NULL);
+    }
+
     AvmObjectSurpressFinalizer(self);
 
     GC_pthread_cancel((pthread_t)self->_state);
@@ -172,7 +172,6 @@ void AvmThreadTerminate(AvmThread* self)
 
 AvmMutex AvmMutexNew()
 {
-    // TODO: Register finalizer.
     pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
 
     // We register a custom 'finalizer'.

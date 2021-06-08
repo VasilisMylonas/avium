@@ -1218,7 +1218,7 @@ void AvmStringPushMembers(AvmString* self, object o)
 // AvmStringFormat, AvmStringFormatV
 //
 
-static void Format(char c, AvmString* string, va_list args)
+static void AvmFormat(char c, AvmString* string, va_list args)
 {
     switch (c)
     {
@@ -1320,7 +1320,7 @@ AvmString AvmStringFormatV(str format, va_list args)
 
         i++;
 
-        Format(format[i], &s, args);
+        AvmFormat(format[i], &s, args);
     }
 
     return s;
@@ -1330,7 +1330,7 @@ AvmString AvmStringFormatV(str format, va_list args)
 // AvmStringParse, AvmStringParseV
 //
 
-static void SkipWord(char* buffer, uint* index)
+static void AvmSkipWord(char* buffer, uint* index)
 {
     while (buffer[*index] != ' ' && buffer[*index] != '\0')
     {
@@ -1338,35 +1338,35 @@ static void SkipWord(char* buffer, uint* index)
     }
 }
 
-static void ParseUint(uint* index,
-                      char* buffer,
-                      ulong* ptr,
-                      AvmNumericBase numericBase)
+static void AvmParseUint(uint* index,
+                         char* buffer,
+                         ulong* ptr,
+                         AvmNumericBase numericBase)
 {
     char* start = &buffer[*index];
-    SkipWord(buffer, index);
+    AvmSkipWord(buffer, index);
     char* end = &buffer[*index];
     *ptr = strtoull(start, &end, numericBase);
 }
 
-static void ParseInt(uint* index, char* buffer, _long* ptr)
+static void AvmParseInt(uint* index, char* buffer, _long* ptr)
 {
     char* start = &buffer[*index];
-    SkipWord(buffer, index);
+    AvmSkipWord(buffer, index);
     char* end = &buffer[*index];
     *ptr = strtoll(start, &end, 10);
 }
 
-static void ParseBool(uint* index, char* buffer, bool* ptr)
+static void AvmParseBool(uint* index, char* buffer, bool* ptr)
 {
     *ptr = strncmp(&buffer[*index], AVM_FMT_TRUE, 4) == 0;
-    SkipWord(buffer, index);
+    AvmSkipWord(buffer, index);
 }
 
-static void ParseStr(uint* index, char* buffer, char* ptr, uint capacity)
+static void AvmParseStr(uint* index, char* buffer, char* ptr, uint capacity)
 {
     uint start = *index;
-    SkipWord(buffer, index);
+    AvmSkipWord(buffer, index);
 
     uint length = (*index) - start;
 
@@ -1387,41 +1387,41 @@ static void ParseStr(uint* index, char* buffer, char* ptr, uint capacity)
     }
 }
 
-static void ParseChar(uint* index, char* buffer, char* ptr)
+static void AvmParseChar(uint* index, char* buffer, char* ptr)
 {
     *ptr = buffer[*index];
     (*index)++;
 }
 
-static void Parse(char c, uint* index, char* buffer, va_list args)
+static void AvmParse(char c, uint* index, char* buffer, va_list args)
 {
     switch (c)
     {
     case AVM_FMT_CHAR:
-        ParseChar(index, buffer, va_arg(args, char*));
+        AvmParseChar(index, buffer, va_arg(args, char*));
         break;
     case AVM_FMT_BOOL:
-        ParseBool(index, buffer, va_arg(args, bool*));
+        AvmParseBool(index, buffer, va_arg(args, bool*));
         break;
     case AVM_FMT_INT_DECIMAL:
-        ParseInt(index, buffer, va_arg(args, _long*));
+        AvmParseInt(index, buffer, va_arg(args, _long*));
         break;
     case AVM_FMT_INT_BINARY:
-        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseBinary);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseBinary);
         break;
     case AVM_FMT_INT_OCTAL:
-        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseOctal);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseOctal);
         break;
     case AVM_FMT_INT_SIZE:
     case AVM_FMT_INT_UNSIGNED:
-        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseDecimal);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseDecimal);
         break;
     case AVM_FMT_POINTER:
     case AVM_FMT_INT_HEX:
-        ParseUint(index, buffer, va_arg(args, ulong*), NumericBaseHex);
+        AvmParseUint(index, buffer, va_arg(args, ulong*), NumericBaseHex);
         break;
     case AVM_FMT_STRING:
-        ParseStr(index, buffer, va_arg(args, char*), va_arg(args, uint));
+        AvmParseStr(index, buffer, va_arg(args, char*), va_arg(args, uint));
     default:
         break;
     }
@@ -1459,7 +1459,7 @@ void AvmStringParseV(const AvmString* self, str format, va_list args)
         }
 
         i++;
-        Parse(format[i], &j, buffer, args);
+        AvmParse(format[i], &j, buffer, args);
         j++;
     }
 }

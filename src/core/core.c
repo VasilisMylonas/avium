@@ -20,6 +20,8 @@
 
 #define _ AvmRuntimeGetResource
 
+static AvmRuntime __AvmRuntimeState;
+
 //
 // Object functions.
 //
@@ -472,8 +474,6 @@ AVM_TYPE(AvmRuntime,
              [FnEntryToString] = (AvmCallback)AvmRuntimeToString,
          });
 
-static AvmRuntime __AvmRuntimeState;
-
 AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     GC_INIT();
@@ -486,10 +486,10 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
     // TODO: Proper stack size and pointer.
-    return __AvmRuntimeThreadInit(AvmThreadContextNew(
-        NULL,
-        (AvmThreadEntryPoint)entry,
-        __AvmRuntimeCreateThreadObject("main", false, 0, NULL)));
+    return __AvmRuntimeThreadInit(
+        AvmThreadContextNew(NULL,
+                            (AvmThreadEntryPoint)entry,
+                            __AvmThreadNewObject("main", false, 0, NULL)));
 }
 
 str AvmRuntimeGetProgramName(void)
@@ -555,14 +555,6 @@ never AvmRuntimeThrow(object value, AvmLocation location)
     t->_context->_thrownObject = value;
     longjmp(t->_context->_jumpBuffer, 1);
 }
-
-#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
-    for (size_t i = 0; i < length; i++)                                        \
-    {                                                                          \
-        ((T1*)array)[i] = (T1)va_arg(args, T2);                                \
-    }                                                                          \
-                                                                               \
-    return array;
 
 void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
 {

@@ -18,9 +18,9 @@ AVMHIDDEN AvmThread* AvmThreadContextGetThread(const AvmThreadContext* self);
 AVMHIDDEN void AvmThreadContextEnter(const AvmThreadContext* self);
 AVMHIDDEN AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context);
 
-AVMHIDDEN AvmThread* __AvmRuntimeCreateThreadObject(str name,
-                                                    bool isDetached,
-                                                    uint stackSize,
-                                                    byte* stackPtr);
+AVMHIDDEN AvmThread* __AvmThreadNewObject(str name,
+                                          bool isDetached,
+                                          uint stackSize,
+                                          byte* stackPtr);
 
 #endif // AVIUM_PRIVATE_THREAD_CONTEXT_H
