@@ -13,7 +13,7 @@ set(enable_threads ON) # This is for bdwgc
 set(AVM_BUILDING ON)
 set(AVM_MSVC_COMPILE_OPTIONS /W4)
 set(AVM_GNU_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror)
-set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage)
+set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage -rdynamic)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
@@ -30,6 +30,7 @@ check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
 option(AVM_THROW_ON_CAST_FAIL "Should cast() throw an exception on failure?" ON)
 option(AVM_THROW_AUTO_CLONE "Should throw() automaticaly clone a stack object?" ON)
 option(AVM_INSERT_INIT_CODE "Insert runtime initialization code?" ON)
+option(AVM_EXPOSE_HIDDEN_API "Expose functions marked with AVMHIDDEN?" OFF)
 
 add_compile_definitions(
     _CRT_SECURE_NO_WARNINGS GC_THREADS _REENTRANT

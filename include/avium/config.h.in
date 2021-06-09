@@ -20,6 +20,7 @@
 #cmakedefine AVM_HAVE_PTHREAD_SETNAME
 #cmakedefine AVM_THROW_ON_CAST_FAIL
 #cmakedefine AVM_THROW_AUTO_CLONE
+#cmakedefine AVM_EXPOSE_HIDDEN_API
 #cmakedefine AVM_INSERT_INIT_CODE
 #cmakedefine AVM_BUILDING
 
@@ -37,6 +38,11 @@
 #else
 #define AVMAPI extern
 #endif
+#endif
+
+#if defined AVM_EXPOSE_HIDDEN_API && defined AVM_BUILDING
+#undef AVMHIDDEN
+#define AVMHIDDEN AVMAPI
 #endif
 
 #ifdef AVM_MSVC
