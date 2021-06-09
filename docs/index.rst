@@ -5,12 +5,7 @@ Welcome to Avium's documentation!
    :maxdepth: 2
    :caption: Files:
 
-   codegen
    core
-   file
-   io
-   path
-   reflect
    string
    testing
    typeinfo
