@@ -792,7 +792,10 @@ AvmError* AvmErrorFromOSCode(int code)
 // AvmDetailedError
 //
 
-AVM_CLASS(AvmDetailedError, object, { str _message; });
+AVM_CLASS(AvmDetailedError, object, {
+    str _message;
+    AvmString _backtrace;
+});
 
 static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
 {
@@ -801,7 +804,8 @@ static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
         assert(self != NULL);
     }
 
-    return AvmStringFrom(self->_message);
+    return AvmStringFormat(
+        AVM_DETAILED_ERROR_FMT_STR, self->_message, &self->_backtrace);
 }
 
 AVM_TYPE(AvmDetailedError,
@@ -818,6 +822,7 @@ AvmError* AvmErrorNew(str message)
     }
 
     AvmDetailedError* e = AvmObjectNew(typeid(AvmDetailedError));
+    e->_backtrace = AvmRuntimeGetBacktrace();
     e->_message = message;
     return e;
 }
