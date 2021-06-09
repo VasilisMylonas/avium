@@ -124,13 +124,11 @@
 #define AVM_DETAILED_ERROR_FMT_STR "%s\n\nBacktrace:\n%v\n"
 #define AVM_LOCATION_FMT_STR       "%s:%u"
 #define AVM_VERSION_FMT_STR        "%u.%u.%u"
-#define AVM_RUNTIME_FMT_STR        "%s v%v"
 #define AVM_THREAD_FMT_STR         "thread %s [%x]"
 #define AVM_CAST_FAIL_FMT_STR      "Tried to cast object [%x] of type %T to type %s."
 #define AVM_UNHANDLED_THROW_FMT_STR                                            \
     "Uncaught thrown object of type %T: %v\nThrown from %v while on thread "   \
     "[%x].\n"
-#define AVM_RUNTIME_NAME                "Avium x86_64 Runtime Environment"
 #define AVM_BACKTRACE_MAX_SYMBOLS       128
 #define AVM_BACKTRACE_LINE_SIZE         32
 #define AVM_BACKTRACE_SEPARATOR         '@'

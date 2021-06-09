@@ -390,3 +390,252 @@ AVM_TYPE(AvmFunction,
          {
              [FnEntryToString] = (AvmCallback)AvmFunctionToString,
          });
+
+//
+// Type info for primitive types.
+//
+
+static void objectFinalize(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    (void)self;
+}
+
+static bool objectEquals(object self, object other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    const size_t size = AvmTypeGetSize(AvmObjectGetType(self));
+    return memcmp(self, other, size) == 0;
+}
+
+static object objectClone(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    const AvmType* type = AvmObjectGetType(self);
+    object o = AvmObjectNew(type);
+    AvmCopy(self, AvmTypeGetSize(type), (byte*)o);
+    return o;
+}
+
+static AvmString objectToString(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(
+        AVM_OBJECT_FMT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
+}
+
+static AvmString signedToString(const AvmBox* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromInt(self->AsInt);
+}
+
+static bool signedEquals(const AvmBox* self, const AvmBox* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->AsInt == other->AsInt;
+}
+
+static AvmString unsignedToString(const AvmBox* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromUint(self->AsUint, AvmNumericBaseDecimal);
+}
+
+static bool unsignedEquals(const AvmBox* self, const AvmBox* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->AsUint == other->AsUint;
+}
+
+static AvmString floatToString(const AvmBox* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromFloat(self->AsFloat, AvmFloatReprAuto);
+}
+
+static bool floatEquals(const AvmBox* self, const AvmBox* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->AsFloat == other->AsFloat;
+}
+
+static AvmString strToString(const AvmBox* self)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(self->AsStr != NULL);
+    }
+
+    return AvmStringFrom(self->AsStr);
+}
+
+static bool strEquals(const AvmBox* self, const AvmBox* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+        assert(self->AsStr != NULL);
+        assert(other->AsStr != NULL);
+    }
+
+    return strcmp(self->AsStr, other->AsStr) == 0;
+}
+
+// For consistency with other primitive types.
+static AvmString voidToString()
+{
+    return AvmStringNew(0);
+}
+
+static bool voidEquals()
+{
+    return false;
+}
+
+AVM_TYPE(object,
+         object,
+         {
+             [FnEntryFinalize] = (AvmCallback)objectFinalize,
+             [FnEntryEquals] = (AvmCallback)objectEquals,
+             [FnEntryClone] = (AvmCallback)objectClone,
+             [FnEntryToString] = (AvmCallback)objectToString,
+         });
+
+AVM_TYPE(_long,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
+         });
+
+AVM_TYPE(ulong,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
+         });
+
+AVM_TYPE(int,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
+         });
+
+AVM_TYPE(uint,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
+         });
+
+AVM_TYPE(short,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
+         });
+
+AVM_TYPE(ushort,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
+         });
+
+AVM_TYPE(char,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)signedToString,
+             [FnEntryEquals] = (AvmCallback)signedEquals,
+         });
+
+AVM_TYPE(byte,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)unsignedToString,
+             [FnEntryEquals] = (AvmCallback)unsignedEquals,
+         });
+
+AVM_TYPE(str,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)strToString,
+             [FnEntryEquals] = (AvmCallback)strEquals,
+         });
+
+AVM_TYPE(float,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)floatToString,
+             [FnEntryEquals] = (AvmCallback)floatEquals,
+         });
+
+AVM_TYPE(double,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)floatToString,
+             [FnEntryEquals] = (AvmCallback)floatEquals,
+         });
+
+// Because we can't sizeof(void) we have to do this manually.
+static AvmCallback AVM_VT_NAME(void)[] = {
+    [FnEntryToString] = (AvmCallback)voidToString,
+    [FnEntryEquals] = (AvmCallback)voidEquals,
+};
+
+const AvmType AVM_TI_NAME(void) = {
+    ._type = typeid(AvmType),
+    ._vPtr = AVM_VT_NAME(void),
+    ._name = "void",
+    ._baseType = typeid(object),
+    ._vSize = sizeof(AVM_VT_NAME(void)),
+    ._size = 0,
+};

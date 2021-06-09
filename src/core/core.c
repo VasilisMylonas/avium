@@ -20,7 +20,12 @@
 
 #define _ AvmRuntimeGetResource
 
-static AvmRuntime AvmRuntimeState;
+static struct
+{
+    AvmVersion version;
+    str* argv;
+    uint argc;
+} AvmRuntimeState;
 
 //
 // Object functions.
@@ -41,6 +46,11 @@ object AvmObjectNew(const AvmType* type)
                           NULL);
     *(const AvmType**)o = type;
 
+    post
+    {
+        assert(o != NULL);
+    }
+
     return o;
 }
 
@@ -52,8 +62,15 @@ const AvmType* AvmObjectGetType(object self)
     }
 
     // The first member of an object should be a const AvmType*
-    // Look in types.h for AVM_CLASS
-    return *(const AvmType**)self;
+    // Look in core.h for AVM_CLASS
+    const AvmType* type = *(const AvmType**)self;
+
+    post
+    {
+        assert(type != NULL);
+    }
+
+    return type;
 }
 
 void AvmObjectSurpressFinalizer(object self)
@@ -61,6 +78,7 @@ void AvmObjectSurpressFinalizer(object self)
     pre
     {
         assert(self != NULL);
+        assert(AvmRuntimeIsHeapObject(self));
     }
 
     GC_register_finalizer(self, NULL, NULL, NULL, NULL);
@@ -83,314 +101,47 @@ void* AvmObjectVisit(object self, const AvmMember* member)
 
 bool AvmObjectEquals(object self, object other)
 {
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+        assert(AvmObjectGetType(self) == AvmObjectGetType(other));
+    }
+
     VIRTUAL_CALL(bool, FnEntryEquals, self, other);
 }
 
 void AvmObjectFinalize(object self)
 {
+    pre
+    {
+        assert(self != NULL);
+        assert(AvmRuntimeIsHeapObject(self));
+    }
+
     AvmObjectSurpressFinalizer(self);
     VIRTUAL_CALL(void, FnEntryFinalize, self);
 }
 
 object AvmObjectClone(object self)
 {
+    pre
+    {
+        assert(self != NULL);
+    }
+
     VIRTUAL_CALL(object, FnEntryClone, self);
 }
 
 AvmString AvmObjectToString(object self)
 {
+    pre
+    {
+        assert(self != NULL);
+    }
+
     VIRTUAL_CALL(AvmString, FnEntryToString, self);
 }
-
-//
-// Boxing
-//
-
-AvmBox AvmRuntimeBoxInt(_long value)
-{
-    return (AvmBox){
-        ._type = typeid(_long),
-        .AsInt = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxFloat(double value)
-{
-    return (AvmBox){
-        ._type = typeid(double),
-        .AsFloat = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxUint(ulong value)
-{
-    return (AvmBox){
-        ._type = typeid(ulong),
-        .AsUint = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxStr(str value)
-{
-    pre
-    {
-        assert(value != NULL);
-    }
-
-    return (AvmBox){
-        ._type = typeid(str),
-        .AsStr = value,
-    };
-}
-
-//
-// Type info for primitive types.
-//
-
-static void objectFinalize(object self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    (void)self;
-}
-
-static bool objectEquals(object self, object other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    const size_t size = AvmTypeGetSize(AvmObjectGetType(self));
-    return memcmp(self, other, size) == 0;
-}
-
-static object objectClone(object self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    const AvmType* type = AvmObjectGetType(self);
-    object o = AvmObjectNew(type);
-    AvmCopy(self, AvmTypeGetSize(type), (byte*)o);
-    return o;
-}
-
-static AvmString objectToString(object self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFormat(
-        AVM_OBJECT_FMT_STR, AvmTypeGetName(AvmObjectGetType(self)), self);
-}
-
-static AvmString signedToString(const AvmBox* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromInt(self->AsInt);
-}
-
-static bool signedEquals(const AvmBox* self, const AvmBox* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return self->AsInt == other->AsInt;
-}
-
-static AvmString unsignedToString(const AvmBox* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromUint(self->AsUint, AvmNumericBaseDecimal);
-}
-
-static bool unsignedEquals(const AvmBox* self, const AvmBox* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return self->AsUint == other->AsUint;
-}
-
-static AvmString floatToString(const AvmBox* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AvmStringFromFloat(self->AsFloat, AvmFloatReprAuto);
-}
-
-static bool floatEquals(const AvmBox* self, const AvmBox* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-    }
-
-    return self->AsFloat == other->AsFloat;
-}
-
-static AvmString strToString(const AvmBox* self)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(self->AsStr != NULL);
-    }
-
-    return AvmStringFrom(self->AsStr);
-}
-
-static bool strEquals(const AvmBox* self, const AvmBox* other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-        assert(self->AsStr != NULL);
-        assert(other->AsStr != NULL);
-    }
-
-    return strcmp(self->AsStr, other->AsStr) == 0;
-}
-
-// For consistency with other primitive types.
-static AvmString voidToString()
-{
-    return AvmStringNew(0);
-}
-
-static bool voidEquals()
-{
-    return false;
-}
-
-AVM_TYPE(object,
-         object,
-         {
-             [FnEntryFinalize] = (AvmCallback)objectFinalize,
-             [FnEntryEquals] = (AvmCallback)objectEquals,
-             [FnEntryClone] = (AvmCallback)objectClone,
-             [FnEntryToString] = (AvmCallback)objectToString,
-         });
-
-AVM_TYPE(_long,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)signedToString,
-             [FnEntryEquals] = (AvmCallback)signedEquals,
-         });
-
-AVM_TYPE(ulong,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)unsignedToString,
-             [FnEntryEquals] = (AvmCallback)unsignedEquals,
-         });
-
-AVM_TYPE(int,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)signedToString,
-             [FnEntryEquals] = (AvmCallback)signedEquals,
-         });
-
-AVM_TYPE(uint,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)unsignedToString,
-             [FnEntryEquals] = (AvmCallback)unsignedEquals,
-         });
-
-AVM_TYPE(short,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)signedToString,
-             [FnEntryEquals] = (AvmCallback)signedEquals,
-         });
-
-AVM_TYPE(ushort,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)unsignedToString,
-             [FnEntryEquals] = (AvmCallback)unsignedEquals,
-         });
-
-AVM_TYPE(char,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)signedToString,
-             [FnEntryEquals] = (AvmCallback)signedEquals,
-         });
-
-AVM_TYPE(byte,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)unsignedToString,
-             [FnEntryEquals] = (AvmCallback)unsignedEquals,
-         });
-
-AVM_TYPE(str,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)strToString,
-             [FnEntryEquals] = (AvmCallback)strEquals,
-         });
-
-AVM_TYPE(float,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)floatToString,
-             [FnEntryEquals] = (AvmCallback)floatEquals,
-         });
-
-AVM_TYPE(double,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)floatToString,
-             [FnEntryEquals] = (AvmCallback)floatEquals,
-         });
-
-// Because we can't sizeof(void) we have to do this manually.
-static AvmCallback AVM_VT_NAME(void)[] = {
-    [FnEntryToString] = (AvmCallback)voidToString,
-    [FnEntryEquals] = (AvmCallback)voidEquals,
-};
-
-const AvmType AVM_TI_NAME(void) = {
-    ._type = typeid(AvmType),
-    ._vPtr = AVM_VT_NAME(void),
-    ._name = "void",
-    ._baseType = typeid(object),
-    ._vSize = sizeof(AVM_VT_NAME(void)),
-    ._size = 0,
-};
 
 //
 // AvmLocation type.
@@ -408,7 +159,9 @@ static AvmString AvmLocationToString(AvmLocation* self)
 
 AVM_TYPE(AvmLocation,
          object,
-         {[FnEntryToString] = (AvmCallback)AvmLocationToString});
+         {
+             [FnEntryToString] = (AvmCallback)AvmLocationToString,
+         });
 
 AvmLocation AvmLocationFrom(str file, uint line, uint column)
 {
@@ -455,41 +208,83 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
 }
 
 //
+// AvmArgs type.
+//
+
+AVM_TYPE(AvmArgs, object, {[FnEntryFinalize] = NULL});
+
+bool AvmArgsNext(AvmArgs* self)
+{
+    if (self->_private.position == self->Length)
+    {
+        // Reset
+        self->_private.position = 0;
+        self->Current = self->_private.argv[0];
+        return false;
+    }
+
+    self->Current = self->_private.argv[self->_private.position];
+    self->_private.position++;
+    return true;
+}
+
+//
 // Builtin runtime functions.
 //
 
-static AvmString AvmRuntimeToString(const AvmRuntime* self)
+AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 {
     pre
     {
-        assert(self != NULL);
+        assert(argc > 0);
+        assert(argv != NULL);
+        assert(entry != NULL);
     }
 
-    return AvmStringFormat(AVM_RUNTIME_FMT_STR, self->_name, &self->_version);
-}
+    if (AvmRuntimeState.argv != NULL)
+    {
+        return EXIT_FAILURE;
+    }
 
-AVM_TYPE(AvmRuntime,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmRuntimeToString,
-         });
-
-AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
-{
+    // TODO: When does GC start and end?
     GC_INIT();
 
-    AvmRuntimeState._type = typeid(AvmRuntime);
-    AvmRuntimeState._argc = (uint)(argc - 1);
-    AvmRuntimeState._argv = argv + 1;
-    AvmRuntimeState._name = AVM_RUNTIME_NAME;
-    AvmRuntimeState._version =
+    AvmRuntimeState.argc = (uint)(argc - 1);
+    AvmRuntimeState.argv = argv + 1;
+    AvmRuntimeState.version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
-    // TODO: Proper stack size and pointer.
-    return __AvmRuntimeThreadInit(__AvmThreadContextNew(
+    AvmExitCode code = __AvmRuntimeThreadInit(__AvmThreadContextNew(
         NULL,
         (AvmThreadEntryPoint)entry,
         __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0)));
+
+    AvmRuntimeState.argv = NULL;
+
+    return code;
+}
+
+str AvmRuntimeGetProgramName(void)
+{
+    return AvmRuntimeState.argv[-1];
+}
+
+AvmVersion AvmRuntimeGetVersion(void)
+{
+    return AvmRuntimeState.version;
+}
+
+AvmArgs AvmRuntimeGetArgs(void)
+{
+    return (AvmArgs){
+        ._type = typeid(AvmArgs),
+        .Length = AvmRuntimeState.argc,
+        ._private =
+            {
+                .argv = AvmRuntimeState.argv,
+                .position = 0,
+            },
+    };
 }
 
 bool AvmRuntimeIsHeapObject(object o)
@@ -500,26 +295,6 @@ bool AvmRuntimeIsHeapObject(object o)
     }
 
     return GC_is_heap_ptr(o);
-}
-
-str AvmRuntimeGetProgramName(void)
-{
-    return AvmRuntimeState._argv[-1];
-}
-
-AvmVersion AvmRuntimeGetVersion(void)
-{
-    return AvmRuntimeState._version;
-}
-
-uint AvmRuntimeGetArgCount(void)
-{
-    return AvmRuntimeState._argc;
-}
-
-str* AvmRuntimeGetArgs(void)
-{
-    return AvmRuntimeState._argv;
 }
 
 AvmString AvmRuntimeGetBacktrace(void)
@@ -548,7 +323,7 @@ AvmString AvmRuntimeGetBacktrace(void)
     free(s);
     return bt;
 #else
-    return AvmStringFrom(BACKTRACE_NOT_AVAILABLE_MSG);
+    return AvmStringFrom(AVM_BACKTRACE_NOT_AVAILABLE_MSG);
 #endif
 }
 
@@ -576,84 +351,17 @@ never AvmRuntimeThrow(object value, AvmLocation location)
     longjmp(t->_context->_jumpBuffer, 1);
 }
 
-void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
-{
-    pre
-    {
-        assert(args != NULL);
-        assert(size != 0);
-        assert(length != 0);
-    }
-
-    byte* array = AvmAlloc(length * size);
-
-    switch (size)
-    {
-    case sizeof(byte):
-        VA_LIST_TO_ARRAY_IMPL(byte, uint);
-    case sizeof(ushort):
-        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
-    case sizeof(uint):
-        VA_LIST_TO_ARRAY_IMPL(uint, uint);
-    case sizeof(ulong):
-        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
-    default:
-        throw(AvmErrorNew(_(AvmMarshalErrorMsg)));
-    }
-}
-
-AVM_ENUM_TYPE(AvmResourceKey,
-              {
-                  AVM_ENUM_MEMBER(AvmArgErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMemErrorMsg),
-                  AVM_ENUM_MEMBER(AvmRangeErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMarshalErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingMemberErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingConstantErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingCallbackErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadCreationErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadJoinErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadDetachErrorMsg),
-                  AVM_ENUM_MEMBER(AvmInvalidStackSizeErrorMsg),
-              });
-
-str AvmRuntimeGetResource(AvmResourceKey key)
-{
-    switch (key)
-    {
-    case AvmArgErrorMsg:
-        return "Received an invalid argument.";
-    case AvmMemErrorMsg:
-        return "The system run out of memory.";
-    case AvmRangeErrorMsg:
-        return "The provided index was out of range.";
-    case AvmMarshalErrorMsg:
-        return "Marshalling of non primitive types is not supported.";
-    case AvmMissingMemberErrorMsg:
-        return "The requested member was missing.";
-    case AvmMissingConstantErrorMsg:
-        return "The requested constant was missing.";
-    case AvmMissingCallbackErrorMsg:
-        return "The requested callback was missing.";
-    case AvmThreadCreationErrorMsg:
-        return "Thread creation failed.";
-    case AvmThreadJoinErrorMsg:
-        return "Failed to join thread.";
-    case AvmThreadDetachErrorMsg:
-        return "Failed to detach thread.";
-    case AvmInvalidStackSizeErrorMsg:
-        return "Invalid stack size.";
-    default:
-        return "";
-    }
-}
-
 //
 // Allocation functions.
 //
 
-void* AvmAlloc(size_t size)
+void* AvmAlloc(uint size)
 {
+    pre
+    {
+        assert(size != 0);
+    }
+
     void* mem = GC_malloc(size);
     if (mem == NULL)
     {
@@ -662,8 +370,14 @@ void* AvmAlloc(size_t size)
     return mem;
 }
 
-void* AvmRealloc(void* memory, size_t size)
+void* AvmRealloc(void* memory, uint size)
 {
+    pre
+    {
+        assert(memory != NULL);
+        assert(size != 0);
+    }
+
     return GC_realloc(memory, size);
 }
 
@@ -865,6 +579,57 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
     return retval;
 }
 
+#ifdef AVM_INSERT_INIT_CODE
+// This should be defined by user code.
+extern void AvmMain();
+
+int main(int argc, str argv[])
+{
+    return AvmRuntimeInit(argc, argv, AvmMain);
+}
+#endif
+
+//
+// Boxing
+//
+
+AvmBox AvmRuntimeBoxInt(_long value)
+{
+    return (AvmBox){
+        ._type = typeid(_long),
+        .AsInt = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxFloat(double value)
+{
+    return (AvmBox){
+        ._type = typeid(double),
+        .AsFloat = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxUint(ulong value)
+{
+    return (AvmBox){
+        ._type = typeid(ulong),
+        .AsUint = value,
+    };
+}
+
+AvmBox AvmRuntimeBoxStr(str value)
+{
+    pre
+    {
+        assert(value != NULL);
+    }
+
+    return (AvmBox){
+        ._type = typeid(str),
+        .AsStr = value,
+    };
+}
+
 void AvmCopy(object o, size_t size, byte* destination)
 {
     pre
@@ -883,12 +648,74 @@ void AvmCopy(object o, size_t size, byte* destination)
     memcpy(destination, o, objectSize);
 }
 
-#ifdef AVM_INSERT_INIT_CODE
-// This should be defined by user code.
-extern void AvmMain();
-
-int main(int argc, str argv[])
+void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
 {
-    return AvmRuntimeInit(argc, argv, AvmMain);
+    pre
+    {
+        assert(args != NULL);
+        assert(size != 0);
+        assert(length != 0);
+    }
+
+    byte* array = AvmAlloc(length * size);
+
+    switch (size)
+    {
+    case sizeof(byte):
+        VA_LIST_TO_ARRAY_IMPL(byte, uint);
+    case sizeof(ushort):
+        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
+    case sizeof(uint):
+        VA_LIST_TO_ARRAY_IMPL(uint, uint);
+    case sizeof(ulong):
+        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
+    default:
+        throw(AvmErrorNew(_(AvmMarshalErrorMsg)));
+    }
 }
-#endif
+
+AVM_ENUM_TYPE(AvmResourceKey,
+              {
+                  AVM_ENUM_MEMBER(AvmArgErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMemErrorMsg),
+                  AVM_ENUM_MEMBER(AvmRangeErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMarshalErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingMemberErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingConstantErrorMsg),
+                  AVM_ENUM_MEMBER(AvmMissingCallbackErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadCreationErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadJoinErrorMsg),
+                  AVM_ENUM_MEMBER(AvmThreadDetachErrorMsg),
+                  AVM_ENUM_MEMBER(AvmInvalidStackSizeErrorMsg),
+              });
+
+str AvmRuntimeGetResource(AvmResourceKey key)
+{
+    switch (key)
+    {
+    case AvmArgErrorMsg:
+        return "Received an invalid argument.";
+    case AvmMemErrorMsg:
+        return "The system run out of memory.";
+    case AvmRangeErrorMsg:
+        return "The provided index was out of range.";
+    case AvmMarshalErrorMsg:
+        return "Marshalling of non primitive types is not supported.";
+    case AvmMissingMemberErrorMsg:
+        return "The requested member was missing.";
+    case AvmMissingConstantErrorMsg:
+        return "The requested constant was missing.";
+    case AvmMissingCallbackErrorMsg:
+        return "The requested callback was missing.";
+    case AvmThreadCreationErrorMsg:
+        return "Thread creation failed.";
+    case AvmThreadJoinErrorMsg:
+        return "Failed to join thread.";
+    case AvmThreadDetachErrorMsg:
+        return "Failed to detach thread.";
+    case AvmInvalidStackSizeErrorMsg:
+        return "Invalid stack size.";
+    default:
+        return "";
+    }
+}

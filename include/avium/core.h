@@ -104,9 +104,19 @@ typedef struct AvmFunction AvmFunction;
 // TODO
 #define AvmInvalid ((uint)-1)
 
-#if defined AVM_GNU && defined AVM_LINUX
+#ifdef AVM_GNU
+#define AVM_NONNULL(...) __attribute__((nonnull(__VA_ARGS__)))
+#define AVM_PURE         __attribute__((pure))
+#define AVM_CONST        __attribute__((const))
+
+#ifdef AVM_LINUX
 #pragma weak AvmAlloc
 #pragma weak AvmRealloc
+#endif
+#else
+#define AVM_NONNULL(...)
+#define AVM_PURE
+#define AVM_CONST
 #endif
 
 /**
@@ -121,16 +131,17 @@ typedef struct AvmFunction AvmFunction;
 /**
  * @brief Allocates an object on the heap.
  *
- * TODO
+ * The object is zero-initialized and with proper typeinfo.
  *
  * This function is not overridable.
  *
- * @pre Parameter @p type must be not null.
+ * @pre type != NULL.
+ * @post return != NULL.
  *
  * @param type The type of the object to allocate.
  * @return The object.
  */
-AVMAPI object AvmObjectNew(const AvmType* type);
+AVMAPI object AvmObjectNew(const AvmType* type) AVM_NONNULL(1);
 
 /**
  * @brief Gets information about the type of an object.
@@ -152,12 +163,45 @@ AVMAPI object AvmObjectNew(const AvmType* type);
  *
  * This function is not overridable.
  *
- * @pre Parameter @p self must be not null.
+ * @pre self != NULL.
+ * @post return != NULL.
  *
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI const AvmType* AvmObjectGetType(object self);
+AVMAPI const AvmType* AvmObjectGetType(object self) AVM_NONNULL(1);
+
+/**
+ * @brief Disables the finalizer of an object.
+ *
+ * When called makes the runtime ignore finalization of the object. This may be
+ * useful if writing functions that deterministically finalize an object.
+ *
+ * This function is not overridable.
+ *
+ * @pre self != NULL.
+ * @pre AvmRuntimeIsHeapObject(self).
+ *
+ * @param self The object instance.
+ */
+AVMAPI void AvmObjectSurpressFinalizer(object self) AVM_NONNULL(1);
+
+/**
+ * @brief Visits a member in an object.
+ *
+ * This function is generally unsafe, error-prone and should be used carefully.
+ *
+ * This function is not overridable.
+ *
+ * @pre self != NULL.
+ * @pre member != NULL.
+ *
+ * @param self The object instance.
+ * @param member The member to visit.
+ * @return A pointer to the data.
+ */
+AVMAPI void* AvmObjectVisit(object self, const AvmMember* member)
+    AVM_NONNULL(1, 2);
 
 /**
  * @brief Compares two objects for equality.
@@ -170,15 +214,16 @@ AVMAPI const AvmType* AvmObjectGetType(object self);
  *
  * This function is overridable by the FnEntryEquals entry in the VFT.
  *
- * @pre Parameter @p self must be not null.
- * @pre Parameter @p other must be not null.
+ * @pre self != NULL.
+ * @pre other != NULL.
+ * @pre AvmObjectGetType(self) == AvmObjectGetType(other).
  *
  * @param self The first object.
  * @param other The second object.
  *
  * @return true if the two objects are equal, otherwise false.
  */
-AVMAPI bool AvmObjectEquals(object self, object other);
+AVMAPI bool AvmObjectEquals(object self, object other) AVM_NONNULL(1, 2);
 
 /**
  * @brief Finalizes an object.
@@ -191,25 +236,12 @@ AVMAPI bool AvmObjectEquals(object self, object other);
  * Overriding should be done when an object needs to release non-memory
  * resources.
  *
- * @pre Parameter @p self must be not null.
+ * @pre self != NULL.
+ * @pre AvmRuntimeIsHeapObject(self).
  *
  * @param self The object instance.
  */
-AVMAPI void AvmObjectFinalize(object self);
-
-/**
- * @brief Disables the finalizer of an object.
- *
- * When called makes the runtime ignore finalization of the object. This may be
- * useful if writing functions that deterministically finalize an object.
- *
- * This function is not overridable.
- *
- * @pre Parameter @p self must be not null.
- *
- * @param self The object instance.
- */
-AVMAPI void AvmObjectSurpressFinalizer(object self);
+AVMAPI void AvmObjectFinalize(object self) AVM_NONNULL(1);
 
 /**
  * @brief Clones an object, creating an exact copy.
@@ -217,43 +249,32 @@ AVMAPI void AvmObjectSurpressFinalizer(object self);
  * Creates an exact clone of an objects such as that AvmObjectEquals returns
  * true by copying the object to heap memory.
  *
- * This function should be overriden if an object contains pointers.
+ * This function should be overriden if an object contains pointers to other
+ * objects as the default implementation performs a shallow copy.
  *
  * This function is overridable by the FnEntryClone entry in the VFT.
  *
- * @pre Parameter @p self must be not null.
+ * @pre self != NULL.
  *
  * @param self The object instance.
  * @return The cloned object.
  */
-AVMAPI object AvmObjectClone(object self);
+AVMAPI object AvmObjectClone(object self) AVM_NONNULL(1);
 
 /**
  * @brief Creates a string representation of an object.
  *
  * This function creates a simple object-identifying string. Overriding this
- * function to provided a more helpful representation may be useful.
+ * function to provide a more helpful representation may be useful.
  *
  * This function is overridable by the FnEntryToString entry in the VFT.
  *
- * @pre Parameter @p self must be not null.
+ * @pre self != NULL.
  *
  * @param self The object instance.
  * @return The string representation of the object.
  */
-AVMAPI AvmString AvmObjectToString(object self);
-
-/**
- * @brief Visits a member in an object.
- *
- * @pre Parameter @p self must be not null.
- * @pre Parameter @p member must be not null.
- *
- * @param self The object instance.
- * @param member The member to visit.
- * @return A pointer to the data.
- */
-AVMAPI void* AvmObjectVisit(object self, const AvmMember* member);
+AVMAPI AvmString AvmObjectToString(object self) AVM_NONNULL(1);
 
 /// @}
 
@@ -275,13 +296,16 @@ AVM_CLASS(AvmLocation, object, {
 /**
  * @brief Creates a new AvmLocation instance.
  *
+ * @pre file != NULL
+ *
  * @param file The file name.
  * @param line The line number.
  * @param column The column.
  *
  * @return The created instance.
  */
-AVMAPI AvmLocation AvmLocationFrom(str file, uint line, uint column);
+AVMAPI AvmLocation AvmLocationFrom(str file, uint line, uint column)
+    AVM_NONNULL(1);
 
 /// A type representing a software version in the format: N.N.N
 AVM_CLASS(AvmVersion, object, {
@@ -301,6 +325,41 @@ AVM_CLASS(AvmVersion, object, {
  */
 AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
 
+/// An iterator over the program arguments.
+AVM_CLASS(AvmArgs, object, {
+    const uint Length; ///< The total number of arguments.
+    str Current;       ///< The current argument.
+
+    struct
+    {
+        uint position;
+        str* argv;
+    } _private;
+});
+
+/**
+ * @brief Advances the position of an argument iterator.
+ *
+ * If iteration has reached the end, then the iterator is reset and false is
+ * returned.
+ *
+ * This can be used like so:
+ *
+ * @code
+ * AvmArgs args = AvmRuntimeGetArgs();
+ *
+ * while (AvmArgsNext(&args)) {
+ *     AvmPrintf("%s\n", args.Current);
+ * }
+ * @endcode
+ *
+ * @pre self != NULL.
+ *
+ * @param self The AvmArgs instance.
+ * @return true if the iterator was advanced, false if it was reset.
+ */
+AVMAPI bool AvmArgsNext(AvmArgs* self) AVM_NONNULL(1);
+
 /// @}
 
 /**
@@ -311,34 +370,26 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
  * @{
  */
 
-/// Represents the context of a thrown object.
-AVM_CLASS(AvmThrowContext, object, {
-    AvmThrowContext* _prev;
-    object _thrownObject;
-    AvmLocation _location;
-    jmp_buf _jumpBuffer;
-});
-
-/// Holds the state for the Avium runtime.
-AVM_CLASS(AvmRuntime, object, {
-    uint _argc;
-    str* _argv;
-    str _name;
-    AvmVersion _version;
-});
-
-/// The entry point function.
-typedef void (*AvmEntryPoint)(void);
-
-typedef byte AvmExitCode;
+typedef void (*AvmEntryPoint)(void); ///< The entry point function.
+typedef byte AvmExitCode;            ///< A process or thread exit code.
 
 /**
  * @brief Initializes the Avium runtime and calls into the entry point.
  *
- * Many Avium functions cannot be called without initializing the runtime
- * first.
+ * The entry point is executed in a runtime context which is destroyed upon
+ * return. Most Avium functions cannot be called outside a runtime context.
+ * Doing so is undefined and will probably result in a crash.
  *
- * When using the whole framework, this function is called automatically.
+ * When linking with the core library this function is called automatically and
+ * user code execution begins at Main unless the AVM_INSERT_INIT_CODE option is
+ * set to OFF.
+ *
+ * Calling this function from a runtime context returns EXIT_FAILURE
+ * immediately.
+ *
+ * @pre argc > 0.
+ * @pre argv != NULL.
+ * @pre entry != NULL.
  *
  * @param argc The argc parameter from main.
  * @param argv The argv parameter from main.
@@ -346,7 +397,8 @@ typedef byte AvmExitCode;
  *
  * @return A status code such as EXIT_SUCCESS or EXIT_FAILURE.
  */
-AVMAPI AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry);
+AVMAPI AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
+    AVM_NONNULL(2, 3);
 
 /**
  * @brief Returns the name of the currently running program.
@@ -363,18 +415,21 @@ AVMAPI str AvmRuntimeGetProgramName(void);
 AVMAPI AvmVersion AvmRuntimeGetVersion(void);
 
 /**
- * @brief Returns the number of argument that the program received.
- *
- * @return The number of arguments.
- */
-AVMAPI uint AvmRuntimeGetArgCount(void);
-
-/**
- * @brief Returns a pointer to the program arguments.
+ * @brief Returns an iterator over the program arguments.
  *
  * @return The program arguments.
  */
-AVMAPI str* AvmRuntimeGetArgs(void);
+AVMAPI AvmArgs AvmRuntimeGetArgs(void);
+
+/**
+ * @brief Determines whether an object resides on the heap.
+ *
+ * @pre o != NULL.
+ *
+ * @param o The object.
+ * @return true if the object was found in the heap, otherwise false.
+ */
+AVMAPI bool AvmRuntimeIsHeapObject(object o);
 
 /**
  * @brief Captures a stack backtrace, if available.
@@ -388,7 +443,11 @@ AVMAPI AvmString AvmRuntimeGetBacktrace(void);
  *
  * A better alternative to using this function is the throw macro.
  *
- * @pre Parameter @p value must be not null.
+ * @pre value != NULL.
+ *
+ * if AVM_THROW_AUTO_CLONE is not defined:
+ *
+ * @pre AvmRuntimeIsHeapObject(value).
  *
  * @param value The object to throw.
  * @param location The location from which the object is thrown.
@@ -409,19 +468,24 @@ AVMAPI never AvmRuntimeThrow(object value, AvmLocation location);
 /**
  * @brief Allocates heap memory.
  *
+ * @pre size != 0.
+ *
  * @param size The size of the memory block in bytes.
  * @return The allocated memory.
  */
-AVMAPI void* AvmAlloc(size_t size);
+AVMAPI void* AvmAlloc(uint size);
 
 /**
  * @brief Reallocates a heap memory block.
+ *
+ * @pre memory != NULL.
+ * @pre size != 0.
  *
  * @param memory The memory block to reallocate.
  * @param size The new size of the memory block in bytes.
  * @return The reallocated memory.
  */
-AVMAPI void* AvmRealloc(void* memory, size_t size);
+AVMAPI void* AvmRealloc(void* memory, uint size);
 
 /// @}
 
@@ -431,14 +495,67 @@ AVMAPI void* AvmRealloc(void* memory, size_t size);
  * @{
  */
 
-// TODO: Document this finally.
-
+/**
+ * @brief Reads formated output from stdin.
+ *
+ * @pre format != NULL.
+ * @pre args != NULL.
+ *
+ * @param format The format string.
+ * @param args The format string arguments.
+ */
 AVMAPI void AvmVScanf(str format, va_list args);
+
+/**
+ * @brief Writes formated output to stdout.
+ *
+ * @pre format != NULL.
+ * @pre args != NULL.
+ *
+ * @param format The format string.
+ * @param args The format string arguments.
+ */
 AVMAPI void AvmVPrintf(str format, va_list args);
+
+/**
+ * @brief Writes formated output to stderr.
+ *
+ * @pre format != NULL.
+ * @pre args != NULL.
+ *
+ * @param format The format string.
+ * @param args The format string arguments.
+ */
 AVMAPI void AvmVErrorf(str format, va_list args);
 
+/**
+ * @brief Reads formated output from stdin.
+ *
+ * @pre format != NULL.
+ *
+ * @param format The format string.
+ * @param ... The format string arguments.
+ */
 AVMAPI void AvmScanf(str format, ...);
+
+/**
+ * @brief Writes formated output to stdout.
+ *
+ * @pre format != NULL.
+ *
+ * @param format The format string.
+ * @param ... The format string arguments.
+ */
 AVMAPI void AvmPrintf(str format, ...);
+
+/**
+ * @brief Writes formated output to stderr.
+ *
+ * @pre format != NULL.
+ *
+ * @param format The format string.
+ * @param ... The format string arguments.
+ */
 AVMAPI void AvmErrorf(str format, ...);
 
 /// @}
@@ -567,7 +684,6 @@ AVM_CLASS(AvmBox, object, {
              : AvmRuntimeBoxStr, char*                                         \
              : AvmRuntimeBoxStr)(x)
 
-AVMAPI bool AvmRuntimeIsHeapObject(object o);
 AVMAPI AvmBox AvmRuntimeBoxInt(_long value);
 AVMAPI AvmBox AvmRuntimeBoxFloat(double value);
 AVMAPI AvmBox AvmRuntimeBoxUint(ulong value);
@@ -589,12 +705,20 @@ AVM_ENUM(AvmResourceKey,
          });
 
 AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);
+AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
 
 #ifndef DOXYGEN
+/// Represents the context of a thrown object.
+AVM_CLASS(AvmThrowContext, object, {
+    AvmThrowContext* _prev;
+    object _thrownObject;
+    AvmLocation _location;
+    jmp_buf _jumpBuffer;
+});
+
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
-AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H
