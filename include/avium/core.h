@@ -55,7 +55,13 @@ typedef struct AvmFunction AvmFunction;
 /// @}
 
 /**
- * @brief Creates an Avium class type.
+ * @defgroup AvmDeclMacros Declaration macros.
+ *
+ * @{
+ */
+
+/**
+ * @brief Declares an Avium class type.
  *
  * @param T The name of the type.
  * @param B The base class of the type.
@@ -74,14 +80,14 @@ typedef struct AvmFunction AvmFunction;
     }
 
 /**
- * @brief Creates an Avium interface type.
+ * @brief Declares an Avium interface type.
  *
  * @param T The name of the type.
  */
 #define AVM_INTERFACE(T) typedef void T
 
 /**
- * @brief Creates an Avium enum type.
+ * @brief Declares an Avium enum type.
  *
  * @param T The name of the enum.
  * @param ... The enum constants enclosed in braces ({...}).
@@ -90,34 +96,26 @@ typedef struct AvmFunction AvmFunction;
     typedef enum T __VA_ARGS__ T;                                              \
     extern const AvmEnum AVM_TI_NAME(T)
 
-#define AVM_CONCAT_(a, b) a##b
-#define AVM_CONCAT(a, b)  AVM_CONCAT_(a, b)
-#define AVM_UNIQUE(name)  AVM_CONCAT(name, __LINE__)
-#define AVM_VA_ARGS(T, ...)                                                    \
-    (sizeof((T[]){__VA_ARGS__}) / sizeof(T)), (T[])                            \
-    {                                                                          \
-        __VA_ARGS__                                                            \
-    }
+/**
+ * @brief Concatenates two identifiers
+ *
+ * @param a The first identifier.
+ * @param b The second identifier.
+ */
+#define AVM_CONCAT(a, b) AVM_CONCAT_(a, b)
 
-#define Main AvmMain
+/**
+ * @brief Creates a unique identifier based on a provided name.
+ *
+ * @param name The name of the identifier.
+ */
+#define AVM_UNIQUE(name) AVM_CONCAT(name, __LINE__)
 
 // TODO
 #define AvmInvalid ((uint)-1)
+#define Main       AvmMain
 
-#ifdef AVM_GNU
-#define AVM_NONNULL(...) __attribute__((nonnull(__VA_ARGS__)))
-#define AVM_PURE         __attribute__((pure))
-#define AVM_CONST        __attribute__((const))
-
-#ifdef AVM_LINUX
-#pragma weak AvmAlloc
-#pragma weak AvmRealloc
-#endif
-#else
-#define AVM_NONNULL(...)
-#define AVM_PURE
-#define AVM_CONST
-#endif
+/// @}
 
 /**
  * @defgroup AvmObjectFunctions Universal object instance functions.
@@ -169,7 +167,7 @@ AVMAPI object AvmObjectNew(const AvmType* type) AVM_NONNULL(1);
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI const AvmType* AvmObjectGetType(object self) AVM_NONNULL(1);
+AVMAPI const AvmType* AvmObjectGetType(object self) AVM_NONNULL(1) AVM_PURE;
 
 /**
  * @brief Disables the finalizer of an object.
@@ -201,7 +199,7 @@ AVMAPI void AvmObjectSurpressFinalizer(object self) AVM_NONNULL(1);
  * @return A pointer to the data.
  */
 AVMAPI void* AvmObjectVisit(object self, const AvmMember* member)
-    AVM_NONNULL(1, 2);
+    AVM_NONNULL(1, 2) AVM_PURE;
 
 /**
  * @brief Compares two objects for equality.
@@ -305,7 +303,7 @@ AVM_CLASS(AvmLocation, object, {
  * @return The created instance.
  */
 AVMAPI AvmLocation AvmLocationFrom(str file, uint line, uint column)
-    AVM_NONNULL(1);
+    AVM_NONNULL(1) AVM_PURE;
 
 /// A type representing a software version in the format: N.N.N
 AVM_CLASS(AvmVersion, object, {
@@ -323,7 +321,9 @@ AVM_CLASS(AvmVersion, object, {
  *
  * @return The created instance.
  */
-AVMAPI AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch);
+AVMAPI AvmVersion AvmVersionFrom(ushort major,
+                                 ushort minor,
+                                 ushort patch) AVM_PURE;
 
 /// An iterator over the program arguments.
 AVM_CLASS(AvmArgs, object, {
@@ -405,21 +405,21 @@ AVMAPI AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
  *
  * @return The name of the currently running program.
  */
-AVMAPI str AvmRuntimeGetProgramName(void);
+AVMAPI str AvmRuntimeGetProgramName(void) AVM_PURE;
 
 /**
  * @brief Returns the current runtime version.
  *
  * @return The current runtime version.
  */
-AVMAPI AvmVersion AvmRuntimeGetVersion(void);
+AVMAPI AvmVersion AvmRuntimeGetVersion(void) AVM_PURE;
 
 /**
  * @brief Returns an iterator over the program arguments.
  *
  * @return The program arguments.
  */
-AVMAPI AvmArgs AvmRuntimeGetArgs(void);
+AVMAPI AvmArgs AvmRuntimeGetArgs(void) AVM_PURE;
 
 /**
  * @brief Determines whether an object resides on the heap.
@@ -429,7 +429,7 @@ AVMAPI AvmArgs AvmRuntimeGetArgs(void);
  * @param o The object.
  * @return true if the object was found in the heap, otherwise false.
  */
-AVMAPI bool AvmRuntimeIsHeapObject(object o);
+AVMAPI bool AvmRuntimeIsHeapObject(object o) AVM_NONNULL(1);
 
 /**
  * @brief Captures a stack backtrace, if available.
@@ -453,7 +453,7 @@ AVMAPI AvmString AvmRuntimeGetBacktrace(void);
  * @param location The location from which the object is thrown.
  * @return This function never returns.
  */
-AVMAPI never AvmRuntimeThrow(object value, AvmLocation location);
+AVMAPI never AvmRuntimeThrow(object value, AvmLocation location) AVM_NONNULL(1);
 
 /// @}
 
@@ -485,7 +485,7 @@ AVMAPI void* AvmAlloc(uint size);
  * @param size The new size of the memory block in bytes.
  * @return The reallocated memory.
  */
-AVMAPI void* AvmRealloc(void* memory, uint size);
+AVMAPI void* AvmRealloc(void* memory, uint size) AVM_NONNULL(1);
 
 /// @}
 
@@ -504,7 +504,7 @@ AVMAPI void* AvmRealloc(void* memory, uint size);
  * @param format The format string.
  * @param args The format string arguments.
  */
-AVMAPI void AvmVScanf(str format, va_list args);
+AVMAPI void AvmVScanf(str format, va_list args) AVM_NONNULL(1, 2);
 
 /**
  * @brief Writes formated output to stdout.
@@ -515,7 +515,7 @@ AVMAPI void AvmVScanf(str format, va_list args);
  * @param format The format string.
  * @param args The format string arguments.
  */
-AVMAPI void AvmVPrintf(str format, va_list args);
+AVMAPI void AvmVPrintf(str format, va_list args) AVM_NONNULL(1, 2);
 
 /**
  * @brief Writes formated output to stderr.
@@ -526,7 +526,7 @@ AVMAPI void AvmVPrintf(str format, va_list args);
  * @param format The format string.
  * @param args The format string arguments.
  */
-AVMAPI void AvmVErrorf(str format, va_list args);
+AVMAPI void AvmVErrorf(str format, va_list args) AVM_NONNULL(1, 2);
 
 /**
  * @brief Reads formated output from stdin.
@@ -536,7 +536,7 @@ AVMAPI void AvmVErrorf(str format, va_list args);
  * @param format The format string.
  * @param ... The format string arguments.
  */
-AVMAPI void AvmScanf(str format, ...);
+AVMAPI void AvmScanf(str format, ...) AVM_NONNULL(1);
 
 /**
  * @brief Writes formated output to stdout.
@@ -546,7 +546,7 @@ AVMAPI void AvmScanf(str format, ...);
  * @param format The format string.
  * @param ... The format string arguments.
  */
-AVMAPI void AvmPrintf(str format, ...);
+AVMAPI void AvmPrintf(str format, ...) AVM_NONNULL(1);
 
 /**
  * @brief Writes formated output to stderr.
@@ -556,7 +556,7 @@ AVMAPI void AvmPrintf(str format, ...);
  * @param format The format string.
  * @param ... The format string arguments.
  */
-AVMAPI void AvmErrorf(str format, ...);
+AVMAPI void AvmErrorf(str format, ...) AVM_NONNULL(1);
 
 /// @}
 
@@ -577,7 +577,7 @@ AVM_INTERFACE(AvmError);
  * @param message The error message.
  * @return The created instance.
  */
-AVMAPI AvmError* AvmErrorNew(str message);
+AVMAPI AvmError* AvmErrorNew(str message) AVM_NONNULL(1);
 
 /**
  * @brief Creates an AvmError from an OS code.
@@ -655,7 +655,7 @@ AVM_CLASS(AvmFloat, object, { double Value; });
  * @param value The signed integer value.
  * @return The created AvmInteger instance.
  */
-AVMAPI AvmInteger AvmIntegerFrom(_long value);
+AVMAPI AvmInteger AvmIntegerFrom(_long value) AVM_PURE;
 
 /**
  * @brief Creates an AvmUnsigned from an primitive.
@@ -663,7 +663,7 @@ AVMAPI AvmInteger AvmIntegerFrom(_long value);
  * @param value The unsigned integer value.
  * @return The created AvmUnsigned instance.
  */
-AVMAPI AvmUnsigned AvmUnsignedFrom(ulong value);
+AVMAPI AvmUnsigned AvmUnsignedFrom(ulong value) AVM_PURE;
 
 /**
  * @brief Creates an AvmFloat from an primitive.
@@ -671,7 +671,7 @@ AVMAPI AvmUnsigned AvmUnsignedFrom(ulong value);
  * @param value The floating point value.
  * @return The created AvmFloat instance.
  */
-AVMAPI AvmFloat AvmFloatFrom(double value);
+AVMAPI AvmFloat AvmFloatFrom(double value) AVM_PURE;
 
 /// @}
 
@@ -688,6 +688,8 @@ AVMAPI AvmFloat AvmFloatFrom(double value);
 AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
 #ifndef DOXYGEN
+#define AVM_CONCAT_(a, b) a##b
+
 typedef enum
 {
     AvmArgErrorMsg,
