@@ -19,7 +19,7 @@ void __AvmThreadContextSetThread(AvmThreadContext* self)
     assert(state != NULL);
 
 #ifdef AVM_HAVE_PTHREAD_SETNAME
-    pthread_setname_np((pthread_t)state, name);
+    pthread_setname_np((pthread_t)state, self->_thread->_name);
 #endif
 
     self->_thread->_state = state;
@@ -51,10 +51,10 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
     AvmThreadContext* context = __AvmThreadContextNew(value, entry, thread);
 
     pthread_t id = 0;
-    if (GC_pthread_create(&id,
-                          &attr,
-                          (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
-                          context))
+    if (pthread_create(&id,
+                       &attr,
+                       (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
+                       context))
     {
         pthread_attr_destroy(&attr);
         throw(AvmErrorNew(_(AvmThreadCreationErrorMsg)));
@@ -73,7 +73,7 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
 
     void* exitCode = NULL;
 
-    if (GC_pthread_join((pthread_t)self->_state, &exitCode) != 0)
+    if (pthread_join((pthread_t)self->_state, &exitCode) != 0)
     {
         throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
     }
@@ -93,7 +93,7 @@ void AvmThreadDetach(AvmThread* self)
         assert(self != NULL);
     }
 
-    if (GC_pthread_detach((pthread_t)self->_state) != 0)
+    if (pthread_detach((pthread_t)self->_state) != 0)
     {
         throw(AvmErrorNew(_(AvmThreadDetachErrorMsg)));
     }
@@ -118,7 +118,7 @@ never AvmThreadExit(AvmExitCode code)
         self->_isAlive = false;
     }
 
-    GC_pthread_exit((void*)(ulong)code);
+    pthread_exit((void*)(ulong)code);
 }
 
 void AvmThreadTerminate(AvmThread* self)
@@ -135,7 +135,7 @@ void AvmThreadTerminate(AvmThread* self)
         self->_isAlive = false;
     }
 
-    if (GC_pthread_cancel((pthread_t)self->_state) != 0)
+    if (pthread_cancel((pthread_t)self->_state) != 0)
     {
         throw(AvmErrorNew(_(AvmArgErrorMsg)));
     }
@@ -207,6 +207,7 @@ void AvmMutexUnlock(const AvmMutex* self)
 
 AvmBarrier AvmBarrierNew(uint count)
 {
+#ifdef AVM_HAVE_PTHREAD_BARRIER
     pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t));
     pthread_barrier_init(barrier, NULL, count);
     GC_register_finalizer(
@@ -220,14 +221,23 @@ AvmBarrier AvmBarrierNew(uint count)
         ._type = typeid(AvmBarrier),
         ._state = barrier,
     };
+#else
+    (void)count;
+    throw(AvmErrorNew("TODO: Not supported!"));
+#endif
 }
 
 void AvmBarrierWait(const AvmBarrier* self)
 {
+
     pre
     {
         assert(self != NULL);
     }
 
+#ifdef AVM_HAVE_PTHREAD_BARRIER
     pthread_barrier_wait(self->_state);
+#else
+    throw(AvmErrorNew("TODO: Not supported!"));
+#endif
 }

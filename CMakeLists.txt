@@ -23,6 +23,7 @@ include(CTest)
 find_package(Threads REQUIRED)
 
 check_symbol_exists(pthread_setname_np "pthread.h" AVM_HAVE_PTHREAD_SETNAME)
+check_symbol_exists(pthread_barrier_init "pthread.h" AVM_HAVE_PTHREAD_BARRIER)
 check_type_size(long AVM_LONG_SIZE)
 check_include_file(uchar.h AVM_HAVE_UNICODE)
 check_include_file(execinfo.h AVM_HAVE_BACKTRACE)
