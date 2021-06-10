@@ -21,7 +21,7 @@ jobs:
 
     - name: Prepare
       shell: bash
-	  run: ./ci/submodules.sh
+      run: ./ci/submodules.sh
 
     - name: Configure
       shell: bash
