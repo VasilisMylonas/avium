@@ -12,7 +12,8 @@
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
-    HRESULT res = SetThreadDescription((HANDLE)state, self->_thread->_name);
+    HRESULT res =
+        SetThreadDescription(GetCurrentThread(), self->_thread->_name);
     if (FAILED(res))
     {
         // TODO: We ignore this for now...
