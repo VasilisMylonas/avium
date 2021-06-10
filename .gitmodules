@@ -1,3 +1,6 @@
 [submodule "deps/bdwgc"]
 	path = deps/bdwgc
 	url = https://github.com/ivmai/bdwgc
+[submodule "deps/DarwinPthreadBarrier"]
+	path = deps/DarwinPthreadBarrier
+	url = https://github.com/ademakov/DarwinPthreadBarrier
