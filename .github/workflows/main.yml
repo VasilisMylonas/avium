@@ -22,7 +22,7 @@ jobs:
 
     - name: Prepare
       shell: bash
-      run: git submodule init && git submodule update
+      run: ./ci/submodules.sh
 
     - name: Configure
       shell: bash
