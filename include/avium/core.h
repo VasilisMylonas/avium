@@ -635,6 +635,47 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
 /// @}
 
 /**
+ * @defgroup AvmBoxing Object representation for primitive types.
+ *
+ * @{
+ */
+
+/// Object equivalent of signed integers.
+AVM_CLASS(AvmInteger, object, { _long Value; });
+
+/// Object equivalent of unsigned integers.
+AVM_CLASS(AvmUnsigned, object, { ulong Value; });
+
+/// Object equivalent of floating point numbers.
+AVM_CLASS(AvmFloat, object, { double Value; });
+
+/**
+ * @brief Creates an AvmInteger from an primitive.
+ *
+ * @param value The signed integer value.
+ * @return The created AvmInteger instance.
+ */
+AVMAPI AvmInteger AvmIntegerFrom(_long value);
+
+/**
+ * @brief Creates an AvmUnsigned from an primitive.
+ *
+ * @param value The unsigned integer value.
+ * @return The created AvmUnsigned instance.
+ */
+AVMAPI AvmUnsigned AvmUnsignedFrom(ulong value);
+
+/**
+ * @brief Creates an AvmFloat from an primitive.
+ *
+ * @param value The floating point value.
+ * @return The created AvmFloat instance.
+ */
+AVMAPI AvmFloat AvmFloatFrom(double value);
+
+/// @}
+
+/**
  * @brief Copies an object to a memory block.
  *
  * @pre Parameter @p o must be not null.
@@ -646,68 +687,24 @@ AVMAPI AvmError* AvmErrorFromOSCode(int code);
  */
 AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 
-/**
- * @brief Creates an array from a va_list.
- *
- * @pre Parameter @p N must be not zero.
- * @pre Parameter @p args must be not null.
- *
- * @param T The type of the array elements.
- * @param N The length of the array.
- * @param args The va_list.
- *
- * @return The created array.
- */
-#define va_array(T, N, args) (T*)__AvmRuntimeMarshalVaList(args, sizeof(T), N)
-
-AVM_CLASS(AvmBox, object, {
-    union {
-        double AsFloat;
-        ulong AsUint;
-        _long AsInt;
-        str AsStr;
-    };
-});
-
-#define box(x)                                                                 \
-    _Generic((x), char                                                         \
-             : AvmRuntimeBoxInt, short                                         \
-             : AvmRuntimeBoxInt, int                                           \
-             : AvmRuntimeBoxInt, _long                                         \
-             : AvmRuntimeBoxInt, byte                                          \
-             : AvmRuntimeBoxUint, ushort                                       \
-             : AvmRuntimeBoxUint, uint                                         \
-             : AvmRuntimeBoxUint, ulong                                        \
-             : AvmRuntimeBoxUint, float                                        \
-             : AvmRuntimeBoxFloat, double                                      \
-             : AvmRuntimeBoxFloat, str                                         \
-             : AvmRuntimeBoxStr, char*                                         \
-             : AvmRuntimeBoxStr)(x)
-
-AVMAPI AvmBox AvmRuntimeBoxInt(_long value);
-AVMAPI AvmBox AvmRuntimeBoxFloat(double value);
-AVMAPI AvmBox AvmRuntimeBoxUint(ulong value);
-AVMAPI AvmBox AvmRuntimeBoxStr(str value);
-
-AVM_ENUM(AvmResourceKey,
-         {
-             AvmArgErrorMsg,
-             AvmMemErrorMsg,
-             AvmRangeErrorMsg,
-             AvmMarshalErrorMsg,
-             AvmMissingMemberErrorMsg,
-             AvmMissingConstantErrorMsg,
-             AvmMissingCallbackErrorMsg,
-             AvmThreadCreationErrorMsg,
-             AvmThreadJoinErrorMsg,
-             AvmThreadDetachErrorMsg,
-             AvmInvalidStackSizeErrorMsg,
-         });
+#ifndef DOXYGEN
+typedef enum
+{
+    AvmArgErrorMsg,
+    AvmMemErrorMsg,
+    AvmRangeErrorMsg,
+    AvmMarshalErrorMsg,
+    AvmMissingMemberErrorMsg,
+    AvmMissingConstantErrorMsg,
+    AvmMissingCallbackErrorMsg,
+    AvmThreadCreationErrorMsg,
+    AvmThreadJoinErrorMsg,
+    AvmThreadDetachErrorMsg,
+    AvmInvalidStackSizeErrorMsg,
+} AvmResourceKey;
 
 AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);
-AVMAPI void* __AvmRuntimeMarshalVaList(va_list, uint, uint);
 
-#ifndef DOXYGEN
 /// Represents the context of a thrown object.
 AVM_CLASS(AvmThrowContext, object, {
     AvmThrowContext* _prev;

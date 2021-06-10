@@ -345,22 +345,28 @@ AVMAPI const AvmType** AvmFunctionGetParams(const AvmFunction* self);
 AVMAPI uint AvmFunctionGetParamCount(const AvmFunction* self);
 AVMAPI str AvmFunctionGetName(const AvmFunction* self);
 
+#define AVM_VFT_DEFAULT                                                        \
+    {                                                                          \
+        [FnEntryFinalize] = NULL                                               \
+    }
+
 #ifndef DOXYGEN
 AVMAPI object __AvmRuntimeCastFail(object, const AvmType*);
 
-extern const AvmType AVM_TI_NAME(_long);
-extern const AvmType AVM_TI_NAME(ulong);
-extern const AvmType AVM_TI_NAME(int);
-extern const AvmType AVM_TI_NAME(uint);
-extern const AvmType AVM_TI_NAME(short);
-extern const AvmType AVM_TI_NAME(ushort);
-extern const AvmType AVM_TI_NAME(char);
-extern const AvmType AVM_TI_NAME(byte);
-extern const AvmType AVM_TI_NAME(float);
-extern const AvmType AVM_TI_NAME(double);
-extern const AvmType AVM_TI_NAME(str);
-extern const AvmType AVM_TI_NAME(object);
-extern const AvmType AVM_TI_NAME(void);
+AVMAPI const AvmType AVM_TI_NAME(_long);
+AVMAPI const AvmType AVM_TI_NAME(ulong);
+AVMAPI const AvmType AVM_TI_NAME(int);
+AVMAPI const AvmType AVM_TI_NAME(uint);
+AVMAPI const AvmType AVM_TI_NAME(short);
+AVMAPI const AvmType AVM_TI_NAME(ushort);
+AVMAPI const AvmType AVM_TI_NAME(char);
+AVMAPI const AvmType AVM_TI_NAME(byte);
+AVMAPI const AvmType AVM_TI_NAME(bool);
+AVMAPI const AvmType AVM_TI_NAME(float);
+AVMAPI const AvmType AVM_TI_NAME(double);
+AVMAPI const AvmType AVM_TI_NAME(str);
+AVMAPI const AvmType AVM_TI_NAME(object);
+AVMAPI const AvmType AVM_TI_NAME(void);
 #endif // DOXYGEN
 
 #endif // AVIUM_TYPEINFO_H

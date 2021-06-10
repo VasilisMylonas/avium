@@ -542,6 +542,118 @@ AvmError* AvmErrorNew(str message)
 }
 
 //
+// Boxing.
+//
+
+AvmInteger AvmIntegerFrom(_long value)
+{
+    return (AvmInteger){
+        ._type = typeid(AvmInteger),
+        .Value = value,
+    };
+}
+
+AvmUnsigned AvmUnsignedFrom(ulong value)
+{
+    return (AvmUnsigned){
+        ._type = typeid(AvmUnsigned),
+        .Value = value,
+    };
+}
+
+AvmFloat AvmFloatFrom(double value)
+{
+    return (AvmFloat){
+        ._type = typeid(AvmFloat),
+        .Value = value,
+    };
+}
+
+static AvmString AvmIntegerToString(const AvmInteger* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromInt(self->Value);
+}
+
+static bool AvmIntegerEquals(const AvmInteger* self, const AvmInteger* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->Value == other->Value;
+}
+
+static AvmString AvmUnsignedToString(const AvmUnsigned* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromUint(self->Value, AvmNumericBaseDecimal);
+}
+
+static bool AvmUnsignedEquals(const AvmUnsigned* self, const AvmUnsigned* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->Value == other->Value;
+}
+
+static AvmString AvmFloatToString(const AvmFloat* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFromFloat(self->Value, AvmFloatReprAuto);
+}
+
+static bool AvmFloatEquals(const AvmFloat* self, const AvmFloat* other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+    }
+
+    return self->Value == other->Value;
+}
+
+AVM_TYPE(AvmInteger,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)AvmIntegerToString,
+             [FnEntryEquals] = (AvmCallback)AvmIntegerEquals,
+         });
+
+AVM_TYPE(AvmUnsigned,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)AvmUnsignedToString,
+             [FnEntryEquals] = (AvmCallback)AvmUnsignedEquals,
+         });
+
+AVM_TYPE(AvmFloat,
+         object,
+         {
+             [FnEntryToString] = (AvmCallback)AvmFloatToString,
+             [FnEntryEquals] = (AvmCallback)AvmFloatEquals,
+         });
+
+//
 // Exception implementation.
 //
 
@@ -579,56 +691,9 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
     return retval;
 }
 
-#ifdef AVM_INSERT_INIT_CODE
-// This should be defined by user code.
-extern void AvmMain();
-
-int main(int argc, str argv[])
-{
-    return AvmRuntimeInit(argc, argv, AvmMain);
-}
-#endif
-
 //
-// Boxing
+// Misc.
 //
-
-AvmBox AvmRuntimeBoxInt(_long value)
-{
-    return (AvmBox){
-        ._type = typeid(_long),
-        .AsInt = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxFloat(double value)
-{
-    return (AvmBox){
-        ._type = typeid(double),
-        .AsFloat = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxUint(ulong value)
-{
-    return (AvmBox){
-        ._type = typeid(ulong),
-        .AsUint = value,
-    };
-}
-
-AvmBox AvmRuntimeBoxStr(str value)
-{
-    pre
-    {
-        assert(value != NULL);
-    }
-
-    return (AvmBox){
-        ._type = typeid(str),
-        .AsStr = value,
-    };
-}
 
 void AvmCopy(object o, size_t size, byte* destination)
 {
@@ -647,47 +712,6 @@ void AvmCopy(object o, size_t size, byte* destination)
 
     memcpy(destination, o, objectSize);
 }
-
-void* __AvmRuntimeMarshalVaList(va_list args, uint size, uint length)
-{
-    pre
-    {
-        assert(args != NULL);
-        assert(size != 0);
-        assert(length != 0);
-    }
-
-    byte* array = AvmAlloc(length * size);
-
-    switch (size)
-    {
-    case sizeof(byte):
-        VA_LIST_TO_ARRAY_IMPL(byte, uint);
-    case sizeof(ushort):
-        VA_LIST_TO_ARRAY_IMPL(ushort, uint);
-    case sizeof(uint):
-        VA_LIST_TO_ARRAY_IMPL(uint, uint);
-    case sizeof(ulong):
-        VA_LIST_TO_ARRAY_IMPL(ulong, ulong);
-    default:
-        throw(AvmErrorNew(_(AvmMarshalErrorMsg)));
-    }
-}
-
-AVM_ENUM_TYPE(AvmResourceKey,
-              {
-                  AVM_ENUM_MEMBER(AvmArgErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMemErrorMsg),
-                  AVM_ENUM_MEMBER(AvmRangeErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMarshalErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingMemberErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingConstantErrorMsg),
-                  AVM_ENUM_MEMBER(AvmMissingCallbackErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadCreationErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadJoinErrorMsg),
-                  AVM_ENUM_MEMBER(AvmThreadDetachErrorMsg),
-                  AVM_ENUM_MEMBER(AvmInvalidStackSizeErrorMsg),
-              });
 
 str AvmRuntimeGetResource(AvmResourceKey key)
 {
@@ -719,3 +743,13 @@ str AvmRuntimeGetResource(AvmResourceKey key)
         return "";
     }
 }
+
+#ifdef AVM_INSERT_INIT_CODE
+// This should be defined by user code.
+extern void AvmMain();
+
+int main(int argc, str argv[])
+{
+    return AvmRuntimeInit(argc, argv, AvmMain);
+}
+#endif

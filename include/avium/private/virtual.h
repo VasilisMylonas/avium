@@ -16,12 +16,4 @@
 #define VIRTUAL_CALL(TReturn, E, ...) VIRTUAL_CALL_(TReturn, E, __VA_ARGS__)
 #endif
 
-#define VA_LIST_TO_ARRAY_IMPL(T1, T2)                                          \
-    for (size_t i = 0; i < length; i++)                                        \
-    {                                                                          \
-        ((T1*)array)[i] = (T1)va_arg(args, T2);                                \
-    }                                                                          \
-                                                                               \
-    return array;
-
 #endif // AVIUM_PRIVATE_VIRTUAL_H
