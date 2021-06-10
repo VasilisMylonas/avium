@@ -4,28 +4,23 @@
 
 #include "avium/private/thread-context.h"
 
-#include <pthread.h>
-
 #include <deps/gc.h>
-
-#if !defined AVM_HAVE_PTHREAD_BARRIER &&                                       \
-    (!defined _POSIX_BARRIERS || _POSIX_BARRIERS <= 0)
-#include <deps/pthread_barrier.h>
-#endif
+#include <windows.h>
 
 #define _ AvmRuntimeGetResource
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
-    void* state = (void*)pthread_self();
+    void* state = (void*)GetCurrentThread();
 
     // This would be bad.
     assert(state != NULL);
 
-    // TODO: Temporarily disabled cause of Darwin.
-    // #ifdef AVM_HAVE_PTHREAD_SETNAME
-    // pthread_setname_np((pthread_t)state, self->_thread->_name);
-    // #endif
+    HRESULT res = SetThreadDescription((HANDLE)state, self->_thread->_name);
+    if (FAILED(res))
+    {
+        // TODO: We ignore this for now...
+    }
 
     self->_thread->_state = state;
 }
@@ -41,31 +36,17 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
         assert(name != NULL);
     }
 
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-
-    if (stackSize != 0)
-    {
-        if (pthread_attr_setstacksize(&attr, stackSize) != 0)
-        {
-            throw(AvmErrorNew(_(AvmInvalidStackSizeErrorMsg)));
-        }
-    }
-
     AvmThread* thread = __AvmThreadNewObject(name, false, stackSize);
     AvmThreadContext* context = __AvmThreadContextNew(value, entry, thread);
 
-    pthread_t id = 0;
-    if (pthread_create(&id,
-                       &attr,
-                       (void* (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
-                       context))
+    HANDLE h = _beginthreadex(
+        NULL, stackSize, (AvmCallback)__AvmRuntimeThreadInit, context, 0, NULL);
+
+    if (h == NULL)
     {
-        pthread_attr_destroy(&attr);
         throw(AvmErrorNew(_(AvmThreadCreationErrorMsg)));
     }
 
-    pthread_attr_destroy(&attr);
     return __AvmThreadContextGetThread(context);
 }
 
@@ -76,9 +57,9 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
         assert(self != NULL);
     }
 
-    void* exitCode = NULL;
+    DWORD exitCode = 0;
 
-    if (pthread_join((pthread_t)self->_state, &exitCode) != 0)
+    if (WaitForSingleObject((HANDLE)self->_state, INFINITE) == WAIT_FAILED)
     {
         throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
     }
@@ -88,7 +69,12 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
         self->_isAlive = false;
     }
 
-    return (AvmExitCode)(ulong)exitCode;
+    if (GetExitCodeThread((HANDLE)self->_state, &exitCode) == 0)
+    {
+        throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
+    }
+
+    return (AvmExitCode)exitCode;
 }
 
 void AvmThreadDetach(AvmThread* self)
@@ -98,7 +84,7 @@ void AvmThreadDetach(AvmThread* self)
         assert(self != NULL);
     }
 
-    if (pthread_detach((pthread_t)self->_state) != 0)
+    if (CloseHandle((HANDLE)self->_state) == 0)
     {
         throw(AvmErrorNew(_(AvmThreadDetachErrorMsg)));
     }
@@ -111,7 +97,7 @@ void AvmThreadDetach(AvmThread* self)
 
 void AvmThreadYield()
 {
-    sched_yield();
+    Sleep(0);
 }
 
 never AvmThreadExit(AvmExitCode code)
@@ -123,7 +109,7 @@ never AvmThreadExit(AvmExitCode code)
         self->_isAlive = false;
     }
 
-    pthread_exit((void*)(ulong)code);
+    _endthreadex((unsigned)code);
 }
 
 void AvmThreadTerminate(AvmThread* self)
@@ -140,43 +126,35 @@ void AvmThreadTerminate(AvmThread* self)
         self->_isAlive = false;
     }
 
-    if (pthread_cancel((pthread_t)self->_state) != 0)
+    if (TerminateThread((HANDLE)self->_state, EXIT_FAILURE) == 0)
     {
         throw(AvmErrorNew(_(AvmArgErrorMsg)));
     }
+
+    CloseHandle((HANDLE)self->_state);
 }
 
 AvmMutex AvmMutexNew(bool isRecursive)
 {
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init(&attr);
-
-    if (isRecursive)
+    if (!isRecursive)
     {
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        // TODO: Always recursive in win32...
     }
 
-    pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
-    int result = pthread_mutex_init(mutex, &attr);
-
-    pthread_mutexattr_destroy(&attr);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
+    LPCRITICAL_SECTION mutex = AvmAlloc(sizeof(CRITICAL_SECTION));
+    InitializeCriticalSection(mutex);
 
     // We register a custom 'finalizer'.
     GC_register_finalizer(
-        mutex,
-        (GC_finalization_proc)(AvmCallback)pthread_mutex_destroy,
+        (void*)mutex,
+        (GC_finalization_proc)(AvmCallback)DeleteCriticalSection,
         NULL,
         NULL,
         NULL);
 
     return (AvmMutex){
         ._type = typeid(AvmMutex),
-        ._state = mutex,
+        ._state = (void*)mutex,
     };
 }
 
@@ -187,12 +165,7 @@ void AvmMutexLock(const AvmMutex* self)
         assert(self != NULL);
     }
 
-    int result = pthread_mutex_lock(self->_state);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
+    EnterCriticalSection(self->_state);
 }
 
 void AvmMutexUnlock(const AvmMutex* self)
@@ -202,21 +175,22 @@ void AvmMutexUnlock(const AvmMutex* self)
         assert(self != NULL);
     }
 
-    int result = pthread_mutex_unlock(self->_state);
-
-    if (result != 0)
-    {
-        throw(AvmErrorFromOSCode(result));
-    }
+    LeaveCriticalSection(self->_state);
 }
 
 AvmBarrier AvmBarrierNew(uint count)
 {
-    pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t));
-    pthread_barrier_init(barrier, NULL, count);
+    LPSYNCHRONIZATION_BARRIER barrier =
+        AvmAlloc(sizeof(SYNCHRONIZATION_BARRIER));
+
+    if (InitializeSynchronizationBarrier(barrier, count, -1) == FALSE)
+    {
+        throw(AvmErrorNew("TODO: Barrier failure."));
+    }
+
     GC_register_finalizer(
         barrier,
-        (GC_finalization_proc)(AvmCallback)pthread_barrier_destroy,
+        (GC_finalization_proc)(AvmCallback)DeleteSynchronizationBarrier,
         NULL,
         NULL,
         NULL);
@@ -229,11 +203,10 @@ AvmBarrier AvmBarrierNew(uint count)
 
 void AvmBarrierWait(const AvmBarrier* self)
 {
-
     pre
     {
         assert(self != NULL);
     }
 
-    pthread_barrier_wait(self->_state);
+    EnterSynchronizationBarrier(self->_state, 0);
 }
