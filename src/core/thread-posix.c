@@ -9,16 +9,23 @@
 
 #include <bdwgc/include/gc.h>
 
+#if !defined AVM_HAVE_PTHREAD_BARRIER &&                                       \
+    (!defined _POSIX_BARRIERS || _POSIX_BARRIERS <= 0)
+#include <DarwinPthreadBarrier/src/pthread_barrier.c>
+#include <DarwinPthreadBarrier/src/pthread_barrier.h>
+#endif
+
 #define _ AvmRuntimeGetResource
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
+
     void* state = (void*)pthread_self();
 
     // This would be bad.
     assert(state != NULL);
 
-    // TODO: Temporarily disabled cause of MacOS.
+    // TODO: Temporarily disabled cause of Darwin.
     // #ifdef AVM_HAVE_PTHREAD_SETNAME
     // pthread_setname_np((pthread_t)state, self->_thread->_name);
     // #endif
@@ -208,7 +215,6 @@ void AvmMutexUnlock(const AvmMutex* self)
 
 AvmBarrier AvmBarrierNew(uint count)
 {
-#ifdef AVM_HAVE_PTHREAD_BARRIER
     pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t));
     pthread_barrier_init(barrier, NULL, count);
     GC_register_finalizer(
@@ -222,10 +228,6 @@ AvmBarrier AvmBarrierNew(uint count)
         ._type = typeid(AvmBarrier),
         ._state = barrier,
     };
-#else
-    (void)count;
-    throw(AvmErrorNew("TODO: Not supported!"));
-#endif
 }
 
 void AvmBarrierWait(const AvmBarrier* self)
@@ -236,9 +238,5 @@ void AvmBarrierWait(const AvmBarrier* self)
         assert(self != NULL);
     }
 
-#ifdef AVM_HAVE_PTHREAD_BARRIER
     pthread_barrier_wait(self->_state);
-#else
-    throw(AvmErrorNew("TODO: Not supported!"));
-#endif
 }

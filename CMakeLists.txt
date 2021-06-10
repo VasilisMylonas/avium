@@ -77,7 +77,7 @@ endif()
 
 configure_file(include/avium/config.h.in include/avium/config.h @ONLY)
 
-add_subdirectory(deps/bdwgc)
+add_subdirectory(deps)
 add_subdirectory(docs)
 add_subdirectory(src/core)
 add_subdirectory(tests)
