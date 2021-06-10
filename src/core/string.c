@@ -1,7 +1,6 @@
 #include "avium/string.h"
 
 #include "avium/core.h"
-#include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 #include <ctype.h>

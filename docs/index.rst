@@ -7,7 +7,6 @@ Welcome to Avium's documentation!
 
    core
    string
-   testing
    typeinfo
 
 Indices and tables

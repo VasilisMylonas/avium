@@ -1,7 +1,4 @@
-#include "avium/thread.h"
-
-#include "avium/testing.h"
-#include "avium/typeinfo.h"
+#include <avium/thread.h>
 
 void ThreadProc(object value)
 {

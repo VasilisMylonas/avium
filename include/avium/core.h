@@ -117,6 +117,20 @@ typedef struct AvmFunction AvmFunction;
 
 /// @}
 
+#include <assert.h>
+
+#ifdef AVM_NO_PRECOND
+#define pre if (false)
+#else
+#define pre if (true)
+#endif
+
+#if defined NDEBUG || defined AVM_NO_POSTCOND
+#define post if (false)
+#else
+#define post if (true)
+#endif
+
 /**
  * @defgroup AvmObjectFunctions Universal object instance functions.
  *

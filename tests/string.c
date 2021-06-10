@@ -1,5 +1,4 @@
 #include <avium/string.h>
-#include <avium/testing.h>
 
 #include <string.h> // For strcmp
 

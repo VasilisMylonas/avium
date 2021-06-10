@@ -2,7 +2,6 @@
 
 #include "avium/core.h"
 #include "avium/string.h"
-#include "avium/testing.h"
 
 #include <stdlib.h>
 #include <string.h>

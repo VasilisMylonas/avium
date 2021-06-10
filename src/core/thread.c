@@ -1,7 +1,6 @@
 #include "avium/thread.h"
 
 #include "avium/string.h"
-#include "avium/testing.h"
 #include "avium/typeinfo.h"
 
 #include "avium/private/thread-context.h"
