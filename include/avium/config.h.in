@@ -23,6 +23,8 @@
 #cmakedefine AVM_EXPOSE_HIDDEN_API
 #cmakedefine AVM_INSERT_INIT_CODE
 #cmakedefine AVM_BUILDING
+#cmakedefine AVM_DISABLE_PRECONDITIONS
+#cmakedefine AVM_DISABLE_POSTCONDITIONS
 
 #ifdef AVM_MSVC
 #ifdef AVM_BUILDING

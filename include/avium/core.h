@@ -26,6 +26,7 @@
 
 #include "avium/config.h"
 
+#include <assert.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -117,15 +118,13 @@ typedef struct AvmFunction AvmFunction;
 
 /// @}
 
-#include <assert.h>
-
-#ifdef AVM_NO_PRECOND
+#ifdef AVM_DISABLE_PRECONDITIONS
 #define pre if (false)
 #else
 #define pre if (true)
 #endif
 
-#if defined NDEBUG || defined AVM_NO_POSTCOND
+#ifdef AVM_DISABLE_POSTCONDITIONS
 #define post if (false)
 #else
 #define post if (true)
