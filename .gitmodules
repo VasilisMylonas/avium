@@ -1,9 +1,6 @@
 [submodule "deps/bdwgc"]
 	path = deps/bdwgc
 	url = https://github.com/ivmai/bdwgc
-[submodule "deps/bdwgc/libatomic_ops"]
-	path = deps/bdwgc/libatomic_ops
-	url = https://github.com/ivmai/libatomic_ops
 [submodule "deps/DarwinPthreadBarrier"]
 	path = deps/DarwinPthreadBarrier
 	url = https://github.com/ademakov/DarwinPthreadBarrier
