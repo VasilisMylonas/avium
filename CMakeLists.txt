@@ -11,7 +11,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(enable_threads ON) # This is for bdwgc
 set(AVM_BUILDING ON)
-set(AVM_MSVC_COMPILE_OPTIONS /W4)
+set(AVM_MSVC_COMPILE_OPTIONS /W4 /WD4201 /WD5105)
 set(AVM_GNU_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror)
 set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage -rdynamic)
 

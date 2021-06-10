@@ -134,7 +134,7 @@ AvmString AvmStringFrom(str contents)
         assert(contents != NULL);
     }
 
-    const uint length = strlen(contents);
+    const uint length = (uint)strlen(contents);
 
     if (length == 0)
     {
