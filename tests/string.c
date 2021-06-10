@@ -5,6 +5,7 @@
 static void TestFrom()
 {
     AvmString s = AvmStringFrom("Hello");
+    (void)s;
 
     assert(AvmStringGetBuffer(&s) != NULL);
     assert(AvmStringGetLength(&s) == 5);

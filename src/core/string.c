@@ -197,7 +197,7 @@ AvmString AvmStringFromInt(_long value)
     uint i = 0;
     for (; value != 0; i++, value /= 10)
     {
-        _long r = value % 10;
+        char r = (char)(value % 10);
         AvmStringPushChar(&s, '0' + r);
     }
 
@@ -240,7 +240,7 @@ AvmString AvmStringFromUint(ulong value, AvmNumericBase numericBase)
     uint i = 0;
     for (; value != 0; i++, value /= numericBase)
     {
-        _long r = value % numericBase;
+        char r = (char)(value % numericBase);
 
         if (r >= 10)
         {
@@ -286,7 +286,7 @@ AvmString AvmStringFromFloat2(float value)
 {
     Float f = {.value = value};
 
-    int8_t exponent = f.exponent - 127; // Biased exponent.
+    int8_t exponent = (int8_t)(f.exponent - 127); // Biased exponent.
 
     if (exponent > 18)
     {
@@ -410,7 +410,7 @@ AvmString AvmStringRepeat(str contents, uint count)
         return AvmStringFrom(contents);
     }
 
-    const uint length = strlen(contents);
+    const uint length = (uint)strlen(contents);
 
     if (length == 0)
     {
@@ -628,7 +628,7 @@ void AvmStringPushStr(AvmString* self, str contents)
         assert(contents != NULL);
     }
 
-    const uint length = strlen(contents);
+    const uint length = (uint)strlen(contents);
     AvmStringPushChars(self, length, contents);
 
     post
@@ -762,7 +762,7 @@ uint AvmStringFindLast(const AvmString* self, str substring)
         assert(substring != NULL);
     }
 
-    uint length = strlen(substring);
+    const uint length = (uint)strlen(substring);
 
     if (length > self->_length)
     {
@@ -1062,7 +1062,7 @@ bool AvmStringStartsWithStr(const AvmString* self, str contents)
         assert(self != NULL);
     }
 
-    return AvmStringStartsWithChars(self, strlen(contents), contents);
+    return AvmStringStartsWithChars(self, (uint)strlen(contents), contents);
 }
 
 bool AvmStringStartsWithString(const AvmString* self, const AvmString* contents)
@@ -1095,7 +1095,7 @@ bool AvmStringEndsWithStr(const AvmString* self, str contents)
         assert(self != NULL);
     }
 
-    return AvmStringEndsWithChars(self, strlen(contents), contents);
+    return AvmStringEndsWithChars(self, (uint)strlen(contents), contents);
 }
 
 bool AvmStringEndsWithChars(const AvmString* self, uint length, str contents)
