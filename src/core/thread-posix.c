@@ -18,9 +18,10 @@ void __AvmThreadContextSetThread(AvmThreadContext* self)
     // This would be bad.
     assert(state != NULL);
 
-#ifdef AVM_HAVE_PTHREAD_SETNAME
-    pthread_setname_np((pthread_t)state, self->_thread->_name);
-#endif
+    // TODO: Temporarily disabled cause of MacOS.
+    // #ifdef AVM_HAVE_PTHREAD_SETNAME
+    // pthread_setname_np((pthread_t)state, self->_thread->_name);
+    // #endif
 
     self->_thread->_state = state;
 }
