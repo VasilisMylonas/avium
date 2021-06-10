@@ -14,7 +14,7 @@ else()
 endif()
 
 target_include_directories(avm-core
-    PRIVATE ${CMAKE_SOURCE_DIR}/deps
+    PRIVATE ${CMAKE_SOURCE_DIR}/deps/include
     PUBLIC ${CMAKE_SOURCE_DIR}/include
     PUBLIC ${CMAKE_BINARY_DIR}/include
 )

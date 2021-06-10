@@ -7,12 +7,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include <bdwgc/include/gc.h>
+#include <deps/gc.h>
 
 #if !defined AVM_HAVE_PTHREAD_BARRIER &&                                       \
     (!defined _POSIX_BARRIERS || _POSIX_BARRIERS <= 0)
-#include <DarwinPthreadBarrier/src/pthread_barrier.c>
-#include <DarwinPthreadBarrier/src/pthread_barrier.h>
+#include <deps/pthread_barrier.h>
 #endif
 
 #define _ AvmRuntimeGetResource

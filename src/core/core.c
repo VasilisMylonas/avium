@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <bdwgc/include/gc.h>
+#include <deps/gc.h>
 
 #ifdef AVM_HAVE_BACKTRACE
 #include <execinfo.h>
