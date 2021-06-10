@@ -12,18 +12,13 @@
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
-    void* state = (void*)GetCurrentThread();
-
-    // This would be bad.
-    assert(state != NULL);
-
     HRESULT res = SetThreadDescription((HANDLE)state, self->_thread->_name);
     if (FAILED(res))
     {
         // TODO: We ignore this for now...
     }
 
-    self->_thread->_state = state;
+    self->_thread->_isAlive = true;
 }
 
 AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
@@ -40,15 +35,20 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
     AvmThread* thread = __AvmThreadNewObject(name, false, stackSize);
     AvmThreadContext* context = __AvmThreadContextNew(value, entry, thread);
 
-    HANDLE h = _beginthreadex(
-        NULL, stackSize, (AvmCallback)__AvmRuntimeThreadInit, context, 0, NULL);
+    void* h = (void*)_beginthreadex(
+        NULL,
+        stackSize,
+        (unsigned (*)(void*))(AvmCallback)__AvmRuntimeThreadInit,
+        context,
+        0,
+        NULL);
 
     if (h == NULL)
     {
         throw(AvmErrorNew(_(AvmThreadCreationErrorMsg)));
     }
 
-    return __AvmThreadContextGetThread(context);
+    return __AvmThreadContextGetThread(context, h);
 }
 
 AvmExitCode AvmThreadJoin(AvmThread* self)

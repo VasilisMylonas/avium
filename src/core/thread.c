@@ -57,7 +57,7 @@ AvmThread* __AvmThreadNewObject(str name, bool isDetached, uint stackSize)
 {
     AvmThread* thread = AvmObjectNew(typeid(AvmThread));
     thread->_lock = AvmMutexNew(false);
-    thread->_isAlive = true;
+    thread->_isAlive = false;
     thread->_isDetached = isDetached;
     thread->_name = name;
     thread->_stackSize = stackSize;
@@ -104,16 +104,22 @@ void __AvmThreadContextEnter(const AvmThreadContext* self)
     }
 }
 
-AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self)
+AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self,
+                                       void* thread)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    while (self->_thread->_state == NULL)
+    while (!self->_thread->_isAlive)
     {
         // Wait.
+    }
+
+    lock(&self->_thread->_lock)
+    {
+        self->_thread->_state = thread;
     }
 
     return self->_thread;

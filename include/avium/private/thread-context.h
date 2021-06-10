@@ -15,7 +15,8 @@ AVMHIDDEN AvmThreadContext* __AvmThreadContextNew(
     object argument, AvmThreadEntryPoint entryPoint, AvmThread* thread);
 
 // Waits for the thread in the specified thread context to become available.
-AVMHIDDEN AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self);
+AVMHIDDEN AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self,
+                                                 void* thread);
 
 // Makes the current thread available in the specified thread context.
 AVMHIDDEN void __AvmThreadContextSetThread(AvmThreadContext* self);

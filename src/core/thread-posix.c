@@ -17,17 +17,11 @@
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {
-    void* state = (void*)pthread_self();
-
-    // This would be bad.
-    assert(state != NULL);
-
     // TODO: Temporarily disabled cause of Darwin.
     // #ifdef AVM_HAVE_PTHREAD_SETNAME
     // pthread_setname_np((pthread_t)state, self->_thread->_name);
     // #endif
-
-    self->_thread->_state = state;
+    self->_thread->_isAlive = true;
 }
 
 AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
@@ -66,7 +60,7 @@ AvmThread* AvmThreadNewEx(AvmThreadEntryPoint entry,
     }
 
     pthread_attr_destroy(&attr);
-    return __AvmThreadContextGetThread(context);
+    return __AvmThreadContextGetThread(context, (void*)id);
 }
 
 AvmExitCode AvmThreadJoin(AvmThread* self)
