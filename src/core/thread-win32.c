@@ -66,10 +66,9 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
         throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
     }
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     if (GetExitCodeThread((HANDLE)self->_state, &exitCode) == 0)
     {
@@ -91,10 +90,9 @@ void AvmThreadDetach(AvmThread* self)
         throw(AvmErrorNew(_(AvmThreadDetachErrorMsg)));
     }
 
-    lock(&self->_lock)
-    {
-        self->_isDetached = true;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isDetached = true;
+    AvmMutexUnlock(&self->_lock);
 }
 
 void AvmThreadYield()
@@ -106,10 +104,9 @@ never AvmThreadExit(AvmExitCode code)
 {
     AvmThread* self = (AvmThread*)AvmThreadGetCurrent();
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     _endthreadex((unsigned)code);
 }
@@ -123,10 +120,9 @@ void AvmThreadTerminate(AvmThread* self)
 
     AvmObjectSurpressFinalizer(self);
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     if (TerminateThread((HANDLE)self->_state, EXIT_FAILURE) == 0)
     {

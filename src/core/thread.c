@@ -117,10 +117,9 @@ AvmThread* __AvmThreadContextGetThread(const AvmThreadContext* self,
         // Wait.
     }
 
-    lock(&self->_thread->_lock)
-    {
-        self->_thread->_state = thread;
-    }
+    AvmMutexLock(&self->_thread->_lock);
+    self->_thread->_state = thread;
+    AvmMutexUnlock(&self->_thread->_lock);
 
     return self->_thread;
 }
@@ -197,10 +196,9 @@ static void AvmThreadFinalize(AvmThread* self)
     }
 
     bool shouldTerminate;
-    lock(&self->_lock)
-    {
-        shouldTerminate = AvmThreadIsAlive(self) && !AvmThreadIsDetached(self);
-    }
+    AvmMutexLock(&self->_lock);
+    shouldTerminate = AvmThreadIsAlive(self) && !AvmThreadIsDetached(self);
+    AvmMutexUnlock(&self->_lock);
 
     if (shouldTerminate)
     {

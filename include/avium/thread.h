@@ -28,11 +28,6 @@
 
 AVM_CLASS(AvmMutex, object, { void* _state; });
 
-#define lock(mutex)                                                            \
-    AvmMutexLock(mutex);                                                       \
-    for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
-         AVM_UNIQUE(__avmMC)++, AvmMutexUnlock(mutex))
-
 AVMAPI AvmMutex AvmMutexNew(bool isRecursive);
 AVMAPI void AvmMutexUnlock(const AvmMutex* self);
 AVMAPI void AvmMutexLock(const AvmMutex* self);

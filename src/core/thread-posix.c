@@ -77,10 +77,9 @@ AvmExitCode AvmThreadJoin(AvmThread* self)
         throw(AvmErrorNew(_(AvmThreadJoinErrorMsg)));
     }
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     return (AvmExitCode)(ulong)exitCode;
 }
@@ -97,10 +96,9 @@ void AvmThreadDetach(AvmThread* self)
         throw(AvmErrorNew(_(AvmThreadDetachErrorMsg)));
     }
 
-    lock(&self->_lock)
-    {
-        self->_isDetached = true;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isDetached = true;
+    AvmMutexUnlock(&self->_lock);
 }
 
 void AvmThreadYield()
@@ -112,10 +110,9 @@ never AvmThreadExit(AvmExitCode code)
 {
     AvmThread* self = (AvmThread*)AvmThreadGetCurrent();
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     pthread_exit((void*)(ulong)code);
 }
@@ -129,10 +126,9 @@ void AvmThreadTerminate(AvmThread* self)
 
     AvmObjectSurpressFinalizer(self);
 
-    lock(&self->_lock)
-    {
-        self->_isAlive = false;
-    }
+    AvmMutexLock(&self->_lock);
+    self->_isAlive = false;
+    AvmMutexUnlock(&self->_lock);
 
     if (pthread_cancel((pthread_t)self->_state) != 0)
     {
