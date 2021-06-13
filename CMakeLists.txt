@@ -34,6 +34,7 @@ option(AVM_INSERT_INIT_CODE "Insert runtime initialization code?" ON)
 option(AVM_EXPOSE_HIDDEN_API "Expose functions marked with AVMHIDDEN?" OFF)
 option(AVM_DISABLE_PRECONDITIONS "Disable precondition (pre {...}) blocks?" OFF)
 option(AVM_DISABLE_POSTCONDITIONS "Disable postcondition (post {...}) blocks?" OFF)
+option(BUILD_SHARED_LIBS "Build shared library instead?" OFF)
 
 add_compile_definitions(
     _CRT_SECURE_NO_WARNINGS GC_THREADS _REENTRANT

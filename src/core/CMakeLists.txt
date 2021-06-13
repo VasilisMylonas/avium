@@ -1,10 +1,21 @@
 if (AVM_HAVE_POSIX_THREADS)
     set(AVM_THREAD_BACKEND thread-posix.c)
+    set(AVM_PROCESS_BACKEND process-posix.c)
 else()
     set(AVM_THREAD_BACKEND thread-win32.c)
+    set(AVM_PROCESS_BACKEND process-win32.c)
 endif()
 
-add_library(avm-core STATIC core.c string.c typeinfo.c thread.c ${AVM_THREAD_BACKEND})
+add_library(avm-core STATIC
+    core.c
+    string.c
+    typeinfo.c
+    thread.c
+    process.c
+    ${AVM_THREAD_BACKEND}
+    ${AVM_PROCESS_BACKEND}
+)
+
 target_link_libraries(avm-core PRIVATE gc Threads::Threads)
 
 if(MSVC)
