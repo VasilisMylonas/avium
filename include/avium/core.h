@@ -192,6 +192,14 @@ AVMAPI void AvmObjectSurpressFinalizer(object self) AVM_NONNULL(1);
 AVMAPI void* AvmObjectVisit(object self, const AvmMember* member)
     AVM_NONNULL(1, 2) AVM_PURE;
 
+AVMAPI void AvmObjectLock(object self) AVM_NONNULL(1);
+AVMAPI void AvmObjectUnlock(object self) AVM_NONNULL(1);
+
+#define lock(o)                                                                \
+    AvmObjectLock(o);                                                          \
+    for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
+         AVM_UNIQUE(__avmMC)++, AvmObjectUnlock(o))
+
 /**
  * @brief Compares two objects for equality.
  *
@@ -469,7 +477,6 @@ AVMAPI void* AvmAlloc(uint size);
 /**
  * @brief Reallocates a heap memory block.
  *
- * @pre memory != NULL.
  * @pre size != 0.
  *
  * @param memory The memory block to reallocate.

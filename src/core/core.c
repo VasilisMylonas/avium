@@ -37,20 +37,23 @@ object AvmObjectNew(const AvmClass* type)
         assert(type != NULL);
     }
 
-    object o = AvmAlloc(AvmTypeGetSize((const AvmType*)type));
+    object* o =
+        AvmAlloc(AvmTypeGetSize((const AvmType*)type) + sizeof(AvmMutex*));
     GC_register_finalizer(o,
                           (GC_finalization_proc)(AvmCallback)AvmObjectFinalize,
                           NULL,
                           NULL,
                           NULL);
-    *(const AvmClass**)o = type;
+
+    o[0] = NULL;         // No mutex yet.
+    o[1] = (object)type; // Type.
 
     post
     {
         assert(o != NULL);
     }
 
-    return o;
+    return &o[1];
 }
 
 const AvmClass* AvmObjectGetType(object self)
@@ -92,6 +95,39 @@ void* AvmObjectVisit(object self, const AvmMember* member)
     }
 
     return ((byte*)self) + member->_private.offset;
+}
+
+void AvmObjectLock(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(AvmRuntimeIsHeapObject(self));
+    }
+
+    AvmMutex** o = self;
+
+    if (o[-1] == NULL)
+    {
+        // Lazy initialization.
+        AvmMutex* mutex = AvmObjectNew(typeid(AvmMutex));
+        *mutex = AvmMutexNew(false);
+        o[-1] = mutex;
+    }
+
+    AvmMutexLock(o[-1]);
+}
+
+void AvmObjectUnlock(object self)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(AvmRuntimeIsHeapObject(self));
+    }
+
+    AvmMutex** o = self;
+    AvmMutexUnlock(o[-1]);
 }
 
 //
@@ -375,7 +411,6 @@ void* AvmRealloc(void* memory, uint size)
 {
     pre
     {
-        assert(memory != NULL);
         assert(size != 0);
     }
 
@@ -673,10 +708,9 @@ void __AvmRuntimePushThrowContext(AvmThrowContext* context)
     context->_thrownObject = NULL;
     context->_prev = t->_context;
 
-    lock(&t->_lock)
-    {
-        t->_context = context;
-    }
+    AvmMutexLock(&t->_lock);
+    t->_context = context;
+    AvmMutexUnlock(&t->_lock);
 }
 
 AvmThrowContext* __AvmRuntimePopThrowContext(void)
@@ -684,10 +718,9 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
     AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
     AvmThrowContext* retval = t->_context;
 
-    lock(&t->_lock)
-    {
-        t->_context = retval->_prev;
-    }
+    AvmMutexLock(&t->_lock);
+    t->_context = retval->_prev;
+    AvmMutexUnlock(&t->_lock);
 
     return retval;
 }
