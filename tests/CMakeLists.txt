@@ -6,3 +6,4 @@ endfunction()
 
 run_test(string)
 run_test(thread)
+run_test(typeinfo)

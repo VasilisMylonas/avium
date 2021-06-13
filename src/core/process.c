@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-AVM_TYPE(AvmProcess, object, AVM_VFT_DEFAULT);
+AVM_CLASS_TYPE(AvmProcess, object, AVM_VTABLE_DEFAULT);
 
 void AvmProcessExit(AvmExitCode code)
 {

@@ -30,20 +30,20 @@ static struct
 // Object functions.
 //
 
-object AvmObjectNew(const AvmType* type)
+object AvmObjectNew(const AvmClass* type)
 {
     pre
     {
         assert(type != NULL);
     }
 
-    object o = AvmAlloc(AvmTypeGetSize(type));
+    object o = AvmAlloc(AvmTypeGetSize((const AvmType*)type));
     GC_register_finalizer(o,
                           (GC_finalization_proc)(AvmCallback)AvmObjectFinalize,
                           NULL,
                           NULL,
                           NULL);
-    *(const AvmType**)o = type;
+    *(const AvmClass**)o = type;
 
     post
     {
@@ -53,16 +53,16 @@ object AvmObjectNew(const AvmType* type)
     return o;
 }
 
-const AvmType* AvmObjectGetType(object self)
+const AvmClass* AvmObjectGetType(object self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    // The first member of an object should be a const AvmType*
+    // The first member of an object should be a const AvmClass*
     // Look in core.h for AVM_CLASS
-    const AvmType* type = *(const AvmType**)self;
+    const AvmClass* type = *(const AvmClass**)self;
 
     post
     {
@@ -91,7 +91,7 @@ void* AvmObjectVisit(object self, const AvmMember* member)
         assert(member != NULL);
     }
 
-    return ((byte*)self) + member->_offset;
+    return ((byte*)self) + member->_private.offset;
 }
 
 //
@@ -156,11 +156,11 @@ static AvmString AvmLocationToString(AvmLocation* self)
     return AvmStringFormat(AVM_LOCATION_FMT_STR, self->File, self->Line);
 }
 
-AVM_TYPE(AvmLocation,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmLocationToString,
-         });
+AVM_CLASS_TYPE(AvmLocation,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmLocationToString,
+               });
 
 AvmLocation AvmLocationFrom(str file, uint line, uint column)
 {
@@ -170,7 +170,7 @@ AvmLocation AvmLocationFrom(str file, uint line, uint column)
     }
 
     return (AvmLocation){
-        ._type = typeid(AvmLocation),
+        .__type = typeid(AvmLocation),
         .File = file,
         .Line = line,
         .Column = column,
@@ -192,14 +192,16 @@ static AvmString AvmVersionToString(AvmVersion* self)
         AVM_VERSION_FMT_STR, self->Major, self->Minor, self->Patch);
 }
 
-AVM_TYPE(AvmVersion,
-         object,
-         {[FnEntryToString] = (AvmCallback)AvmVersionToString});
+AVM_CLASS_TYPE(AvmVersion,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmVersionToString,
+               });
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
 {
     return (AvmVersion){
-        ._type = typeid(AvmVersion),
+        .__type = typeid(AvmVersion),
         .Major = major,
         .Minor = minor,
         .Patch = patch,
@@ -210,7 +212,7 @@ AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
 // AvmArgs type.
 //
 
-AVM_TYPE(AvmArgs, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(AvmArgs, object, AVM_VTABLE_DEFAULT);
 
 bool AvmArgsNext(AvmArgs* self)
 {
@@ -276,7 +278,7 @@ AvmVersion AvmRuntimeGetVersion(void)
 AvmArgs AvmRuntimeGetArgs(void)
 {
     return (AvmArgs){
-        ._type = typeid(AvmArgs),
+        .__type = typeid(AvmArgs),
         .Length = AvmRuntimeState.argc,
         ._private =
             {
@@ -488,11 +490,11 @@ static AvmString AvmNativeErrorToString(const AvmNativeError* self)
     return AvmStringFrom(strerror(self->_code));
 }
 
-AVM_TYPE(AvmNativeError,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmNativeErrorToString,
-         });
+AVM_CLASS_TYPE(AvmNativeError,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmNativeErrorToString,
+               });
 
 AvmError* AvmErrorFromOSCode(int code)
 {
@@ -521,11 +523,11 @@ static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
         AVM_DETAILED_ERROR_FMT_STR, self->_message, &self->_backtrace);
 }
 
-AVM_TYPE(AvmDetailedError,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmDetailedErrorToString,
-         });
+AVM_CLASS_TYPE(AvmDetailedError,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmDetailedErrorToString,
+               });
 
 AvmError* AvmErrorNew(str message)
 {
@@ -547,7 +549,7 @@ AvmError* AvmErrorNew(str message)
 AvmInteger AvmIntegerFrom(_long value)
 {
     return (AvmInteger){
-        ._type = typeid(AvmInteger),
+        .__type = typeid(AvmInteger),
         .Value = value,
     };
 }
@@ -555,7 +557,7 @@ AvmInteger AvmIntegerFrom(_long value)
 AvmUnsigned AvmUnsignedFrom(ulong value)
 {
     return (AvmUnsigned){
-        ._type = typeid(AvmUnsigned),
+        .__type = typeid(AvmUnsigned),
         .Value = value,
     };
 }
@@ -563,7 +565,7 @@ AvmUnsigned AvmUnsignedFrom(ulong value)
 AvmFloat AvmFloatFrom(double value)
 {
     return (AvmFloat){
-        ._type = typeid(AvmFloat),
+        .__type = typeid(AvmFloat),
         .Value = value,
     };
 }
@@ -631,32 +633,32 @@ static bool AvmFloatEquals(const AvmFloat* self, const AvmFloat* other)
     return self->Value == other->Value;
 }
 
-AVM_TYPE(AvmInteger,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmIntegerToString,
-             [FnEntryEquals] = (AvmCallback)AvmIntegerEquals,
-         });
+AVM_CLASS_TYPE(AvmInteger,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmIntegerToString,
+                   [FnEntryEquals] = (AvmCallback)AvmIntegerEquals,
+               });
 
-AVM_TYPE(AvmUnsigned,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmUnsignedToString,
-             [FnEntryEquals] = (AvmCallback)AvmUnsignedEquals,
-         });
+AVM_CLASS_TYPE(AvmUnsigned,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmUnsignedToString,
+                   [FnEntryEquals] = (AvmCallback)AvmUnsignedEquals,
+               });
 
-AVM_TYPE(AvmFloat,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmFloatToString,
-             [FnEntryEquals] = (AvmCallback)AvmFloatEquals,
-         });
+AVM_CLASS_TYPE(AvmFloat,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmFloatToString,
+                   [FnEntryEquals] = (AvmCallback)AvmFloatEquals,
+               });
 
 //
 // Exception implementation.
 //
 
-AVM_TYPE(AvmThrowContext, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(AvmThrowContext, object, {[FnEntryFinalize] = NULL});
 
 AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {
@@ -667,7 +669,7 @@ void __AvmRuntimePushThrowContext(AvmThrowContext* context)
 {
     AvmThread* t = (AvmThread*)AvmThreadGetCurrent();
 
-    context->_type = typeid(AvmThrowContext);
+    context->__type = typeid(AvmThrowContext);
     context->_thrownObject = NULL;
     context->_prev = t->_context;
 
@@ -702,7 +704,7 @@ void AvmCopy(object o, size_t size, byte* destination)
         assert(destination != NULL);
     }
 
-    size_t objectSize = AvmTypeGetSize(AvmObjectGetType(o));
+    size_t objectSize = AvmTypeGetSize((const AvmType*)AvmObjectGetType(o));
 
     if (objectSize > size)
     {

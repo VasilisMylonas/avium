@@ -62,28 +62,28 @@ AVM_CLASS(Point, object, {
  *
  * Which in x86_64 will be: 2 * 4 + 8 = 16
  *
- * Each class also has a hidden member at the start of it (named _type). This
- * member should always point to a statically allocated AvmType instance
+ * Each class also has a hidden member at the start of it (named __type). This
+ * member should always point to a statically allocated AvmClass instance
  * corresponding to the class type. This contains information about the class
  * methods (vtable), the class name and the class size.
  *
- * To create the AvmType instance for our Point class, we will use the AVM_TYPE
- * macro like so:
+ * To create the AvmClass instance for our Point class, we will use the
+ * AVM_CLASS_TYPE macro like so:
  */
 
-AVM_TYPE(Point, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(Point, object, {[FnEntryFinalize] = NULL});
 
 /*
- * As you can see, the AVM_TYPE macro takes 3 parameters, the class name, the
- * base name and a mysterious brace enclosed thing. The third parameter is
+ * As you can see, the AVM_CLASS_TYPE macro takes 3 parameters, the class name,
+ * the base name and a mysterious brace enclosed thing. The third parameter is
  * actually the type's vtable.
  *
  * More explanation about this can be found in the vtable.c example but
  * it not important right now.
  *
  * Note, that while the class declaration (AVM_CLASS) should probably be in the
- * public interface (*.h), the type information about that class (AVM_TYPE) does
- * not need to be public, it is marked static anyways, and can be placed in the
+ * public interface (*.h), the type information about that class
+ * (AVM_CLASS_TYPE) does not need to be public and can be placed in the
  * implementation file (*.c). The way we get access to it will be explained
  * below.
  *
@@ -93,7 +93,7 @@ AVM_TYPE(Point, object, {[FnEntryFinalize] = NULL});
  * be named accordingly. Examples of constructor names are: AvmStringNew,
  * AvmStringFrom, etc. Along with performing any type-specific initialization,
  * the constructor is also responsible for connecting the type information with
- * the object instance, ie it should initialize the ._type member. This can be
+ * the object instance, ie it should initialize the .__type member. This can be
  * done with the typeid macro.
  *
  * Lets create an example constructor for our Point type.
@@ -107,7 +107,7 @@ Point PointFrom(int x, int y)
     return (Point){
         ._x = x,
         ._y = y,
-        ._type = typeid(Point),
+        .__type = typeid(Point),
     };
 }
 

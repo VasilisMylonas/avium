@@ -169,7 +169,7 @@ AvmMutex AvmMutexNew(bool isRecursive)
         NULL);
 
     return (AvmMutex){
-        ._type = typeid(AvmMutex),
+        .__type = typeid(AvmMutex),
         ._state = mutex,
     };
 }
@@ -216,7 +216,7 @@ AvmBarrier AvmBarrierNew(uint count)
         NULL);
 
     return (AvmBarrier){
-        ._type = typeid(AvmBarrier),
+        .__type = typeid(AvmBarrier),
         ._state = barrier,
     };
 }

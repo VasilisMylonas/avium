@@ -122,11 +122,12 @@
 #define AVM_FMT_BINARY_PREFIX  "0b"
 #define AVM_FMT_UNICODE_PREFIX "U+"
 
-#define AVM_TI_NAME(T)  _TI_##T
-#define AVM_VT_NAME(T)  _VT_##T
-#define AVM_MTI_NAME(T) _MTI_##T
-#define AVM_PTI_NAME(F) _PTI_##F
-#define AVM_CTI_NAME(E) _CTI_##E
+#define _AVM_METADATA_BLOCK_NAME(T)    _Metadata_##T
+#define _AVM_INTERFACE_IMPL_NAME(I, T) _Impl_##I##_##T
+#define _AVM_INTERFACE_VTBL_NAME(I, T) _VTable_##I##_##T
+#define _AVM_INTERFACE_BLOCK_NAME(T)   _Interfaces_##T
+#define _AVM_MEMBER_BLOCK_NAME(T)      _Members_##T
+#define _AVM_VTABLE_BLOCK_NAME(T)      _VTable_##T
 
 #define AVM_THREAD_DEFAULT_NAME "<anonymous>"
 #define AVM_THREAD_MAIN_NAME    "main"

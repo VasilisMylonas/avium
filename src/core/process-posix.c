@@ -43,7 +43,7 @@ AvmProcess AvmProcessNew(str path, uint length, str args[])
         break;
     default:
         return (AvmProcess){
-            ._type = typeid(AvmProcess),
+            .__type = typeid(AvmProcess),
             ._state = (void*)(ulong)pid,
         };
     }

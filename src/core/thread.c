@@ -15,7 +15,7 @@
 
 static thread_local AvmThread* AvmCurrentThread = NULL;
 
-AVM_TYPE(AvmThreadContext, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(AvmThreadContext, object, AVM_VTABLE_DEFAULT);
 
 AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
 {
@@ -218,12 +218,12 @@ static AvmString AvmThreadToString(const AvmThread* self)
     return AvmStringFormat(AVM_THREAD_FMT_STR, self->_name, self->_state);
 }
 
-AVM_TYPE(AvmThread,
-         object,
-         {
-             [FnEntryToString] = (AvmCallback)AvmThreadToString,
-             [FnEntryFinalize] = (AvmCallback)AvmThreadFinalize,
-         });
+AVM_CLASS_TYPE(AvmThread,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmThreadToString,
+                   [FnEntryFinalize] = (AvmCallback)AvmThreadFinalize,
+               });
 
-AVM_TYPE(AvmMutex, object, {[FnEntryFinalize] = NULL});
-AVM_TYPE(AvmBarrier, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(AvmMutex, object, AVM_VTABLE_DEFAULT);
+AVM_CLASS_TYPE(AvmBarrier, object, AVM_VTABLE_DEFAULT);

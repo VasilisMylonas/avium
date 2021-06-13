@@ -26,12 +26,10 @@
  *
  * This example assumes that you have taken a look at examples/classes.c first.
  *
- * In Avium vtables, also referred to as virtual function tables (VFT), are
- * implemented as arrays of function pointers. These are stored in the type
- * information for a class. Currently all VFT's have a max capacity of
- * AVM_VFT_SIZE but this is subject to change. Each entry in the VFT points to
- * a specific function. They are useful for implementing interfaces and
- * overriding functions.
+ * In Avium vtables are implemented as arrays of function pointers. These are
+ * stored in the type information for a class. Each entry in the VFT points to a
+ * specific function. They are useful for implementing interfaces and overriding
+ * functions.
  *
  * For example, remember our Point class from the previous example? Let's say
  * that we want to add a related function called PointDistance that calculates
@@ -94,20 +92,14 @@ static uint Point3DDistance(Point3D* self)
 // This could also be in an enum.
 #define DistanceEntry 20
 
-// Now, when we use AVM_TYPE to define the type information we overwrite the
-// entry at the index defined by DistanceEntry (20 in our case) with the
-// corresponding functions.
+// Now, when we use AVM_CLASS_TYPE to define the type information we overwrite
+// the entry at the index defined by DistanceEntry (20 in our case) with the
+// corresponding functions. Depending on your compiler and/or compile options,
+// you may have to cast the functions to the AvmCallback type.
 
-AVM_TYPE(Point1D, object, {[DistanceEntry] = Point1DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = Point2DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = Point3DDistance})
-
-// Depending on your compiler and/or compile options, you may have to cast the
-// functions to the AvmCallback type:
-
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point1DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point2DDistance})
-AVM_TYPE(Point1D, object, {[DistanceEntry] = (AvmCallback)Point3DDistance})
+AVM_CLASS_TYPE(Point1D, object, {[DistanceEntry] = Point1DDistance});
+AVM_CLASS_TYPE(Point1D, object, {[DistanceEntry] = Point2DDistance});
+AVM_CLASS_TYPE(Point1D, object, {[DistanceEntry] = Point3DDistance});
 
 // Typedefing this here is not required but is good for understanding.
 typedef uint (*DistanceFunc)(object);
@@ -118,13 +110,13 @@ uint PointDistance(object self)
 {
     // There are plans to make this simpler. But for now this how it is done.
 
-    const AvmType* type = AvmObjectGetType(self);
-    return ((DistanceFunc)AvmTypeGetCallback(type, DistanceEntry))(self);
+    const AvmClass* type = AvmObjectGetType(self);
+    return ((DistanceFunc)AvmClassGetCallback(type, DistanceEntry))(self);
 }
 
 /*
  * It wasn't that hard was it? Now calling PointDistance works with Point1D,
- * Point2D, Point3D and Point4D is we decide to create such a thing in the
+ * Point2D, Point3D and Point4D if we decide to create such a thing in the
  * future.
  *
  * You may have noticed that our function has a small problem. Its self

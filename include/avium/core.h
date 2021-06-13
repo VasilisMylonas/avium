@@ -51,6 +51,8 @@ typedef struct AvmType AvmType;
 typedef struct AvmEnum AvmEnum;
 typedef struct AvmString AvmString;
 typedef struct AvmMember AvmMember;
+typedef struct AvmClass AvmClass;
+typedef struct AvmInterface AvmInterface;
 typedef struct AvmFunction AvmFunction;
 
 /// @}
@@ -61,41 +63,17 @@ typedef struct AvmFunction AvmFunction;
  * @{
  */
 
-/**
- * @brief Declares an Avium class type.
- *
- * @param T The name of the type.
- * @param B The base class of the type.
- * @param ... Member declaration in braces ({ ... })
- */
 #define AVM_CLASS(T, B, ...)                                                   \
     typedef struct T T;                                                        \
-    extern const AvmType AVM_TI_NAME(T);                                       \
+    extern const AvmClass _AVM_METADATA_BLOCK_NAME(T);                         \
     struct T                                                                   \
     {                                                                          \
         union {                                                                \
-            const AvmType* _type;                                              \
-            B _base;                                                           \
+            const AvmClass* __type;                                            \
+            B __base;                                                          \
         };                                                                     \
         struct __VA_ARGS__;                                                    \
     }
-
-/**
- * @brief Declares an Avium interface type.
- *
- * @param T The name of the type.
- */
-#define AVM_INTERFACE(T) typedef void T
-
-/**
- * @brief Declares an Avium enum type.
- *
- * @param T The name of the enum.
- * @param ... The enum constants enclosed in braces ({...}).
- */
-#define AVM_ENUM(T, ...)                                                       \
-    typedef enum T __VA_ARGS__ T;                                              \
-    extern const AvmEnum AVM_TI_NAME(T)
 
 /**
  * @brief Concatenates two identifiers
@@ -152,13 +130,13 @@ typedef struct AvmFunction AvmFunction;
  * @param type The type of the object to allocate.
  * @return The object.
  */
-AVMAPI object AvmObjectNew(const AvmType* type) AVM_NONNULL(1);
+AVMAPI object AvmObjectNew(const AvmClass* type) AVM_NONNULL(1);
 
 /**
  * @brief Gets information about the type of an object.
  *
  * You should use this function to get the type of an object. This
- * assumes that the ._type field is correctly initialized by the object
+ * assumes that the .__type field is correctly initialized by the object
  * constructor.
  *
  * This function returns the actual runtime type of an object bypassing
@@ -169,7 +147,7 @@ AVMAPI object AvmObjectNew(const AvmType* type) AVM_NONNULL(1);
  * To check if an object is an instance of a type (possibly derived) use
  * the instanceof macro.
  *
- * To handle the returning AvmType instance, you may need to include
+ * To handle the returning AvmClass instance, you may need to include
  * typeinfo.h
  *
  * This function is not overridable.
@@ -180,7 +158,7 @@ AVMAPI object AvmObjectNew(const AvmType* type) AVM_NONNULL(1);
  * @param self The object instance.
  * @return The type information of the object.
  */
-AVMAPI const AvmType* AvmObjectGetType(object self) AVM_NONNULL(1) AVM_PURE;
+AVMAPI const AvmClass* AvmObjectGetType(object self) AVM_NONNULL(1) AVM_PURE;
 
 /**
  * @brief Disables the finalizer of an object.
@@ -580,7 +558,8 @@ AVMAPI void AvmErrorf(str format, ...) AVM_NONNULL(1);
  */
 
 /// A type representing an error.
-AVM_INTERFACE(AvmError);
+typedef void AvmError;
+// TODO: AVM_INTERFACE(AvmError);
 
 /**
  * @brief Creates an AvmError with a message.

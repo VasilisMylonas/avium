@@ -61,15 +61,15 @@ static object AvmStringClone(AvmString* self)
     return ret;
 }
 
-AVM_TYPE(AvmString,
-         object,
-         {
-             [FnEntryClone] = (AvmCallback)AvmStringClone,
-             [FnEntryToString] = (AvmCallback)AvmStringToString,
-             [FnEntryGetLength] = (AvmCallback)AvmStringGetLength,
-             [FnEntryGetCapacity] = (AvmCallback)AvmStringGetCapacity,
-             [FnEntryEquals] = (AvmCallback)AvmStringEquals,
-         });
+AVM_CLASS_TYPE(AvmString,
+               object,
+               {
+                   [FnEntryClone] = (AvmCallback)AvmStringClone,
+                   [FnEntryToString] = (AvmCallback)AvmStringToString,
+                   [FnEntryGetLength] = (AvmCallback)AvmStringGetLength,
+                   [FnEntryGetCapacity] = (AvmCallback)AvmStringGetCapacity,
+                   [FnEntryEquals] = (AvmCallback)AvmStringEquals,
+               });
 
 void AvmStringEnsureCapacity(AvmString* self, uint capacity)
 {
@@ -119,7 +119,7 @@ AvmString AvmStringNew(uint capacity)
     }
 
     return (AvmString){
-        ._type = typeid(AvmString),
+        .__type = typeid(AvmString),
         ._length = 0,
         ._capacity = capacity,
         // If capacity is 0 we should not allocate any memory.
@@ -998,7 +998,7 @@ AvmString AvmStringUnsafeFromRaw(uint capacity, uint length, char* buffer)
         ._buffer = buffer,
         ._capacity = capacity,
         ._length = length,
-        ._type = typeid(AvmString),
+        .__type = typeid(AvmString),
     };
 }
 
@@ -1191,8 +1191,8 @@ void AvmStringPushMembers(AvmString* self, object o)
         assert(o != NULL);
     }
 
-    const AvmType* type = AvmObjectGetType(o);
-    uint count = AvmTypeGetMemberCount(type);
+    const AvmClass* type = AvmObjectGetType(o);
+    uint count = AvmClassGetMemberCount(type);
 
     AvmString s = AvmStringFormat("class %T\n{\n", o);
     AvmStringPushString(self, &s);
@@ -1204,9 +1204,10 @@ void AvmStringPushMembers(AvmString* self, object o)
 
     for (uint i = 0; i < count; i++)
     {
-        const AvmMember* member = AvmTypeGetMemberAt(type, i);
-        s = AvmStringFormat(
-            "    %s %s;\n", member->_memberType->_name, member->_name);
+        const AvmMember* member = AvmClassGetMemberAt(type, i);
+        s = AvmStringFormat("    %s %s;\n",
+                            AvmTypeGetName(member->_private.type),
+                            member->__base._private.name);
         AvmStringPushString(self, &s);
     }
 
@@ -1266,14 +1267,15 @@ static void AvmFormat(char c, AvmString* string, va_list args)
             string, (bool)va_arg(args, uint) ? AVM_FMT_TRUE : AVM_FMT_FALSE);
         break;
     case AVM_FMT_TYPE:
-        AvmStringPushStr(
-            string, AvmTypeGetName(AvmObjectGetType(va_arg(args, object))));
+        AvmStringPushStr(string,
+                         AvmTypeGetName((const AvmType*)AvmObjectGetType(
+                             va_arg(args, object))));
         break;
     case AVM_FMT_SIZE:
-        AvmStringPushUint(
-            string,
-            AvmTypeGetSize(AvmObjectGetType(va_arg(args, object))),
-            AvmNumericBaseDecimal);
+        AvmStringPushUint(string,
+                          AvmTypeGetSize((const AvmType*)AvmObjectGetType(
+                              va_arg(args, object))),
+                          AvmNumericBaseDecimal);
         break;
     case AVM_FMT_VALUE:
         AvmStringPushValue(string, va_arg(args, object));
