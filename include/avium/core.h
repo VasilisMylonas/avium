@@ -557,9 +557,8 @@ AVMAPI void AvmErrorf(str format, ...) AVM_NONNULL(1);
  * @{
  */
 
-/// A type representing an error.
+/// A type representing an error. TODO make to proper interface
 typedef void AvmError;
-// TODO: AVM_INTERFACE(AvmError);
 
 /**
  * @brief Creates an AvmError with a message.

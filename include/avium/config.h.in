@@ -128,6 +128,7 @@
 #define _AVM_INTERFACE_BLOCK_NAME(T)   _Interfaces_##T
 #define _AVM_MEMBER_BLOCK_NAME(T)      _Members_##T
 #define _AVM_VTABLE_BLOCK_NAME(T)      _VTable_##T
+#define _AVM_PARAMS_BLOCK_NAME(T)      _Params_##T
 
 #define AVM_THREAD_DEFAULT_NAME "<anonymous>"
 #define AVM_THREAD_MAIN_NAME    "main"

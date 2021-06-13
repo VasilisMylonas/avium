@@ -8,29 +8,15 @@
 
 #define _ AvmRuntimeGetResource
 
-const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name)
-{
-    const uint count = self->_private.interfaceCount;
-    const AvmInterface** interfaces = self->_private.interfaces;
-
-    for (uint i = 0; i < count; i++)
-    {
-        if (strcmp(interfaces[i]->__base._private.name, name) == 0)
-        {
-            return interfaces[i];
-        }
-    }
-
-    return NULL;
-}
-
-object __AvmRuntimeCastFail(object value, const AvmType* type)
+object __AvmRuntimeCastFail(object value, const AvmClass* type)
 {
     (void)value;
     (void)type;
 #ifdef AVM_THROW_ON_CAST_FAIL
-    AvmString temp = AvmStringFormat(
-        AVM_CAST_FAIL_FMT_STR, value, value, AvmTypeGetName(type));
+    AvmString temp = AvmStringFormat(AVM_CAST_FAIL_FMT_STR,
+                                     value,
+                                     value,
+                                     AvmTypeGetName((const AvmType*)type));
 
     str msg = AvmStringToStr(&temp);
 
@@ -70,6 +56,23 @@ const byte* AvmTypeGetInit(const AvmType* self)
     return self->_private.init;
 }
 
+static AvmString AvmTypeToString(const AvmType* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(
+        "type %s (%u bytes)", self->_private.name, self->_private.size);
+}
+
+AVM_CLASS_TYPE(AvmType,
+               object,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmTypeToString,
+               });
+
 AvmCallback AvmClassGetCallback(const AvmClass* self, uint index)
 {
     pre
@@ -77,21 +80,20 @@ AvmCallback AvmClassGetCallback(const AvmClass* self, uint index)
         assert(self != NULL);
     }
 
-    // TODO!!!!
-    // const uint length = self->_vSize / sizeof(AvmCallback);
+    const uint length = self->_private.vCount;
 
-    // // If the index is valid then simply use that callback.
-    // if (index < length && self->_vPtr[index] != NULL)
-    // {
-    //     return self->_vPtr[index];
-    // }
+    // If the index is valid then simply use that callback.
+    if (index < length && self->_private.vPtr[index] != NULL)
+    {
+        return self->_private.vPtr[index];
+    }
 
-    // // If the type is an object and the index is invalid then that mean that
-    // // there is no such callback in the inheritance hierarchy.
-    // if (self == typeid(object))
-    // {
-    //     throw(AvmErrorNew(_(AvmMissingCallbackErrorMsg)));
-    // }
+    // If the type is an object and the index is invalid then that mean that
+    // there is no such callback in the inheritance hierarchy.
+    if (self == typeid(object))
+    {
+        throw(AvmErrorNew(_(AvmMissingCallbackErrorMsg)));
+    }
 
     // Otherwise we just keep looking up the chain.
     return AvmClassGetCallback(self->_private.base, index);
@@ -176,225 +178,211 @@ uint AvmClassGetMemberCount(const AvmClass* self)
     return self->_private.memberCount;
 }
 
-static AvmString AvmTypeToString(const AvmType* self)
+const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name)
+{
+    const uint count = self->_private.interfaceCount;
+    const AvmInterface** interfaces = self->_private.interfaces;
+
+    for (uint i = 0; i < count; i++)
+    {
+        if (strcmp(interfaces[i]->__base._private.name, name) == 0)
+        {
+            return interfaces[i];
+        }
+    }
+
+    return NULL;
+}
+
+static AvmString AvmClassToString(const AvmClass* self)
 {
     pre
     {
         assert(self != NULL);
     }
 
-    return AvmStringFormat(
-        "class %s (%u bytes)", self->_private.name, self->_private.size);
+    return AvmStringFormat("type %s (%u bytes)",
+                           AvmTypeGetName(&self->__base),
+                           AvmTypeGetSize(&self->__base));
 }
 
-AVM_CLASS_TYPE(AvmType,
-               object,
-               {[FnEntryToString] = (AvmCallback)AvmTypeToString});
+AVM_CLASS_TYPE(AvmClass,
+               AvmType,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmClassToString,
+               });
 
-// str AvmEnumGetName(const AvmEnum* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+bool AvmEnumIsDefined(const AvmEnum* self, _long value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-//     return baseof(self)->_name;
-// }
+    for (uint i = 0; i < self->_private.constantCount; i++)
+    {
+        if (self->_private.constants[i]._value == value)
+        {
+            return true;
+        }
+    }
 
-// uint AvmEnumGetSize(const AvmEnum* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+    return false;
+}
 
-//     return baseof(self)->_size;
-// }
+str AvmEnumGetNameOf(const AvmEnum* self, _long value)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// bool AvmEnumIsDefined(const AvmEnum* self, _long value)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+    for (uint i = 0; true; i++)
+    {
+        if (self->_private.constants[i]._value == 0 &&
+            self->_private.constants[i]._name == NULL)
+        {
+            break;
+        }
 
-//     for (uint i = 0; i < (self->_cSize / (sizeof(_long) + sizeof(str))); i++)
-//     {
-//         if (self->_cPtr[i]._value == value)
-//         {
-//             return true;
-//         }
-//     }
+        if (self->_private.constants[i]._value == value)
+        {
+            return self->_private.constants[i]._name;
+        }
+    }
 
-//     return false;
-// }
+    throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
+}
 
-// str AvmEnumGetNameOf(const AvmEnum* self, _long value)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+_long AvmEnumGetValueOf(const AvmEnum* self, str name)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(name != NULL);
+    }
 
-//     for (uint i = 0; true; i++)
-//     {
-//         if (self->_cPtr[i]._value == 0 && self->_cPtr[i]._name == NULL)
-//         {
-//             break;
-//         }
+    for (uint i = 0; true; i++)
+    {
+        if (self->_private.constants[i]._value == 0 &&
+            self->_private.constants[i]._name == NULL)
+        {
+            break;
+        }
 
-//         if (self->_cPtr[i]._value == value)
-//         {
-//             return self->_cPtr[i]._name;
-//         }
-//     }
+        if (strcmp(self->_private.constants[i]._name, name) == 0)
+        {
+            return self->_private.constants[i]._value;
+        }
+    }
 
-//     throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
-// }
+    throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
+}
 
-// _long AvmEnumGetValueOf(const AvmEnum* self, str name)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//         assert(name != NULL);
-//     }
+static AvmString AvmEnumToString(const AvmEnum* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-//     for (uint i = 0; true; i++)
-//     {
-//         if (self->_cPtr[i]._value == 0 && self->_cPtr[i]._name == NULL)
-//         {
-//             break;
-//         }
+    return AvmStringFormat("enum %s (%u bytes)",
+                           AvmTypeGetName(&self->__base),
+                           AvmTypeGetSize(&self->__base));
+}
 
-//         if (strcmp(self->_cPtr[i]._name, name) == 0)
-//         {
-//             return self->_cPtr[i]._value;
-//         }
-//     }
+AVM_CLASS_TYPE(AvmEnum,
+               AvmType,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmEnumToString,
+               });
 
-//     throw(AvmErrorNew(_(AvmMissingConstantErrorMsg)));
-// }
+uint AvmMemberGetOffset(const AvmMember* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// static AvmString AvmEnumToString(const AvmEnum* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+    return self->_private.offset;
+}
 
-//     return AvmStringFormat(
-//         "enum %s (%u bytes)", baseof(self)->_name, baseof(self)->_size);
-// }
+static AvmString AvmMemberToString(const AvmMember* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// AVM_TYPE(AvmEnum, AvmType, {[FnEntryToString] =
-// (AvmCallback)AvmEnumToString});
+    return AvmStringFormat("member %s (%u bytes offset)",
+                           AvmTypeGetName(&self->__base),
+                           AvmMemberGetOffset(self));
+}
 
-// uint AvmMemberGetOffset(const AvmMember* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+AVM_CLASS_TYPE(AvmMember,
+               AvmType,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmMemberToString,
+               });
 
-//     return self->_offset;
-// }
+const AvmType* AvmFunctionGetReturnType(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// str AvmMemberGetName(const AvmMember* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+    return self->_private.returnType;
+}
 
-//     return self->_name;
-// }
+const AvmType** AvmFunctionGetParams(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// static AvmString AvmMemberToString(const AvmMember* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+    return self->_private.paramTypes;
+}
 
-//     return AvmStringFormat(
-//         "member %s (%u bytes offset)", self->_name, self->_offset);
-// }
+uint AvmFunctionGetParamCount(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// AVM_TYPE(AvmMember,
-//          object,
-//          {
-//              [FnEntryToString] = (AvmCallback)AvmMemberToString,
-//          });
+    return self->_private.paramCount;
+}
 
-// const AvmType* AvmFunctionGetReturnType(const AvmFunction* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
+static AvmString AvmFunctionToString(const AvmFunction* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-//     return self->_returnType;
-// }
+    AvmString s = AvmStringNew(self->_private.paramCount * 4);
+    AvmStringPushStr(&s, "function ");
+    AvmStringPushStr(&s, AvmTypeGetName(&self->__base));
+    AvmStringPushStr(&s, " (");
+    AvmStringPushUint(&s, self->_private.paramCount, AvmNumericBaseDecimal);
+    if (self->_private.paramCount == 1)
+    {
+        AvmStringPushStr(&s, " parameter)");
+    }
+    else
+    {
+        AvmStringPushStr(&s, " parameters)");
+    }
+    return s;
+}
 
-// const AvmType** AvmFunctionGetParams(const AvmFunction* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
-
-//     return self->_paramTypes;
-// }
-
-// uint AvmFunctionGetParamCount(const AvmFunction* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
-
-//     return self->_paramCount;
-// }
-
-// str AvmFunctionGetName(const AvmFunction* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
-
-//     return self->_name;
-// }
-
-// static AvmString AvmFunctionToString(const AvmFunction* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
-
-//     AvmString s = AvmStringNew(self->_paramCount * 4);
-//     AvmStringPushStr(&s, "function ");
-//     AvmStringPushStr(&s, self->_name);
-//     AvmStringPushStr(&s, " (");
-//     AvmStringPushUint(&s, self->_paramCount, AvmNumericBaseDecimal);
-//     if (self->_paramCount == 1)
-//     {
-//         AvmStringPushStr(&s, " parameter)");
-//     }
-//     else
-//     {
-//         AvmStringPushStr(&s, " parameters)");
-//     }
-//     return s;
-// }
-
-// AVM_TYPE(AvmFunction,
-//          object,
-//          {
-//              [FnEntryToString] = (AvmCallback)AvmFunctionToString,
-//          });
+AVM_CLASS_TYPE(AvmFunction,
+               AvmType,
+               {
+                   [FnEntryToString] = (AvmCallback)AvmFunctionToString,
+               });
 
 //
 // Type info for primitive types.
@@ -471,6 +459,7 @@ AVM_CLASS_TYPE(float, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(double, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(str, object, AVM_VTABLE_DEFAULT);
 
+// TODO
 // Because we can't sizeof(void) we have to do this manually.
 // static AvmCallback AVM_VT_NAME(void)[] = AVM_VTABLE_DEFAULT;
 
