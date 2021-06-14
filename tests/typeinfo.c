@@ -1,34 +1,6 @@
 #include <avium/string.h>
 #include <avium/typeinfo.h>
 
-// AVM_INTERFACE(AvmStringable,
-//               {
-//                   AvmStringableToString,
-//               });
-
-// AvmString AvmPointToString(const AvmPoint* self)
-// {
-//     pre
-//     {
-//         assert(self != NULL);
-//     }
-
-//     return AvmStringFormat("(%f, %f)", self->X, self->Y);
-// }
-
-// AVM_IMPLEMENT(AvmStringable,
-//               AvmPoint,
-//               {
-//                   [AvmStringableToString] = (AvmCallback)AvmPointToString,
-//               });
-
-// AVM_INTERFACES(AvmPoint,
-//                {
-//                    interfaceid(AvmStringable, AvmPoint),
-//                });
-
-// AVM_MEMBERS(AvmPoint, AVM_MEMBERS_DEFAULT);
-
 AVM_CLASS(AvmPoint, object, {
     float X;
     float Y;

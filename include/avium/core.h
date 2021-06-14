@@ -97,7 +97,7 @@ typedef struct AvmFunction AvmFunction;
  */
 #define AVM_UNIQUE(name) AVM_CONCAT(name, __LINE__)
 
-// TODO
+// TODO: Remove
 #define AvmInvalid ((uint)-1)
 #define Main       AvmMain
 
@@ -538,7 +538,7 @@ AVMAPI void AvmErrorf(str format, ...) AVM_NONNULL(1);
  * @{
  */
 
-/// A type representing an error. TODO make to proper interface
+/// A type representing an error. TODO: make to proper interface
 typedef void AvmError;
 
 /**
