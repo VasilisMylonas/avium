@@ -80,8 +80,8 @@ AVM_IMPLEMENT(AvmCloneable,
 AVM_MEMBERS(AvmString, AVM_MEMBERS_DEFAULT);
 AVM_INTERFACES(AvmString,
                {
-                   interfaceof(AvmEquatable, AvmString),
-                   interfaceof(AvmCloneable, AvmString),
+                   interfaceid(AvmEquatable, AvmString),
+                   interfaceid(AvmCloneable, AvmString),
                });
 
 AVM_CLASS_TYPE_EX(AvmString,

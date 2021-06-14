@@ -97,7 +97,7 @@ AvmCallback AvmClassGetCallback(const AvmClass* self, uint index)
         assert(self != NULL);
     }
 
-    const uint length = self->_private.vCount;
+    const uint length = baseof(self)->_private.vCount;
 
     // If the index is valid then simply use that callback.
     if (index < length && self->_private.vPtr[index] != NULL)
@@ -202,7 +202,7 @@ static AvmString AvmClassToString(const AvmClass* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat("type %s (%u bytes)",
+    return AvmStringFormat("class %s (%u bytes)",
                            AvmTypeGetName(&self->__base),
                            AvmTypeGetSize(&self->__base));
 }
@@ -220,7 +220,7 @@ bool AvmEnumIsDefined(const AvmEnum* self, _long value)
         assert(self != NULL);
     }
 
-    for (uint i = 0; i < self->_private.constantCount; i++)
+    for (uint i = 0; i < baseof(self)->_private.constantCount; i++)
     {
         if (self->_private.constants[i]._value == value)
         {
@@ -305,7 +305,7 @@ uint AvmMemberGetOffset(const AvmMember* self)
         assert(self != NULL);
     }
 
-    return self->_private.offset;
+    return baseof(self)->_private.offset;
 }
 
 static AvmString AvmMemberToString(const AvmMember* self)
@@ -353,7 +353,7 @@ uint AvmFunctionGetParamCount(const AvmFunction* self)
         assert(self != NULL);
     }
 
-    return self->_private.paramCount;
+    return baseof(self)->_private.paramCount;
 }
 
 static AvmString AvmFunctionToString(const AvmFunction* self)
@@ -363,12 +363,13 @@ static AvmString AvmFunctionToString(const AvmFunction* self)
         assert(self != NULL);
     }
 
-    AvmString s = AvmStringNew(self->_private.paramCount * 4);
+    AvmString s = AvmStringNew(baseof(self)->_private.paramCount * 4);
     AvmStringPushStr(&s, "function ");
     AvmStringPushStr(&s, AvmTypeGetName(&self->__base));
     AvmStringPushStr(&s, " (");
-    AvmStringPushUint(&s, self->_private.paramCount, AvmNumericBaseDecimal);
-    if (self->_private.paramCount == 1)
+    AvmStringPushUint(
+        &s, baseof(self)->_private.paramCount, AvmNumericBaseDecimal);
+    if (baseof(self)->_private.paramCount == 1)
     {
         AvmStringPushStr(&s, " parameter)");
     }
@@ -451,8 +452,8 @@ AVM_IMPLEMENT(AvmCloneable,
 
 AVM_INTERFACES(object,
                {
-                   interfaceof(AvmEquatable, object),
-                   interfaceof(AvmCloneable, object),
+                   interfaceid(AvmEquatable, object),
+                   interfaceid(AvmCloneable, object),
                });
 
 AVM_MEMBERS(object, AVM_MEMBERS_DEFAULT);
@@ -477,6 +478,19 @@ AVM_CLASS_TYPE(bool, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(float, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(double, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(str, object, AVM_VTABLE_DEFAULT);
+
+static AvmString AvmInterfaceToString(const AvmInterface* self)
+{
+    return AvmStringFormat("interface %s (%u methods)",
+                           AvmTypeGetName(baseof(self)),
+                           baseof(self)->_private.vCount);
+}
+
+AVM_CLASS_TYPE(AvmInterface,
+               AvmType,
+               {
+                   [AvmEntryToString] = (AvmCallback)AvmInterfaceToString,
+               });
 
 // TODO
 // Because we can't sizeof(void) we have to do this manually.

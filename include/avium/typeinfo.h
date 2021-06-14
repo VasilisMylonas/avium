@@ -32,7 +32,12 @@ AVM_CLASS(AvmType, object, {
     {
         str name;
         uint size;
-        uint unused;
+        union {
+            uint constantCount;
+            uint paramCount;
+            uint vCount;
+            uint offset;
+        };
     } _private;
 });
 
@@ -40,7 +45,6 @@ AVM_CLASS(AvmType, object, {
 AVM_CLASS(AvmFunction, AvmType, {
     struct
     {
-        uint paramCount;
         const AvmType** paramTypes;
         const AvmType* returnType;
         AvmCallback callback;
@@ -52,8 +56,6 @@ AVM_CLASS(AvmInterface, AvmType, {
     struct
     {
         const AvmCallback* vPtr;
-        uint vCount;
-        uint unused;
     } _private;
 });
 
@@ -65,10 +67,8 @@ AVM_CLASS(AvmClass, AvmType, {
         const AvmCallback* vPtr;
         const AvmInterface** interfaces;
         const AvmMember* members;
-        ushort vCount;
-        ushort interfaceCount;
-        ushort memberCount;
-        ushort unused;
+        uint interfaceCount;
+        uint memberCount;
     } _private;
 });
 
@@ -81,9 +81,6 @@ AVM_CLASS(AvmEnum, AvmType, {
             str _name;
             _long _value;
         } * constants;
-        ushort constantCount;
-        ushort unused0;
-        uint unused1;
     } _private;
 });
 
@@ -91,22 +88,20 @@ AVM_CLASS(AvmEnum, AvmType, {
 AVM_CLASS(AvmMember, AvmType, {
     struct
     {
-        uint offset;
-        uint unused;
         const AvmType* type;
     } _private;
 });
 
 #define AVM_MEMBER(P, T, member)                                               \
     {                                                                          \
-        .__type = typeid(AvmMember),                                           \
+        .__base.__type = typeid(AvmMember),                                    \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #member,                                               \
                 .size = sizeof(T),                                             \
+                .offset = offsetof(P, member),                                 \
             },                                                                 \
         ._private = {                                                          \
-            .offset = offsetof(P, member),                                     \
             .type = (AvmType*)typeid(T),                                       \
         },                                                                     \
     }
@@ -114,34 +109,35 @@ AVM_CLASS(AvmMember, AvmType, {
 #define AVM_IMPLEMENT(I, T, ...)                                               \
     static const AvmCallback _AVM_INTERFACE_VTBL_NAME(I, T)[] = __VA_ARGS__;   \
     static const AvmInterface _AVM_INTERFACE_IMPL_NAME(I, T) = {               \
-        .__type = typeid(AvmInterface),                                        \
+        .__base.__type = typeid(AvmInterface),                                 \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #I,                                                    \
                 .size = sizeof(I),                                             \
+                .vCount = sizeof(_AVM_INTERFACE_VTBL_NAME(I, T)) /             \
+                          sizeof(AvmCallback),                                 \
             },                                                                 \
         ._private =                                                            \
             {                                                                  \
                 .vPtr = _AVM_INTERFACE_VTBL_NAME(I, T),                        \
-                .vCount = sizeof(_AVM_INTERFACE_VTBL_NAME(I, T)),              \
             },                                                                 \
     }
 
 #define AVM_CLASS_TYPE(T, B, ...)                                              \
     static const AvmCallback _AVM_VTABLE_BLOCK_NAME(T)[] = __VA_ARGS__;        \
     const AvmClass _AVM_METADATA_BLOCK_NAME(T) = {                             \
-        .__type = typeid(AvmClass),                                            \
+        .__base.__type = typeid(AvmClass),                                     \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #T,                                                    \
                 .size = sizeof(T),                                             \
+                .vCount =                                                      \
+                    sizeof(_AVM_VTABLE_BLOCK_NAME(T)) / sizeof(AvmCallback),   \
             },                                                                 \
         ._private =                                                            \
             {                                                                  \
                 .base = typeid(B),                                             \
                 .vPtr = _AVM_VTABLE_BLOCK_NAME(T),                             \
-                .vCount =                                                      \
-                    sizeof(_AVM_VTABLE_BLOCK_NAME(T)) / sizeof(AvmCallback),   \
             },                                                                 \
     }
 
@@ -154,11 +150,13 @@ AVM_CLASS(AvmMember, AvmType, {
 #define AVM_CLASS_TYPE_EX(T, B, ...)                                           \
     static const AvmCallback _AVM_VTABLE_BLOCK_NAME(T)[] = __VA_ARGS__;        \
     const AvmClass _AVM_METADATA_BLOCK_NAME(T) = {                             \
-        .__type = typeid(AvmClass),                                            \
+        .__base.__type = typeid(AvmClass),                                     \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #T,                                                    \
                 .size = sizeof(T),                                             \
+                .vCount =                                                      \
+                    sizeof(_AVM_VTABLE_BLOCK_NAME(T)) / sizeof(AvmCallback),   \
             },                                                                 \
         ._private =                                                            \
             {                                                                  \
@@ -166,8 +164,6 @@ AVM_CLASS(AvmMember, AvmType, {
                 .members = _AVM_MEMBER_BLOCK_NAME(T),                          \
                 .interfaces = _AVM_INTERFACE_BLOCK_NAME(T),                    \
                 .vPtr = _AVM_VTABLE_BLOCK_NAME(T),                             \
-                .vCount =                                                      \
-                    sizeof(_AVM_VTABLE_BLOCK_NAME(T)) / sizeof(AvmCallback),   \
                 .memberCount =                                                 \
                     sizeof(_AVM_MEMBER_BLOCK_NAME(T)) / sizeof(AvmMember),     \
                 .interfaceCount = sizeof(_AVM_INTERFACE_BLOCK_NAME(T)) /       \
@@ -193,12 +189,12 @@ AVM_CLASS(AvmMember, AvmType, {
         _long _value;                                                          \
     } _AVM_PARAMS_BLOCK_NAME(T)[] = __VA_ARGS__;                               \
     const AvmEnum _AVM_METADATA_BLOCK_NAME(T) = {                              \
-        .__type = typeid(AvmEnum),                                             \
+        .__base.__type = typeid(AvmEnum),                                      \
         .__base._private.name = #T,                                            \
         .__base._private.size = sizeof(T),                                     \
         .__base._private.base = typeid(object),                                \
         ._constants = (void*)_AVM_PARAMS_BLOCK_NAME(T),                        \
-        ._constantCount =                                                      \
+        __base._private._constantCount =                                       \
             sizeof(_AVM_PARAMS_BLOCK_NAME(T)) / (sizeof(_long) + sizeof(str)), \
     }
 
@@ -207,9 +203,9 @@ AVM_CLASS(AvmMember, AvmType, {
     const AvmFunction _AVM_METADATA_BLOCK_NAME(F) = {                          \
         .__type = typeid(AvmFunction),                                         \
         .__base._private.name = #F,                                            \
+        __base._private.paramCount =                                           \
+            sizeof(_AVM_METADATA_BLOCK_NAME(F)) / sizeof(AvmType*),            \
         ._private = {                                                          \
-            .paramCount =                                                      \
-                sizeof(_AVM_METADATA_BLOCK_NAME(F)) / sizeof(AvmType*),        \
             .paramTypes = _AVM_PARAMS_BLOCK_NAME(F),                           \
             .returnType = typeid(TReturn),                                     \
             .callback = (AvmCallback)(F),                                      \
@@ -221,14 +217,6 @@ AVM_CLASS(AvmMember, AvmType, {
 #define AVM_VCALL(Entry, TReturn, ...)                                         \
     ((TReturn(*)(__VA_ARGS__))AvmClassGetCallback(                             \
         AvmObjectGetType((object)self), Entry))
-
-#define AvmQueryInterface(self, I)                                             \
-    (I)                                                                        \
-    {                                                                          \
-        .Methods =                                                             \
-            AvmClassGetInterface(AvmObjectGetType(self), #I)->_private.vPtr,   \
-        .Value = self,                                                         \
-    }
 
 #define AVM_VTABLE_DEFAULT                                                     \
     {                                                                          \
@@ -251,7 +239,7 @@ AVM_CLASS(AvmMember, AvmType, {
 /// Returns a pointer to the type info of type T.
 #define typeid(T) (&_AVM_METADATA_BLOCK_NAME(T))
 
-#define interfaceof(I, T) (&_AVM_INTERFACE_IMPL_NAME(I, T))
+#define interfaceid(I, T) (&_AVM_INTERFACE_IMPL_NAME(I, T))
 
 // clang-format off
 
@@ -263,6 +251,15 @@ AVM_CLASS(AvmMember, AvmType, {
 
 #define cast(T, x)                                                             \
     (T*)(instanceof (T, x) ? x : __AvmRuntimeCastFail(x, typeid(T)))
+
+#define AvmQueryInterface(self, I)                                             \
+    (I)                                                                        \
+    {                                                                          \
+        .__type = typeid(I),                                                   \
+        .Methods =                                                             \
+            AvmClassGetInterface(AvmObjectGetType(self), #I)->_private.vPtr,   \
+        .Value = self,                                                         \
+    }
 
 /**
  * @brief Gets the name of a type.
@@ -287,8 +284,8 @@ AVMAPI uint AvmTypeGetSize(const AvmType* self);
 AVMAPI const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name);
 AVMAPI AvmCallback AvmClassGetCallback(const AvmClass* self, uint index);
 AVMAPI const AvmClass* AvmClassGetBase(const AvmClass* self);
-AVMAPI
-bool AvmClassInheritsFrom(const AvmClass* self, const AvmClass* baseType);
+AVMAPI bool AvmClassInheritsFrom(const AvmClass* self,
+                                 const AvmClass* baseType);
 
 AVMAPI uint AvmClassGetMemberCount(const AvmClass* self);
 AVMAPI const AvmMember* AvmClassGetMemberAt(const AvmClass* self, uint index);

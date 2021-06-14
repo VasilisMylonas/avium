@@ -93,7 +93,7 @@ void* AvmObjectVisit(object self, const AvmMember* member)
         assert(member != NULL);
     }
 
-    return ((byte*)self) + member->_private.offset;
+    return ((byte*)self) + baseof(member)->_private.offset;
 }
 
 void AvmObjectLock(object self)
@@ -127,33 +127,6 @@ void AvmObjectUnlock(object self)
 
     AvmMutex** o = self;
     AvmMutexUnlock(o[-1]);
-}
-
-//
-// Interface calls.
-//
-
-bool AvmEquals(const AvmEquatable* self, object other)
-{
-    pre
-    {
-        assert(self != NULL);
-        assert(other != NULL);
-        assert(AvmObjectGetType(self->Value) == AvmObjectGetType(other));
-    }
-
-    return AVM_ICALL(AvmEquatableEquals, bool, object, object)(self->Value,
-                                                               other);
-}
-
-object AvmClone(const AvmCloneable* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return AVM_ICALL(AvmCloneableClone, object, object)(self->Value);
 }
 
 //
@@ -693,17 +666,17 @@ AVM_IMPLEMENT(AvmEquatable,
 
 AVM_INTERFACES(AvmInteger,
                {
-                   interfaceof(AvmEquatable, AvmInteger),
+                   interfaceid(AvmEquatable, AvmInteger),
                });
 
 AVM_INTERFACES(AvmUnsigned,
                {
-                   interfaceof(AvmEquatable, AvmUnsigned),
+                   interfaceid(AvmEquatable, AvmUnsigned),
                });
 
 AVM_INTERFACES(AvmFloat,
                {
-                   interfaceof(AvmEquatable, AvmFloat),
+                   interfaceid(AvmEquatable, AvmFloat),
                });
 
 AVM_MEMBERS(AvmInteger, AVM_MEMBERS_DEFAULT);
@@ -767,6 +740,32 @@ AvmThrowContext* __AvmRuntimePopThrowContext(void)
 //
 // Misc.
 //
+
+bool AvmEquals(const AvmEquatable* self, object other)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(other != NULL);
+        assert(AvmObjectGetType(self->Value) == AvmObjectGetType(other));
+    }
+
+    return AVM_ICALL(AvmEquatableEquals, bool, object, object)(self->Value,
+                                                               other);
+}
+
+object AvmClone(const AvmCloneable* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AVM_ICALL(AvmCloneableClone, object, object)(self->Value);
+}
+
+AVM_CLASS_TYPE(AvmEquatable, object, AVM_VTABLE_DEFAULT);
+AVM_CLASS_TYPE(AvmCloneable, object, AVM_VTABLE_DEFAULT);
 
 void AvmCopy(object o, size_t size, byte* destination)
 {
