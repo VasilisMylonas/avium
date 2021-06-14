@@ -146,7 +146,7 @@ AvmMutex AvmMutexNew(bool isRecursive)
         pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     }
 
-    pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t));
+    pthread_mutex_t* mutex = AvmAlloc(sizeof(pthread_mutex_t), false);
     int result = pthread_mutex_init(mutex, &attr);
 
     pthread_mutexattr_destroy(&attr);
@@ -202,7 +202,7 @@ void AvmMutexUnlock(const AvmMutex* self)
 
 AvmBarrier AvmBarrierNew(uint count)
 {
-    pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t));
+    pthread_barrier_t* barrier = AvmAlloc(sizeof(pthread_barrier_t), false);
     pthread_barrier_init(barrier, NULL, count);
     GC_register_finalizer(
         barrier,

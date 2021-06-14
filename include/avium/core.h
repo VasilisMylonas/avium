@@ -446,7 +446,7 @@ AVMAPI never AvmRuntimeThrow(object value, AvmLocation location) AVM_NONNULL(1);
  * @param size The size of the memory block in bytes.
  * @return The allocated memory.
  */
-AVMAPI void* AvmAlloc(uint size);
+AVMAPI void* AvmAlloc(uint size, bool containsPointers);
 
 /**
  * @brief Reallocates a heap memory block.

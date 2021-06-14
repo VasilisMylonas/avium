@@ -139,7 +139,7 @@ AvmMutex AvmMutexNew(bool isRecursive)
         // TODO: Always recursive in win32...
     }
 
-    LPCRITICAL_SECTION mutex = AvmAlloc(sizeof(CRITICAL_SECTION));
+    LPCRITICAL_SECTION mutex = AvmAlloc(sizeof(CRITICAL_SECTION), false);
     InitializeCriticalSection(mutex);
 
     // We register a custom 'finalizer'.
@@ -179,7 +179,7 @@ void AvmMutexUnlock(const AvmMutex* self)
 AvmBarrier AvmBarrierNew(uint count)
 {
     LPSYNCHRONIZATION_BARRIER barrier =
-        AvmAlloc(sizeof(SYNCHRONIZATION_BARRIER));
+        AvmAlloc(sizeof(SYNCHRONIZATION_BARRIER), false);
 
     if (InitializeSynchronizationBarrier(barrier, count, -1) == FALSE)
     {

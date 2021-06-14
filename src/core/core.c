@@ -36,8 +36,8 @@ object AvmObjectNew(const AvmClass* type)
         assert(type != NULL);
     }
 
-    object* o =
-        AvmAlloc(AvmTypeGetSize((const AvmType*)type) + sizeof(AvmMutex*));
+    object* o = AvmAlloc(
+        AvmTypeGetSize((const AvmType*)type) + sizeof(AvmMutex*), true);
     GC_register_finalizer(o,
                           (GC_finalization_proc)(AvmCallback)AvmObjectFinalize,
                           NULL,
@@ -370,14 +370,21 @@ never AvmRuntimeThrow(object value, AvmLocation location)
 // Allocation functions.
 //
 
-void* AvmAlloc(uint size)
+void* AvmAlloc(uint size, bool containsPointers)
 {
     pre
     {
         assert(size != 0);
     }
 
-    void* mem = GC_malloc(size);
+    void* mem = containsPointers ? GC_malloc(size) : GC_malloc_atomic(size);
+
+    if (!containsPointers)
+    {
+        // GC_malloc_atomic does not clear memory.
+        bzero(mem, size);
+    }
+
     if (mem == NULL)
     {
         GC_abort_on_oom();

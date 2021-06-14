@@ -142,7 +142,7 @@ AvmString AvmStringNew(uint capacity)
         ._length = 0,
         ._capacity = capacity,
         // If capacity is 0 we should not allocate any memory.
-        ._buffer = capacity == 0 ? NULL : AvmAlloc(capacity),
+        ._buffer = capacity == 0 ? NULL : AvmAlloc(capacity, false),
     };
 }
 
@@ -1494,7 +1494,7 @@ str AvmStringToStr(const AvmString* self)
         assert(self != NULL);
     }
 
-    char* s = AvmAlloc(self->_length + 1);
+    char* s = AvmAlloc(self->_length + 1, false);
 
     memcpy(s, self->_buffer, self->_length);
     s[self->_length] = '\0';

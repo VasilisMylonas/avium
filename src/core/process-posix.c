@@ -25,7 +25,7 @@ AvmProcess AvmProcessNew(str path, uint length, str args[])
         assert(path != NULL);
     }
 
-    char** argv = AvmAlloc(sizeof(str) * (length + 2));
+    char** argv = AvmAlloc(sizeof(str) * (length + 2), true);
     argv[0] = (char*)path;
     memcpy(&argv[1], args, length);
     argv[length + 2] = NULL;
