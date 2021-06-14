@@ -63,6 +63,33 @@ AVM_CLASS_TYPE(AvmType,
                    [AvmEntryToString] = (AvmCallback)AvmTypeToString,
                });
 
+const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name)
+{
+    pre
+    {
+        assert(self != NULL);
+        assert(name != NULL);
+    }
+
+    const uint count = self->_private.interfaceCount;
+    const AvmInterface** interfaces = self->_private.interfaces;
+
+    for (uint i = 0; i < count; i++)
+    {
+        if (strcmp(interfaces[i]->__base._private.name, name) == 0)
+        {
+            return interfaces[i];
+        }
+    }
+
+    if (self == typeid(object))
+    {
+        throw(AvmErrorNew(_(AvmMissingInterfaceErrorMsg)));
+    }
+
+    return AvmClassGetInterface(self->_private.base, name);
+}
+
 AvmCallback AvmClassGetCallback(const AvmClass* self, uint index)
 {
     pre
@@ -166,22 +193,6 @@ uint AvmClassGetMemberCount(const AvmClass* self)
     }
 
     return self->_private.memberCount;
-}
-
-const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name)
-{
-    const uint count = self->_private.interfaceCount;
-    const AvmInterface** interfaces = self->_private.interfaces;
-
-    for (uint i = 0; i < count; i++)
-    {
-        if (strcmp(interfaces[i]->__base._private.name, name) == 0)
-        {
-            return interfaces[i];
-        }
-    }
-
-    return NULL;
 }
 
 static AvmString AvmClassToString(const AvmClass* self)
@@ -452,9 +463,6 @@ AVM_CLASS_TYPE_EX(object,
                   {
                       [AvmEntryFinalize] = (AvmCallback)objectFinalize,
                       [AvmEntryToString] = (AvmCallback)objectToString,
-                      //   [FnEntryEquals] = (AvmCallback)objectEquals,
-                      //   [FnEntryClone] = (AvmCallback)objectClone,
-                      //   [AvmEntryToString] = ,
                   });
 
 AVM_CLASS_TYPE(_long, object, AVM_VTABLE_DEFAULT);

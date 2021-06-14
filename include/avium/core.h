@@ -721,6 +721,7 @@ typedef enum
     AvmThreadJoinErrorMsg,
     AvmThreadDetachErrorMsg,
     AvmInvalidStackSizeErrorMsg,
+    AvmMissingInterfaceErrorMsg,
 } AvmResourceKey;
 
 AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);

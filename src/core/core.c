@@ -1,7 +1,6 @@
 #include "avium/core.h"
 
 #include "avium/private/thread-context.h"
-#include "avium/private/virtual.h"
 
 #include "avium/string.h"
 #include "avium/thread.h"
@@ -143,8 +142,8 @@ bool AvmEquals(const AvmEquatable* self, object other)
         assert(AvmObjectGetType(self->Value) == AvmObjectGetType(other));
     }
 
-    return AVM_INTERFACE_CALL(AvmEquatableEquals, bool, object, object)(
-        self->Value, other);
+    return AVM_ICALL(AvmEquatableEquals, bool, object, object)(self->Value,
+                                                               other);
 }
 
 object AvmClone(const AvmCloneable* self)
@@ -154,7 +153,7 @@ object AvmClone(const AvmCloneable* self)
         assert(self != NULL);
     }
 
-    return AVM_INTERFACE_CALL(AvmCloneableClone, object, object)(self->Value);
+    return AVM_ICALL(AvmCloneableClone, object, object)(self->Value);
 }
 
 //
@@ -170,7 +169,7 @@ void AvmObjectFinalize(object self)
     }
 
     AvmObjectSurpressFinalizer(self);
-    VIRTUAL_CALL(void, AvmEntryFinalize, self);
+    AVM_VCALL(AvmEntryFinalize, void, object)(self);
 }
 
 AvmString AvmObjectToString(object self)
@@ -180,7 +179,7 @@ AvmString AvmObjectToString(object self)
         assert(self != NULL);
     }
 
-    VIRTUAL_CALL(AvmString, AvmEntryToString, self);
+    return AVM_VCALL(AvmEntryToString, AvmString, object)(self);
 }
 
 //
@@ -813,6 +812,8 @@ str AvmRuntimeGetResource(AvmResourceKey key)
         return "Failed to detach thread.";
     case AvmInvalidStackSizeErrorMsg:
         return "Invalid stack size.";
+    case AvmMissingInterfaceErrorMsg:
+        return "The requested interface was missing.";
     default:
         return "";
     }

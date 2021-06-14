@@ -215,8 +215,12 @@ AVM_CLASS(AvmMember, AvmType, {
             .callback = (AvmCallback)(F),                                      \
         }}
 
-#define AVM_INTERFACE_CALL(Entry, TReturn, ...)                                \
+#define AVM_ICALL(Entry, TReturn, ...)                                         \
     ((TReturn(*)(__VA_ARGS__))self->Methods[Entry])
+
+#define AVM_VCALL(Entry, TReturn, ...)                                         \
+    ((TReturn(*)(__VA_ARGS__))AvmClassGetCallback(                             \
+        AvmObjectGetType((object)self), Entry))
 
 #define AvmQueryInterface(self, I)                                             \
     (I)                                                                        \
