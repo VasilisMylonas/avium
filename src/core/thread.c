@@ -219,8 +219,8 @@ static AvmString AvmThreadToString(const AvmThread* self)
 AVM_CLASS_TYPE(AvmThread,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmThreadToString,
-                   [FnEntryFinalize] = (AvmCallback)AvmThreadFinalize,
+                   [AvmEntryToString] = (AvmCallback)AvmThreadToString,
+                   [AvmEntryFinalize] = (AvmCallback)AvmThreadFinalize,
                });
 
 AVM_CLASS_TYPE(AvmMutex, object, AVM_VTABLE_DEFAULT);

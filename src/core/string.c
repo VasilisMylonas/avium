@@ -65,15 +65,30 @@ static object AvmStringClone(AvmString* self)
     return ret;
 }
 
-AVM_CLASS_TYPE(AvmString,
-               object,
+AVM_IMPLEMENT(AvmEquatable,
+              AvmString,
+              {
+                  [AvmEquatableEquals] = (AvmCallback)AvmStringEquals,
+              });
+
+AVM_IMPLEMENT(AvmCloneable,
+              AvmString,
+              {
+                  [AvmCloneableClone] = (AvmCallback)AvmStringClone,
+              });
+
+AVM_MEMBERS(AvmString, AVM_MEMBERS_DEFAULT);
+AVM_INTERFACES(AvmString,
                {
-                   [FnEntryClone] = (AvmCallback)AvmStringClone,
-                   [FnEntryToString] = (AvmCallback)AvmStringToString,
-                   [FnEntryGetLength] = (AvmCallback)AvmStringGetLength,
-                   [FnEntryGetCapacity] = (AvmCallback)AvmStringGetCapacity,
-                   [FnEntryEquals] = (AvmCallback)AvmStringEquals,
+                   interfaceof(AvmEquatable, AvmString),
+                   interfaceof(AvmCloneable, AvmString),
                });
+
+AVM_CLASS_TYPE_EX(AvmString,
+                  object,
+                  {
+                      [AvmEntryToString] = (AvmCallback)AvmStringToString,
+                  });
 
 void AvmStringEnsureCapacity(AvmString* self, uint capacity)
 {

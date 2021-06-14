@@ -131,20 +131,35 @@ void AvmObjectUnlock(object self)
 }
 
 //
-// Virtual calls.
+// Interface calls.
 //
 
-bool AvmObjectEquals(object self, object other)
+bool AvmEquals(const AvmEquatable* self, object other)
 {
     pre
     {
         assert(self != NULL);
         assert(other != NULL);
-        assert(AvmObjectGetType(self) == AvmObjectGetType(other));
+        assert(AvmObjectGetType(self->Value) == AvmObjectGetType(other));
     }
 
-    VIRTUAL_CALL(bool, FnEntryEquals, self, other);
+    return AVM_INTERFACE_CALL(AvmEquatableEquals, bool, object, object)(
+        self->Value, other);
 }
+
+object AvmClone(const AvmCloneable* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AVM_INTERFACE_CALL(AvmCloneableClone, object, object)(self->Value);
+}
+
+//
+// Virtual calls.
+//
 
 void AvmObjectFinalize(object self)
 {
@@ -155,17 +170,7 @@ void AvmObjectFinalize(object self)
     }
 
     AvmObjectSurpressFinalizer(self);
-    VIRTUAL_CALL(void, FnEntryFinalize, self);
-}
-
-object AvmObjectClone(object self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    VIRTUAL_CALL(object, FnEntryClone, self);
+    VIRTUAL_CALL(void, AvmEntryFinalize, self);
 }
 
 AvmString AvmObjectToString(object self)
@@ -175,7 +180,7 @@ AvmString AvmObjectToString(object self)
         assert(self != NULL);
     }
 
-    VIRTUAL_CALL(AvmString, FnEntryToString, self);
+    VIRTUAL_CALL(AvmString, AvmEntryToString, self);
 }
 
 //
@@ -195,7 +200,7 @@ static AvmString AvmLocationToString(AvmLocation* self)
 AVM_CLASS_TYPE(AvmLocation,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmLocationToString,
+                   [AvmEntryToString] = (AvmCallback)AvmLocationToString,
                });
 
 AvmLocation AvmLocationFrom(str file, uint line, uint column)
@@ -231,7 +236,7 @@ static AvmString AvmVersionToString(AvmVersion* self)
 AVM_CLASS_TYPE(AvmVersion,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmVersionToString,
+                   [AvmEntryToString] = (AvmCallback)AvmVersionToString,
                });
 
 AvmVersion AvmVersionFrom(ushort major, ushort minor, ushort patch)
@@ -377,7 +382,8 @@ never AvmRuntimeThrow(object value, AvmLocation location)
 #ifdef AVM_THROW_AUTO_CLONE
     if (!AvmRuntimeIsHeapObject(value))
     {
-        value = AvmObjectClone(value);
+        AvmCloneable c = AvmQueryInterface(value, AvmCloneable);
+        value = AvmClone(&c);
     }
 #endif
 
@@ -528,7 +534,7 @@ static AvmString AvmNativeErrorToString(const AvmNativeError* self)
 AVM_CLASS_TYPE(AvmNativeError,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmNativeErrorToString,
+                   [AvmEntryToString] = (AvmCallback)AvmNativeErrorToString,
                });
 
 AvmError* AvmErrorFromOSCode(int code)
@@ -561,7 +567,7 @@ static AvmString AvmDetailedErrorToString(const AvmDetailedError* self)
 AVM_CLASS_TYPE(AvmDetailedError,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmDetailedErrorToString,
+                   [AvmEntryToString] = (AvmCallback)AvmDetailedErrorToString,
                });
 
 AvmError* AvmErrorNew(str message)
@@ -668,32 +674,66 @@ static bool AvmFloatEquals(const AvmFloat* self, const AvmFloat* other)
     return self->Value == other->Value;
 }
 
-AVM_CLASS_TYPE(AvmInteger,
-               object,
+AVM_IMPLEMENT(AvmEquatable,
+              AvmInteger,
+              {
+                  [AvmEquatableEquals] = (AvmCallback)AvmIntegerEquals,
+              });
+
+AVM_IMPLEMENT(AvmEquatable,
+              AvmUnsigned,
+              {
+                  [AvmEquatableEquals] = (AvmCallback)AvmUnsignedEquals,
+              });
+
+AVM_IMPLEMENT(AvmEquatable,
+              AvmFloat,
+              {
+                  [AvmEquatableEquals] = (AvmCallback)AvmFloatEquals,
+              });
+
+AVM_INTERFACES(AvmInteger,
                {
-                   [FnEntryToString] = (AvmCallback)AvmIntegerToString,
-                   [FnEntryEquals] = (AvmCallback)AvmIntegerEquals,
+                   interfaceof(AvmEquatable, AvmInteger),
                });
 
-AVM_CLASS_TYPE(AvmUnsigned,
-               object,
+AVM_INTERFACES(AvmUnsigned,
                {
-                   [FnEntryToString] = (AvmCallback)AvmUnsignedToString,
-                   [FnEntryEquals] = (AvmCallback)AvmUnsignedEquals,
+                   interfaceof(AvmEquatable, AvmUnsigned),
                });
 
-AVM_CLASS_TYPE(AvmFloat,
-               object,
+AVM_INTERFACES(AvmFloat,
                {
-                   [FnEntryToString] = (AvmCallback)AvmFloatToString,
-                   [FnEntryEquals] = (AvmCallback)AvmFloatEquals,
+                   interfaceof(AvmEquatable, AvmFloat),
                });
+
+AVM_MEMBERS(AvmInteger, AVM_MEMBERS_DEFAULT);
+AVM_MEMBERS(AvmUnsigned, AVM_MEMBERS_DEFAULT);
+AVM_MEMBERS(AvmFloat, AVM_MEMBERS_DEFAULT);
+
+AVM_CLASS_TYPE_EX(AvmInteger,
+                  object,
+                  {
+                      [AvmEntryToString] = (AvmCallback)AvmIntegerToString,
+                  });
+
+AVM_CLASS_TYPE_EX(AvmUnsigned,
+                  object,
+                  {
+                      [AvmEntryToString] = (AvmCallback)AvmUnsignedToString,
+                  });
+
+AVM_CLASS_TYPE_EX(AvmFloat,
+                  object,
+                  {
+                      [AvmEntryToString] = (AvmCallback)AvmFloatToString,
+                  });
 
 //
 // Exception implementation.
 //
 
-AVM_CLASS_TYPE(AvmThrowContext, object, {[FnEntryFinalize] = NULL});
+AVM_CLASS_TYPE(AvmThrowContext, object, AVM_VTABLE_DEFAULT);
 
 AvmThrowContext* __AvmRuntimeGetThrowContext(void)
 {

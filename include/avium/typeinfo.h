@@ -2,8 +2,8 @@
  * @file avium/typeinfo.h
  * @author Vasilis Mylonas <vasilismylonas@protonmail.com>
  * @brief Type information for objects.
- * @version 0.1
- * @date 2021-05-09
+ * @version 0.3
+ * @date 2021-06-14
  *
  * @copyright Copyright (c) 2021 Vasilis Mylonas
  *
@@ -26,16 +26,17 @@
 
 #include "avium/core.h"
 
+/// Contains information about a type.
 AVM_CLASS(AvmType, object, {
     struct
     {
         str name;
-        const byte* init;
         uint size;
         uint unused;
     } _private;
 });
 
+/// Contains information about a function.
 AVM_CLASS(AvmFunction, AvmType, {
     struct
     {
@@ -46,6 +47,7 @@ AVM_CLASS(AvmFunction, AvmType, {
     } _private;
 });
 
+/// Contains information about an interface.
 AVM_CLASS(AvmInterface, AvmType, {
     struct
     {
@@ -55,6 +57,7 @@ AVM_CLASS(AvmInterface, AvmType, {
     } _private;
 });
 
+/// Contains information about a class.
 AVM_CLASS(AvmClass, AvmType, {
     struct
     {
@@ -69,6 +72,7 @@ AVM_CLASS(AvmClass, AvmType, {
     } _private;
 });
 
+/// Contains information about an enum.
 AVM_CLASS(AvmEnum, AvmType, {
     struct
     {
@@ -83,6 +87,7 @@ AVM_CLASS(AvmEnum, AvmType, {
     } _private;
 });
 
+/// Contains information about a class member.
 AVM_CLASS(AvmMember, AvmType, {
     struct
     {
@@ -94,35 +99,38 @@ AVM_CLASS(AvmMember, AvmType, {
 
 #define AVM_MEMBER(P, T, member)                                               \
     {                                                                          \
-        .__type = typeid(AvmMember), ._name = #member,                         \
-        ._offset = offsetof(P, member), ._memberType = typeid(T),              \
+        .__type = typeid(AvmMember),                                           \
+        .__base._private =                                                     \
+            {                                                                  \
+                .name = #member,                                               \
+                .size = sizeof(T),                                             \
+            },                                                                 \
+        ._private = {                                                          \
+            .offset = offsetof(P, member),                                     \
+            .type = (AvmType*)typeid(T),                                       \
+        },                                                                     \
     }
-
-#define AVM_INTERFACE(T, ...)                                                  \
-    enum __VA_ARGS__;                                                          \
-    AVM_CLASS(T, object, {                                                     \
-        object Value;                                                          \
-        const AvmCallback* Methods;                                            \
-    })
 
 #define AVM_IMPLEMENT(I, T, ...)                                               \
     static const AvmCallback _AVM_INTERFACE_VTBL_NAME(I, T)[] = __VA_ARGS__;   \
     static const AvmInterface _AVM_INTERFACE_IMPL_NAME(I, T) = {               \
         .__type = typeid(AvmInterface),                                        \
+        .__base._private =                                                     \
+            {                                                                  \
+                .name = #I,                                                    \
+                .size = sizeof(I),                                             \
+            },                                                                 \
         ._private =                                                            \
             {                                                                  \
                 .vPtr = _AVM_INTERFACE_VTBL_NAME(I, T),                        \
                 .vCount = sizeof(_AVM_INTERFACE_VTBL_NAME(I, T)),              \
-            },                                                                 \
-        .__base._private =                                                     \
-            {                                                                  \
-                .name = #I,                                                    \
             },                                                                 \
     }
 
 #define AVM_CLASS_TYPE(T, B, ...)                                              \
     static const AvmCallback _AVM_VTABLE_BLOCK_NAME(T)[] = __VA_ARGS__;        \
     const AvmClass _AVM_METADATA_BLOCK_NAME(T) = {                             \
+        .__type = typeid(AvmClass),                                            \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #T,                                                    \
@@ -141,11 +149,12 @@ AVM_CLASS(AvmMember, AvmType, {
     static const AvmMember _AVM_MEMBER_BLOCK_NAME(T)[] = __VA_ARGS__
 
 #define AVM_INTERFACES(T, ...)                                                 \
-    static const AvmInterface* _AVM_INTERFACE_BLOCK_NAME(T)[] = __VA_ARGS__;
+    static const AvmInterface* _AVM_INTERFACE_BLOCK_NAME(T)[] = __VA_ARGS__
 
 #define AVM_CLASS_TYPE_EX(T, B, ...)                                           \
     static const AvmCallback _AVM_VTABLE_BLOCK_NAME(T)[] = __VA_ARGS__;        \
     const AvmClass _AVM_METADATA_BLOCK_NAME(T) = {                             \
+        .__type = typeid(AvmClass),                                            \
         .__base._private =                                                     \
             {                                                                  \
                 .name = #T,                                                    \
@@ -206,15 +215,14 @@ AVM_CLASS(AvmMember, AvmType, {
             .callback = (AvmCallback)(F),                                      \
         }}
 
-#define icall(Entry, TReturn, ...)                                             \
+#define AVM_INTERFACE_CALL(Entry, TReturn, ...)                                \
     ((TReturn(*)(__VA_ARGS__))self->Methods[Entry])
 
-#define QueryInterface(self, I)                                                \
+#define AvmQueryInterface(self, I)                                             \
     (I)                                                                        \
     {                                                                          \
         .Methods =                                                             \
-            AvmClassGetInterface((const AvmClass*)AvmObjectGetType(self), #I)  \
-                ->_private.vPtr,                                               \
+            AvmClassGetInterface(AvmObjectGetType(self), #I)->_private.vPtr,   \
         .Value = self,                                                         \
     }
 
@@ -232,28 +240,6 @@ AVM_CLASS(AvmMember, AvmType, {
     {                                                                          \
         [0] = NULL,                                                            \
     }
-
-enum
-{
-    FnEntryFinalize = 0, ///< The finalizer entry.
-    FnEntryToString,     ///< The AvmObjectToString entry.
-    FnEntryClone,        ///< The AvmObjectClone entry.
-    FnEntryEquals,       ///< The AvmObjectEquals entry.
-
-    FnEntryRead = 16,   ///< The AvmStreamRead entry.
-    FnEntryWrite,       ///< The AvmStreamWrite entry.
-    FnEntrySeek,        ///< The AvmStreamSeek entry.
-    FnEntryFlush,       ///< The AvmStreamFlush entry.
-    FnEntryGetPosition, ///< The AvmStreamPosition entry.
-
-    FnEntryGetLength = 12,
-    FnEntryGetCapacity,
-
-    FnEntryRemove = 16,
-    FnEntryInsert,
-    FnEntryItemAt,
-    FnEntryGetItemType,
-};
 
 /// Returns the base type of an object.
 #define baseof(x) (&(x)->__base)
@@ -294,13 +280,11 @@ AVMAPI str AvmTypeGetName(const AvmType* self);
  */
 AVMAPI uint AvmTypeGetSize(const AvmType* self);
 
-AVMAPI const byte* AvmTypeGetInit(const AvmType* self);
-
 AVMAPI const AvmInterface* AvmClassGetInterface(const AvmClass* self, str name);
 AVMAPI AvmCallback AvmClassGetCallback(const AvmClass* self, uint index);
 AVMAPI const AvmClass* AvmClassGetBase(const AvmClass* self);
-AVMAPI bool AvmClassInheritsFrom(const AvmClass* self,
-                                 const AvmClass* baseType);
+AVMAPI
+bool AvmClassInheritsFrom(const AvmClass* self, const AvmClass* baseType);
 
 AVMAPI uint AvmClassGetMemberCount(const AvmClass* self);
 AVMAPI const AvmMember* AvmClassGetMemberAt(const AvmClass* self, uint index);
@@ -314,7 +298,7 @@ AVMAPI const AvmMember* AvmClassGetMember(const AvmClass* self, str name);
  * @param self The AvmMember instance.
  * @return The member offset.
  */
-// AVMAPI uint AvmMemberGetOffset(const AvmMember* self);
+AVMAPI uint AvmMemberGetOffset(const AvmMember* self);
 
 /**
  * @brief Determines whether a value is defined for an enum.
@@ -323,10 +307,10 @@ AVMAPI const AvmMember* AvmClassGetMember(const AvmClass* self, str name);
  *
  * @param self The AvmEnum instance.
  * @param value The value.
- * @return true if a constant with the provided value is defined for the enum,
- *         otherwise false.
+ * @return true if a constant with the provided value is defined for the
+ * enum, otherwise false.
  */
-// AVMAPI bool AvmEnumIsDefined(const AvmEnum* self, _long value);
+AVMAPI bool AvmEnumIsDefined(const AvmEnum* self, _long value);
 
 /**
  * @brief Returns the name of the enum constant with the specified value.
@@ -337,7 +321,7 @@ AVMAPI const AvmMember* AvmClassGetMember(const AvmClass* self, str name);
  * @param value The value of the constant.
  * @return The name of the constant.
  */
-// AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
+AVMAPI str AvmEnumGetNameOf(const AvmEnum* self, _long value);
 
 /**
  * @brief Returns the value of the enum constant with the specified name.
@@ -349,7 +333,7 @@ AVMAPI const AvmMember* AvmClassGetMember(const AvmClass* self, str name);
  * @param name The name of the constant.
  * @return The value of the constant.
  */
-// AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
+AVMAPI _long AvmEnumGetValueOf(const AvmEnum* self, str name);
 
 AVMAPI const AvmType* AvmFunctionGetReturnType(const AvmFunction* self);
 AVMAPI const AvmType** AvmFunctionGetParams(const AvmFunction* self);

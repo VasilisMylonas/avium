@@ -1,77 +1,54 @@
-#include "avium/core.h"
+#include <avium/string.h>
+#include <avium/typeinfo.h>
 
-// #undef AVM_CLASS
-// #undef AVM_TI_NAME
-// #undef AVM_VT_NAME
-// #undef AVM_MTI_NAME
-// #undef AVM_PTI_NAME
-// #undef AVM_CTI_NAME
-// #undef AVM_INTERFACE
-// #include "avium/typeinfo-new.h"
+AVM_INTERFACE(AvmStringable,
+              {
+                  AvmStringableToString,
+              });
 
-// typedef uint wchar;
+AVM_CLASS(AvmPoint, object, {
+    float X;
+    float Y;
+});
 
-// AVM_CLASS(AvmWideString, object, {
-//     struct
-//     {
-//         uint length;
-//         uint capacity;
-//         wchar* buffer;
-//     } _private;
-// });
+AvmString AvmPointToString(const AvmPoint* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
 
-// AVM_CLASS_TYPE(object, object, {NULL});
+    return AvmStringFormat("(%f, %f)", self->X, self->Y);
+}
 
-// AVM_INTERFACE(AvmLengthable,
-//               {
-//                   AvmLengthableGetLength,
-//               });
+AVM_IMPLEMENT(AvmStringable,
+              AvmPoint,
+              {
+                  [AvmStringableToString] = (AvmCallback)AvmPointToString,
+              });
 
-// static uint AvmWideStringGetLength(const AvmWideString* self)
-// {
-//     return self->_private.length;
-// }
+AVM_INTERFACES(AvmPoint,
+               {
+                   interfaceof(AvmStringable, AvmPoint),
+               });
 
-// AVM_IMPLEMENT(
-//     AvmLengthable,
-//     AvmWideString,
-//     {
-//         [AvmLengthableGetLength] = (AvmCallback)AvmWideStringGetLength,
-//     });
+AVM_MEMBERS(AvmPoint, AVM_MEMBERS_DEFAULT);
 
-// AVM_INTERFACES(AvmWideString, {[0] = &_Impl_AvmLengthable_AvmWideString});
+AVM_CLASS_TYPE_EX(AvmPoint, object, AVM_VTABLE_DEFAULT);
 
-// AVM_MEMBERS(AvmWideString, AVM_MEMBERS_DEFAULT);
-
-// AVM_CLASS_TYPE_EX(AvmWideString, object, AVM_VTABLE_DEFAULT);
-
-// implement AvmLengthable for AvmWideString {
-//     AvmLengthableGetLength = AvmWideStringGetLength,
-// };
-
-// uint AvmGetLength(AvmLengthable* self)
-// {
-//     return icall(AvmLengthableGetLength, uint, object)(self->Value);
-// }
-
-// AvmWideString AvmWideStringWithLength(uint length)
-// {
-//     AvmWideString s = {
-//         .__type = typeid(AvmWideString),
-//         ._private =
-//             {
-//                 .length = length,
-//             },
-//     };
-
-//     return s;
-// }
+AvmString AvmToString(AvmStringable* self)
+{
+    return AVM_INTERFACE_CALL(AvmStringableToString, AvmString, object)(
+        self->Value);
+}
 
 void Main()
 {
-    // AvmWideString s = AvmWideStringWithLength(20);
+    AvmPoint* p = AvmObjectNew(typeid(AvmPoint));
+    p->X = 5.1;
+    p->Y = 7.2;
+    AvmStringable s = AvmQueryInterface(p, AvmStringable);
+    AvmString s1 = AvmToString(&s);
 
-    // AvmLengthable l = QueryInterface(&s, AvmLengthable);
-    // AvmPrintf("Length! %u\n", AvmGetLength(&l));
-    AvmPrintf("Hello!\n");
+    AvmPrintf("%v\n", &s1);
 }

@@ -46,16 +46,6 @@ uint AvmTypeGetSize(const AvmType* self)
     return self->_private.size;
 }
 
-const byte* AvmTypeGetInit(const AvmType* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return self->_private.init;
-}
-
 static AvmString AvmTypeToString(const AvmType* self)
 {
     pre
@@ -70,7 +60,7 @@ static AvmString AvmTypeToString(const AvmType* self)
 AVM_CLASS_TYPE(AvmType,
                object,
                {
-                   [FnEntryToString] = (AvmCallback)AvmTypeToString,
+                   [AvmEntryToString] = (AvmCallback)AvmTypeToString,
                });
 
 AvmCallback AvmClassGetCallback(const AvmClass* self, uint index)
@@ -209,7 +199,7 @@ static AvmString AvmClassToString(const AvmClass* self)
 AVM_CLASS_TYPE(AvmClass,
                AvmType,
                {
-                   [FnEntryToString] = (AvmCallback)AvmClassToString,
+                   [AvmEntryToString] = (AvmCallback)AvmClassToString,
                });
 
 bool AvmEnumIsDefined(const AvmEnum* self, _long value)
@@ -294,7 +284,7 @@ static AvmString AvmEnumToString(const AvmEnum* self)
 AVM_CLASS_TYPE(AvmEnum,
                AvmType,
                {
-                   [FnEntryToString] = (AvmCallback)AvmEnumToString,
+                   [AvmEntryToString] = (AvmCallback)AvmEnumToString,
                });
 
 uint AvmMemberGetOffset(const AvmMember* self)
@@ -322,7 +312,7 @@ static AvmString AvmMemberToString(const AvmMember* self)
 AVM_CLASS_TYPE(AvmMember,
                AvmType,
                {
-                   [FnEntryToString] = (AvmCallback)AvmMemberToString,
+                   [AvmEntryToString] = (AvmCallback)AvmMemberToString,
                });
 
 const AvmType* AvmFunctionGetReturnType(const AvmFunction* self)
@@ -381,7 +371,7 @@ static AvmString AvmFunctionToString(const AvmFunction* self)
 AVM_CLASS_TYPE(AvmFunction,
                AvmType,
                {
-                   [FnEntryToString] = (AvmCallback)AvmFunctionToString,
+                   [AvmEntryToString] = (AvmCallback)AvmFunctionToString,
                });
 
 //
@@ -436,15 +426,36 @@ static AvmString objectToString(object self)
         self);
 }
 
-// TODO: Maybe all these should not inherit from object?
-AVM_CLASS_TYPE(object,
-               object,
+AVM_IMPLEMENT(AvmEquatable,
+              object,
+              {
+                  [AvmEquatableEquals] = (AvmCallback)objectEquals,
+              });
+
+AVM_IMPLEMENT(AvmCloneable,
+              object,
+              {
+                  [AvmCloneableClone] = (AvmCallback)objectClone,
+              });
+
+AVM_INTERFACES(object,
                {
-                   [FnEntryFinalize] = (AvmCallback)objectFinalize,
-                   [FnEntryEquals] = (AvmCallback)objectEquals,
-                   [FnEntryClone] = (AvmCallback)objectClone,
-                   [FnEntryToString] = (AvmCallback)objectToString,
+                   interfaceof(AvmEquatable, object),
+                   interfaceof(AvmCloneable, object),
                });
+
+AVM_MEMBERS(object, AVM_MEMBERS_DEFAULT);
+
+// TODO: Maybe all these should not inherit from object?
+AVM_CLASS_TYPE_EX(object,
+                  object,
+                  {
+                      [AvmEntryFinalize] = (AvmCallback)objectFinalize,
+                      [AvmEntryToString] = (AvmCallback)objectToString,
+                      //   [FnEntryEquals] = (AvmCallback)objectEquals,
+                      //   [FnEntryClone] = (AvmCallback)objectClone,
+                      //   [AvmEntryToString] = ,
+                  });
 
 AVM_CLASS_TYPE(_long, object, AVM_VTABLE_DEFAULT);
 AVM_CLASS_TYPE(ulong, object, AVM_VTABLE_DEFAULT);

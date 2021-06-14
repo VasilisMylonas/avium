@@ -75,6 +75,13 @@ typedef struct AvmFunction AvmFunction;
         struct __VA_ARGS__;                                                    \
     }
 
+#define AVM_INTERFACE(T, ...)                                                  \
+    enum __VA_ARGS__;                                                          \
+    AVM_CLASS(T, object, {                                                     \
+        object Value;                                                          \
+        const AvmCallback* Methods;                                            \
+    })
+
 /**
  * @brief Concatenates two identifiers
  *
@@ -117,10 +124,17 @@ typedef struct AvmFunction AvmFunction;
  * @{
  */
 
+enum
+{
+    AvmEntryFinalize,
+    AvmEntryToString,
+};
+
 /**
  * @brief Allocates an object on the heap.
  *
- * The object is zero-initialized and with proper typeinfo.
+ * The object is zero-initialized, with proper typeinfo and a lazy mutex
+ * lock.
  *
  * This function is not overridable.
  *
@@ -201,34 +215,12 @@ AVMAPI void AvmObjectUnlock(object self) AVM_NONNULL(1);
          AVM_UNIQUE(__avmMC)++, AvmObjectUnlock(o))
 
 /**
- * @brief Compares two objects for equality.
- *
- * This function compares 2 objects for value equality, that is both objects
- * in-memory representation must be exactly the same for this function to return
- * true.
- *
- * Overriding this function may be especially desirable for non-trivial types.
- *
- * This function is overridable by the FnEntryEquals entry in the VFT.
- *
- * @pre self != NULL.
- * @pre other != NULL.
- * @pre AvmObjectGetType(self) == AvmObjectGetType(other).
- *
- * @param self The first object.
- * @param other The second object.
- *
- * @return true if the two objects are equal, otherwise false.
- */
-AVMAPI bool AvmObjectEquals(object self, object other) AVM_NONNULL(1, 2);
-
-/**
  * @brief Finalizes an object.
  *
  * This function calls AvmObjectSurpressFinalizer to make sure that the
  * finalizer is not called more than once.
  *
- * This function is overridable by the FnEntryFinalize entry in the VFT.
+ * This function is overridable by the AvmEntryFinalize entry in the VFT.
  *
  * Overriding should be done when an object needs to release non-memory
  * resources.
@@ -241,30 +233,12 @@ AVMAPI bool AvmObjectEquals(object self, object other) AVM_NONNULL(1, 2);
 AVMAPI void AvmObjectFinalize(object self) AVM_NONNULL(1);
 
 /**
- * @brief Clones an object, creating an exact copy.
- *
- * Creates an exact clone of an objects such as that AvmObjectEquals returns
- * true by copying the object to heap memory.
- *
- * This function should be overriden if an object contains pointers to other
- * objects as the default implementation performs a shallow copy.
- *
- * This function is overridable by the FnEntryClone entry in the VFT.
- *
- * @pre self != NULL.
- *
- * @param self The object instance.
- * @return The cloned object.
- */
-AVMAPI object AvmObjectClone(object self) AVM_NONNULL(1);
-
-/**
  * @brief Creates a string representation of an object.
  *
  * This function creates a simple object-identifying string. Overriding this
  * function to provide a more helpful representation may be useful.
  *
- * This function is overridable by the FnEntryToString entry in the VFT.
+ * This function is overridable by the AvmEntryToString entry in the VFT.
  *
  * @pre self != NULL.
  *
@@ -672,6 +646,52 @@ AVMAPI AvmUnsigned AvmUnsignedFrom(ulong value) AVM_PURE;
 AVMAPI AvmFloat AvmFloatFrom(double value) AVM_PURE;
 
 /// @}
+
+AVM_INTERFACE(AvmCloneable,
+              {
+                  AvmCloneableClone,
+              });
+
+AVM_INTERFACE(AvmEquatable,
+              {
+                  AvmEquatableEquals,
+              });
+
+/**
+ * @brief Clones an object, creating an exact copy.
+ *
+ * Creates an exact clone of an object by copying the object to heap memory.
+ *
+ * The object type implements the AvmCloneable interface. This interface should
+ * be re-implemented for a class if it contains pointers to other objects.
+ *
+ * @pre self != NULL.
+ *
+ * @param self The AvmCloneable instance.
+ * @return The cloned object.
+ */
+AVMAPI object AvmClone(const AvmCloneable* self) AVM_NONNULL(1);
+
+/**
+ * @brief Compares for equality.
+ *
+ * This function should compare 2 objects for value equality, that is both
+ * objects in-memory representation must be exactly the same for this function
+ * to return true.
+ *
+ * The object type implements the AvmCloneable interface. This interface should
+ *be re-implemented for non-trivial types.
+ *
+ * @pre self != NULL.
+ * @pre other != NULL.
+ * @pre AvmObjectGetType(self->Value) == AvmObjectGetType(other).
+ *
+ * @param self The first object.
+ * @param other The second object.
+ *
+ * @return true if the two objects are equal, otherwise false.
+ */
+AVMAPI bool AvmEquals(const AvmEquatable* self, object other) AVM_NONNULL(1, 2);
 
 /**
  * @brief Copies an object to a memory block.
