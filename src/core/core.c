@@ -1,5 +1,6 @@
 #include "avium/core.h"
 
+#include "avium/private/task-context.h"
 #include "avium/private/thread-context.h"
 
 #include "avium/string.h"
@@ -295,6 +296,9 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
     AvmRuntimeState.argv = argv + 1;
     AvmRuntimeState.version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
+
+    // Initialize task subsystem.
+    __AvmRuntimeTaskInit();
 
     AvmExitCode code = __AvmRuntimeThreadInit(__AvmThreadContextNew(
         NULL,

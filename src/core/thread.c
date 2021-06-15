@@ -3,6 +3,7 @@
 #include "avium/string.h"
 #include "avium/typeinfo.h"
 
+#include "avium/private/task-context.h"
 #include "avium/private/thread-context.h"
 
 #include <stdlib.h>
@@ -30,6 +31,9 @@ AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
     __AvmRuntimePushThrowContext(&c);
     if (setjmp(c._jumpBuffer) == 0)
     {
+        // Initialize task subsystem.
+        __AvmRuntimeThreadTaskInit();
+
         // Start executing the user code.
         __AvmThreadContextEnter(context);
     }

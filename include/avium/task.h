@@ -3,17 +3,23 @@
 
 #include "avium/core.h"
 
-typedef void (*AvmTaskEntryPoint)(object);
-
-#define AVM_TASK_STACK_SIZE 1048576 // 1 megabyte
+#define AVM_TASK_STACK_SIZE (4096 * 16)
 
 AVM_CLASS(AvmTask, object, {
     struct
     {
+        const AvmTask* previous;
         void* state;
+        void* stack;
     } _private;
 });
 
-AVMAPI AvmTask AvmTaskNew(AvmTaskEntryPoint entry, object value);
+typedef void (*AvmTaskEntryPoint)(object);
+
+AVMAPI const AvmTask* AvmTaskNew(AvmTaskEntryPoint entry, object value);
+AVMAPI const AvmTask* AvmTaskGetMain();
+AVMAPI const AvmTask* AvmTaskGetCurrent();
+AVMAPI void AvmTaskSwitchTo(const AvmTask* self);
+AVMAPI void AvmTaskSwitchBack();
 
 #endif // AVIUM_TASK_H
