@@ -48,7 +48,7 @@ static void AvmTaskForwarder(AvmTaskContext* context)
 
 void __AvmRuntimeTaskInit()
 {
-    AvmTaskMutex = AvmMutexNew(true);
+    AvmTaskMutex = AvmMutexNew(false);
 }
 
 void __AvmRuntimeThreadTaskInit()
