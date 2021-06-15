@@ -1,6 +1,6 @@
 #include "avium/task.h"
 
-static_assert(sizeof(AvmTask) == 48, "");
+static_assert(sizeof(AvmTask) == 56, "");
 
 void Task2(object value)
 {

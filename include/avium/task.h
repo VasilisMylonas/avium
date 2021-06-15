@@ -13,6 +13,7 @@ AVM_CLASS(AvmTask, object, {
         void* stack;
         str name;
         object retval;
+        uint id;
     } _private;
 });
 
@@ -30,6 +31,7 @@ AVMAPI AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
 AVMAPI const AvmTask* AvmTaskGetMain(void);
 AVMAPI const AvmTask* AvmTaskGetCurrent(void);
 AVMAPI str AvmTaskGetName(const AvmTask* self);
+AVMAPI uint AvmTaskGetID(const AvmTask* self);
 AVMAPI object AvmTaskSwitchTo(const AvmTask* self);
 AVMAPI void AvmTaskSwitchBack(void);
 AVMAPI void AvmTaskReturn(object value);
@@ -44,8 +46,5 @@ AVMAPI never AvmTaskExit(void);
 #define co_run  AvmTaskRun
 #define co_exit return
 #endif
-
-// TODO
-AVMAPI uint AvmTaskGetID(const AvmTask* self);
 
 #endif // AVIUM_TASK_H

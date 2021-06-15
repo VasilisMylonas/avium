@@ -1,9 +1,11 @@
 #include "avium/task.h"
 
+#include "avium/string.h"
 #include "avium/thread.h"
 #include "avium/typeinfo.h"
 
 #include "avium/private/task-context.h"
+
 #include <stdlib.h>
 
 #include <deps/gc.h>
@@ -19,15 +21,28 @@ static void AvmTaskFinalize(AvmTask* self)
     (void)coro_destroy(self->_private.state);
 }
 
+static AvmString AvmTaskToString(const AvmTask* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return AvmStringFormat(
+        AVM_TASK_FMT_STR, self->_private.name, self->_private.id);
+}
+
 AVM_CLASS_TYPE(AvmTask,
                object,
                {
                    [AvmEntryFinalize] = (AvmCallback)AvmTaskFinalize,
+                   [AvmEntryToString] = (AvmCallback)AvmTaskToString,
                });
 
 static thread_local AvmTask* AvmCurrentTask = NULL;
 static thread_local AvmTask AvmMainTask;
 static AvmMutex AvmTaskMutex;
+static uint AvmTaskID = 0;
 
 AVM_CLASS_TYPE(AvmTaskContext, object, AVM_VTABLE_DEFAULT);
 
@@ -59,7 +74,6 @@ void __AvmRuntimeThreadTaskInit()
     // According to documentation this is a special case.
     AvmMutexLock(&AvmTaskMutex);
     coro_create(context, NULL, NULL, NULL, 0);
-    AvmMutexUnlock(&AvmTaskMutex);
 
     AvmMainTask = (AvmTask){
         .__type = typeid(AvmTask),
@@ -68,8 +82,12 @@ void __AvmRuntimeThreadTaskInit()
                 .state = context,
                 .previous = NULL,
                 .stack = NULL,
+                .name = AVM_TASK_MAIN_NAME,
+                .retval = NULL,
+                .id = AvmTaskID,
             },
     };
+    AvmMutexUnlock(&AvmTaskMutex);
 
     AvmCurrentTask = &AvmMainTask;
 }
@@ -112,13 +130,18 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
                 tcontext,
                 stack,
                 AVM_TASK_STACK_SIZE);
-    AvmMutexUnlock(&AvmTaskMutex);
+
+    // Increment the id.
+    AvmTaskID++;
 
     AvmTask* task = AvmObjectNew(typeid(AvmTask));
+    task->_private.id = AvmTaskID;
     task->_private.stack = stack;
     task->_private.state = context;
     task->_private.previous = AvmCurrentTask;
     task->_private.retval = NULL;
+    task->_private.name = name;
+    AvmMutexUnlock(&AvmTaskMutex);
 
     return task;
 }
@@ -177,6 +200,16 @@ str AvmTaskGetName(const AvmTask* self)
     }
 
     return self->_private.name;
+}
+
+uint AvmTaskGetID(const AvmTask* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_private.id;
 }
 
 never AvmTaskExit(void)
