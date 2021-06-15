@@ -54,7 +54,7 @@ AvmTaskContext* __AvmTaskContextNew(AvmTaskEntryPoint entry, object value)
     return context;
 }
 
-// This is used to automatically call AvmTaskSwitchBack on return.
+// This is used to automatically call AvmTaskExit on return.
 static void AvmTaskForwarder(AvmTaskContext* context)
 {
     context->entry(context->value);
@@ -99,8 +99,15 @@ AvmTask* AvmTaskNew(AvmTaskEntryPoint entry, object value)
         assert(entry != NULL);
     }
 
-    return AvmTaskNewEx(
-        entry, value, AVM_TASK_STACK_SIZE, AVM_TASK_DEFAULT_NAME);
+    AvmTask* task =
+        AvmTaskNewEx(entry, value, AVM_TASK_STACK_SIZE, AVM_TASK_DEFAULT_NAME);
+
+    post
+    {
+        assert(task != NULL);
+    }
+
+    return task;
 }
 
 AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
@@ -113,6 +120,7 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
         assert(entry != NULL);
         assert(name != NULL);
         assert(stackSize > 4096);
+        assert(stackSize % 16 == 0);
     }
 
     // This will not be collected because it is stored in the AvmTask class.
@@ -143,6 +151,11 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
     task->_private.name = name;
     AvmMutexUnlock(&AvmTaskMutex);
 
+    post
+    {
+        assert(task != NULL);
+    }
+
     return task;
 }
 
@@ -153,7 +166,37 @@ const AvmTask* AvmTaskGetMain(void)
 
 const AvmTask* AvmTaskGetCurrent(void)
 {
+    post
+    {
+        assert(AvmCurrentTask != NULL);
+    }
+
     return AvmCurrentTask;
+}
+
+str AvmTaskGetName(const AvmTask* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    post
+    {
+        assert(self->_private.name != NULL);
+    }
+
+    return self->_private.name;
+}
+
+uint AvmTaskGetID(const AvmTask* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    return self->_private.id;
 }
 
 object AvmTaskSwitchTo(const AvmTask* self)
@@ -175,12 +218,12 @@ object AvmTaskSwitchTo(const AvmTask* self)
     return o;
 }
 
-void AvmTaskReturn(object value)
+static void AvmTaskReturnImpl(object value)
 {
-    pre
+
+    if (AvmCurrentTask->_private.previous == NULL)
     {
-        assert(value != NULL);
-        assert(value != AVM_TASK_EXITED);
+        throw(AvmErrorNew("Cannot return from the main task."));
     }
 
     AvmCurrentTask->_private.retval = value;
@@ -189,52 +232,40 @@ void AvmTaskReturn(object value)
 
 void AvmTaskSwitchBack(void)
 {
-    AvmTaskSwitchTo(AvmCurrentTask->_private.previous);
+    AvmTaskReturnImpl(NULL);
 }
 
-str AvmTaskGetName(const AvmTask* self)
+void AvmTaskReturn(object value)
 {
     pre
     {
-        assert(self != NULL);
+        assert(value != NULL);
+        assert(value != AVM_TASK_EXITED);
     }
 
-    return self->_private.name;
-}
-
-uint AvmTaskGetID(const AvmTask* self)
-{
-    pre
-    {
-        assert(self != NULL);
-    }
-
-    return self->_private.id;
+    AvmTaskReturnImpl(value);
 }
 
 never AvmTaskExit(void)
 {
-    AvmCurrentTask->_private.retval = AVM_TASK_EXITED;
-    AvmTaskSwitchTo(AvmCurrentTask->_private.previous);
+    AvmTaskReturnImpl(AVM_TASK_EXITED);
 
     // Impossible.
     abort();
 }
 
-object AvmTaskRun(AvmTaskEntryPoint entry, object value)
+object AvmTaskRun(const AvmTask* self)
 {
     pre
     {
-        assert(entry != NULL);
+        assert(self != NULL);
     }
-
-    AvmTask* t = AvmTaskNew(entry, value);
 
     object o = NULL;
 
     while (true)
     {
-        object temp = AvmTaskSwitchTo(t);
+        object temp = AvmTaskSwitchTo(self);
         if (temp == AVM_TASK_EXITED)
         {
             break;

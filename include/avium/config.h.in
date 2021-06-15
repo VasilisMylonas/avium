@@ -41,11 +41,6 @@
 #endif
 #endif
 
-#if defined AVM_EXPOSE_HIDDEN_API && defined AVM_BUILDING
-#undef AVMHIDDEN
-#define AVMHIDDEN AVMAPI
-#endif
-
 #ifdef AVM_MSVC
 #define AVM_NONNULL(...)
 #define AVM_PURE
@@ -85,13 +80,6 @@
 #warning "Avium: C++ is not supported, you may encounter errors."
 #endif
 
-#define AVM_MAX_STRING_SIZE          ((uint)-1)
-#define AVM_STRING_GROWTH_FACTOR     2
-#define AVM_STRING_DEFAULT_CAPACITY  8
-#define AVM_ARRAY_LIST_GROWTH_FACTOR 2
-
-#define AVM_LONG_MIN_STR "-9223372036854775808"
-
 #ifdef AVM_HAVE_UNICODE
 #define AVM_FMT_UNICODE 'U'
 #endif
@@ -128,18 +116,23 @@
 #define _AVM_VTABLE_BLOCK_NAME(T)      _VTable_##T
 #define _AVM_PARAMS_BLOCK_NAME(T)      _Params_##T
 
-#define AVM_TASK_DEFAULT_NAME   "<anonymous>"
-#define AVM_TASK_MAIN_NAME      "main"
-#define AVM_THREAD_DEFAULT_NAME "<anonymous>"
-#define AVM_THREAD_MAIN_NAME    "main"
-
-#define AVM_OBJECT_FMT_STR         "%s [%x]"
-#define AVM_DETAILED_ERROR_FMT_STR "%s\n\nBacktrace:\n%v\n"
-#define AVM_LOCATION_FMT_STR       "%s:%u"
-#define AVM_VERSION_FMT_STR        "%u.%u.%u"
-#define AVM_THREAD_FMT_STR         "thread %s [%x]"
-#define AVM_TASK_FMT_STR           "task %s with id %u"
-#define AVM_CAST_FAIL_FMT_STR      "Tried to cast object [%x] of type %T to type %s."
+#define AVM_MAX_STRING_SIZE          ((uint)-1)
+#define AVM_STRING_GROWTH_FACTOR     2
+#define AVM_STRING_DEFAULT_CAPACITY  8
+#define AVM_ARRAY_LIST_GROWTH_FACTOR 2
+#define AVM_LONG_MIN_STR             "-9223372036854775808"
+#define AVM_TASK_STACK_SIZE          (4096 * 16)
+#define AVM_TASK_DEFAULT_NAME        "<anonymous>"
+#define AVM_TASK_MAIN_NAME           "main"
+#define AVM_THREAD_DEFAULT_NAME      "<anonymous>"
+#define AVM_THREAD_MAIN_NAME         "main"
+#define AVM_OBJECT_FMT_STR           "%s [%x]"
+#define AVM_DETAILED_ERROR_FMT_STR   "%s\n\nBacktrace:\n%v\n"
+#define AVM_LOCATION_FMT_STR         "%s:%u"
+#define AVM_VERSION_FMT_STR          "%u.%u.%u"
+#define AVM_THREAD_FMT_STR           "thread %s [%x]"
+#define AVM_TASK_FMT_STR             "task %s with id %u"
+#define AVM_CAST_FAIL_FMT_STR        "Tried to cast object [%x] of type %T to type %s."
 #define AVM_UNHANDLED_THROW_FMT_STR                                            \
     "Uncaught thrown object of type %T: %v\nThrown from %v while on thread "   \
     "[%x].\n"
