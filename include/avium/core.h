@@ -65,7 +65,7 @@ typedef struct AvmFunction AvmFunction;
 
 #define AVM_CLASS(T, B, ...)                                                   \
     typedef struct T T;                                                        \
-    extern const AvmClass _AVM_METADATA_BLOCK_NAME(T);                         \
+    AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(T);                         \
     struct T                                                                   \
     {                                                                          \
         union {                                                                \

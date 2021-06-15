@@ -29,15 +29,13 @@
 
 #ifdef AVM_MSVC
 #ifdef AVM_BUILDING
-#define AVMAPI    extern __declspec(dllexport)
-#define AVMHIDDEN extern
+#define AVMAPI extern __declspec(dllexport)
 #else
 #define AVMAPI extern __declspec(dllimport)
 #endif
 #else
 #ifdef AVM_BUILDING
-#define AVMAPI    extern __attribute__((visibility("default")))
-#define AVMHIDDEN extern __attribute__((visibility("hidden")))
+#define AVMAPI extern __attribute__((visibility("default")))
 #else
 #define AVMAPI extern
 #endif

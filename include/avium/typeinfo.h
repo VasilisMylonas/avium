@@ -26,16 +26,31 @@
 
 #include "avium/core.h"
 
-#define baseof(x) (&(x)->__base)
+/// Returns a pointer to the base of an object.
+#define baseof(o) (&(o)->__base)
+
+/// Returns a pointer to the type information for the specified type.
 #define typeid(T) (&_AVM_METADATA_BLOCK_NAME(T))
-#define cast(T, x) ((T*)(__AvmRuntimeCast(x, typeid(T))))
+
+/**
+ * @brief Performs a safe runtime cast.
+ *
+ * If the object cannot be cast to the specified type then either NULL is
+ * returned or an exception is thrown depending on the AVM_THROW_ON_CAST_FAIL
+ * option.
+ *
+ * @param o The object to cast.
+ * @param T The type to cast to.
+ * @return The returned T*.
+ */
+#define cast(T, o) ((T*)(__AvmRuntimeCast(o, typeid(T))))
 
 // clang-format off
 
 /// Determines whether an object is an instance of another type.
-#define instanceof(T, x)                 \
-    (typeid(T) == AvmObjectGetType(x) || \
-     AvmClassInheritsFrom(AvmObjectGetType(x), typeid(T)))
+#define instanceof(T, o)                 \
+    (typeid(T) == AvmObjectGetType(o) || \
+     AvmClassInheritsFrom(AvmObjectGetType(o), typeid(T)))
 
 // clang-format on
 
