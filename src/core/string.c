@@ -117,7 +117,7 @@ void AvmStringEnsureCapacity(AvmString* self, uint capacity)
         }
 
         char* newMem = AvmAlloc(self->_capacity, false);
-        memcpy(self->_buffer, newMem, self->_length);
+        memcpy(newMem, self->_buffer, self->_length);
         self->_buffer = newMem;
     }
 
