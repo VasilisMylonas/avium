@@ -4,3 +4,6 @@
 [submodule "deps/DarwinPthreadBarrier"]
 	path = deps/DarwinPthreadBarrier
 	url = https://github.com/ademakov/DarwinPthreadBarrier
+[submodule "deps/libcoro"]
+	path = deps/libcoro
+	url = https://github.com/semistrict/libcoro

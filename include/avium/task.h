@@ -15,7 +15,5 @@ AVM_CLASS(AvmTask, object, {
 });
 
 AVMAPI AvmTask AvmTaskNew(AvmTaskEntryPoint entry, object value);
-AVMAPI never AvmTaskExit(AvmExitCode code);
-AVMAPI void AvmTaskYield();
 
 #endif // AVIUM_TASK_H

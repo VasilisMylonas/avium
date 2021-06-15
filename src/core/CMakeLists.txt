@@ -17,7 +17,7 @@ add_library(avm-core STATIC
     ${AVM_PROCESS_BACKEND}
 )
 
-target_link_libraries(avm-core PRIVATE gc Threads::Threads)
+target_link_libraries(avm-core PRIVATE gc Threads::Threads coro)
 
 if(MSVC)
     target_compile_options(avm-core PRIVATE ${AVM_MSVC_COMPILE_OPTIONS})
