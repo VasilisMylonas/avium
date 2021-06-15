@@ -93,7 +93,14 @@ void* AvmObjectVisit(object self, const AvmMember* member)
         assert(member != NULL);
     }
 
-    return ((byte*)self) + baseof(member)->_private.offset;
+    void* ret = ((byte*)self) + baseof(member)->_private.offset;
+
+    post
+    {
+        assert(ret != NULL);
+    }
+
+    return ret;
 }
 
 void AvmObjectLock(object self)
@@ -229,17 +236,38 @@ AVM_CLASS_TYPE(AvmArgs, object, AVM_VTABLE_DEFAULT);
 
 bool AvmArgsNext(AvmArgs* self)
 {
-    if (self->_private.position == self->Length)
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    self->_private.position++;
+
+    if (self->_private.position == self->_private.length)
     {
         // Reset
         self->_private.position = 0;
-        self->Current = self->_private.argv[0];
         return false;
     }
 
-    self->Current = self->_private.argv[self->_private.position];
-    self->_private.position++;
     return true;
+}
+
+str AvmArgsGetCurrent(const AvmArgs* self)
+{
+    pre
+    {
+        assert(self != NULL);
+    }
+
+    str ret = self->_private.argv[self->_private.position];
+
+    post
+    {
+        assert(ret != NULL);
+    }
+
+    return ret;
 }
 
 //
@@ -280,7 +308,14 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 
 str AvmRuntimeGetProgramName(void)
 {
-    return AvmRuntimeState.argv[-1];
+    str ret = AvmRuntimeState.argv[-1];
+
+    post
+    {
+        assert(ret != NULL);
+    }
+
+    return ret;
 }
 
 AvmVersion AvmRuntimeGetVersion(void)
@@ -292,9 +327,9 @@ AvmArgs AvmRuntimeGetArgs(void)
 {
     return (AvmArgs){
         .__type = typeid(AvmArgs),
-        .Length = AvmRuntimeState.argc,
         ._private =
             {
+                .length = AvmRuntimeState.argc,
                 .argv = AvmRuntimeState.argv,
                 .position = 0,
             },
@@ -389,17 +424,13 @@ void* AvmAlloc(uint size, bool containsPointers)
     {
         GC_abort_on_oom();
     }
-    return mem;
-}
 
-void* AvmRealloc(void* memory, uint size)
-{
-    pre
+    post
     {
-        assert(size != 0);
+        assert(mem != NULL);
     }
 
-    return GC_realloc(memory, size);
+    return mem;
 }
 
 //

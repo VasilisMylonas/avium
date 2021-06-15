@@ -13,5 +13,8 @@ void AvmProcessExit(AvmExitCode code)
 
 void AvmProcessFastExit(AvmExitCode code)
 {
-    quick_exit(code);
+    (void)code;
+    // TODO: macos does not have quick_exit?
+    abort();
+    // quick_exit(code);
 }

@@ -136,8 +136,6 @@ enum
  * The object is zero-initialized, with proper typeinfo and a lazy mutex
  * lock.
  *
- * This function is not overridable.
- *
  * @pre type != NULL.
  * @post return != NULL.
  *
@@ -164,8 +162,6 @@ AVMAPI object AvmObjectNew(const AvmClass* type) AVM_NONNULL(1);
  * To handle the returning AvmClass instance, you may need to include
  * typeinfo.h
  *
- * This function is not overridable.
- *
  * @pre self != NULL.
  * @post return != NULL.
  *
@@ -180,8 +176,6 @@ AVMAPI const AvmClass* AvmObjectGetType(object self) AVM_NONNULL(1) AVM_PURE;
  * When called makes the runtime ignore finalization of the object. This may be
  * useful if writing functions that deterministically finalize an object.
  *
- * This function is not overridable.
- *
  * @pre self != NULL.
  * @pre AvmRuntimeIsHeapObject(self).
  *
@@ -194,10 +188,9 @@ AVMAPI void AvmObjectSurpressFinalizer(object self) AVM_NONNULL(1);
  *
  * This function is generally unsafe, error-prone and should be used carefully.
  *
- * This function is not overridable.
- *
  * @pre self != NULL.
  * @pre member != NULL.
+ * @post return != NULL.
  *
  * @param self The object instance.
  * @param member The member to visit.
@@ -206,9 +199,33 @@ AVMAPI void AvmObjectSurpressFinalizer(object self) AVM_NONNULL(1);
 AVMAPI void* AvmObjectVisit(object self, const AvmMember* member)
     AVM_NONNULL(1, 2) AVM_PURE;
 
+/**
+ * @brief Acquires the lock on an object.
+ *
+ * @pre self != NULL.
+ * @pre AvmRuntimeIsHeapObject(self).
+ *
+ * @param self The object instance.
+ */
 AVMAPI void AvmObjectLock(object self) AVM_NONNULL(1);
+
+/**
+ * @brief Releases the lock on an object.
+ *
+ * @pre self != NULL.
+ * @pre AvmRuntimeIsHeapObject(self).
+ *
+ * @param self The object instance.
+ */
 AVMAPI void AvmObjectUnlock(object self) AVM_NONNULL(1);
 
+/**
+ * @brief Creates a lock-block.
+ *
+ * The object is locked while inside this block and unlocked after it ends.
+ *
+ * @param o The object to lock.
+ */
 #define lock(o)                                                                \
     AvmObjectLock(o);                                                          \
     for (uint AVM_UNIQUE(__avmMC) = 0; AVM_UNIQUE(__avmMC) < 1;                \
@@ -300,11 +317,9 @@ AVMAPI AvmVersion AvmVersionFrom(ushort major,
 
 /// An iterator over the program arguments.
 AVM_CLASS(AvmArgs, object, {
-    const uint Length; ///< The total number of arguments.
-    str Current;       ///< The current argument.
-
     struct
     {
+        uint length;
         uint position;
         str* argv;
     } _private;
@@ -321,9 +336,9 @@ AVM_CLASS(AvmArgs, object, {
  * @code
  * AvmArgs args = AvmRuntimeGetArgs();
  *
- * while (AvmArgsNext(&args)) {
- *     AvmPrintf("%s\n", args.Current);
- * }
+ * do {
+ *     AvmPrintf("%s\n", AvmArgsGetCurrent(&args));
+ * } while (AvmArgsNext(&args));
  * @endcode
  *
  * @pre self != NULL.
@@ -332,6 +347,16 @@ AVM_CLASS(AvmArgs, object, {
  * @return true if the iterator was advanced, false if it was reset.
  */
 AVMAPI bool AvmArgsNext(AvmArgs* self) AVM_NONNULL(1);
+
+/**
+ * @brief Returns the current argument in an argument iterator.
+ *
+ * @pre self != NULL.
+ * @post return != NULL.
+ *
+ * @param self The AvmArgs instance.
+ */
+AVMAPI str AvmArgsGetCurrent(const AvmArgs* self) AVM_NONNULL(1) AVM_PURE;
 
 /// @}
 
@@ -375,6 +400,8 @@ AVMAPI AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 
 /**
  * @brief Returns the name of the currently running program.
+ *
+ * @post return != NULL.
  *
  * @return The name of the currently running program.
  */
@@ -442,22 +469,13 @@ AVMAPI never AvmRuntimeThrow(object value, AvmLocation location) AVM_NONNULL(1);
  * @brief Allocates heap memory.
  *
  * @pre size != 0.
+ * @post return != NULL.
  *
  * @param size The size of the memory block in bytes.
+ * @param containsPointers Whether the memory block will contain pointers.
  * @return The allocated memory.
  */
 AVMAPI void* AvmAlloc(uint size, bool containsPointers);
-
-/**
- * @brief Reallocates a heap memory block.
- *
- * @pre size != 0.
- *
- * @param memory The memory block to reallocate.
- * @param size The new size of the memory block in bytes.
- * @return The reallocated memory.
- */
-AVMAPI void* AvmRealloc(void* memory, uint size) AVM_NONNULL(1);
 
 /// @}
 

@@ -116,7 +116,9 @@ void AvmStringEnsureCapacity(AvmString* self, uint capacity)
             self->_capacity += capacity;
         }
 
-        self->_buffer = AvmRealloc(self->_buffer, self->_capacity);
+        char* newMem = AvmAlloc(self->_capacity, false);
+        memcpy(self->_buffer, newMem, self->_length);
+        self->_buffer = newMem;
     }
 
     post
