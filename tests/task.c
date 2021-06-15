@@ -1,12 +1,14 @@
 #include "avium/task.h"
 
+static_assert(sizeof(AvmTask) == 48, "");
+
 void Task2(object value)
 {
     (void)value;
 
     AvmPrintf("4 ");
 
-    AvmTaskSwitchBack();
+    AvmTaskReturn("Hello");
 
     AvmPrintf("6 ");
 
@@ -21,27 +23,27 @@ void Task1(object value)
 
     AvmTaskSwitchBack();
 
-    const AvmTask* t = AvmTaskNew(Task2, NULL);
-    AvmTaskSwitchTo(t);
+    AvmTask* t = AvmTaskNew(Task2, NULL);
+    assert(AvmTaskSwitchTo(t) != NULL);
 
     AvmPrintf("5 ");
 
-    AvmTaskSwitchTo(t);
+    assert(AvmTaskSwitchTo(t) == NULL);
 
-    AvmTaskSwitchBack();
+    AvmTaskReturn("Example");
 }
 
 void Main()
 {
-    const AvmTask* t = AvmTaskNew(Task1, NULL);
+    AvmTask* t = AvmTaskNew(Task1, NULL);
 
     AvmPrintf("1 ");
 
-    AvmTaskSwitchTo(t);
+    assert(AvmTaskSwitchTo(t) == NULL);
 
     AvmPrintf("3 ");
 
-    AvmTaskSwitchTo(t);
+    assert(AvmTaskSwitchTo(t) != NULL);
 
     AvmPrintf("7\n");
 }

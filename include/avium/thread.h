@@ -41,8 +41,8 @@ AVMAPI void AvmBarrierWait(const AvmBarrier* self);
 AVM_CLASS(AvmThread, object, {
     AvmThrowContext* _context;
     void* _state;
-    AvmMutex _lock;
     str _name;
+    AvmMutex _lock;
     bool _isAlive;
     bool _isDetached;
     uint _stackSize;

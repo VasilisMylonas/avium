@@ -129,6 +129,7 @@
 #define _AVM_PARAMS_BLOCK_NAME(T)      _Params_##T
 
 #define AVM_THREAD_DEFAULT_NAME "<anonymous>"
+#define AVM_TASK_DEFAULT_NAME   "<anonymous task>"
 #define AVM_THREAD_MAIN_NAME    "main"
 
 #define AVM_OBJECT_FMT_STR         "%s [%x]"
