@@ -3,7 +3,7 @@
 	url = https://github.com/ivmai/bdwgc
 [submodule "deps/DarwinPthreadBarrier"]
 	path = deps/DarwinPthreadBarrier
-	url = https://github.com/ademakov/DarwinPthreadBarrier
+	url = https://github.com/VasilisMylonas/DarwinPthreadBarrier
 [submodule "deps/libcoro"]
 	path = deps/libcoro
-	url = https://github.com/semistrict/libcoro
+	url = https://github.com/VasilisMylonas/libcoro
