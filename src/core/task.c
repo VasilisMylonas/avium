@@ -11,6 +11,11 @@
 
 static void AvmTaskFinalize(AvmTask* self)
 {
+    pre
+    {
+        assert(self != NULL);
+    }
+
     (void)coro_destroy(self->_private.state);
 }
 
@@ -43,7 +48,7 @@ static void AvmTaskForwarder(AvmTaskContext* context)
 
 void __AvmRuntimeTaskInit()
 {
-    AvmTaskMutex = AvmMutexNew(false);
+    AvmTaskMutex = AvmMutexNew(true);
 }
 
 void __AvmRuntimeThreadTaskInit()
@@ -52,8 +57,9 @@ void __AvmRuntimeThreadTaskInit()
     coro_context* context = AvmAlloc(sizeof(coro_context), false);
 
     // According to documentation this is a special case.
-    // Also TODO: Not reentrant.
+    AvmMutexLock(&AvmTaskMutex);
     coro_create(context, NULL, NULL, NULL, 0);
+    AvmMutexUnlock(&AvmTaskMutex);
 
     AvmMainTask = (AvmTask){
         .__type = typeid(AvmTask),
@@ -83,13 +89,14 @@ const AvmTask* AvmTaskNew(AvmTaskEntryPoint entry, object value)
 
     AvmTaskContext* tcontext = __AvmTaskContextNew(entry, value);
 
+    AvmMutexLock(&AvmTaskMutex);
     // TODO: Maybe decrease size and add overflow protection.
-    // Also TODO: Not reentrant.
     coro_create(context,
                 (coro_func)AvmTaskForwarder,
                 tcontext,
                 stack,
                 AVM_TASK_STACK_SIZE);
+    AvmMutexUnlock(&AvmTaskMutex);
 
     AvmTask* task = AvmObjectNew(typeid(AvmTask));
     task->_private.stack = stack;
