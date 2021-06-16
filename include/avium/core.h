@@ -69,6 +69,13 @@ typedef struct AvmInterfaceObject
  * @{
  */
 
+/**
+ * @brief Declares an Avium class type.
+ *
+ * @param T The class name.
+ * @param B The base class.
+ * @param ... Brace enclosed class members.
+ */
 #define AVM_CLASS(T, B, ...)                                                   \
     typedef struct T T;                                                        \
     AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(T);                         \
@@ -81,6 +88,12 @@ typedef struct AvmInterfaceObject
         struct __VA_ARGS__;                                                    \
     }
 
+/**
+ * @brief Declares an Avium interface type.
+ *
+ * @param T The interface name.
+ * @param ... Brace enclosed enum constants representing vtable entries.
+ */
 #define AVM_INTERFACE(T, ...)                                                  \
     enum __VA_ARGS__;                                                          \
     AVM_CLASS(T, AvmInterfaceObject, {                                         \

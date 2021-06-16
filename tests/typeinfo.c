@@ -29,10 +29,7 @@ void Main()
     AvmPoint p1 = AvmPointNew(5, 2.64);
     AvmPoint p2 = AvmPointNew(5, 2.64);
 
-    AvmEquatable e = AvmQueryInterface(&p1, AvmEquatable);
+    AvmEquatable* e = cast(AvmEquatable, &p1);
 
-    const AvmInterface* c =
-        AvmClassGetInterface(AvmObjectGetType(&p1), "AvmEquatable");
-
-    AvmPrintf("%t\n", AvmEquals(&e, &p2));
+    AvmPrintf("%t\n", AvmEquals(e, &p2));
 }

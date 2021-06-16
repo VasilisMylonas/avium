@@ -579,6 +579,25 @@ AVM_CLASS_TYPE(AvmInterfaceObject, object, AVM_VTABLE_DEFAULT);
 // Misc.
 //
 
+static object AvmRuntimeInterfaceCast(object value, const AvmClass* type)
+{
+    const AvmClass* const valueType = AvmObjectGetType(value);
+    const str interfaceName = AvmTypeGetName(baseof(type));
+
+    const AvmInterface* interface =
+        AvmClassGetInterfaceImpl(valueType, interfaceName);
+
+    if (interface == NULL)
+    {
+        return NULL;
+    }
+
+    object o = AvmObjectNew(type);
+    ((object*)o)[1] = value;                            // Value.
+    ((object*)o)[2] = (object)interface->_private.vPtr; // Methods.
+    return o;
+}
+
 object __AvmRuntimeCast(object value, const AvmClass* type)
 {
     pre
@@ -587,11 +606,22 @@ object __AvmRuntimeCast(object value, const AvmClass* type)
         assert(type != NULL);
     }
 
-    const AvmClass* objType = AvmObjectGetType(value);
-
-    if (type == objType || AvmClassInheritsFrom(objType, type))
+    // Interface casts are different.
+    if (AvmClassInheritsFrom(type, typeid(AvmInterfaceObject)))
     {
-        return value;
+        object o = AvmRuntimeInterfaceCast(value, type);
+        if (o != NULL)
+        {
+            return o;
+        }
+    }
+    else
+    {
+        const AvmClass* valueType = AvmObjectGetType(value);
+        if (type == valueType || AvmClassInheritsFrom(valueType, type))
+        {
+            return value;
+        }
     }
 
 #ifdef AVM_THROW_ON_CAST_FAIL

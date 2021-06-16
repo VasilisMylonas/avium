@@ -137,7 +137,7 @@ AVMAPI uint AvmTypeGetSize(const AvmType* self) AVM_NONNULL(1);
  * @{
  */
 
-/// Retrieves the interface I from an object.
+/// TODO: Obsolete. Use only if you want the interface object by value.
 #define AvmQueryInterface(self, I)                                             \
     (I)                                                                        \
     {                                                                          \
