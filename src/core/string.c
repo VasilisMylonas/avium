@@ -494,7 +494,7 @@ uint AvmStringGetLength(const AvmString* self)
     return self->_length;
 }
 
-weakptr(char) AvmStringGetBuffer(const AvmString* self)
+char* AvmStringGetBuffer(const AvmString* self)
 {
     pre
     {

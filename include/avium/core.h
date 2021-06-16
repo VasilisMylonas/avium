@@ -46,7 +46,6 @@ typedef unsigned char byte;           ///< Unsigned 8-bit integer type.
 typedef void* object;                 ///< An unknown object type.
 typedef void (*AvmCallback)(void);    ///< An unknown function type.
 typedef const char* str;              ///< Primitive read-only string.
-#define weakptr(T) T*                 ///< A weak pointer to a type T.
 typedef struct AvmType AvmType;
 typedef struct AvmEnum AvmEnum;
 typedef struct AvmString AvmString;
