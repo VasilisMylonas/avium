@@ -855,6 +855,8 @@ str AvmRuntimeGetResource(AvmResourceKey key)
         return "Invalid stack size.";
     case AvmMissingInterfaceErrorMsg:
         return "The requested interface was missing.";
+    case AvmTaskReturnErrorMsg:
+        return "Cannot return from the main task.";
     default:
         return "";
     }

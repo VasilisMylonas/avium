@@ -42,6 +42,7 @@ AVM_CLASS(AvmTask, object, {
 /// If this is returned, it means the task completed.
 #define AVM_TASK_EXITED ((void*)1)
 
+/// The entry point function to AvmTaskNew and AvmTaskNewEx.
 typedef void (*AvmTaskEntryPoint)(object);
 
 /**
@@ -167,6 +168,8 @@ AVMAPI void AvmTaskReturn(object value);
  * AvmTaskExit.
  *
  * @return This function never returns.
+ *
+ * @exception AvmDetailedError Tried to switch back from the main task.
  */
 AVMAPI never AvmTaskExit(void);
 

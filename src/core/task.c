@@ -11,6 +11,64 @@
 #include <deps/gc.h>
 #include <deps/task.h>
 
+#define _ AvmRuntimeGetResource
+
+static thread_local AvmTask* AvmCurrentTask = NULL;
+static thread_local AvmTask AvmMainTask;
+static AvmMutex AvmTaskMutex;
+static uint AvmTaskID = 0;
+
+//
+// TaskContext implementation.
+//
+
+AVM_CLASS_TYPE(AvmTaskContext, object, AVM_VTABLE_DEFAULT);
+
+AvmTaskContext* __AvmTaskContextNew(AvmTaskEntryPoint entry, object value)
+{
+    AvmTaskContext* context = AvmObjectNew(typeid(AvmTaskContext));
+    context->entry = entry;
+    context->value = value;
+    return context;
+}
+
+void __AvmRuntimeTaskInit()
+{
+    AvmTaskMutex = AvmMutexNew(false);
+}
+
+void __AvmRuntimeThreadTaskInit()
+{
+    // same as AvmTaskNew.
+    coro_context* context = AvmAlloc(sizeof(coro_context), false);
+
+    AvmMutexLock(&AvmTaskMutex);
+
+    // According to documentation this is a special case.
+    coro_create(context, NULL, NULL, NULL, 0);
+
+    AvmMainTask = (AvmTask){
+        .__type = typeid(AvmTask),
+        ._private =
+            {
+                .state = context,
+                .previous = NULL,
+                .stack = NULL,
+                .name = AVM_TASK_MAIN_NAME,
+                .retval = NULL,
+                .id = AvmTaskID,
+            },
+    };
+
+    AvmMutexUnlock(&AvmTaskMutex);
+
+    AvmCurrentTask = &AvmMainTask;
+}
+
+//
+// AvmTask implementation.
+//
+
 static void AvmTaskFinalize(AvmTask* self)
 {
     pre
@@ -39,57 +97,11 @@ AVM_CLASS_TYPE(AvmTask,
                    [AvmEntryToString] = (AvmCallback)AvmTaskToString,
                });
 
-static thread_local AvmTask* AvmCurrentTask = NULL;
-static thread_local AvmTask AvmMainTask;
-static AvmMutex AvmTaskMutex;
-static uint AvmTaskID = 0;
-
-AVM_CLASS_TYPE(AvmTaskContext, object, AVM_VTABLE_DEFAULT);
-
-AvmTaskContext* __AvmTaskContextNew(AvmTaskEntryPoint entry, object value)
-{
-    AvmTaskContext* context = AvmObjectNew(typeid(AvmTaskContext));
-    context->entry = entry;
-    context->value = value;
-    return context;
-}
-
 // This is used to automatically call AvmTaskExit on return.
 static void AvmTaskForwarder(AvmTaskContext* context)
 {
     context->entry(context->value);
     AvmTaskExit();
-}
-
-void __AvmRuntimeTaskInit()
-{
-    AvmTaskMutex = AvmMutexNew(false);
-}
-
-void __AvmRuntimeThreadTaskInit()
-{
-    // same as AvmTaskNew.
-    coro_context* context = AvmAlloc(sizeof(coro_context), false);
-
-    // According to documentation this is a special case.
-    AvmMutexLock(&AvmTaskMutex);
-    coro_create(context, NULL, NULL, NULL, 0);
-
-    AvmMainTask = (AvmTask){
-        .__type = typeid(AvmTask),
-        ._private =
-            {
-                .state = context,
-                .previous = NULL,
-                .stack = NULL,
-                .name = AVM_TASK_MAIN_NAME,
-                .retval = NULL,
-                .id = AvmTaskID,
-            },
-    };
-    AvmMutexUnlock(&AvmTaskMutex);
-
-    AvmCurrentTask = &AvmMainTask;
 }
 
 AvmTask* AvmTaskNew(AvmTaskEntryPoint entry, object value)
@@ -119,8 +131,8 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
     {
         assert(entry != NULL);
         assert(name != NULL);
-        assert(stackSize > 4096);
-        assert(stackSize % 16 == 0);
+        assert(stackSize > 4096);    // Ensure an acceptable size.
+        assert(stackSize % 16 == 0); // Ensure alignment.
     }
 
     // This will not be collected because it is stored in the AvmTask class.
@@ -132,6 +144,7 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
     AvmTaskContext* tcontext = __AvmTaskContextNew(entry, value);
 
     AvmMutexLock(&AvmTaskMutex);
+
     // TODO: Maybe decrease size and add overflow protection.
     coro_create(context,
                 (coro_func)AvmTaskForwarder,
@@ -142,6 +155,7 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
     // Increment the id.
     AvmTaskID++;
 
+    // Object init.
     AvmTask* task = AvmObjectNew(typeid(AvmTask));
     task->_private.id = AvmTaskID;
     task->_private.stack = stack;
@@ -149,6 +163,7 @@ AvmTask* AvmTaskNewEx(AvmTaskEntryPoint entry,
     task->_private.previous = AvmCurrentTask;
     task->_private.retval = NULL;
     task->_private.name = name;
+
     AvmMutexUnlock(&AvmTaskMutex);
 
     post
@@ -206,10 +221,9 @@ object AvmTaskSwitchTo(const AvmTask* self)
         assert(self != NULL);
     }
 
+    // Swap the current task and transfer control.
     const AvmTask* current = AvmCurrentTask;
-
     AvmCurrentTask = (AvmTask*)self;
-
     coro_transfer(current->_private.state, self->_private.state);
 
     // Return the return value and clear it from the task.
@@ -220,10 +234,9 @@ object AvmTaskSwitchTo(const AvmTask* self)
 
 static void AvmTaskReturnImpl(object value)
 {
-
     if (AvmCurrentTask->_private.previous == NULL)
     {
-        throw(AvmErrorNew("Cannot return from the main task."));
+        throw(AvmErrorNew(_(AvmTaskReturnErrorMsg)));
     }
 
     AvmCurrentTask->_private.retval = value;
@@ -263,6 +276,8 @@ object AvmTaskRun(const AvmTask* self)
 
     object o = NULL;
 
+    // Loop until the task returns AVM_TASK_EXITED and save the previously
+    // returned value.
     while (true)
     {
         object temp = AvmTaskSwitchTo(self);
