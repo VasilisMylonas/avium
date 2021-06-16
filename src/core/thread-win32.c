@@ -2,13 +2,12 @@
 
 #include "avium/typeinfo.h"
 
+#include "avium/private/resource.h"
 #include "avium/private/thread-context.h"
 
 #include <deps/gc.h>
 #include <stdlib.h>
 #include <windows.h>
-
-#define _ AvmRuntimeGetResource
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {

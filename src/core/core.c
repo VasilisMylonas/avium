@@ -1,5 +1,6 @@
 #include "avium/core.h"
 
+#include "avium/private/resource.h"
 #include "avium/private/thread-context.h"
 
 #include "avium/string.h"
@@ -15,8 +16,6 @@
 #ifdef AVM_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
-
-#define _ AvmRuntimeGetResource
 
 static struct
 {
@@ -823,7 +822,7 @@ void AvmCopy(object o, size_t size, byte* destination)
     memcpy(destination, o, objectSize);
 }
 
-str AvmRuntimeGetResource(AvmResourceKey key)
+str __AvmRuntimeGetResource(AvmResourceKey key)
 {
     switch (key)
     {

@@ -2,6 +2,7 @@
 
 #include "avium/typeinfo.h"
 
+#include "avium/private/resource.h"
 #include "avium/private/thread-context.h"
 
 #include <pthread.h>
@@ -12,8 +13,6 @@
     (!defined _POSIX_BARRIERS || _POSIX_BARRIERS <= 0)
 #include <deps/pthread_barrier.h>
 #endif
-
-#define _ AvmRuntimeGetResource
 
 void __AvmThreadContextSetThread(AvmThreadContext* self)
 {

@@ -745,24 +745,6 @@ AVMAPI void AvmCopy(object o, size_t size, byte* destination);
 #ifndef DOXYGEN
 #define AVM_CONCAT_(a, b) a##b
 
-typedef enum
-{
-    AvmArgErrorMsg,
-    AvmMemErrorMsg,
-    AvmRangeErrorMsg,
-    AvmMarshalErrorMsg,
-    AvmMissingMemberErrorMsg,
-    AvmMissingConstantErrorMsg,
-    AvmMissingCallbackErrorMsg,
-    AvmThreadCreationErrorMsg,
-    AvmThreadJoinErrorMsg,
-    AvmThreadDetachErrorMsg,
-    AvmInvalidStackSizeErrorMsg,
-    AvmMissingInterfaceErrorMsg,
-} AvmResourceKey;
-
-AVMAPI str AvmRuntimeGetResource(AvmResourceKey key);
-
 /// Represents the context of a thrown object.
 AVM_CLASS(AvmThrowContext, object, {
     AvmThrowContext* _prev;
@@ -774,7 +756,6 @@ AVM_CLASS(AvmThrowContext, object, {
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
-
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

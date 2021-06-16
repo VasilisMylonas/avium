@@ -3,6 +3,8 @@
 #include "avium/core.h"
 #include "avium/typeinfo.h"
 
+#include "avium/private/resource.h"
+
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -12,8 +14,6 @@
 #ifdef AVM_HAVE_UNICODE
 #include <uchar.h>
 #endif
-
-#define _ AvmRuntimeGetResource
 
 static bool AvmStringEquals(AvmString* self, AvmString* other)
 {
