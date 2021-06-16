@@ -53,6 +53,13 @@ typedef struct AvmMember AvmMember;
 typedef struct AvmClass AvmClass;
 typedef struct AvmInterface AvmInterface;
 typedef struct AvmFunction AvmFunction;
+typedef struct AvmInterfaceObject
+{
+    union {
+        const AvmClass* __type;
+        object __base;
+    };
+} AvmInterfaceObject;
 
 /// @}
 
@@ -76,7 +83,7 @@ typedef struct AvmFunction AvmFunction;
 
 #define AVM_INTERFACE(T, ...)                                                  \
     enum __VA_ARGS__;                                                          \
-    AVM_CLASS(T, object, {                                                     \
+    AVM_CLASS(T, AvmInterfaceObject, {                                         \
         object Value;                                                          \
         const AvmCallback* Methods;                                            \
     })
@@ -754,6 +761,7 @@ AVM_CLASS(AvmThrowContext, object, {
 AVMAPI void __AvmRuntimePushThrowContext(AvmThrowContext*);
 AVMAPI AvmThrowContext* __AvmRuntimePopThrowContext(void);
 AVMAPI AvmThrowContext* __AvmRuntimeGetThrowContext(void);
+
 #endif // DOXYGEN
 
 #endif // AVIUM_CORE_H

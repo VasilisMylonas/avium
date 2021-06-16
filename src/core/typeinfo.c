@@ -573,6 +573,8 @@ const AvmClass _AVM_METADATA_BLOCK_NAME(void) = {
         },
 };
 
+AVM_CLASS_TYPE(AvmInterfaceObject, object, AVM_VTABLE_DEFAULT);
+
 //
 // Misc.
 //

@@ -155,6 +155,14 @@ AVM_CLASS(AvmInterface, AvmType, {
     } _private;
 });
 
+/**
+ * @brief Generates basic type information for a class type.
+ *
+ * @param I The interface type.
+ */
+#define AVM_INTERFACE_TYPE(I)                                                  \
+    AVM_CLASS_TYPE(I, AvmInterfaceObject, AVM_VTABLE_DEFAULT)
+
 /// A default interface initializer for the AVM_INTERFACES macro.
 #define AVM_INTERFACES_DEFAULT                                                 \
     {                                                                          \
@@ -605,6 +613,7 @@ AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(double);
 AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(str);
 AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(object);
 AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(void);
+AVMAPI const AvmClass _AVM_METADATA_BLOCK_NAME(AvmInterfaceObject);
 #endif // DOXYGEN
 
 #endif // AVIUM_TYPEINFO_H

@@ -802,8 +802,8 @@ object AvmClone(const AvmCloneable* self)
     return AVM_ICALL(AvmCloneableClone, object, object)(self->Value);
 }
 
-AVM_CLASS_TYPE(AvmEquatable, object, AVM_VTABLE_DEFAULT);
-AVM_CLASS_TYPE(AvmCloneable, object, AVM_VTABLE_DEFAULT);
+AVM_INTERFACE_TYPE(AvmEquatable);
+AVM_INTERFACE_TYPE(AvmCloneable);
 
 void AvmCopy(object o, size_t size, byte* destination)
 {
