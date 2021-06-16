@@ -133,7 +133,7 @@
 
 #define AVM_OBJECT_FMT_STR         "%s [%x]"
 #define AVM_DETAILED_ERROR_FMT_STR "%s\n\nBacktrace:\n%v\n"
-#define AVM_LOCATION_FMT_STR       "%s:%u"
+#define AVM_LOCATION_FMT_STR       "%s:%u:%u"
 #define AVM_VERSION_FMT_STR        "%u.%u.%u"
 #define AVM_THREAD_FMT_STR         "thread %s [%x]"
 #define AVM_CAST_FAIL_FMT_STR      "Tried to cast object [%x] of type %T to type %s."
@@ -144,5 +144,7 @@
 #define AVM_BACKTRACE_LINE_SIZE         32
 #define AVM_BACKTRACE_SEPARATOR         '@'
 #define AVM_BACKTRACE_NOT_AVAILABLE_MSG "Backtrace not available."
+
+#define AVM_DEBUG_SMASH_PROTECTOR_SIZE 64
 
 #endif // AVIUM_CONFIG_H

@@ -172,7 +172,8 @@ static AvmString AvmLocationToString(AvmLocation* self)
         assert(self != NULL);
     }
 
-    return AvmStringFormat(AVM_LOCATION_FMT_STR, self->File, self->Line);
+    return AvmStringFormat(
+        AVM_LOCATION_FMT_STR, self->File, self->Line, self->Column);
 }
 
 AVM_CLASS_TYPE(AvmLocation,
@@ -416,7 +417,7 @@ void* AvmAlloc(uint size, bool containsPointers)
     if (!containsPointers)
     {
         // GC_malloc_atomic does not clear memory.
-        bzero(mem, size);
+        memset(mem, 0, size);
     }
 
     if (mem == NULL)
