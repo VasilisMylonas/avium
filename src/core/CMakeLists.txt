@@ -12,6 +12,7 @@ add_library(avm-core STATIC
     typeinfo.c
     thread.c
     process.c
+    debug.c
     ${AVM_THREAD_BACKEND}
     ${AVM_PROCESS_BACKEND}
 )

@@ -1,5 +1,6 @@
 #include "avium/thread.h"
 
+#include "avium/debug.h"
 #include "avium/string.h"
 #include "avium/typeinfo.h"
 
@@ -19,6 +20,8 @@ AVM_CLASS_TYPE(AvmThreadContext, object, AVM_VTABLE_DEFAULT);
 
 AvmExitCode __AvmRuntimeThreadInit(AvmThreadContext* context)
 {
+    AvmDebugLog("Avium: Created new thread");
+
     AvmCurrentThread = context->_thread;
 
     // At the same time AvmThreadContextGetThread will return.

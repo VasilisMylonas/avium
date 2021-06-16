@@ -3,6 +3,7 @@
 #include "avium/private/resource.h"
 #include "avium/private/thread-context.h"
 
+#include "avium/debug.h"
 #include "avium/string.h"
 #include "avium/thread.h"
 #include "avium/typeinfo.h"
@@ -15,6 +16,10 @@
 
 #ifdef AVM_HAVE_BACKTRACE
 #include <execinfo.h>
+#endif
+
+#ifdef AvmAlloc
+#undef AvmAlloc
 #endif
 
 static struct
@@ -81,6 +86,7 @@ void AvmObjectSurpressFinalizer(object self)
         assert(AvmRuntimeIsHeapObject(self));
     }
 
+    AvmDebugLog("Avium: Surpressing finalizer for object at address %x", self);
     GC_register_finalizer(self, NULL, NULL, NULL, NULL);
 }
 
@@ -114,6 +120,9 @@ void AvmObjectLock(object self)
 
     if (o[-1] == NULL)
     {
+        AvmDebugLog(
+            "Avium: First time lock initialization for object at address %x",
+            self);
         // Lazy initialization.
         AvmMutex* mutex = AvmObjectNew(typeid(AvmMutex));
         *mutex = AvmMutexNew(false);
@@ -285,21 +294,25 @@ AvmExitCode AvmRuntimeInit(int argc, str argv[], AvmEntryPoint entry)
 
     if (AvmRuntimeState.argv != NULL)
     {
+        AvmDebugLog("Avium: Detected multiple runtime initialization");
         return EXIT_FAILURE;
     }
 
     // TODO: When does GC start and end?
     GC_INIT();
+    AvmDebugLog("Avium: Garbage collector initialized");
 
     AvmRuntimeState.argc = (uint)(argc - 1);
     AvmRuntimeState.argv = argv + 1;
     AvmRuntimeState.version =
         AvmVersionFrom(AVM_VERSION_MAJOR, AVM_VERSION_MINOR, AVM_VERSION_PATCH);
 
+    AvmDebugLog("Avium: Runtime initialized");
     AvmExitCode code = __AvmRuntimeThreadInit(__AvmThreadContextNew(
         NULL,
         (AvmThreadEntryPoint)entry,
         __AvmThreadNewObject(AVM_THREAD_MAIN_NAME, false, 0)));
+    AvmDebugLog("Avium: Runtime terminated");
 
     AvmRuntimeState.argv = NULL;
 
@@ -343,6 +356,8 @@ bool AvmRuntimeIsHeapObject(object o)
         assert(o != NULL);
     }
 
+    AvmDebugLog("Avium: Checking for address %x on the heap", o);
+
     return GC_is_heap_ptr(o);
 }
 
@@ -372,6 +387,7 @@ AvmString AvmRuntimeGetBacktrace(void)
     free(s);
     return bt;
 #else
+    AvmDebugLog("Avium: Backtraces are not available.");
     return AvmStringFrom(AVM_BACKTRACE_NOT_AVAILABLE_MSG);
 #endif
 }
@@ -599,6 +615,7 @@ AvmError* AvmErrorNew(str message)
 
 AvmInteger AvmIntegerFrom(_long value)
 {
+    AvmDebugLog("Avium: Boxing int value %i", value);
     return (AvmInteger){
         .__type = typeid(AvmInteger),
         .Value = value,
@@ -607,6 +624,7 @@ AvmInteger AvmIntegerFrom(_long value)
 
 AvmUnsigned AvmUnsignedFrom(ulong value)
 {
+    AvmDebugLog("Avium: Boxing uint value %u", value);
     return (AvmUnsigned){
         .__type = typeid(AvmUnsigned),
         .Value = value,
@@ -615,6 +633,7 @@ AvmUnsigned AvmUnsignedFrom(ulong value)
 
 AvmFloat AvmFloatFrom(double value)
 {
+    AvmDebugLog("Avium: Boxing float value %f", value);
     return (AvmFloat){
         .__type = typeid(AvmFloat),
         .Value = value,
