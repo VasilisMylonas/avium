@@ -63,6 +63,18 @@ typedef struct AvmInterfaceObject
 
 /// @}
 
+#ifdef AVM_DISABLE_PRECONDITIONS
+#define pre if (false)
+#else
+#define pre if (true)
+#endif
+
+#ifdef AVM_DISABLE_POSTCONDITIONS
+#define post if (false)
+#else
+#define post if (true)
+#endif
+
 /**
  * @defgroup AvmDeclMacros Declaration macros.
  *
@@ -97,8 +109,8 @@ typedef struct AvmInterfaceObject
 #define AVM_INTERFACE(T, ...)                                                  \
     enum __VA_ARGS__;                                                          \
     AVM_CLASS(T, AvmInterfaceObject, {                                         \
-        object Value;                                                          \
-        const AvmCallback* Methods;                                            \
+        const object Value;                                                    \
+        const AvmCallback* const Methods;                                      \
     })
 
 /**
@@ -121,18 +133,6 @@ typedef struct AvmInterfaceObject
 #define Main       AvmMain
 
 /// @}
-
-#ifdef AVM_DISABLE_PRECONDITIONS
-#define pre if (false)
-#else
-#define pre if (true)
-#endif
-
-#ifdef AVM_DISABLE_POSTCONDITIONS
-#define post if (false)
-#else
-#define post if (true)
-#endif
 
 /**
  * @defgroup AvmObjectFunctions Universal object instance functions.
