@@ -463,7 +463,10 @@ static void AvmFputs(str format, va_list args, FILE* stream)
     }
 
     AvmString temp = AvmStringFormatV(format, args);
-    fwrite(AvmStringGetBuffer(&temp), sizeof(char), temp._length, stream);
+    fwrite(AvmStringGetBuffer(&temp),
+           sizeof(char),
+           AvmStringGetLength(&temp),
+           stream);
 }
 
 void AvmVScanf(str format, va_list args)
