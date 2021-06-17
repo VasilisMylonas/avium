@@ -14,10 +14,10 @@ AVMAPI void AvmDebuggerBreak(void);
 #define AvmAlloc(size, containsPointers)                                       \
     AvmDebugAlloc(                                                             \
         AvmLocationFrom(__FILE__, __LINE__, 0), size, containsPointers)
-#define AvmDebugLog(format, ...)                                               \
-    AvmDebugLog(AvmLocationFrom(__FILE__, __LINE__, 0), format, ##__VA_ARGS__)
+#define AvmDebugLog(...)                                                       \
+    AvmDebugLog(AvmLocationFrom(__FILE__, __LINE__, 0), __VA_ARGS__)
 #else
-#define AvmDebugLog(format, ...) ((void)0)
+#define AvmDebugLog(...) ((void)0)
 #endif
 
 #endif // AVIUM_DEBUG_H

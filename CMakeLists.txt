@@ -13,7 +13,7 @@ set(enable_threads ON) # This is for bdwgc
 set(AVM_BUILDING ON)
 set(AVM_MSVC_COMPILE_OPTIONS /W4 /wd4201 /wd5105 /wd4324)
 set(AVM_GNU_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror -fvisibility=hidden)
-set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage -rdynamic)
+set(AVM_GNU_COVERAGE_OPTIONS -fprofile-arcs -ftest-coverage)
 
 include(CheckTypeSize)
 include(CheckIncludeFile)
