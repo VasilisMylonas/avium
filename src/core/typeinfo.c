@@ -439,21 +439,11 @@ static AvmString AvmFunctionToString(const AvmFunction* self)
         assert(self != NULL);
     }
 
-    AvmString s = AvmStringNew(baseof(self)->_private.paramCount * 4);
-    AvmStringPushStr(&s, "function ");
-    AvmStringPushStr(&s, AvmTypeGetName(&self->__base));
-    AvmStringPushStr(&s, " (");
-    AvmStringPushUint(
-        &s, baseof(self)->_private.paramCount, AvmNumericBaseDecimal);
-    if (baseof(self)->_private.paramCount == 1)
-    {
-        AvmStringPushStr(&s, " parameter)");
-    }
-    else
-    {
-        AvmStringPushStr(&s, " parameters)");
-    }
-    return s;
+    const uint paramCount = AvmFunctionGetParamCount(self);
+    return AvmStringFormat("function %s (%u %s)",
+                           AvmTypeGetName(baseof(self)),
+                           paramCount,
+                           paramCount == 1 ? "parameter" : "parameters");
 }
 
 AVM_CLASS_TYPE(AvmFunction,
