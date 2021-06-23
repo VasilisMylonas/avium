@@ -5,5 +5,6 @@ function(run_test TEST)
 endfunction()
 
 run_test(string)
+run_test(vector)
 run_test(thread)
 run_test(typeinfo)

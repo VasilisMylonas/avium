@@ -8,11 +8,12 @@ endif()
 
 add_library(avm-core STATIC
     core.c
-    string.c
-    typeinfo.c
-    thread.c
-    process.c
     debug.c
+    process.c
+    string.c
+    thread.c
+    typeinfo.c
+    vector.c
     ${AVM_THREAD_BACKEND}
     ${AVM_PROCESS_BACKEND}
 )

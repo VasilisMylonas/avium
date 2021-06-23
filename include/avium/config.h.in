@@ -145,5 +145,6 @@
 #define AVM_BACKTRACE_NOT_AVAILABLE_MSG "Backtrace not available."
 
 #define AVM_DEBUG_SMASH_PROTECTOR_SIZE 64
+#define AVM_VECTOR_GROW_FACTOR         2
 
 #endif // AVIUM_CONFIG_H
